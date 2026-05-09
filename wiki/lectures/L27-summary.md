@@ -35,7 +35,7 @@ aliases:
   - Exam Review
 ---
 
-# L27 — Summary and Exam Review
+# L27: Summary and Exam Review
 
 The final class before the exam. The prof skipped the wrap-up slides and instead spent the whole session walking through the 2025 exam (and one 2024 question), explaining how each question would be re-formatted for *his* version of the exam — no R/Python coding, results given as tables, calculations and interpretation only. Bookended by exam logistics and the canonical scope rule. This is the single highest-priority lecture for exam prep.
 

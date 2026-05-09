@@ -68,7 +68,7 @@ Per-module recipe:
 
 1. Confirm `wiki/concepts/<slug>.md` files exist for every atom in the target module's slice (`docs/concepts-manifest.md` filtered by `module:`).
 2. Confirm `wiki/lectures/L<NN>-*.md` are in place for that module.
-3. Optionally: confirm `wiki/mocs/m<NN>-<slug>.md` exists — its `## Out of scope` section saves the agent a scope lookup.
+3. Optionally: confirm `wiki/mocs/m<NN>-<slug>.md` exists, its `## Out of scope` section saves the agent a scope lookup.
 4. Launch one agent (foreground or worktree) with the brief at `prompts/deck-generation.md` and the target module slug. The agent reads inputs, applies `templates/deck.md`'s quality bar, writes the HTML deck.
 5. Open the deck locally (`pnpm run dev` → `http://localhost:8080/decks/m<NN>-<slug>.html`) and click through it. Run the `templates/deck.md` §10 checklist.
 
