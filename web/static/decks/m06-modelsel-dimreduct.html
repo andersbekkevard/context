@@ -824,17 +824,17 @@
       </header>
       <p class="q-text">You are predicting $Y$ from standardized predictors. Through prior knowledge you know that $Y$ depends strongly on a particular predictor $X_3$ that happens to have a small variance relative to the other predictors. Compared with PCR, PLS will generally:</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> throw $X_3$ away earlier, since PLS prioritizes high-variance directions of $X$.</li>
-        <li><span class="opt-label">B</span> behave identically to PCR, since both methods are unsupervised dimension-reduction tools.</li>
-        <li><span class="opt-label">C</span> refuse to fit, because PLS requires all predictors to have equal variance.</li>
-        <li><span class="opt-label">D</span> weight $X_3$ heavily in its first component, because the simple-regression coefficient of $Y$ on $X_3$ is large; PCR would push $X_3$ into a late component because $X_3$'s $X$-variance is small.</li>
+        <li><span class="opt-label">A</span> throw $X_3$ away earlier than PCR, since PLS prioritizes high-variance directions of $X$ and drops low-variance ones outright at each step.</li>
+        <li><span class="opt-label">B</span> behave identically to PCR, since both methods are unsupervised dimension-reduction tools that only see $X$ when constructing components.</li>
+        <li><span class="opt-label">C</span> weight $X_3$ identically to PCR, since both methods rank predictors by sample variance after standardization brings every $X_j$ to unit variance.</li>
+        <li><span class="opt-label">D</span> weight $X_3$ heavily in $Z_1$ via its large simple-regression coefficient on $Y$, while PCR pushes $X_3$ into a late component because its $X$-variance is small.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: D</span>
           <p>This is the textbook PCR-vs-PLS contrast. PCR picks directions by $\text{Var}(X)$ — small-variance predictive directions get buried late in the ordering (the Credit / income story). PLS picks by $\text{Cov}(X, Y)$ — a strong simple-regression coefficient on $Y$ feeds directly into a heavy loading on the first component.</p>
-          <p>A reverses the direction: PCR (not PLS) is the one prioritizing high-$X$-variance. B confuses PLS's status: PCA is unsupervised, but PLS is supervised. C invents a requirement PLS does not have.</p>
+          <p>A reverses the direction: PCR (not PLS) is the one prioritizing high-$X$-variance. B misclassifies PLS — PCA is unsupervised, but PLS is supervised, that is the whole point. C confuses standardization with relevance: standardization makes <em>variances</em> equal but not <em>covariances with $Y$</em>; PLS still picks by covariance with $Y$, PCR still by variance, so they disagree on $X_3$.</p>
           <p class="ref">Atoms: <a href="/concepts/partial-least-squares">partial-least-squares</a>, <a href="/concepts/principal-component-regression">principal-component-regression</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.2.</p>
         </div>
       </details>
@@ -940,17 +940,17 @@
       </header>
       <p class="q-text">Two analyses fit the same regression: one with PCR ($M = 4$), one with ridge (with $\lambda$ chosen by CV). They report essentially identical CV-MSE. The prof would lean toward reporting which, and why?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> PCR — fewer hyperparameters means simpler models, always.</li>
-        <li><span class="opt-label">B</span> Ridge — its smooth shrinkage is less sensitive to the exact tuning value than PCR's discrete $M$, so the result is more stable across resamples; the prof: "ridge regression behaves smoothly instead of this kind of discrete thing which PCR and PLS both have."</li>
-        <li><span class="opt-label">C</span> PCR — the $M = 4$ representation is more interpretable than a continuous $\lambda$.</li>
-        <li><span class="opt-label">D</span> Whichever method has the smaller training MSE, since training MSE rules tie-breaking.</li>
+        <li><span class="opt-label">A</span> PCR — fewer kept components means a more parsimonious model than ridge's full-rank fit, and Occam's razor favours parsimony when CV-MSE ties.</li>
+        <li><span class="opt-label">B</span> Ridge — its $\lambda$ moves continuously, so a small CV reshuffle doesn't flip the model; PCR's $M$ jumps in unit steps and can swing $\hat\beta$ across resamples.</li>
+        <li><span class="opt-label">C</span> PCR — the $M = 4$ representation is a discrete, easily reportable choice and so is more interpretable than a continuous $\lambda$.</li>
+        <li><span class="opt-label">D</span> PCR — its hard truncation produces a sparser back-transformed $\hat\beta$ in original-$X$ space than ridge does, giving a cleaner variable-importance story.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: B</span>
-          <p>When two methods tie on test performance, the prof prefers the more <em>stable</em> one — the one whose answer wouldn't shift under a small CV-fold reshuffle. Ridge wins on smoothness: $\lambda$ moves continuously, so a tiny change in CV doesn't flip the model. PCR's $M$ jumps in unit steps; a small CV change can switch $M$ from 4 to 5 and substantially change the back-transformed $\hat\beta$.</p>
-          <p>A is too absolute — "always" is the giveaway, and "fewer hyperparameters" is not what makes a model preferable when both have similar effective complexity. C inverts an interpretation argument: $\lambda$ is just as interpretable as $M$ once you understand each method, and arguably more so for forecasting users. D ignores that training MSE is not a tie-break for generalization — the deck has been pushing this all along.</p>
+          <p>When two methods tie on test performance, the prof prefers the more <em>stable</em> one — the one whose answer wouldn't shift under a small CV-fold reshuffle. Verbatim: "ridge regression behaves smoothly instead of this kind of discrete thing which PCR and PLS both have." Ridge wins on smoothness: $\lambda$ moves continuously, so a tiny change in CV doesn't flip the model. PCR's $M$ jumps in unit steps; a small CV change can switch $M$ from 4 to 5 and substantially change the back-transformed $\hat\beta$.</p>
+          <p>A confuses parsimony in PC-space with parsimony in $X$-space — PCR's back-transform is generically nonzero on every $X_j$, so neither model is more parsimonious in raw variables. C is a weak interpretability argument: $\lambda$ is just as reportable as $M$ once you understand each method, and stability is the more load-bearing tie-break. D is the canonical wrong belief tested in Q20: PCR does <em>not</em> produce sparse $\hat\beta_j$ — every back-transformed coefficient is generically nonzero.</p>
           <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/cross-validation">cross-validation</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.1 + §6.6 (exercises 9–10 contrast PCR/PLS/ridge/lasso on identical datasets).</p>
         </div>
       </details>
@@ -964,10 +964,10 @@
       </header>
       <p class="q-text">You are predicting credit-card spend from $p = 50$ candidate predictors, many of which are nearly collinear. A stated goal is interpretability: you want to report which raw variables drive $Y$. Which method best fits the goals?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Ridge regression: handles collinearity by shrinking smoothly across correlated predictors.</li>
-        <li><span class="opt-label">B</span> PCR: rotates correlated predictors into orthogonal PCs and drops the small-variance ones.</li>
-        <li><span class="opt-label">C</span> Lasso: handles collinearity and zeroes out non-driving predictors, leaving an interpretable subset of raw variables.</li>
-        <li><span class="opt-label">D</span> PLS: same as PCR but supervised, using $\text{Cov}(X, Y)$ to pick directions.</li>
+        <li><span class="opt-label">A</span> Ridge regression: handles collinearity by shrinking smoothly and sharing weight across correlated predictors.</li>
+        <li><span class="opt-label">B</span> PCR: rotates correlated predictors into orthogonal PCs and drops the small-variance ones via the $M$ cutoff.</li>
+        <li><span class="opt-label">C</span> Lasso: handles collinearity by zeroing out non-driving predictors, leaving an interpretable subset of raw variables.</li>
+        <li><span class="opt-label">D</span> PLS: same skeleton as PCR but supervised, using $\text{Cov}(X, Y)$ to pick directions while still rotating predictors.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -1055,17 +1055,17 @@
       </header>
       <p class="q-text">When the true response depends on a small subset of the original predictors, which method's signature failure is to <em>scatter</em> that signal across many components, leaving no clean variable interpretation in the back-transformed coefficients?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Lasso, because the L1 penalty enforces sparsity in $\hat\beta$.</li>
-        <li><span class="opt-label">B</span> Ridge regression, because the L2 penalty shrinks every coefficient toward zero by the same proportion.</li>
+        <li><span class="opt-label">A</span> Lasso, because the $L_1$ penalty enforces sparsity in $\hat\beta$ that mirrors the sparse-truth assumption directly.</li>
+        <li><span class="opt-label">B</span> Ridge regression, because its $L_2$ penalty shrinks every coefficient toward zero by the same proportion, blurring the active set.</li>
         <li><span class="opt-label">C</span> PCR, because every PC is a linear combination of all original predictors, so the back-transformed $\hat\beta_j$ are generically all nonzero.</li>
-        <li><span class="opt-label">D</span> Best-subset selection, because it enumerates every subset of predictors.</li>
+        <li><span class="opt-label">D</span> Best-subset selection, because enumerating every subset spreads the variance across many candidate models and obscures the sparse truth.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: C</span>
           <p>PCR rotates the predictors before regressing, so a sparse truth in original-$X$ space becomes a dense truth in PC space — and the back-transformed coefficients are generically all nonzero. PLS has the same issue. The prof's framing: "Use lasso or subset selection when you need this or that one."</p>
-          <p>A inverts the direction: lasso's sparsity is the <em>cure</em>, not the failure. B is wrong on details too: ridge does not shrink every coefficient by the same proportion — its per-PC factor $\lambda_j^2/(\lambda_j^2 + \lambda)$ is heavier on small eigenvalues. D enumerates subsets but does not scatter signal; if anything best-subset gives clean variable identification (at the cost of compute).</p>
+          <p>A inverts the direction: lasso's sparsity is the <em>cure</em>, not the failure. B is wrong on details: ridge does not shrink every coefficient by the same proportion — the per-PC factor $\lambda_j^2/(\lambda_j^2 + \lambda)$ is heavier on small eigenvalues. D inverts what best-subset does: it picks one subset and reports its $\hat\beta$, giving clean variable identification (at compute cost) — it does not scatter signal across models.</p>
           <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/lasso">lasso</a>, <a href="/concepts/partial-least-squares">partial-least-squares</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.1.</p>
         </div>
       </details>
