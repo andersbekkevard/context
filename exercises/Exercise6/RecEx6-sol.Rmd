@@ -1,0 +1,359 @@
+---
+title: "TMA4268 Statistical Learning"
+author:
+- Sara Martino, Stefanie Muff, Kenneth Aase
+- Department of Mathematical Sciences, NTNU
+date: "February 19, 2025"
+output:
+  html_document:
+    toc: no
+    toc_float: yes
+    toc_depth: 2
+  pdf_document:
+    toc: no
+    toc_depth: '2'
+subtitle: 'Module 6: Solution sketches'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1
+
+For the least square estimator, the solution can be found  [here](https://en.wikipedia.org/wiki/Proofs_involving_ordinary_least_squares#Least_squares_estimator_for_%CE%B2).
+
+For the maximum likelihood estimator, the solution can be found [here](https://en.wikipedia.org/wiki/Proofs_involving_ordinary_least_squares#Maximum_likelihood_approach).
+
+# 2
+
+```{r, message=FALSE, warning=FALSE}
+library(ISLR) # Package with data for an Introduction to Statistical
+# Learning with Applications in R
+```
+
+```{r, message=FALSE, warning=FALSE}
+# Load Credit dataset
+data(Credit)
+
+# Check column names
+names(Credit)
+
+# Check dataset shape
+dim(Credit)
+```
+
+```{r, message=FALSE, warning=FALSE}
+head(Credit)
+```
+
+```{r, message=FALSE, warning=FALSE}
+# Select variable to plot
+vars <- c("Balance", "Age", "Cards", "Education", "Income", "Limit", "Rating")
+pairwise_scatter_data <- Credit[, vars]
+```
+
+```{r, message=FALSE, warning=FALSE}
+# Simplest possible pairwise scatter plot
+pairs(pairwise_scatter_data)
+```
+
+```{r, message=FALSE, warning=FALSE, cache=TRUE}
+# More interesting but slower pairwise plot from package GGally
+library(GGally)
+ggpairs(data = pairwise_scatter_data)
+```
+
+Check [here](https://tgmstat.wordpress.com/2013/11/13/plot-matrix-with-the-r-package-ggally/) for a quick guide on getting started to `ggpairs`.
+
+# 3
+
+```{r, message=FALSE, warning=FALSE}
+# Exclude 'ID' column
+cred_data <- subset(Credit, select = -ID)
+
+# Counting the dummy variables as well
+cred_data_number_predictors <- 11
+
+# Take a look at the data
+head(cred_data)
+
+# Summary statistics
+summary(cred_data)
+
+# Create train and test set indexes
+set.seed(1)
+train_perc <- 0.75
+cred_data_train_index <- sample(
+  nrow(cred_data),
+  round(nrow(cred_data) * train_perc))
+# Create train and test set
+cred_data_train <- cred_data[cred_data_train_index, ]
+cred_data_test <- cred_data[-cred_data_train_index, ]
+```
+
+```{r, message=FALSE, warning=FALSE}
+library(leaps)
+
+# Perform best subset selection using all the predictors and the training data
+best_subset_method <- regsubsets(Balance ~ .,
+                                 data = cred_data_train,
+                                 nvmax = cred_data_number_predictors)
+
+# Save summary obj
+best_subset_method_summary <- summary(best_subset_method)
+```
+
+```{r, message=FALSE, warning=FALSE}
+# Plot RSS, Adjusted R^2, C_p and BIC
+
+par(mfrow = c(2, 2))
+plot(best_subset_method_summary$rss,
+     xlab = "Number of Variables",
+     ylab = "RSS",
+     type = "l")
+
+plot(best_subset_method_summary$adjr2,
+     xlab = "Number of Variables",
+     ylab = "Adjusted RSq",
+     type = "l")
+
+bsm_best_adjr2 <- which.max(best_subset_method_summary$adjr2)
+
+points(bsm_best_adjr2,
+       best_subset_method_summary$adjr2[bsm_best_adjr2],
+       col = "red",
+       cex = 2,
+       pch = 20)
+
+plot(best_subset_method_summary$cp,
+     xlab = "Number of Variables",
+     ylab = "Cp",
+     type = "l")
+
+bsm_best_cp <- which.min(best_subset_method_summary$cp)
+
+points(bsm_best_cp,
+       best_subset_method_summary$cp[bsm_best_cp],
+       col = "red",
+       cex = 2,
+       pch = 20)
+
+bsm_best_bic <- which.min(best_subset_method_summary$bic)
+
+plot(best_subset_method_summary$bic,
+     xlab = "Number of Variables",
+     ylab = "BIC",
+     type = "l")
+
+points(bsm_best_bic,
+       best_subset_method_summary$bic[bsm_best_bic],
+       col = "red",
+       cex = 2,
+       pch = 20)
+```
+
+```{r, message=FALSE, warning=FALSE}
+# Create a prediction function to make predictions
+# for regsubsets with id predictors included
+predict.regsubsets <- function(object, newdata, id, ...) {
+  form <- as.formula(object$call[[2]])
+  mat <- model.matrix(form, newdata)
+  coefi <- coef(object, id = id)
+  xvars <- names(coefi)
+  mat[, xvars] %*% coefi
+}
+
+# Create indexes to divide the data between folds
+k <- 10
+n <- nrow(cred_data_train)
+set.seed(1)
+folds <- rep(seq_len(k), ceiling(n / k))[seq_len(n)][sample(n)]
+cv.errors <-
+  matrix(NA,
+         nrow = k,
+         ncol = cred_data_number_predictors,
+         dimnames = list(NULL, paste(1:cred_data_number_predictors)))
+
+# Perform CV
+for (j in seq_len(k)) {
+  best_subset_method <- regsubsets(Balance ~ .,
+                                   data = cred_data_train[folds != j, ],
+                                   nvmax = cred_data_number_predictors)
+  for (i in seq_len(cred_data_number_predictors)) {
+    pred <- predict(best_subset_method,
+                    cred_data_train[folds == j, ],
+                    id = i)
+    cv.errors[j, i] <- mean((cred_data_train$Balance[folds == j] - pred)^2)
+  }
+}
+
+# Compute mean cv errors for each model size
+mean.cv.errors <- apply(cv.errors, 2, mean)
+mean.cv.errors
+
+# Plot the mean cv errors
+par(mfrow = c(1, 1))
+plot(mean.cv.errors, type = "b")
+```
+
+```{r, message=FALSE, warning=FALSE}
+# Fit the selected model using the whole training data
+# and compute test error
+
+# models selected
+number_predictors_selected <- 4
+
+# Create info for lm call
+variables <- names(coef(best_subset_method, id = number_predictors_selected))
+variables <- variables[!variables %in% "(Intercept)"]
+bsm_formula <- as.formula(best_subset_method$call[[2]])
+bsm_design_matrix <- model.matrix(bsm_formula, cred_data_train)[, variables]
+bsm_data_train <- data.frame(Balance = cred_data_train$Balance,
+                             bsm_design_matrix)
+
+# Fit a standard linear model using only the selected
+# predictors on the training data
+model_best_subset_method <- lm(formula = bsm_formula, bsm_data_train)
+summary(model_best_subset_method)
+
+# Make predictions on the test set
+bsm_design_matrix_test <- model.matrix(bsm_formula, cred_data_test)[, variables]
+bsm_preds <- predict(object = model_best_subset_method, newdata = as.data.frame(bsm_design_matrix_test))
+
+# Compute test squared errors
+bsm_squared_errors <- (cred_data_test$Balance - bsm_preds)^2
+squared_errors <- data.frame(bsm_squared_errors = bsm_squared_errors)
+
+
+# test MSE
+mean(bsm_squared_errors)
+```
+
+# 4
+
+Similar analysis as previous exercise, simply replace Best Subset Selection (`best_subset_method <- regsubsets(Balance ~ ., cred_data, nvmax = cred_data_number_predictors)`) by Forward Stepwise Selection (`regfit.fwd <- regsubsets(Balance ~ ., cred_data, nvmax = cred_data_number_predictors, method = "forward")`), Backward Stepwise Selection (`regfit.fwd <- regsubsets(Balance ~ ., cred_data, nvmax = cred_data_number_predictors, method = "backward")`) and Hybrid Stepwise Selection 
+(`regfit.fwd <- regsubsets(Balance ~ ., cred_data, nvmax = cred_data_number_predictors, method = "seqrep")`)
+
+# 5
+
+```{r, message=FALSE, warning=FALSE}
+library(glmnet) # Package Lasso and Elastic-Net Regularized
+# Generalized Linear Models
+```
+
+```{r, message=FALSE, warning=FALSE}
+x_train <- model.matrix(Balance ~ ., cred_data_train)[, -1]
+y_train <- cred_data_train$Balance
+
+x_test <- model.matrix(Balance ~ ., cred_data_test)[, -1]
+y_test <- cred_data_test$Balance
+
+# `alpha=0` is the ridge penalty.
+ridge_mod <- glmnet(x_train, y_train, alpha = 0) 
+
+set.seed(1)
+cv.out <- cv.glmnet(x_train, y_train, alpha = 0)
+plot(cv.out)
+
+best_lambda_ridge <- cv.out$lambda.min
+best_lambda_ridge
+
+ridge_preds <- predict(ridge_mod, s = best_lambda_ridge, newx = x_test)
+ridge_square_errors <- as.numeric((ridge_preds - y_test)^2)
+squared_errors <- data.frame(ridge_square_errors = ridge_square_errors,
+                             squared_errors)
+```
+
+# 6
+
+```{r, message=FALSE, warning=FALSE}
+# `alpha=1` is the lasso penalty.
+lasso_mod <- glmnet(x_train, y_train, alpha = 1) 
+
+set.seed(1)
+cv.out <- cv.glmnet(x_train, y_train, alpha = 1)
+plot(cv.out)
+
+best_lambda_lasso <- cv.out$lambda.min
+best_lambda_lasso
+
+lasso_preds <- predict(lasso_mod, s = best_lambda_lasso, newx = x_test)
+lasso_square_errors <- as.numeric((lasso_preds - y_test)^2)
+squared_errors <- data.frame(lasso_square_errors = lasso_square_errors,
+                             squared_errors)
+```
+
+# 7
+
+```{r, message=FALSE, warning=FALSE}
+x <- model.matrix(Balance ~ ., cred_data)[, -1]
+
+cred_pca <- prcomp(x, center = TRUE, scale. = TRUE)
+
+print(cred_pca)
+
+plot(cred_pca, type = "l")
+
+summary(cred_pca)
+```
+
+The first PC explains about $25\%$ of the variability in the data. Then the second PC explains an extra $15\%$ of the variability in the data. From the third PC until $8$th PC the extra variability explained per PC varies between $7.5\%$ to $10\%$, dropping to $3.6\%$ on the $9$th PCA. So I would likely use $8$ PCs for the `Credit` dataset.
+
+# 8
+
+```{r, message=FALSE, warning=FALSE}
+library(pls)
+
+set.seed(1)
+
+pcr_model <- pcr(Balance ~ .,
+                 data = cred_data_train,
+                 scale = TRUE,
+                 validation = "CV")
+validationplot(pcr_model, val.type = "MSEP")
+```
+
+```{r, message=FALSE, warning=FALSE}
+pcr_preds <- predict(pcr_model, cred_data_test, ncomp = 10)
+pcr_square_errors <- as.numeric((pcr_preds - cred_data_test$Balance)^2)
+squared_errors <- data.frame(pcr_square_errors = pcr_square_errors,
+                             squared_errors)
+mean(pcr_square_errors)
+```
+
+```{r, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(reshape2)
+ggplot(melt(squared_errors)) +
+  geom_boxplot(aes(variable, value))
+```
+
+# 9
+
+```{r, message=FALSE, warning=FALSE}
+library(pls)
+
+set.seed(1)
+
+plsr_model <- plsr(Balance ~ .,
+                   data = cred_data_train,
+                   scale = TRUE,
+                   validation = "CV")
+validationplot(plsr_model, val.type = "MSEP")
+```
+
+```{r, message=FALSE, warning=FALSE}
+plsr_preds <- predict(plsr_model, cred_data_test, ncomp = 3)
+plsr_square_errors <- as.numeric((plsr_preds - cred_data_test$Balance)^2)
+squared_errors <- data.frame(plsr_square_errors = plsr_square_errors,
+                             squared_errors)
+mean(plsr_square_errors)
+```
+
+```{r, message=FALSE, warning=FALSE}
+ggplot(melt(squared_errors)) +
+  geom_boxplot(aes(variable, value))
+
+colMeans(squared_errors)
+```

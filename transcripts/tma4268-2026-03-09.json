@@ -1,0 +1,5473 @@
+{
+  "model": "whisper-large-v3-turbo",
+  "text": ". All right, so let's get started. This thing is always... But you guys can hear me at least. So if nothing, you hear me too well, but that's okay. So today we're going to talk about moving beyond linearity. It's a module seven of the course where a little behind in the material. I'm going to try to not get further behind, maybe even speed up a little bit. Yeah. Sorry. First time I'm teaching the course and I think I. I'm not used to slides. slides that people just skip over and then I talk about them for like 10 minutes. Maybe that's a bad idea. I don't know. I'm working on it. So I'm a little slower than I probably could be. So I'll try not to be so slow today and not get further behind. And then I'll adjust the schedule a bit. But I think we're all fine. We're going to get everything in. Just maybe some part might be more compressed. I'll try to look at that. But today we're going to go through module seven, or this week we're going to go through module seven, and hopefully start module eight tomorrow. Seven is relatively short. All right, so what we're talking about today is moving beyond linearity, right? So we talked about how the least squares problem, right, least squares regression, is really like a Gaussian linear model right It linear regression So we want to move beyond linear regression because I mean I only do so much with linear regression And the first thing we so we start from there right? So as always, we have this, this is the model we've been looking at, right? And we fit it in matrix form, it looks like this. And then we fit it with the least squares solution. And in matrix algebra, this is the least square solution. Otherwise, you would, you know, compute gradients and fit it that way. But the whole point is that you can very easily find these betas fitting it to data. Now, what we're going to talk about today are nonlinear models of a certain form, which are having a basis function, okay? So this is what those look like. you'll see that actually it looks like we're just doing more linear regression right if you look at it beta 0 beta 1 beta 2 beta k blah blah blah here's your error term and here's your y the big difference now is that instead of looking at x directly we're going through basis functions and that's a very general term a very powerful term that um you know has many many versions okay and we'll get to that well we'll get to three versions but there's more so these are basis functions there's a lot more so as an example we can consider what is called polynomial regression right where we look at a polynomial right so you see now instead of just putting x in directly we have x to the first degree and then x to the second degree so a polynomial all right so here our first basis function will be x our second basis function will be x squared we fit that with data just like we normally would and then we get values all right for the for the betas And that gives us a fit of this equation here to our data. It's as simple as that. Here the basis functions are very simple. We're going to do something better in a minute. But that the general idea that you replacing your X with basis functions which are functions of X that have a specific form But otherwise, it's the same as linear regression. You're just going to, so far, you're just fitting and you're finding betas. All right. So imagine this is our data. So this is wage data. so how much money people make I think this is dollars sadly and this is the age obviously so people over 80 don't typically make very much because they're you know maybe in this data set they weren't so alive but if they do they're lower I mean if looking at this data the one obvious thing is what's that right and this has to do with the income inequality so you can already imagine probably we're looking at the wrong question regardless this is the data right you can see kind of a trend here maybe but we'll leave that but this is the data so how much money people make as a function of age you know it peaks what like around here so sadly I made more money before when I was over here I was here I don't know forget the axes and now I went down when I was I think I mentioned I was an engineer but I like this job more it's more fun but go do what you want anyways I'll try not to get distracted yeah uh so again polynomial regression right which is the one we just looked at where the basis functions are just powers of x here is one where now we're looking at polynomial regression uh to higher degrees right and we looked at this the first day so it's kind of funny that we're looking at it again and they and we showed like you know if the data was like this that you know look like this and then like that and then eventually get crazy and that's the point they're going to make now or we going to make now too that if you make d very big which intuitively you giving yourself a very flexible model that going to be able to fit something more flexible and interesting and it should but what will happen if you make D too big so here the D this polynomial right is just up to cube, I think, in this case. Or maybe it's degree four. It must be degree four. That's the degrees of freedom. But if you would have made degree 12, it probably would have gotten like that, a little bit wiggly, a little bit weird. There's enough data here that would probably keep it relatively contained. but that's one of the points is that you shouldn't make it too big as we discussed the first day. But you see with this polynomial regression, it looks kind of okay but we can do better or we can do something more interesting which is particularly interesting for other kinds of data. So what we can do instead is actually define the basis on kind of intervals, right? So here we can have a step function where now our basis functions are these intervals of x, right? So this is just an indicator function saying I am one between the not C1 and C2, or these cut points, right? So you have this timeline X, right? And then you're going to have C1, C2. And you have to define, you pick where the Xs are, or where these cut points are. often in many situations they'll just be defined on fixed intervals but you can also move them around or pick them so now we're gonna have these these now within this interval you have this indicator function saying it's on or off, and then those are the things that give you the betas, right? So then you get a function that looks like this. So you can imagine this is the data. Right? And you can see, oh, maybe that's not such a bad idea. I mean, this one is very stupid, but it's actually quite common, simply because you don't need that much information, and you can actually... I mean, this is modeling arguably a very complex function, right? Rather well, and you don't have to worry about so many parameters. and so you don't have too many constraints that push things around. So even the step functions are actually pretty nice, even if they are a bit stupid looking. But so this is another case of these basis functions, only now they're just fixed intervals. Right? So you can see here, again, fixed interval, fixed interval, fixed interval and then just a jump between them. I don't know why there's a space here. Because you can see they're supposed to be right next to each other. I think maybe this space is just meant to be for illustration. They should be vertical, you know, kind of like goes to there and up there. But it's piecewise constant. Of course, the bad things for, you know, mathematically is you don't have derivatives here. They, you know, they're not even, you don't have a smooth derivative. There's not even piecewise constant. Or it's piecewise constant, but it's not connected, right? it can jump. All right. So here again, this is more like it So I don know if this is true anymore This figure It's bad enough it's Monday morning. I probably shouldn't get into this, but I'll mention it anyways. Here's the wage. Here's the degree. and you know it used to be when they made this book not too long ago this nice curve so I'm hoping it's still true for you guys yeah of course you see it as a curve but the way we're fitting it here is also just as a piecewise constant only now of course it's been broken up probably by year like so how much schooling or maybe by I don't actually know what they what they did here but this is you know the the function of education I guess the number of years right and then so you can say you know zero to three or something or no I guess this would be finishing high school this is finishing a bachelor's, master's, PhD something excessive I don't know, but you can see that you break it up in intervals and then you would just fit it and then you get a number and you can also get the confidence intervals for that, for the prediction same as you would get the confidence intervals for the prediction in the linear model, right, because it's just a linear model only now on these basis functions, which in that case were just fixed intervals. Does this make sense? And you can see like there's a commonality, right? We're talking about basis functions, but all you have to do is fit it with regression, right? Here the basis functions are really simple, just fixed intervals. Now we're going to talk about how we can go from intervals to actually combinations of more complicated basis functions, which will be polynomials. But we're still having something like the cut points, only now we're going to call them knots. So this idea of splines is actually a fun term for me at least it comes from the idea of in shipbuilding where you have what you do in shipbuilding is you'll like put down pegs or something and then you take a piece of wood and first the piece of wood is kind of straight right and then you bend it down over these pegs all right i'm doing a very good job all right and so you really kind of um as you bring them down right as you bring the wood down onto the pegs and then you kind of glue them on there you can get different things either you you bring it down very smoothly here and then as you bring it down all the pegs line up really nicely and that's convenient right and then you kind of have this natural continuity of the derivative and everything or you can like clamp them down for example here you clamp it down and then you can get like a wave through it right and that all has to do with just like how the wood is bending and that induces, you know, that it's trying to keep the derivatives proper, right? And the interesting thing is that they saw this and they're like, well, we want to have that as a way of modeling our data, as a way of modeling, actually. I think these splines really took off thanks to the work by people people at the car company Renault, the French car company in the 50s, I think, 40s, 50s, 60s, something like that. That was when like computer-aided design was coming in and people wanted to start drawing curves, right? Because the first things were very triangular. That's why like airplanes were very triangular. Like the old like stealth planes were all very flat surfaces because that's the only thing they could model with computers. And so this car company, some engineer there, I think his name was like Philippe or something, Bezier I forget But these people they realized that they could use these old ideas from long ago about splines to create smooth functions that you could model in a computer right And then they could move these points around, and then it would update the curve. And that way they could start making drawings and drafting things that had this continuity, right? Which naturally is how things bend anyways, right? And that's what they wanted for using the materials. Because if you induce a lot of wiggles in building something, if you're like building with aluminum or wood or something, you're going to wreck it, right? You want these nice smooth functions, right? So they wanted functions that were smooth, that had nice properties, and that they could model on a computer. And that's where these splines came in. And then after that, they started being picked up by more and more statisticians and other people in the 70s. I think actually Hasties, the people who wrote the book, were important in that. I mean, this was a long time ago. I wasn't an active researcher or anything at the time. But yeah, so we have these splines. And what they are is that they're now a sum of polynomials, right? And we have the same idea of knots. and these words are actually like knots and splines like I said they're coming from this world of drafting and shipbuilding aircraft design from long ago right okay so yeah but the important thing is you have a combination of polynomials, you have these knots that we're defining, these are going to be where like kind of the centers of the basis functions and then we try to maintain derivatives at each knot. Just like how I was saying that if you squish the wood onto this peg, it would kind of make things go wiggly. And the reason it would make things wiggly is that it would be maintaining the derivative at the knot where you're squishing the wood down. So these blinds will behave much the same way, and that's by design, right? They did that on purpose. Of course, since then, we've figured out good reasons why, but whatever. There's many versions of splines. If you Google splines, you'll find all sorts of crap. All good, of course, I'm sure. But there's many versions of splines. many different versions. Here we're going to talk mainly about the ones that statisticians like. Often if you Google it, you'll get more of the things that you see in computer-aided design and in drafting, or if you've ever played with them in PowerPoint or something. It's those things where you like you... Because often they're defined like this. I think this is why I get behind. But whatever. Often they're defined like this with something like this. And those are called control points. And then you see something like this. And then when you're playing with it, you grab this point and pull it up. And then it makes the curve go up. That's also called the spline. Those are not the splines we're going to use now. You can define it with this. I mean, it's very similar stuff. We're just not going to talk about it. those are more like the Bezier and the other things. Here we're going to talk about them. We're going to talk about mainly this one and another one, which isn't here. But you can basically define it by the degree of the polynomial. So we're going to use little polynomials in each place. And then we talk about the degree. And so if it's a degree three, it's cubic. right? So all of these will be functions that are cubic functions. So here you can see that it's a cubic. These are both cubic functions, or this one looks more quadratic, or no, it's cubic. And, but here it's piecewise, meaning we don't care about the, a continuous derivative at zero, or even that they're on the same point, right? So this is piecewise. hello oops wait that still works here we have a continuous piecewise so still like that but now we're going to keep the point matched but not the first derivative you see there's a kink here oops there's a kink here this would probably be a little nicer if it was sharper but yeah there's a point there Kind of looks like a butt crack. And then here we have a cubic spline So in the cubic spline you have the second derivative is continuous the third derivative is not, or it's not enforced, but here it is not vector, or it is not, you have a smooth second derivative, or not, a smooth first derivative, yeah, no, Smooth second derivative should be. And then here's a linear spline where now it's not cubic anymore, so it's not a cubic function. It's just linear. And, of course, the derivative isn't matched or else it would only be a straight line. That would be, like, super boring. So you can define a spline with, like, degree 10 or something. It wouldn't look very good, but you can do it. so the nice thing about it is that as opposed to a polynomial so imagine if your data looks like like that if i was going to fit this with like a degree five polynomial it's going to get funky right if i was just going to do some random polynomial stuff but with a spline i can always just make a smooth function through it and becomes very natural actually worked out. It's surprising. So how do we do this in a regression sense? We want to fit these things to spline. We want to fit these splines to data. So we define our knots. We define K knots. We create K knots. And those knots will form the basis functions for our data in the following way. You have those placed. Those are the CK. So those are actual points. So you have C1, C2, C3. Those are X values somewhere. you can define them or you can put them on like a fixed interval or something and then you put those there and then your basis functions then become you have x to whatever power So if you gonna have a cubic function then D is three. D equals three for cubic spline. And then you just put these here. You have that up to D. And a natural way of doing this, such that you have smooth derivatives, and this isn't super obvious, but a very natural way, and this is how we define, or how the book defines a cubic spline, is to define the polynomial that we're going to add, so this basis function, with this here. Right? Note the little plus sign. Okay? What the plus sign means is that this thing, right, is zero if x is less than or equal to cj, right? So it's only going one way, right? So you can imagine where these knots connect, right? So let's say we have knots there and there. Where those knots connect, and this is, like, let's say this is c3. Right. At this point here. Right. At this point here. Only the polynomials that you're of the ones that you're currently in. So the ones for the C2 and C and the ones before it are actually doing anything. Right. this third one doesn't come in until you're beyond where the not starts I'm not gonna go through the math of this they don't do it in the book either so I'm not really justifying it but this gives you nice smooth functions or gives you smooth functions it can get wiggly though This is kind of since the drivers get passed on it can get wiggly at the very much for the same reason that when you pull the wood in weird directions, it can get bendy at the knots. When you pull the wood towards the thing. I recommend going into if you've never played with splines before, find some visualization tool where they have knots with splines to play with and just start moving the points around. And you see, like, if you put two points, like if you go like a control points, or not control, yeah, you can do it with control points, but these splines, if you put it like this, and then you pull this one down here and you pull that one like here, it just goes wiggly, wiggly, wiggly. So it's kind of fun to play with. but then that's when you'll see that how this can get very wiggly but okay, the important thing is you define it this way for a cubic spline, right, with these knots there and these polynomials of this form and then you just have to fit it, so it's very much the same fitting procedures as always. Again, it's kind of nice that you're still just fitting a linear model, but you're getting nonlinear stuff out of it, right? Because you have all these basis functions. So we have this, right? So for a degree three, sorry, degree three, and then we have basis functions that are of this form, right? So here you get K of these, of the polynomial terms, and then of these cubic terms, you get another K of those, and then often you also have a bias term, right, in terms of the parameters you're going to fit. So if you have three control points, you have seven parameters that you're going to find. Yeah. Okay. Okay. So, yeah. So here you can see just specifically the basis for these three basis functions, right? You don't typically look at them independently because we, you know, that would be weird. But rather, we're going to look at them together. And this is the fit, right? So we, again, have knots at these values. and this is a, I guess that's a B spline. I don't know why they call it BS. It's funny. It's R. I don't know. But we have a cubic spline here, and then it defines the parameters for you. So that's easy. But you can see it's doing a reasonably good job. I'm getting confused ah here they moved them closer together I don't know why I don't know why the difference but Yeah, so again, like I said, these things can get wiggly. It often, it can be a problem, especially when you're fitting it to data. So what people have come up with are other versions of splines, lots of splines out there. And this one is particularly common. It's called the natural splines. and what natural splines do is that they create they make things straight so where the splines where the basis functions meet and certainly at the boundaries then they have the values coming off the spline degenerates from a cubic to just a linear function and they do that by adding these boundary knots All right so you can think of it like a cubic spline You had certain base functions that gave you a nice cubic function like just a sum of cubic functions, each one centered at these control points or these knot points at these knots. And now we're going to have the same thing, only we're going to degenerate the spline so that it's flat at the boundaries. So now you see a more... Whereas before, if it went up, like it curves up and down and stuff, now you have them coming out straight. Alright, so we can see them both at the same time. Maybe. Oh no, that just helps me. You can see here how it gets kind of curvy at the ends. Right? It could have been more exaggerated. Whereas now it's more linear. or it is linear and also where they connect. Like the, you have a more, yeah, a nice linear extension. So, but otherwise it's still the same idea. You're still creating basis functions. They're just more complicated. and in other courses they go through the math of what the of what these natural splines are uh the book doesn't so i won't either uh nor did the slides so well yeah i mean yeah so this is already more than the book has um but the important thing is is that the way it's going beyond linear functions is to simply say we're still going to do linear stuff we're still going to just find these betas and fitting our data, but we're going to make our X's functions that are more complicated than, you know, just X right So either polynomials or combinations of polynomials and the people have done some very creative stuff in creating those things So again it still yeah it nonlinear but linear It's linear in the parameters beta, but it's nonlinear in what you get. So now we're going to move from this thing, which is what we've been doing forever, right? Now to finding a function directly. So now we're going to do something more than just finding betas. Okay. So this is the next move, right? Let's do more than just getting a nonlinear thing from just creating basis functions. But we're still going to be in this world of splines. And so what we're doing now is we're still creating basis functions, right? Basis functions of some sort. Only now that's not our only objective, right? If you remember, we've looked at situations where we have more than one objective before, right? We had regularizers. So we had, you know, Y minus beta X squared plus sum of beta squared. I'm the beta squared. That was our ridge regression, ridge term, a.k.a. L2 norm or regularizer. And so remember, the way we talked about that is that really what you're doing is you're adding another objective to your optimization. We're fitting our data with one function, which is fitting, you know, this thing, our linear model, and then a second function that imposes some property that we want. In this case it was minimize this ridge term right which you know you could argue is for sparsity reasons or you could give this argument of minimizing the variance and blah blah blah all the stuff that we talked about over the last two weeks which is important right Now we have a different objective or rather the first one is the same objective one but our second objective is to make g, which is going to be this function, smooth, right? make the second derivative have some property, right? So this is integrating over the second derivative squared. So and we'll consider cases, these two extreme cases of where lambda is either zero. I mean, obviously, if lambda is 0, then that objective does what? Oof, right? It goes away. If lambda is 0, if you just say, I want lambda to be 0, then it does nothing, right? So then you're not putting any constraint on the integral of this second derivative term, right? So you're not imposing anything, right? And we'll think about what happens when lambda goes to infinity. but at least for zero it's kind of obvious if you zero out an objective then that thing doesn't do anything so if we we can fit these to data right and here's one example where if you use a very high degree of freedom, which gives you a lot of flexibility, then you get this very kind of wiggly thing. But here it's wiggly because you have so many you have so much flexibility in the function. Right? Whereas if you use fewer degrees of freedom, then it's going to be more smooth. sorry all right So, yeah. And actually, I guess here we can also, yeah. So if lambda was infinity, right, then I just wanted to, because I don't think we're going to get back to it. If lambda was infinity, right, or as it goes to infinity, then this term will dominate the optimization, right? And then you don't really care about fitting the data so much, but rather you care about the second derivative term, right, that you want to minimize the second derivative. So then what's going to happen is that the second derivative is going to be zero everywhere, right? and then what you get is a straight line because it won't allow the function to wiggle anymore because it's just going to be a straight line. So lambda is going from two flexible to straight line. And depending on how you fit the lambda or how you set the lambda, it will give you something between a very extremely flexible model and one that is a completely straight line. So, yeah, again, here's the degree 16, degree 7. And instead of getting into this, let's take a break, and we'll come back in 15 minutes. Or wait, is there any questions that anyone has? I need to stop and ask questions more. Anything? You guys are good? All right, let's take a break, and we'll start up again at 9. 13. All right Let take a break Thank you. Thank you. Thank you. Thank you. Thank you Thank you. Thank you. Thank you. Thank you. Thank you Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you Thank you Thank you. Thank you. Thank you. Thank you. Thank you Thank you. Thank you. Thank you. Thank you. Thank you Thank you. All right, we're back. So, again, we're looking at these smoothing splines. Right. So the, as I said, the book doesn't really go into the much of the details of how you fit these. I think it's because they want to keep it simple. But as we said, the main point is that you're adding this objective that constrains a second derivative. So you're fitting a function at every, all that values X. So you don't have this, not, not the same way as you do in the basis function that we've talked about so far, but rather you're just saying, I want my derivative to be nice everywhere. I want this nice, smooth, continuous derivative. So I want it to be nice and smooth. And the degree of smoothness is really determined by how strong this lambda is. Okay? And so if lambda is very weak, meaning it's zero, then it's just going to be, you know, basically it's not worried about the smoothness at all. Or sorry. If it's zero, then it's just fitting some function to that. If it's very strong, then it's a straight line, right? And then the way they talk about it, or the way it's presented in the R package, so this is the R package, is effective degrees of freedom. Right? and this is related to the lambda. So instead of actually stating the lambda, you can input the degrees of freedom that you want. And so if you have a very high degree of freedom, then you have a small lambda. And then if it's a low degree of freedom, then it gets closer to a straight line. you know, it penalizes the curvature or how much it's moving. So you can see the blue one with a higher degree of freedom is more wiggly, and then it smooths out more or becomes less wiggly as you shorten it. But that's also why you can get non-integer values of degrees of freedom, which, I mean, typically we think of degrees of freedom as being integer values. But here it's an effective degree of freedom. and they do explain how they define it. So if we let y be the fitted values, so this is the solution to equation above. Right? So it's what you get from... Well, I won't buy it. Where is it? This, right? So it's the prediction of Y, it's the G, right? Where it's not just a nice function. It's not just a function, but it has this amount of smoothness that you want. if you let y hat be that then what you can do is say I'm going to construct an S which is just a linear matrix between y hat and y and then if you take that matrix and then you just sum up over the diagonal it be a square matrix right Because Y and Y are the same length You can get the trace of that matrix, so the sum of the diagonal terms, and that's your effective degrees of freedom. It's not obvious, but that's how they define it. Okay? and that's the effective degrees of freedom, it's not obvious how to set this, right? So this effective degree of freedom, you can either set apparently in the R package or you can get out by seeing the answer, right? So my guess is the way to make this work is that they would try a different value of lambda until you get the degree of freedom you want, right? Because if you just, as you change lambda, you'll be, you know, smoothly interpolating between these degrees of freedom. But, so the question becomes, how do I choose lambda, right? One could be just a decision you make, right? Or cross-validation, right? Which is, again, is a thing I think is particularly useful, right? Because you're still letting the data tell you or give you indications as to what to do. So just as in cross-validation for the Lambda in the regularizer terms, and then for other decisions that we've made, such as like the model selection, you're training with a certain value of Lambda, and then you predict unheld out data, right? In this case, they suggest using leave one out. So you're leaving out just one point each time, and then you just see how good your prediction is of that point, right? And then you can do that multiple times. And then they suggest doing it this way, where you would do it for each of the endpoints, and then you sum up, and hopefully you don't have too many points and it won't take too long. I mean, it's computer, so it's fine. And this will give you something that you can minimize So this will give you a sum of squares error that you can then cross error that you can minimize as a function of lambda So you get some lambda value where this thing is going to be minimized, and then that will probably give you a nice smooth function. Maybe that's how they came up with this. It probably is, right? So if you can see, arguably that is better than the blue one, right? Which was just some number they picked. So, yeah, so this would probably be, yeah. So this is probably where degree of freedom was six point whatever. Right, probably here. So that's how you would determine the lambda for this smoothing spline, right? The lambda controlling how smooth it is. So that is the smoothing spline. And they talk about yet another one in the book called local regression, right? And again, yeah, whereas before we were fitting, you know, kind of global functions with these beta terms, right? That one you actually have to determine this lambda. And so it's a different functional form, right? You're not fitting the betas directly. now we're doing something also confusing only now we're just looking locally and we're defining a function locally wherever we want to put it right so what we do is we yeah it's basically the same idea as the nearest neighbor algorithm only now we're going to have a smoothing version of it, right? And what we do is we, let's say we look at a point. Here's a nice point. And we going to fit a line to this right Only we going to weight the points based off of a Gaussian So points over here when you evaluating when you trying to find the value of the prediction at this point at point 48 or whatever, these points far away won't enter into the equation. You're only doing a linear regression locally, right? So it's a local regression using just the points nearby, right? So it's like a smooth k nearest neighbor, only now we're defining kind of k through the distance that it has in x. So we do this at every value where we want to evaluate the spline. So you can, I mean, essentially defining a function, right? so wherever you want wherever you're plotting right and these are not really not vectors because they're not you're not constraining it there you're just evaluating what the function should look like at that point so wherever you look at the x you find a line through the local points your best fit line weighted by this Gaussian. And then you get locally a line. So the first derivative is nice, of course. And since you're smoothly going around, it's going to be nice and smooth. And then you get a nice smooth function that has basically nice derivatives everywhere. But it's all defined locally. Right? So to do this, you end up fitting this function, right? And that's not super obvious, but that's how it works. So again, you would find these betas wherever you want to evaluate it. So they're looking at that here. Again, you have a lambda, which relates to the width of the Gaussian, right? If it's a very wide Gaussian. If it's super wide, then it's just going to give you a straight line because everything's going to be in it. If it's very narrow, it gets wiggly. Only now you can see it gets wiggly in a rather different way, right? It can actually get kind of choppy because it's only looking at the first derivative and the Gaussian can get really tiny, right? And in particular, I think it gets really bad. You see how the data was sampled in a certain way? right? Well, I mean, they're ages, but it looks like, yes. And they didn't do like continuous ages with month, right? It was just, how old are you? 38, 37. So if your Gaussian is so small that it's just, you know, two things, then it's going to get choppy because it won't be, it won't smoothly you won't even see the points that are another fixed year away so you get these very choppy derivatives but it's still a function it's still something you can fit to the data it's still interesting still gives you a reasonable model so again similar to how that how the lambda in the smoothing spline could be thought of as a degree of freedom. You have the same notion with the local regression that now the Gaussian is related to the degrees of freedom. All right, so that is local regression. and sorry to go through these things like a list I mean that's really kind of how the book does it so it just kind of I mean at least they're grouped right so the local regression and the smoothing spline are both kind of functions that you have to fit right where it's not these knots and stuff it's not the worst book but the thing that it ends with or that sort of wraps it up together is that so far we've been talking about this just with one value of x, right? So here this was age right Now you can imagine that wage doesn just depend on age right But also you know, education, right? So then we want a model that isn't just going to give us a linear regression model, a simple, like, we don't want just the equivalent of a simple linear regression between two variables, but we want the equivalent of a multivariate regression, right, where now we have one way of modeling it for age and another one for education level, another one for whatever, you know, occupation or whatever. I mean, that's hard to variable to define height. I don't know why height would matter, but you could imagine that it somehow does. Then you would want to have a way to systematically make flexible basis functions for each of these things, flexibly model each one, allow for the nonlinear stuff, but still put them all into one model. And additive models are a very natural way of doing it. And the way they do it is they just assume that each of the components, so in this case, wage, age, height, whatever, add together. So here's one for like age, and this one would be for like education level, and whatever. And so each one has a nice flexible form, but you just assume that they will just add together, so that they don't you're assuming that they don't interact. Like it's not like you have to be educated and old, but rather the component that has to do with how old you are can be considered separate from education, right? They combine in how they predict, right? So, but they combine additively. And if you make that assumption, which is often not a terrible one, right? Either because the assumption is maybe a good one or because adding terms could be bad right Because they could get unwieldy So you do that and then basically everything we talked about today in terms of making things going beyond just a linear regression and doing nonlinear stuff, all of those can be the F. So this could be a spline, like a cubic spline. this could be a natural spline this could be a this could be a piecewise linear model this could be the funky one we just talked about the local regression smoothing splines all of these things can be ones where you just set it up all of the F's can just be of those different forms, right, so you can pick your favorite format and then the additive models just assume that they add together right so for example we can define a cubic spline for x1 and that's at 40 and 60 and this would be for the first thing right age and so this is the same cubic spline that we had an example and then the next one could be the year I don't know why year would matter but okay year so whatever year it is from that you know with knots at those values so you can see they have different knot locations right they don't even have to have the same number of knots they don't have to have the yeah You can have different knots in different places. They have different domains. So that's all fine. Here's another one, education, right? So this is it with indicator values because that what you have So advanced degree high school I forget what the other ones would be I don't know. Oh, some college, college graduate. So you guys would be somewhere in there. Advanced degree. All right. So you have these three components and each one in this case is modeled with some form of spline, and then you just add them together, right? And then in the case of the cubic splines, you just end up getting a very large X matrix, right? I'll just stack up, and then you find the betas the same way you normally would. So these are typically called generalized generalized additive models or GAMs. Sounds better like GAMs, right? Because it sounds like you're, I don't know, like jelly or something. But they are often called GAMs and then you you fit them the same way you would any linear model, or they fit the largely the same way. And then you can get again, the same kind of predictions and, and confidence intervals for the, for the variables or for the, you know, for, for how the, how your response variable varies as a function of the individual components. And since they're additive, they're going to separate quite well, or at least you can see them individually, like predictions on each one's posteriors. Yeah, or these are specifically the Fs. So these are your, these guys here. All right, for this data. Oh. Yeah, this is for a different model. So this is the... You can see this one, they're included in different ways. So this is one where these are, I think this is a B-spline. So this is a... And this is a natural spline. Whereas in this case, this one is... I think it's that linear model. What's it called? the local regression model, right? Because that's the low. So, but yeah, this is just making the point that you can use different ways of modeling each one. So different kinds of splines. And then you can also use these. And I mean, you can't do too much with education just because it's their discrete values, the way they did it. If they would have added like I don know semesters taken or something then you could have done something more creative Okay So that's as far as I wanted to go today. But we're almost done with this section. Made a little bit faster progress than normal. So that's good. So tomorrow we're going to wrap up this module seven, and we're going to start the next module eight. Okay? So we'll get into that tomorrow. And I'll stop here, but one of the students wanted to explain something briefly. I don't know what it is. But I'll just stop the video because that's too hard. So everyone online, we'll see you later. Let me just wait for this stopping.",
+  "duration": 4941.531438,
+  "segments": [
+    {
+      "chunk": 0,
+      "start": 0.0,
+      "end": 2.0,
+      "text": " ."
+    },
+    {
+      "chunk": 0,
+      "start": 30.0,
+      "end": 41.44,
+      "text": " All right, so let's get started."
+    },
+    {
+      "chunk": 0,
+      "start": 41.44,
+      "end": 45.44,
+      "text": " This thing is always..."
+    },
+    {
+      "chunk": 0,
+      "start": 45.44,
+      "end": 55.52,
+      "text": " But you guys can hear me at least."
+    },
+    {
+      "chunk": 0,
+      "start": 55.8,
+      "end": 59.0,
+      "text": " So if nothing, you hear me too well, but that's okay."
+    },
+    {
+      "chunk": 0,
+      "start": 59.0,
+      "end": 63.84,
+      "text": " So today we're going to talk about moving beyond linearity."
+    },
+    {
+      "chunk": 0,
+      "start": 65.0,
+      "end": 71.76,
+      "text": " It's a module seven of the course where a little behind in the material."
+    },
+    {
+      "chunk": 0,
+      "start": 71.94,
+      "end": 76.8,
+      "text": " I'm going to try to not get further behind, maybe even speed up a little bit."
+    },
+    {
+      "chunk": 0,
+      "start": 78.98,
+      "end": 83.42,
+      "text": " Yeah. Sorry. First time I'm teaching the course and I think I."
+    },
+    {
+      "chunk": 0,
+      "start": 85.24,
+      "end": 86.9,
+      "text": " I'm not used to slides."
+    },
+    {
+      "chunk": 0,
+      "start": 86.9,
+      "end": 93.68,
+      "text": " slides that people just skip over and then I talk about them for like 10 minutes. Maybe that's a bad"
+    },
+    {
+      "chunk": 0,
+      "start": 93.68,
+      "end": 98.86,
+      "text": " idea. I don't know. I'm working on it. So I'm a little slower than I probably could be."
+    },
+    {
+      "chunk": 0,
+      "start": 99.92,
+      "end": 106.0,
+      "text": " So I'll try not to be so slow today and not get further behind. And then I'll adjust the schedule"
+    },
+    {
+      "chunk": 0,
+      "start": 106.0,
+      "end": 111.86,
+      "text": " a bit. But I think we're all fine. We're going to get everything in. Just maybe some part might be"
+    },
+    {
+      "chunk": 0,
+      "start": 111.86,
+      "end": 117.66,
+      "text": " more compressed. I'll try to look at that. But today we're going to go through module seven,"
+    },
+    {
+      "chunk": 0,
+      "start": 118.66,
+      "end": 125.28,
+      "text": " or this week we're going to go through module seven, and hopefully start module eight tomorrow."
+    },
+    {
+      "chunk": 0,
+      "start": 127.68,
+      "end": 135.24,
+      "text": " Seven is relatively short. All right, so what we're talking about today is moving beyond"
+    },
+    {
+      "chunk": 0,
+      "start": 135.24,
+      "end": 141.02,
+      "text": " linearity, right? So we talked about how the least squares problem, right, least squares regression,"
+    },
+    {
+      "chunk": 0,
+      "start": 141.02,
+      "end": 155.66,
+      "text": " is really like a Gaussian linear model right It linear regression So we want to move beyond linear regression because I mean I only do so much with linear regression And the first thing we so we start from there"
+    },
+    {
+      "chunk": 0,
+      "start": 155.66,
+      "end": 164.86,
+      "text": " right? So as always, we have this, this is the model we've been looking at, right? And we fit it"
+    },
+    {
+      "chunk": 0,
+      "start": 165.48,
+      "end": 172.26,
+      "text": " in matrix form, it looks like this. And then we fit it with the least squares solution. And in"
+    },
+    {
+      "chunk": 0,
+      "start": 172.26,
+      "end": 177.06,
+      "text": " matrix algebra, this is the least square solution. Otherwise, you would, you know,"
+    },
+    {
+      "chunk": 0,
+      "start": 177.12,
+      "end": 183.48,
+      "text": " compute gradients and fit it that way. But the whole point is that you can very easily find"
+    },
+    {
+      "chunk": 0,
+      "start": 183.48,
+      "end": 190.18,
+      "text": " these betas fitting it to data. Now, what we're going to talk about today are nonlinear models"
+    },
+    {
+      "chunk": 0,
+      "start": 190.18,
+      "end": 197.48,
+      "text": " of a certain form, which are having a basis function, okay? So this is what those look like."
+    },
+    {
+      "chunk": 0,
+      "start": 197.48,
+      "end": 204.5,
+      "text": " you'll see that actually it looks like we're just doing more linear regression right if you look at"
+    },
+    {
+      "chunk": 0,
+      "start": 204.5,
+      "end": 211.72,
+      "text": " it beta 0 beta 1 beta 2 beta k blah blah blah here's your error term and here's your y"
+    },
+    {
+      "chunk": 0,
+      "start": 211.72,
+      "end": 218.68,
+      "text": " the big difference now is that instead of looking at x directly we're going through basis functions"
+    },
+    {
+      "chunk": 0,
+      "start": 218.68,
+      "end": 227.26001,
+      "text": " and that's a very general term a very powerful term that um you know has many many versions"
+    },
+    {
+      "chunk": 0,
+      "start": 227.26001,
+      "end": 230.6,
+      "text": " okay and we'll get to that"
+    },
+    {
+      "chunk": 0,
+      "start": 230.6,
+      "end": 234.1,
+      "text": " well we'll get to three versions"
+    },
+    {
+      "chunk": 0,
+      "start": 234.1,
+      "end": 239.1,
+      "text": " but there's more so these are basis functions"
+    },
+    {
+      "chunk": 0,
+      "start": 239.1,
+      "end": 243.3,
+      "text": " there's a lot more so as an example we can"
+    },
+    {
+      "chunk": 0,
+      "start": 243.3,
+      "end": 245.54001,
+      "text": " consider what is called polynomial regression"
+    },
+    {
+      "chunk": 0,
+      "start": 245.54001,
+      "end": 249.6,
+      "text": " right where we look at a polynomial"
+    },
+    {
+      "chunk": 0,
+      "start": 249.6,
+      "end": 254.78,
+      "text": " right so you see now instead of just putting x in directly"
+    },
+    {
+      "chunk": 0,
+      "start": 254.78,
+      "end": 266.32,
+      "text": " we have x to the first degree and then x to the second degree so a polynomial all right so here"
+    },
+    {
+      "chunk": 0,
+      "start": 266.32,
+      "end": 272.12,
+      "text": " our first basis function will be x our second basis function will be x squared we fit that"
+    },
+    {
+      "chunk": 0,
+      "start": 272.12,
+      "end": 279.3,
+      "text": " with data just like we normally would and then we get values all right for the for the betas"
+    },
+    {
+      "chunk": 0,
+      "start": 279.94,
+      "end": 286.18,
+      "text": " And that gives us a fit of this equation here to our data."
+    },
+    {
+      "chunk": 0,
+      "start": 286.88,
+      "end": 288.02002,
+      "text": " It's as simple as that."
+    },
+    {
+      "chunk": 0,
+      "start": 288.34,
+      "end": 290.12,
+      "text": " Here the basis functions are very simple."
+    },
+    {
+      "chunk": 0,
+      "start": 290.8,
+      "end": 292.62,
+      "text": " We're going to do something better in a minute."
+    },
+    {
+      "chunk": 0,
+      "start": 295.14,
+      "end": 307.8,
+      "text": " But that the general idea that you replacing your X with basis functions which are functions of X that have a specific form"
+    },
+    {
+      "chunk": 0,
+      "start": 309.08,
+      "end": 311.22,
+      "text": " But otherwise, it's the same as linear regression."
+    },
+    {
+      "chunk": 0,
+      "start": 311.38,
+      "end": 317.4,
+      "text": " You're just going to, so far, you're just fitting and you're finding betas."
+    },
+    {
+      "chunk": 0,
+      "start": 319.06,
+      "end": 319.4,
+      "text": " All right."
+    },
+    {
+      "chunk": 0,
+      "start": 319.48,
+      "end": 321.02,
+      "text": " So imagine this is our data."
+    },
+    {
+      "chunk": 0,
+      "start": 321.44,
+      "end": 323.28,
+      "text": " So this is wage data."
+    },
+    {
+      "chunk": 0,
+      "start": 323.28,
+      "end": 325.44,
+      "text": " so how much money people make"
+    },
+    {
+      "chunk": 0,
+      "start": 325.44,
+      "end": 327.7,
+      "text": " I think this is dollars"
+    },
+    {
+      "chunk": 0,
+      "start": 327.7,
+      "end": 330.0,
+      "text": " sadly"
+    },
+    {
+      "chunk": 0,
+      "start": 330.0,
+      "end": 331.98,
+      "text": " and this is the age"
+    },
+    {
+      "chunk": 0,
+      "start": 331.98,
+      "end": 333.32,
+      "text": " obviously"
+    },
+    {
+      "chunk": 0,
+      "start": 333.32,
+      "end": 336.2,
+      "text": " so people over 80"
+    },
+    {
+      "chunk": 0,
+      "start": 336.2,
+      "end": 338.32,
+      "text": " don't typically make very much because they're"
+    },
+    {
+      "chunk": 0,
+      "start": 338.32,
+      "end": 340.26,
+      "text": " you know maybe in this data set"
+    },
+    {
+      "chunk": 0,
+      "start": 340.26,
+      "end": 341.1,
+      "text": " they weren't so alive"
+    },
+    {
+      "chunk": 0,
+      "start": 341.1,
+      "end": 343.1,
+      "text": " but if they do they're lower"
+    },
+    {
+      "chunk": 0,
+      "start": 343.1,
+      "end": 346.52,
+      "text": " I mean if looking at this data"
+    },
+    {
+      "chunk": 0,
+      "start": 346.52,
+      "end": 348.28,
+      "text": " the one obvious thing is"
+    },
+    {
+      "chunk": 0,
+      "start": 348.28,
+      "end": 350.16,
+      "text": " what's that right"
+    },
+    {
+      "chunk": 0,
+      "start": 350.16,
+      "end": 352.66,
+      "text": " and this has to do with the income inequality"
+    },
+    {
+      "chunk": 0,
+      "start": 352.66,
+      "end": 356.52,
+      "text": " so you can already imagine probably we're looking at the wrong question"
+    },
+    {
+      "chunk": 0,
+      "start": 356.52,
+      "end": 364.6,
+      "text": " regardless this is the data right you can see kind of a trend here maybe"
+    },
+    {
+      "chunk": 0,
+      "start": 364.6,
+      "end": 371.8,
+      "text": " but we'll leave that but this is the data so how much money people make as a function of age"
+    },
+    {
+      "chunk": 0,
+      "start": 371.8,
+      "end": 377.46,
+      "text": " you know it peaks what like around here so"
+    },
+    {
+      "chunk": 0,
+      "start": 377.46,
+      "end": 379.96,
+      "text": " sadly"
+    },
+    {
+      "chunk": 0,
+      "start": 379.96,
+      "end": 382.64,
+      "text": " I made more money before"
+    },
+    {
+      "chunk": 0,
+      "start": 382.64,
+      "end": 384.46,
+      "text": " when I was over here"
+    },
+    {
+      "chunk": 0,
+      "start": 384.46,
+      "end": 387.12,
+      "text": " I was here"
+    },
+    {
+      "chunk": 0,
+      "start": 387.12,
+      "end": 388.64,
+      "text": " I don't know"
+    },
+    {
+      "chunk": 0,
+      "start": 388.64,
+      "end": 390.82,
+      "text": " forget the axes and now I went down"
+    },
+    {
+      "chunk": 0,
+      "start": 390.82,
+      "end": 393.64,
+      "text": " when I was"
+    },
+    {
+      "chunk": 0,
+      "start": 393.64,
+      "end": 396.26,
+      "text": " I think I mentioned I was an engineer"
+    },
+    {
+      "chunk": 0,
+      "start": 396.26,
+      "end": 399.18,
+      "text": " but I like this job more"
+    },
+    {
+      "chunk": 0,
+      "start": 399.18,
+      "end": 399.72,
+      "text": " it's more fun"
+    },
+    {
+      "chunk": 0,
+      "start": 399.72,
+      "end": 401.41998,
+      "text": " but go"
+    },
+    {
+      "chunk": 0,
+      "start": 401.41998,
+      "end": 403.62,
+      "text": " do what you want"
+    },
+    {
+      "chunk": 0,
+      "start": 403.62,
+      "end": 406.6,
+      "text": " anyways I'll try not to get distracted"
+    },
+    {
+      "chunk": 0,
+      "start": 406.6,
+      "end": 415.24,
+      "text": " yeah uh so again polynomial regression right which is the one we just looked at where the"
+    },
+    {
+      "chunk": 0,
+      "start": 415.24,
+      "end": 422.64,
+      "text": " basis functions are just powers of x here is one where now we're looking at polynomial regression"
+    },
+    {
+      "chunk": 0,
+      "start": 422.64,
+      "end": 431.32,
+      "text": " uh to higher degrees right and we looked at this the first day so it's kind of funny that"
+    },
+    {
+      "chunk": 0,
+      "start": 431.32,
+      "end": 437.86,
+      "text": " we're looking at it again and they and we showed like you know if the data was like this that you"
+    },
+    {
+      "chunk": 0,
+      "start": 437.86,
+      "end": 442.84,
+      "text": " know look like this and then like that and then eventually get crazy and that's the point they're"
+    },
+    {
+      "chunk": 0,
+      "start": 442.84,
+      "end": 455.86,
+      "text": " going to make now or we going to make now too that if you make d very big which intuitively you giving yourself a very flexible model that going to be able to fit something more flexible and interesting"
+    },
+    {
+      "chunk": 0,
+      "start": 455.86,
+      "end": 457.88,
+      "text": " and it should"
+    },
+    {
+      "chunk": 0,
+      "start": 457.88,
+      "end": 464.16,
+      "text": " but what will happen if you make D too big"
+    },
+    {
+      "chunk": 0,
+      "start": 464.16,
+      "end": 465.94,
+      "text": " so here the D"
+    },
+    {
+      "chunk": 0,
+      "start": 465.94,
+      "end": 467.74,
+      "text": " this polynomial"
+    },
+    {
+      "chunk": 0,
+      "start": 467.74,
+      "end": 469.78,
+      "text": " right"
+    },
+    {
+      "chunk": 0,
+      "start": 469.78,
+      "end": 480.34,
+      "text": " is just up to cube, I think, in this case."
+    },
+    {
+      "chunk": 0,
+      "start": 480.41998,
+      "end": 481.78,
+      "text": " Or maybe it's degree four."
+    },
+    {
+      "chunk": 0,
+      "start": 481.98,
+      "end": 483.0,
+      "text": " It must be degree four."
+    },
+    {
+      "chunk": 0,
+      "start": 483.0,
+      "end": 484.91998,
+      "text": " That's the degrees of freedom."
+    },
+    {
+      "chunk": 0,
+      "start": 487.06,
+      "end": 489.5,
+      "text": " But if you would have made degree 12,"
+    },
+    {
+      "chunk": 0,
+      "start": 490.14,
+      "end": 492.26,
+      "text": " it probably would have gotten like that,"
+    },
+    {
+      "chunk": 0,
+      "start": 492.8,
+      "end": 494.16,
+      "text": " a little bit wiggly, a little bit weird."
+    },
+    {
+      "chunk": 0,
+      "start": 494.76,
+      "end": 497.96,
+      "text": " There's enough data here that would probably keep it relatively contained."
+    },
+    {
+      "chunk": 0,
+      "start": 497.96,
+      "end": 503.88,
+      "text": " but that's one of the points is that you shouldn't make it too big"
+    },
+    {
+      "chunk": 0,
+      "start": 503.88,
+      "end": 505.64,
+      "text": " as we discussed the first day."
+    },
+    {
+      "chunk": 0,
+      "start": 506.46,
+      "end": 510.3,
+      "text": " But you see with this polynomial regression, it looks kind of okay"
+    },
+    {
+      "chunk": 0,
+      "start": 510.3,
+      "end": 516.74,
+      "text": " but we can do better or we can do something more interesting"
+    },
+    {
+      "chunk": 0,
+      "start": 516.74,
+      "end": 521.42,
+      "text": " which is particularly interesting for other kinds of data."
+    },
+    {
+      "chunk": 0,
+      "start": 521.42,
+      "end": 530.58,
+      "text": " So what we can do instead is actually define the basis on kind of intervals, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 530.72,
+      "end": 543.83997,
+      "text": " So here we can have a step function where now our basis functions are these intervals of x, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 543.83997,
+      "end": 553.72,
+      "text": " So this is just an indicator function saying I am one between the not C1 and C2, or these cut points, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 553.78,
+      "end": 558.83997,
+      "text": " So you have this timeline X, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 558.94,
+      "end": 564.98,
+      "text": " And then you're going to have C1, C2."
+    },
+    {
+      "chunk": 0,
+      "start": 564.98,
+      "end": 573.3,
+      "text": " And you have to define, you pick where the Xs are, or where these cut points are."
+    },
+    {
+      "chunk": 0,
+      "start": 573.83997,
+      "end": 584.72,
+      "text": " often in many situations they'll just be defined on fixed intervals but you can"
+    },
+    {
+      "chunk": 0,
+      "start": 584.72,
+      "end": 597.52,
+      "text": " also move them around or pick them so now we're gonna have these these now"
+    },
+    {
+      "chunk": 0,
+      "start": 597.52,
+      "end": 599.82,
+      "text": " within this interval"
+    },
+    {
+      "chunk": 1,
+      "start": 600.0,
+      "end": 607.94,
+      "text": " you have this indicator function saying it's on or off,"
+    },
+    {
+      "chunk": 1,
+      "start": 608.4,
+      "end": 611.9,
+      "text": " and then those are the things that give you the betas, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 611.98,
+      "end": 613.98,
+      "text": " So then you get a function that looks like this."
+    },
+    {
+      "chunk": 1,
+      "start": 616.26,
+      "end": 618.08,
+      "text": " So you can imagine this is the data."
+    },
+    {
+      "chunk": 1,
+      "start": 623.32,
+      "end": 623.76,
+      "text": " Right?"
+    },
+    {
+      "chunk": 1,
+      "start": 624.84,
+      "end": 627.54,
+      "text": " And you can see, oh, maybe that's not such a bad idea."
+    },
+    {
+      "chunk": 1,
+      "start": 627.54,
+      "end": 633.2,
+      "text": " I mean, this one is very stupid, but it's actually quite common,"
+    },
+    {
+      "chunk": 1,
+      "start": 633.62,
+      "end": 640.54,
+      "text": " simply because you don't need that much information, and you can actually..."
+    },
+    {
+      "chunk": 1,
+      "start": 641.12,
+      "end": 648.4,
+      "text": " I mean, this is modeling arguably a very complex function, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 648.74,
+      "end": 652.7,
+      "text": " Rather well, and you don't have to worry about so many parameters."
+    },
+    {
+      "chunk": 1,
+      "start": 652.7,
+      "end": 658.54,
+      "text": " and so you don't have too many constraints that push things around."
+    },
+    {
+      "chunk": 1,
+      "start": 658.76,
+      "end": 661.66,
+      "text": " So even the step functions are actually pretty nice,"
+    },
+    {
+      "chunk": 1,
+      "start": 662.52,
+      "end": 664.98,
+      "text": " even if they are a bit stupid looking."
+    },
+    {
+      "chunk": 1,
+      "start": 667.76,
+      "end": 671.02,
+      "text": " But so this is another case of these basis functions,"
+    },
+    {
+      "chunk": 1,
+      "start": 671.02,
+      "end": 673.7,
+      "text": " only now they're just fixed intervals."
+    },
+    {
+      "chunk": 1,
+      "start": 675.38,
+      "end": 676.06,
+      "text": " Right?"
+    },
+    {
+      "chunk": 1,
+      "start": 676.54,
+      "end": 682.44,
+      "text": " So you can see here, again, fixed interval, fixed interval,"
+    },
+    {
+      "chunk": 1,
+      "start": 682.7,
+      "end": 687.16,
+      "text": " fixed interval and then just a jump between them."
+    },
+    {
+      "chunk": 1,
+      "start": 693.46,
+      "end": 697.1,
+      "text": " I don't know why there's a space here."
+    },
+    {
+      "chunk": 1,
+      "start": 702.6,
+      "end": 706.06,
+      "text": " Because you can see they're supposed to be right next to each other."
+    },
+    {
+      "chunk": 1,
+      "start": 707.12,
+      "end": 710.1,
+      "text": " I think maybe this space is just meant to be for illustration."
+    },
+    {
+      "chunk": 1,
+      "start": 710.1,
+      "end": 714.8,
+      "text": " They should be vertical, you know, kind of like goes to there and up there."
+    },
+    {
+      "chunk": 1,
+      "start": 716.74,
+      "end": 718.8,
+      "text": " But it's piecewise constant."
+    },
+    {
+      "chunk": 1,
+      "start": 718.96,
+      "end": 724.5,
+      "text": " Of course, the bad things for, you know, mathematically is you don't have derivatives here."
+    },
+    {
+      "chunk": 1,
+      "start": 725.26,
+      "end": 733.7,
+      "text": " They, you know, they're not even, you don't have a smooth derivative."
+    },
+    {
+      "chunk": 1,
+      "start": 734.22,
+      "end": 736.3199999999999,
+      "text": " There's not even piecewise constant."
+    },
+    {
+      "chunk": 1,
+      "start": 736.3199999999999,
+      "end": 739.84,
+      "text": " Or it's piecewise constant, but it's not connected, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 740.1,
+      "end": 740.62,
+      "text": " it can jump."
+    },
+    {
+      "chunk": 1,
+      "start": 743.36,
+      "end": 743.74,
+      "text": " All right."
+    },
+    {
+      "chunk": 1,
+      "start": 743.88,
+      "end": 744.76,
+      "text": " So here again,"
+    },
+    {
+      "chunk": 1,
+      "start": 745.06,
+      "end": 756.06,
+      "text": " this is more like it So I don know if this is true anymore This figure"
+    },
+    {
+      "chunk": 1,
+      "start": 758.8,
+      "end": 760.66,
+      "text": " It's bad enough it's Monday morning."
+    },
+    {
+      "chunk": 1,
+      "start": 760.8,
+      "end": 763.34,
+      "text": " I probably shouldn't get into this, but I'll mention it anyways."
+    },
+    {
+      "chunk": 1,
+      "start": 763.34,
+      "end": 764.28,
+      "text": " Here's the wage."
+    },
+    {
+      "chunk": 1,
+      "start": 765.2,
+      "end": 767.24,
+      "text": " Here's the degree."
+    },
+    {
+      "chunk": 1,
+      "start": 767.24,
+      "end": 769.6800000000001,
+      "text": " and"
+    },
+    {
+      "chunk": 1,
+      "start": 769.6800000000001,
+      "end": 772.16,
+      "text": " you know"
+    },
+    {
+      "chunk": 1,
+      "start": 772.16,
+      "end": 774.26,
+      "text": " it used to be"
+    },
+    {
+      "chunk": 1,
+      "start": 774.26,
+      "end": 775.88,
+      "text": " when they made this book"
+    },
+    {
+      "chunk": 1,
+      "start": 775.88,
+      "end": 777.2,
+      "text": " not too long ago"
+    },
+    {
+      "chunk": 1,
+      "start": 777.2,
+      "end": 778.84,
+      "text": " this nice curve"
+    },
+    {
+      "chunk": 1,
+      "start": 778.84,
+      "end": 781.7,
+      "text": " so I'm hoping it's still true for you guys"
+    },
+    {
+      "chunk": 1,
+      "start": 781.7,
+      "end": 784.02,
+      "text": " yeah"
+    },
+    {
+      "chunk": 1,
+      "start": 784.02,
+      "end": 784.92,
+      "text": " of course"
+    },
+    {
+      "chunk": 1,
+      "start": 784.92,
+      "end": 787.64,
+      "text": " you see it as a curve"
+    },
+    {
+      "chunk": 1,
+      "start": 787.64,
+      "end": 789.02,
+      "text": " but the way we're fitting it here"
+    },
+    {
+      "chunk": 1,
+      "start": 789.02,
+      "end": 790.28,
+      "text": " is also just"
+    },
+    {
+      "chunk": 1,
+      "start": 790.28,
+      "end": 793.64,
+      "text": " as a piecewise constant"
+    },
+    {
+      "chunk": 1,
+      "start": 793.64,
+      "end": 795.1800000000001,
+      "text": " only now of course"
+    },
+    {
+      "chunk": 1,
+      "start": 795.1800000000001,
+      "end": 804.5400099999999,
+      "text": " it's been broken up probably by year like so how much schooling or maybe by"
+    },
+    {
+      "chunk": 1,
+      "start": 804.5400099999999,
+      "end": 807.98,
+      "text": " I don't actually know what they what they did here but"
+    },
+    {
+      "chunk": 1,
+      "start": 807.98,
+      "end": 816.4599900000001,
+      "text": " this is you know the the function of education I guess the number of years right and then so you"
+    },
+    {
+      "chunk": 1,
+      "start": 816.4599900000001,
+      "end": 821.86,
+      "text": " can say you know zero to three or something or no I guess this would be finishing high school"
+    },
+    {
+      "chunk": 1,
+      "start": 821.86,
+      "end": 825.4,
+      "text": " this is finishing a bachelor's, master's, PhD"
+    },
+    {
+      "chunk": 1,
+      "start": 825.4,
+      "end": 827.78,
+      "text": " something excessive"
+    },
+    {
+      "chunk": 1,
+      "start": 827.78,
+      "end": 833.58,
+      "text": " I don't know, but you can see that you break it up in intervals and then you would just fit it"
+    },
+    {
+      "chunk": 1,
+      "start": 833.58,
+      "end": 836.84,
+      "text": " and then you get a number and you can also get the"
+    },
+    {
+      "chunk": 1,
+      "start": 836.84,
+      "end": 841.36,
+      "text": " confidence intervals for that, for the prediction"
+    },
+    {
+      "chunk": 1,
+      "start": 841.36,
+      "end": 845.86,
+      "text": " same as you would get the confidence"
+    },
+    {
+      "chunk": 1,
+      "start": 845.86,
+      "end": 849.56,
+      "text": " intervals for the prediction in the linear model, right, because it's just a linear model"
+    },
+    {
+      "chunk": 1,
+      "start": 849.56,
+      "end": 852.3199999999999,
+      "text": " only now on these basis functions,"
+    },
+    {
+      "chunk": 1,
+      "start": 852.88,
+      "end": 855.98001,
+      "text": " which in that case were just fixed intervals."
+    },
+    {
+      "chunk": 1,
+      "start": 856.6600000000001,
+      "end": 857.4,
+      "text": " Does this make sense?"
+    },
+    {
+      "chunk": 1,
+      "start": 858.3399999999999,
+      "end": 860.48,
+      "text": " And you can see like there's a commonality, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 860.62,
+      "end": 862.1800000000001,
+      "text": " We're talking about basis functions,"
+    },
+    {
+      "chunk": 1,
+      "start": 862.5,
+      "end": 866.98,
+      "text": " but all you have to do is fit it with regression, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 867.06,
+      "end": 868.8,
+      "text": " Here the basis functions are really simple,"
+    },
+    {
+      "chunk": 1,
+      "start": 868.98,
+      "end": 869.94,
+      "text": " just fixed intervals."
+    },
+    {
+      "chunk": 1,
+      "start": 872.96,
+      "end": 874.88,
+      "text": " Now we're going to talk about"
+    },
+    {
+      "chunk": 1,
+      "start": 874.88,
+      "end": 877.26,
+      "text": " how we can go from intervals"
+    },
+    {
+      "chunk": 1,
+      "start": 877.26,
+      "end": 883.0200199999999,
+      "text": " to actually combinations of more complicated basis functions,"
+    },
+    {
+      "chunk": 1,
+      "start": 883.3199999999999,
+      "end": 885.44,
+      "text": " which will be polynomials."
+    },
+    {
+      "chunk": 1,
+      "start": 886.0,
+      "end": 888.74,
+      "text": " But we're still having something like the cut points,"
+    },
+    {
+      "chunk": 1,
+      "start": 889.24,
+      "end": 891.2,
+      "text": " only now we're going to call them knots."
+    },
+    {
+      "chunk": 1,
+      "start": 892.0,
+      "end": 905.94,
+      "text": " So this idea of splines is actually a fun term for me at least it comes from the idea of in shipbuilding where you have"
+    },
+    {
+      "chunk": 1,
+      "start": 905.94,
+      "end": 908.36,
+      "text": " what you do in shipbuilding is"
+    },
+    {
+      "chunk": 1,
+      "start": 908.36,
+      "end": 910.36,
+      "text": " you'll like put"
+    },
+    {
+      "chunk": 1,
+      "start": 910.36,
+      "end": 912.02,
+      "text": " down pegs or something"
+    },
+    {
+      "chunk": 1,
+      "start": 912.02,
+      "end": 916.6,
+      "text": " and then you take a piece"
+    },
+    {
+      "chunk": 1,
+      "start": 916.6,
+      "end": 917.12,
+      "text": " of wood"
+    },
+    {
+      "chunk": 1,
+      "start": 917.12,
+      "end": 922.4200000000001,
+      "text": " and first the piece of wood is"
+    },
+    {
+      "chunk": 1,
+      "start": 922.4200000000001,
+      "end": 923.14,
+      "text": " kind of straight"
+    },
+    {
+      "chunk": 1,
+      "start": 923.14,
+      "end": 928.76,
+      "text": " right and then you bend it down over these pegs"
+    },
+    {
+      "chunk": 1,
+      "start": 931.64,
+      "end": 933.36,
+      "text": " all right i'm doing a very good job"
+    },
+    {
+      "chunk": 1,
+      "start": 933.36,
+      "end": 945.96,
+      "text": " all right and so you really kind of um as you bring them down right as you bring the wood down"
+    },
+    {
+      "chunk": 1,
+      "start": 945.96,
+      "end": 952.3199999999999,
+      "text": " onto the pegs and then you kind of glue them on there you can get different things either you you"
+    },
+    {
+      "chunk": 1,
+      "start": 952.3199999999999,
+      "end": 959.02,
+      "text": " bring it down very smoothly here and then as you bring it down all the pegs line up really nicely"
+    },
+    {
+      "chunk": 1,
+      "start": 959.02,
+      "end": 965.0,
+      "text": " and that's convenient right and then you kind of have this natural continuity of the derivative and"
+    },
+    {
+      "chunk": 1,
+      "start": 965.0,
+      "end": 974.28,
+      "text": " everything or you can like clamp them down for example here you clamp it down and then you can"
+    },
+    {
+      "chunk": 1,
+      "start": 974.28,
+      "end": 980.38,
+      "text": " get like a wave through it right and that all has to do with just like how the wood is bending"
+    },
+    {
+      "chunk": 1,
+      "start": 980.38,
+      "end": 987.41998,
+      "text": " and that induces, you know, that it's trying to keep the derivatives proper, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 987.6,
+      "end": 992.6600000000001,
+      "text": " And the interesting thing is that they saw this and they're like,"
+    },
+    {
+      "chunk": 1,
+      "start": 992.7,
+      "end": 996.3399999999999,
+      "text": " well, we want to have that as a way of modeling our data,"
+    },
+    {
+      "chunk": 1,
+      "start": 996.62,
+      "end": 999.0,
+      "text": " as a way of modeling, actually."
+    },
+    {
+      "chunk": 1,
+      "start": 999.0,
+      "end": 1008.0,
+      "text": " I think these splines really took off thanks to the work by people"
+    },
+    {
+      "chunk": 1,
+      "start": 1008.0,
+      "end": 1015.94,
+      "text": " people at the car company Renault, the French car company in the 50s, I think, 40s, 50s, 60s,"
+    },
+    {
+      "chunk": 1,
+      "start": 1016.1,
+      "end": 1020.3,
+      "text": " something like that. That was when like computer-aided design was coming in and people"
+    },
+    {
+      "chunk": 1,
+      "start": 1020.3,
+      "end": 1026.3600000000001,
+      "text": " wanted to start drawing curves, right? Because the first things were very triangular. That's why like"
+    },
+    {
+      "chunk": 1,
+      "start": 1026.3600000000001,
+      "end": 1033.28,
+      "text": " airplanes were very triangular. Like the old like stealth planes were all very flat surfaces because"
+    },
+    {
+      "chunk": 1,
+      "start": 1033.28,
+      "end": 1035.8,
+      "text": " that's the only thing they could model with computers."
+    },
+    {
+      "chunk": 1,
+      "start": 1037.34,
+      "end": 1043.82,
+      "text": " And so this car company, some engineer there, I think his name was like Philippe or something,"
+    },
+    {
+      "chunk": 1,
+      "start": 1044.06,
+      "end": 1060.44,
+      "text": " Bezier I forget But these people they realized that they could use these old ideas from long ago about splines to create smooth functions that you could model in a computer right"
+    },
+    {
+      "chunk": 1,
+      "start": 1060.46,
+      "end": 1064.26,
+      "text": " And then they could move these points around, and then it would update the curve."
+    },
+    {
+      "chunk": 1,
+      "start": 1064.34,
+      "end": 1070.48,
+      "text": " And that way they could start making drawings and drafting things that had this continuity, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 1070.5,
+      "end": 1073.52,
+      "text": " Which naturally is how things bend anyways, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 1073.52,
+      "end": 1076.5,
+      "text": " And that's what they wanted for using the materials."
+    },
+    {
+      "chunk": 1,
+      "start": 1077.1,
+      "end": 1081.24,
+      "text": " Because if you induce a lot of wiggles in building something,"
+    },
+    {
+      "chunk": 1,
+      "start": 1081.32,
+      "end": 1084.16,
+      "text": " if you're like building with aluminum or wood or something,"
+    },
+    {
+      "chunk": 1,
+      "start": 1084.7,
+      "end": 1086.0800199999999,
+      "text": " you're going to wreck it, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 1086.0800199999999,
+      "end": 1089.72,
+      "text": " You want these nice smooth functions, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 1089.8600000000001,
+      "end": 1092.68,
+      "text": " So they wanted functions that were smooth, that had nice properties,"
+    },
+    {
+      "chunk": 1,
+      "start": 1093.0800199999999,
+      "end": 1094.66,
+      "text": " and that they could model on a computer."
+    },
+    {
+      "chunk": 1,
+      "start": 1094.98,
+      "end": 1097.04,
+      "text": " And that's where these splines came in."
+    },
+    {
+      "chunk": 1,
+      "start": 1097.68,
+      "end": 1101.4,
+      "text": " And then after that, they started being picked up by more and more statisticians"
+    },
+    {
+      "chunk": 1,
+      "start": 1101.4,
+      "end": 1104.88,
+      "text": " and other people in the 70s."
+    },
+    {
+      "chunk": 1,
+      "start": 1105.72,
+      "end": 1108.18,
+      "text": " I think actually Hasties, the people who wrote the book,"
+    },
+    {
+      "chunk": 1,
+      "start": 1108.24,
+      "end": 1109.54,
+      "text": " were important in that."
+    },
+    {
+      "chunk": 1,
+      "start": 1110.28,
+      "end": 1111.24,
+      "text": " I mean, this was a long time ago."
+    },
+    {
+      "chunk": 1,
+      "start": 1111.24,
+      "end": 1115.6399999999999,
+      "text": " I wasn't an active researcher or anything at the time."
+    },
+    {
+      "chunk": 1,
+      "start": 1116.22,
+      "end": 1119.83997,
+      "text": " But yeah, so we have these splines."
+    },
+    {
+      "chunk": 1,
+      "start": 1120.2,
+      "end": 1123.98,
+      "text": " And what they are is that they're now a sum of polynomials, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 1124.4,
+      "end": 1126.88,
+      "text": " And we have the same idea of knots."
+    },
+    {
+      "chunk": 1,
+      "start": 1126.88,
+      "end": 1130.38,
+      "text": " and these words are actually"
+    },
+    {
+      "chunk": 1,
+      "start": 1130.38,
+      "end": 1131.62,
+      "text": " like knots and splines"
+    },
+    {
+      "chunk": 1,
+      "start": 1131.62,
+      "end": 1133.72,
+      "text": " like I said they're coming from this world"
+    },
+    {
+      "chunk": 1,
+      "start": 1133.72,
+      "end": 1136.3,
+      "text": " of drafting and"
+    },
+    {
+      "chunk": 1,
+      "start": 1136.3,
+      "end": 1138.3,
+      "text": " shipbuilding"
+    },
+    {
+      "chunk": 1,
+      "start": 1138.3,
+      "end": 1140.4,
+      "text": " aircraft design from long ago"
+    },
+    {
+      "chunk": 1,
+      "start": 1140.4,
+      "end": 1142.42,
+      "text": " right"
+    },
+    {
+      "chunk": 1,
+      "start": 1142.42,
+      "end": 1144.08,
+      "text": " okay"
+    },
+    {
+      "chunk": 1,
+      "start": 1144.08,
+      "end": 1146.08,
+      "text": " so yeah"
+    },
+    {
+      "chunk": 1,
+      "start": 1146.08,
+      "end": 1148.3,
+      "text": " but the important thing is you have a combination of"
+    },
+    {
+      "chunk": 1,
+      "start": 1148.3,
+      "end": 1150.12,
+      "text": " polynomials, you have these knots that we're"
+    },
+    {
+      "chunk": 1,
+      "start": 1150.12,
+      "end": 1152.1799999999998,
+      "text": " defining, these are going to be where like kind of the"
+    },
+    {
+      "chunk": 1,
+      "start": 1152.1799999999998,
+      "end": 1153.33997,
+      "text": " centers of the basis functions"
+    },
+    {
+      "chunk": 1,
+      "start": 1153.33997,
+      "end": 1156.28,
+      "text": " and then we try to maintain"
+    },
+    {
+      "chunk": 1,
+      "start": 1156.28,
+      "end": 1163.74,
+      "text": " derivatives at each knot. Just like how I was saying that if you squish the wood onto this peg,"
+    },
+    {
+      "chunk": 1,
+      "start": 1164.4,
+      "end": 1169.58,
+      "text": " it would kind of make things go wiggly. And the reason it would make things wiggly is that it"
+    },
+    {
+      "chunk": 1,
+      "start": 1169.58,
+      "end": 1175.98,
+      "text": " would be maintaining the derivative at the knot where you're squishing the wood down."
+    },
+    {
+      "chunk": 1,
+      "start": 1177.26,
+      "end": 1183.08,
+      "text": " So these blinds will behave much the same way, and that's by design, right? They did that on purpose."
+    },
+    {
+      "chunk": 1,
+      "start": 1183.08,
+      "end": 1189.78,
+      "text": " Of course, since then, we've figured out good reasons why, but whatever."
+    },
+    {
+      "chunk": 1,
+      "start": 1191.3600000000001,
+      "end": 1193.2,
+      "text": " There's many versions of splines."
+    },
+    {
+      "chunk": 1,
+      "start": 1193.5,
+      "end": 1196.06,
+      "text": " If you Google splines, you'll find all sorts of crap."
+    },
+    {
+      "chunk": 1,
+      "start": 1196.78,
+      "end": 1198.58,
+      "text": " All good, of course, I'm sure."
+    },
+    {
+      "chunk": 1,
+      "start": 1198.9,
+      "end": 1199.8200000000002,
+      "text": " But there's many versions of splines."
+    },
+    {
+      "chunk": 2,
+      "start": 1200.0,
+      "end": 1200.98,
+      "text": " many different versions."
+    },
+    {
+      "chunk": 2,
+      "start": 1202.06,
+      "end": 1204.84,
+      "text": " Here we're going to talk mainly about the ones that statisticians like."
+    },
+    {
+      "chunk": 2,
+      "start": 1206.96,
+      "end": 1210.7,
+      "text": " Often if you Google it, you'll get more of the things that you see in computer-aided design"
+    },
+    {
+      "chunk": 2,
+      "start": 1210.7,
+      "end": 1217.2,
+      "text": " and in drafting, or if you've ever played with them in PowerPoint or something."
+    },
+    {
+      "chunk": 2,
+      "start": 1217.2,
+      "end": 1219.2,
+      "text": " It's those things where you like you..."
+    },
+    {
+      "chunk": 2,
+      "start": 1219.8,
+      "end": 1222.26,
+      "text": " Because often they're defined like this."
+    },
+    {
+      "chunk": 2,
+      "start": 1224.44,
+      "end": 1227.92,
+      "text": " I think this is why I get behind."
+    },
+    {
+      "chunk": 2,
+      "start": 1228.66,
+      "end": 1229.02,
+      "text": " But whatever."
+    },
+    {
+      "chunk": 2,
+      "start": 1229.02,
+      "end": 1233.62,
+      "text": " Often they're defined like this with something like this."
+    },
+    {
+      "chunk": 2,
+      "start": 1233.92,
+      "end": 1237.76,
+      "text": " And those are called control points."
+    },
+    {
+      "chunk": 2,
+      "start": 1238.12,
+      "end": 1239.64,
+      "text": " And then you see something like this."
+    },
+    {
+      "chunk": 2,
+      "start": 1240.42,
+      "end": 1243.54,
+      "text": " And then when you're playing with it, you grab this point and pull it up."
+    },
+    {
+      "chunk": 2,
+      "start": 1243.76,
+      "end": 1245.24,
+      "text": " And then it makes the curve go up."
+    },
+    {
+      "chunk": 2,
+      "start": 1246.38,
+      "end": 1247.8,
+      "text": " That's also called the spline."
+    },
+    {
+      "chunk": 2,
+      "start": 1248.0,
+      "end": 1249.74,
+      "text": " Those are not the splines we're going to use now."
+    },
+    {
+      "chunk": 2,
+      "start": 1251.04,
+      "end": 1252.88,
+      "text": " You can define it with this."
+    },
+    {
+      "chunk": 2,
+      "start": 1252.98,
+      "end": 1254.66,
+      "text": " I mean, it's very similar stuff."
+    },
+    {
+      "chunk": 2,
+      "start": 1254.84,
+      "end": 1255.96,
+      "text": " We're just not going to talk about it."
+    },
+    {
+      "chunk": 2,
+      "start": 1255.96,
+      "end": 1260.16,
+      "text": " those are more like the Bezier and the other things."
+    },
+    {
+      "chunk": 2,
+      "start": 1260.6,
+      "end": 1261.96,
+      "text": " Here we're going to talk about them."
+    },
+    {
+      "chunk": 2,
+      "start": 1263.0,
+      "end": 1267.9,
+      "text": " We're going to talk about mainly this one and another one, which isn't here."
+    },
+    {
+      "chunk": 2,
+      "start": 1269.42,
+      "end": 1274.02,
+      "text": " But you can basically define it by the degree of the polynomial."
+    },
+    {
+      "chunk": 2,
+      "start": 1275.12,
+      "end": 1278.86,
+      "text": " So we're going to use little polynomials in each place."
+    },
+    {
+      "chunk": 2,
+      "start": 1279.04,
+      "end": 1280.8,
+      "text": " And then we talk about the degree."
+    },
+    {
+      "chunk": 2,
+      "start": 1280.8,
+      "end": 1284.7,
+      "text": " And so if it's a degree three, it's cubic."
+    },
+    {
+      "chunk": 2,
+      "start": 1285.96,
+      "end": 1292.4,
+      "text": " right? So all of these will be functions that are cubic functions. So here you can see that"
+    },
+    {
+      "chunk": 2,
+      "start": 1292.4,
+      "end": 1298.66,
+      "text": " it's a cubic. These are both cubic functions, or this one looks more quadratic, or no, it's cubic."
+    },
+    {
+      "chunk": 2,
+      "start": 1299.46,
+      "end": 1308.82,
+      "text": " And, but here it's piecewise, meaning we don't care about the, a continuous derivative at zero,"
+    },
+    {
+      "chunk": 2,
+      "start": 1308.88,
+      "end": 1313.36,
+      "text": " or even that they're on the same point, right? So this is piecewise."
+    },
+    {
+      "chunk": 2,
+      "start": 1313.36,
+      "end": 1315.32,
+      "text": " hello"
+    },
+    {
+      "chunk": 2,
+      "start": 1315.32,
+      "end": 1317.66,
+      "text": " oops wait that still works"
+    },
+    {
+      "chunk": 2,
+      "start": 1317.66,
+      "end": 1319.88,
+      "text": " here we have a continuous"
+    },
+    {
+      "chunk": 2,
+      "start": 1319.88,
+      "end": 1321.74,
+      "text": " piecewise so still"
+    },
+    {
+      "chunk": 2,
+      "start": 1321.74,
+      "end": 1324.02,
+      "text": " like that"
+    },
+    {
+      "chunk": 2,
+      "start": 1324.02,
+      "end": 1325.9,
+      "text": " but now we're going to keep the point"
+    },
+    {
+      "chunk": 2,
+      "start": 1325.9,
+      "end": 1327.94,
+      "text": " matched"
+    },
+    {
+      "chunk": 2,
+      "start": 1327.94,
+      "end": 1329.96,
+      "text": " but not the first derivative you see there's"
+    },
+    {
+      "chunk": 2,
+      "start": 1329.96,
+      "end": 1330.56,
+      "text": " a kink here"
+    },
+    {
+      "chunk": 2,
+      "start": 1330.56,
+      "end": 1331.8,
+      "text": " oops"
+    },
+    {
+      "chunk": 2,
+      "start": 1331.8,
+      "end": 1334.56,
+      "text": " there's a kink here"
+    },
+    {
+      "chunk": 2,
+      "start": 1334.56,
+      "end": 1338.12,
+      "text": " this would probably be a little"
+    },
+    {
+      "chunk": 2,
+      "start": 1338.12,
+      "end": 1340.06,
+      "text": " nicer if it was sharper"
+    },
+    {
+      "chunk": 2,
+      "start": 1340.06,
+      "end": 1342.04,
+      "text": " but yeah there's a point"
+    },
+    {
+      "chunk": 2,
+      "start": 1342.04,
+      "end": 1342.44,
+      "text": " there"
+    },
+    {
+      "chunk": 2,
+      "start": 1342.44,
+      "end": 1344.74,
+      "text": " Kind of looks like a butt crack."
+    },
+    {
+      "chunk": 2,
+      "start": 1347.08,
+      "end": 1354.38,
+      "text": " And then here we have a cubic spline So in the cubic spline you have the second derivative is continuous"
+    },
+    {
+      "chunk": 2,
+      "start": 1355.38,
+      "end": 1357.06,
+      "text": " the third derivative is not,"
+    },
+    {
+      "chunk": 2,
+      "start": 1359.06,
+      "end": 1360.82,
+      "text": " or it's not enforced,"
+    },
+    {
+      "chunk": 2,
+      "start": 1360.96,
+      "end": 1362.32,
+      "text": " but here it is not vector,"
+    },
+    {
+      "chunk": 2,
+      "start": 1362.6,
+      "end": 1363.3600000000001,
+      "text": " or it is not,"
+    },
+    {
+      "chunk": 2,
+      "start": 1364.16,
+      "end": 1366.98,
+      "text": " you have a smooth second derivative,"
+    },
+    {
+      "chunk": 2,
+      "start": 1369.38,
+      "end": 1371.1399999999999,
+      "text": " or not, a smooth first derivative,"
+    },
+    {
+      "chunk": 2,
+      "start": 1372.78,
+      "end": 1373.82,
+      "text": " yeah, no,"
+    },
+    {
+      "chunk": 2,
+      "start": 1375.0,
+      "end": 1376.58,
+      "text": " Smooth second derivative should be."
+    },
+    {
+      "chunk": 2,
+      "start": 1377.76,
+      "end": 1382.04001,
+      "text": " And then here's a linear spline where now it's not cubic anymore,"
+    },
+    {
+      "chunk": 2,
+      "start": 1382.2,
+      "end": 1383.32,
+      "text": " so it's not a cubic function."
+    },
+    {
+      "chunk": 2,
+      "start": 1383.8,
+      "end": 1384.52,
+      "text": " It's just linear."
+    },
+    {
+      "chunk": 2,
+      "start": 1385.88,
+      "end": 1389.28,
+      "text": " And, of course, the derivative isn't matched or else it would only be a straight line."
+    },
+    {
+      "chunk": 2,
+      "start": 1389.28,
+      "end": 1390.78,
+      "text": " That would be, like, super boring."
+    },
+    {
+      "chunk": 2,
+      "start": 1392.2,
+      "end": 1396.68,
+      "text": " So you can define a spline with, like, degree 10 or something."
+    },
+    {
+      "chunk": 2,
+      "start": 1397.2,
+      "end": 1400.12,
+      "text": " It wouldn't look very good, but you can do it."
+    },
+    {
+      "chunk": 2,
+      "start": 1400.12,
+      "end": 1407.6399999999999,
+      "text": " so the nice thing about it is that as opposed to a polynomial so imagine if your data looks like"
+    },
+    {
+      "chunk": 2,
+      "start": 1407.6399999999999,
+      "end": 1416.95999,
+      "text": " like that if i was going to fit this with like a degree five polynomial it's going to get funky"
+    },
+    {
+      "chunk": 2,
+      "start": 1416.95999,
+      "end": 1422.23999,
+      "text": " right if i was just going to do some random polynomial stuff but with a spline i can always"
+    },
+    {
+      "chunk": 2,
+      "start": 1422.23999,
+      "end": 1426.5,
+      "text": " just make a smooth function through it and becomes very natural"
+    },
+    {
+      "chunk": 2,
+      "start": 1426.5,
+      "end": 1429.94,
+      "text": " actually worked out."
+    },
+    {
+      "chunk": 2,
+      "start": 1430.56,
+      "end": 1431.45999,
+      "text": " It's surprising."
+    },
+    {
+      "chunk": 2,
+      "start": 1433.16,
+      "end": 1436.62,
+      "text": " So how do we do this in a regression sense?"
+    },
+    {
+      "chunk": 2,
+      "start": 1436.72,
+      "end": 1439.22,
+      "text": " We want to fit these things to spline."
+    },
+    {
+      "chunk": 2,
+      "start": 1439.34,
+      "end": 1441.04001,
+      "text": " We want to fit these splines to data."
+    },
+    {
+      "chunk": 2,
+      "start": 1441.68,
+      "end": 1444.3,
+      "text": " So we define our knots."
+    },
+    {
+      "chunk": 2,
+      "start": 1445.06,
+      "end": 1446.6399999999999,
+      "text": " We define K knots."
+    },
+    {
+      "chunk": 2,
+      "start": 1448.23999,
+      "end": 1452.95999,
+      "text": " We create K knots."
+    },
+    {
+      "chunk": 2,
+      "start": 1456.5,
+      "end": 1465.3,
+      "text": " And those knots will form the basis functions for our data in the following way."
+    },
+    {
+      "chunk": 2,
+      "start": 1466.3,
+      "end": 1467.74,
+      "text": " You have those placed."
+    },
+    {
+      "chunk": 2,
+      "start": 1468.56,
+      "end": 1469.5800199999999,
+      "text": " Those are the CK."
+    },
+    {
+      "chunk": 2,
+      "start": 1471.88,
+      "end": 1474.1,
+      "text": " So those are actual points."
+    },
+    {
+      "chunk": 2,
+      "start": 1476.53998,
+      "end": 1482.06,
+      "text": " So you have C1, C2, C3."
+    },
+    {
+      "chunk": 2,
+      "start": 1482.16,
+      "end": 1483.4199800000001,
+      "text": " Those are X values somewhere."
+    },
+    {
+      "chunk": 2,
+      "start": 1483.4199800000001,
+      "end": 1486.6,
+      "text": " you can define them"
+    },
+    {
+      "chunk": 2,
+      "start": 1486.6,
+      "end": 1489.06,
+      "text": " or you can put them on like a fixed"
+    },
+    {
+      "chunk": 2,
+      "start": 1489.06,
+      "end": 1489.88,
+      "text": " interval or something"
+    },
+    {
+      "chunk": 2,
+      "start": 1489.88,
+      "end": 1492.94,
+      "text": " and then you put those"
+    },
+    {
+      "chunk": 2,
+      "start": 1492.94,
+      "end": 1494.76,
+      "text": " there and then"
+    },
+    {
+      "chunk": 2,
+      "start": 1494.76,
+      "end": 1506.66,
+      "text": " your basis functions then become you have x to whatever power So if you gonna have a cubic function"
+    },
+    {
+      "chunk": 2,
+      "start": 1506.66,
+      "end": 1508.54,
+      "text": " then D is three."
+    },
+    {
+      "chunk": 2,
+      "start": 1509.98,
+      "end": 1514.98,
+      "text": " D equals three for cubic spline."
+    },
+    {
+      "chunk": 2,
+      "start": 1519.16,
+      "end": 1522.24,
+      "text": " And then you just put these here."
+    },
+    {
+      "chunk": 2,
+      "start": 1522.24,
+      "end": 1525.54,
+      "text": " You have that up to D."
+    },
+    {
+      "chunk": 2,
+      "start": 1527.82,
+      "end": 1540.7,
+      "text": " And a natural way of doing this, such that you have smooth derivatives, and this isn't super obvious,"
+    },
+    {
+      "chunk": 2,
+      "start": 1541.28,
+      "end": 1546.74,
+      "text": " but a very natural way, and this is how we define, or how the book defines a cubic spline,"
+    },
+    {
+      "chunk": 2,
+      "start": 1546.74,
+      "end": 1552.76,
+      "text": " is to define the polynomial that we're going to add,"
+    },
+    {
+      "chunk": 2,
+      "start": 1552.94,
+      "end": 1556.82,
+      "text": " so this basis function, with this here."
+    },
+    {
+      "chunk": 2,
+      "start": 1558.32,
+      "end": 1558.5,
+      "text": " Right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1558.76,
+      "end": 1562.3,
+      "text": " Note the little plus sign."
+    },
+    {
+      "chunk": 2,
+      "start": 1563.04,
+      "end": 1563.32,
+      "text": " Okay?"
+    },
+    {
+      "chunk": 2,
+      "start": 1563.32,
+      "end": 1571.06,
+      "text": " What the plus sign means is that this thing, right,"
+    },
+    {
+      "chunk": 2,
+      "start": 1571.06,
+      "end": 1579.9199800000001,
+      "text": " is zero if x is less than or equal to cj, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1579.98,
+      "end": 1583.5,
+      "text": " So it's only going one way, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1583.54,
+      "end": 1587.18,
+      "text": " So you can imagine where these knots connect, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1587.18,
+      "end": 1592.9,
+      "text": " So let's say we have knots there and there."
+    },
+    {
+      "chunk": 2,
+      "start": 1594.06,
+      "end": 1600.2,
+      "text": " Where those knots connect, and this is, like, let's say this is c3."
+    },
+    {
+      "chunk": 2,
+      "start": 1601.06,
+      "end": 1605.5800199999999,
+      "text": " Right. At this point here."
+    },
+    {
+      "chunk": 2,
+      "start": 1607.6399999999999,
+      "end": 1610.12,
+      "text": " Right. At this point here."
+    },
+    {
+      "chunk": 2,
+      "start": 1611.28,
+      "end": 1615.88,
+      "text": " Only the polynomials that you're of the ones that you're currently in."
+    },
+    {
+      "chunk": 2,
+      "start": 1615.88,
+      "end": 1624.84,
+      "text": " So the ones for the C2 and C and the ones before it are actually doing anything."
+    },
+    {
+      "chunk": 2,
+      "start": 1625.68,
+      "end": 1625.88,
+      "text": " Right."
+    },
+    {
+      "chunk": 2,
+      "start": 1625.88,
+      "end": 1629.2,
+      "text": " this third one"
+    },
+    {
+      "chunk": 2,
+      "start": 1629.2,
+      "end": 1631.28,
+      "text": " doesn't come in until you're"
+    },
+    {
+      "chunk": 2,
+      "start": 1631.28,
+      "end": 1633.18,
+      "text": " beyond where the"
+    },
+    {
+      "chunk": 2,
+      "start": 1633.18,
+      "end": 1633.96002,
+      "text": " not starts"
+    },
+    {
+      "chunk": 2,
+      "start": 1633.96002,
+      "end": 1636.47998,
+      "text": " I'm not gonna"
+    },
+    {
+      "chunk": 2,
+      "start": 1636.47998,
+      "end": 1639.0800199999999,
+      "text": " go through the math of this they don't do it"
+    },
+    {
+      "chunk": 2,
+      "start": 1639.0800199999999,
+      "end": 1641.1399999999999,
+      "text": " in the book either so I'm not"
+    },
+    {
+      "chunk": 2,
+      "start": 1641.1399999999999,
+      "end": 1643.06,
+      "text": " really justifying it but this"
+    },
+    {
+      "chunk": 2,
+      "start": 1643.06,
+      "end": 1656.48,
+      "text": " gives you nice smooth functions or gives you smooth functions it can get wiggly though This is kind of since the drivers get passed on it can get wiggly"
+    },
+    {
+      "chunk": 2,
+      "start": 1656.48,
+      "end": 1661.1,
+      "text": " at the very much for the same reason that"
+    },
+    {
+      "chunk": 2,
+      "start": 1661.1,
+      "end": 1664.78,
+      "text": " when you pull the wood in weird directions,"
+    },
+    {
+      "chunk": 2,
+      "start": 1664.78,
+      "end": 1667.12,
+      "text": " it can get bendy at the knots."
+    },
+    {
+      "chunk": 2,
+      "start": 1668.12,
+      "end": 1672.72,
+      "text": " When you pull the wood towards the thing. I recommend going into"
+    },
+    {
+      "chunk": 2,
+      "start": 1672.72,
+      "end": 1674.62,
+      "text": " if you've never played with splines before,"
+    },
+    {
+      "chunk": 2,
+      "start": 1675.18,
+      "end": 1680.96,
+      "text": " find some visualization tool where they have knots with splines to play with"
+    },
+    {
+      "chunk": 2,
+      "start": 1680.96,
+      "end": 1682.56,
+      "text": " and just start moving the points around."
+    },
+    {
+      "chunk": 2,
+      "start": 1683.3600000000001,
+      "end": 1685.1,
+      "text": " And you see, like, if you put two points,"
+    },
+    {
+      "chunk": 2,
+      "start": 1686.32,
+      "end": 1690.4199800000001,
+      "text": " like if you go like a control points, or not control,"
+    },
+    {
+      "chunk": 2,
+      "start": 1690.66,
+      "end": 1691.84,
+      "text": " yeah, you can do it with control points,"
+    },
+    {
+      "chunk": 2,
+      "start": 1691.94,
+      "end": 1693.66,
+      "text": " but these splines, if you put it like this,"
+    },
+    {
+      "chunk": 2,
+      "start": 1694.18,
+      "end": 1696.68,
+      "text": " and then you pull this one down here and you pull that one like here,"
+    },
+    {
+      "chunk": 2,
+      "start": 1697.02,
+      "end": 1699.56,
+      "text": " it just goes wiggly, wiggly, wiggly."
+    },
+    {
+      "chunk": 2,
+      "start": 1700.82,
+      "end": 1702.66,
+      "text": " So it's kind of fun to play with."
+    },
+    {
+      "chunk": 2,
+      "start": 1702.72,
+      "end": 1706.06,
+      "text": " but then that's when you'll see that"
+    },
+    {
+      "chunk": 2,
+      "start": 1706.06,
+      "end": 1710.26,
+      "text": " how this can get very wiggly"
+    },
+    {
+      "chunk": 2,
+      "start": 1710.26,
+      "end": 1715.26,
+      "text": " but okay, the important thing is you define it this way"
+    },
+    {
+      "chunk": 2,
+      "start": 1715.26,
+      "end": 1718.52,
+      "text": " for a cubic spline, right, with these"
+    },
+    {
+      "chunk": 2,
+      "start": 1718.52,
+      "end": 1723.12,
+      "text": " knots there and these polynomials of this form"
+    },
+    {
+      "chunk": 2,
+      "start": 1723.12,
+      "end": 1725.74,
+      "text": " and then"
+    },
+    {
+      "chunk": 2,
+      "start": 1725.74,
+      "end": 1730.5,
+      "text": " you just have to fit it, so it's very much the same"
+    },
+    {
+      "chunk": 2,
+      "start": 1730.5,
+      "end": 1736.3,
+      "text": " fitting procedures as always. Again, it's kind of nice that you're still just fitting a linear model,"
+    },
+    {
+      "chunk": 2,
+      "start": 1736.7,
+      "end": 1741.4,
+      "text": " but you're getting nonlinear stuff out of it, right? Because you have all these basis functions."
+    },
+    {
+      "chunk": 2,
+      "start": 1743.4,
+      "end": 1755.22,
+      "text": " So we have this, right? So for a degree three, sorry, degree three, and then we have"
+    },
+    {
+      "chunk": 2,
+      "start": 1755.22,
+      "end": 1762.48,
+      "text": " basis functions that are of this form, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1762.8200000000002,
+      "end": 1771.28,
+      "text": " So here you get K of these, of the polynomial terms,"
+    },
+    {
+      "chunk": 2,
+      "start": 1771.56,
+      "end": 1777.8,
+      "text": " and then of these cubic terms, you get another K of those,"
+    },
+    {
+      "chunk": 2,
+      "start": 1778.8,
+      "end": 1782.3200000000002,
+      "text": " and then often you also have a bias term, right,"
+    },
+    {
+      "chunk": 2,
+      "start": 1782.3200000000002,
+      "end": 1784.56,
+      "text": " in terms of the parameters you're going to fit."
+    },
+    {
+      "chunk": 2,
+      "start": 1785.22,
+      "end": 1792.22,
+      "text": " So if you have three control points, you have seven parameters that you're going to find."
+    },
+    {
+      "chunk": 2,
+      "start": 1795.6399999999999,
+      "end": 1796.3200000000002,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 2,
+      "start": 1798.74,
+      "end": 1799.46,
+      "text": " Okay."
+    },
+    {
+      "chunk": 2,
+      "start": 1799.46,
+      "end": 1799.8200000000002,
+      "text": " Okay."
+    },
+    {
+      "chunk": 3,
+      "start": 1800.0,
+      "end": 1803.76,
+      "text": " So, yeah."
+    },
+    {
+      "chunk": 3,
+      "start": 1803.94,
+      "end": 1813.28,
+      "text": " So here you can see just specifically the basis for these three basis functions, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 1814.74,
+      "end": 1819.16,
+      "text": " You don't typically look at them independently because we, you know, that would be weird."
+    },
+    {
+      "chunk": 3,
+      "start": 1819.86,
+      "end": 1821.68,
+      "text": " But rather, we're going to look at them together."
+    },
+    {
+      "chunk": 3,
+      "start": 1823.32,
+      "end": 1826.06,
+      "text": " And this is the fit, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 1826.06,
+      "end": 1829.14,
+      "text": " So we, again, have knots at these values."
+    },
+    {
+      "chunk": 3,
+      "start": 1830.0,
+      "end": 1837.68,
+      "text": " and this is a,"
+    },
+    {
+      "chunk": 3,
+      "start": 1837.68,
+      "end": 1840.92,
+      "text": " I guess that's a B spline."
+    },
+    {
+      "chunk": 3,
+      "start": 1841.22,
+      "end": 1842.52,
+      "text": " I don't know why they call it BS."
+    },
+    {
+      "chunk": 3,
+      "start": 1843.54,
+      "end": 1843.96,
+      "text": " It's funny."
+    },
+    {
+      "chunk": 3,
+      "start": 1845.04,
+      "end": 1845.54,
+      "text": " It's R."
+    },
+    {
+      "chunk": 3,
+      "start": 1845.8,
+      "end": 1846.14,
+      "text": " I don't know."
+    },
+    {
+      "chunk": 3,
+      "start": 1847.02,
+      "end": 1848.9,
+      "text": " But we have a cubic spline here,"
+    },
+    {
+      "chunk": 3,
+      "start": 1849.1,
+      "end": 1852.58,
+      "text": " and then it defines the parameters for you."
+    },
+    {
+      "chunk": 3,
+      "start": 1854.44,
+      "end": 1855.68,
+      "text": " So that's easy."
+    },
+    {
+      "chunk": 3,
+      "start": 1856.5,
+      "end": 1858.82,
+      "text": " But you can see it's doing a reasonably good job."
+    },
+    {
+      "chunk": 3,
+      "start": 1860.0,
+      "end": 1868.72,
+      "text": " I'm getting confused"
+    },
+    {
+      "chunk": 3,
+      "start": 1868.72,
+      "end": 1872.78,
+      "text": " ah here they"
+    },
+    {
+      "chunk": 3,
+      "start": 1872.78,
+      "end": 1874.76,
+      "text": " moved them closer together"
+    },
+    {
+      "chunk": 3,
+      "start": 1874.76,
+      "end": 1875.88,
+      "text": " I don't know why"
+    },
+    {
+      "chunk": 3,
+      "start": 1875.88,
+      "end": 1884.68,
+      "text": " I don't know why the difference"
+    },
+    {
+      "chunk": 3,
+      "start": 1884.68,
+      "end": 1885.84,
+      "text": " but"
+    },
+    {
+      "chunk": 3,
+      "start": 1890.0,
+      "end": 1895.28,
+      "text": " Yeah, so again, like I said, these things can get wiggly."
+    },
+    {
+      "chunk": 3,
+      "start": 1896.74,
+      "end": 1901.42,
+      "text": " It often, it can be a problem, especially when you're fitting it to data."
+    },
+    {
+      "chunk": 3,
+      "start": 1902.42,
+      "end": 1909.16,
+      "text": " So what people have come up with are other versions of splines, lots of splines out there."
+    },
+    {
+      "chunk": 3,
+      "start": 1910.38,
+      "end": 1915.44,
+      "text": " And this one is particularly common."
+    },
+    {
+      "chunk": 3,
+      "start": 1915.44,
+      "end": 1917.22,
+      "text": " It's called the natural splines."
+    },
+    {
+      "chunk": 3,
+      "start": 1917.22,
+      "end": 1920.02,
+      "text": " and what natural splines do"
+    },
+    {
+      "chunk": 3,
+      "start": 1920.02,
+      "end": 1920.88,
+      "text": " is that"
+    },
+    {
+      "chunk": 3,
+      "start": 1920.88,
+      "end": 1923.54,
+      "text": " they create"
+    },
+    {
+      "chunk": 3,
+      "start": 1923.54,
+      "end": 1928.32,
+      "text": " they make things straight"
+    },
+    {
+      "chunk": 3,
+      "start": 1928.32,
+      "end": 1930.74,
+      "text": " so where the splines"
+    },
+    {
+      "chunk": 3,
+      "start": 1930.74,
+      "end": 1932.24,
+      "text": " where the basis functions meet"
+    },
+    {
+      "chunk": 3,
+      "start": 1932.24,
+      "end": 1934.1,
+      "text": " and certainly at the boundaries"
+    },
+    {
+      "chunk": 3,
+      "start": 1934.1,
+      "end": 1938.04,
+      "text": " then they have the"
+    },
+    {
+      "chunk": 3,
+      "start": 1938.04,
+      "end": 1939.68,
+      "text": " values coming off"
+    },
+    {
+      "chunk": 3,
+      "start": 1939.68,
+      "end": 1941.6399999999999,
+      "text": " the spline degenerates"
+    },
+    {
+      "chunk": 3,
+      "start": 1941.6399999999999,
+      "end": 1944.3,
+      "text": " from a cubic to just a linear function"
+    },
+    {
+      "chunk": 3,
+      "start": 1944.3,
+      "end": 1957.8,
+      "text": " and they do that by adding these boundary knots All right so you can think of it like a cubic spline You had certain base functions that gave you a nice cubic function"
+    },
+    {
+      "chunk": 3,
+      "start": 1958.3,
+      "end": 1963.8600000000001,
+      "text": " like just a sum of cubic functions, each one centered at these control points"
+    },
+    {
+      "chunk": 3,
+      "start": 1963.8600000000001,
+      "end": 1968.4,
+      "text": " or these knot points at these knots."
+    },
+    {
+      "chunk": 3,
+      "start": 1968.82,
+      "end": 1972.1,
+      "text": " And now we're going to have the same thing, only we're going to degenerate"
+    },
+    {
+      "chunk": 3,
+      "start": 1972.1,
+      "end": 1975.0,
+      "text": " the spline so that it's flat"
+    },
+    {
+      "chunk": 3,
+      "start": 1975.0,
+      "end": 1978.95999,
+      "text": " at the boundaries."
+    },
+    {
+      "chunk": 3,
+      "start": 1982.7,
+      "end": 1987.1,
+      "text": " So now you see a more..."
+    },
+    {
+      "chunk": 3,
+      "start": 1987.1,
+      "end": 1991.45999,
+      "text": " Whereas before, if it went up, like it curves up and down"
+    },
+    {
+      "chunk": 3,
+      "start": 1991.45999,
+      "end": 1994.98,
+      "text": " and stuff, now you have them coming out straight."
+    },
+    {
+      "chunk": 3,
+      "start": 1997.4,
+      "end": 1998.45999,
+      "text": " Alright, so"
+    },
+    {
+      "chunk": 3,
+      "start": 1998.45999,
+      "end": 2002.48,
+      "text": " we can see them both at the same time."
+    },
+    {
+      "chunk": 3,
+      "start": 2005.42,
+      "end": 2005.94,
+      "text": " Maybe."
+    },
+    {
+      "chunk": 3,
+      "start": 2007.74,
+      "end": 2009.2,
+      "text": " Oh no, that just helps me."
+    },
+    {
+      "chunk": 3,
+      "start": 2010.2,
+      "end": 2012.68,
+      "text": " You can see here"
+    },
+    {
+      "chunk": 3,
+      "start": 2012.68,
+      "end": 2018.34,
+      "text": " how it gets kind of curvy at the ends."
+    },
+    {
+      "chunk": 3,
+      "start": 2020.5,
+      "end": 2020.73999,
+      "text": " Right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2022.1,
+      "end": 2023.84,
+      "text": " It could have been more exaggerated."
+    },
+    {
+      "chunk": 3,
+      "start": 2024.94,
+      "end": 2028.38,
+      "text": " Whereas now it's more linear."
+    },
+    {
+      "chunk": 3,
+      "start": 2028.45999,
+      "end": 2031.76001,
+      "text": " or it is linear and also where they connect."
+    },
+    {
+      "chunk": 3,
+      "start": 2036.58,
+      "end": 2045.9,
+      "text": " Like the, you have a more, yeah, a nice linear extension."
+    },
+    {
+      "chunk": 3,
+      "start": 2049.78,
+      "end": 2054.04001,
+      "text": " So, but otherwise it's still the same idea."
+    },
+    {
+      "chunk": 3,
+      "start": 2054.18,
+      "end": 2055.62,
+      "text": " You're still creating basis functions."
+    },
+    {
+      "chunk": 3,
+      "start": 2055.62,
+      "end": 2056.66,
+      "text": " They're just more complicated."
+    },
+    {
+      "chunk": 3,
+      "start": 2056.66,
+      "end": 2062.2799999999997,
+      "text": " and in other courses they go through the math of what the of what these natural splines are"
+    },
+    {
+      "chunk": 3,
+      "start": 2062.2799999999997,
+      "end": 2071.6,
+      "text": " uh the book doesn't so i won't either uh nor did the slides so well yeah i mean yeah so this is"
+    },
+    {
+      "chunk": 3,
+      "start": 2071.6,
+      "end": 2079.53998,
+      "text": " already more than the book has um but the important thing is is that the way it's going beyond linear"
+    },
+    {
+      "chunk": 3,
+      "start": 2079.53998,
+      "end": 2084.88,
+      "text": " functions is to simply say we're still going to do linear stuff we're still going to just find"
+    },
+    {
+      "chunk": 3,
+      "start": 2084.88,
+      "end": 2087.2799999999997,
+      "text": " these betas and fitting our data,"
+    },
+    {
+      "chunk": 3,
+      "start": 2087.7200000000003,
+      "end": 2089.32,
+      "text": " but we're going to make our X's"
+    },
+    {
+      "chunk": 3,
+      "start": 2089.32,
+      "end": 2091.2799999999997,
+      "text": " functions that are more complicated"
+    },
+    {
+      "chunk": 3,
+      "start": 2091.2799999999997,
+      "end": 2093.14,
+      "text": " than, you know,"
+    },
+    {
+      "chunk": 3,
+      "start": 2093.14,
+      "end": 2110.86,
+      "text": " just X right So either polynomials or combinations of polynomials and the people have done some very creative stuff in creating those things So again it still yeah it nonlinear but linear"
+    },
+    {
+      "chunk": 3,
+      "start": 2111.58,
+      "end": 2116.58,
+      "text": " It's linear in the parameters beta, but it's nonlinear in what you get."
+    },
+    {
+      "chunk": 3,
+      "start": 2117.5,
+      "end": 2121.62,
+      "text": " So now we're going to move from this thing,"
+    },
+    {
+      "chunk": 3,
+      "start": 2121.62,
+      "end": 2125.08,
+      "text": " which is what we've been doing forever, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2125.2200000000003,
+      "end": 2127.94,
+      "text": " Now to finding a function directly."
+    },
+    {
+      "chunk": 3,
+      "start": 2128.82,
+      "end": 2133.82,
+      "text": " So now we're going to do something more than just finding betas."
+    },
+    {
+      "chunk": 3,
+      "start": 2135.18,
+      "end": 2135.86,
+      "text": " Okay."
+    },
+    {
+      "chunk": 3,
+      "start": 2137.06,
+      "end": 2141.1,
+      "text": " So this is the next move, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2141.3,
+      "end": 2145.76,
+      "text": " Let's do more than just getting a nonlinear thing"
+    },
+    {
+      "chunk": 3,
+      "start": 2145.76,
+      "end": 2147.2200000000003,
+      "text": " from just creating basis functions."
+    },
+    {
+      "chunk": 3,
+      "start": 2147.2200000000003,
+      "end": 2149.48,
+      "text": " But we're still going to be in this world of splines."
+    },
+    {
+      "chunk": 3,
+      "start": 2151.62,
+      "end": 2159.26,
+      "text": " And so what we're doing now is we're still creating basis functions, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2159.6,
+      "end": 2161.48,
+      "text": " Basis functions of some sort."
+    },
+    {
+      "chunk": 3,
+      "start": 2165.0,
+      "end": 2169.48,
+      "text": " Only now that's not our only objective, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2169.7,
+      "end": 2176.4,
+      "text": " If you remember, we've looked at situations where we have more than one objective before, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2176.88,
+      "end": 2179.48,
+      "text": " We had regularizers."
+    },
+    {
+      "chunk": 3,
+      "start": 2179.48,
+      "end": 2189.26,
+      "text": " So we had, you know, Y minus beta X squared plus sum of beta squared."
+    },
+    {
+      "chunk": 3,
+      "start": 2190.82,
+      "end": 2192.5,
+      "text": " I'm the beta squared."
+    },
+    {
+      "chunk": 3,
+      "start": 2192.5,
+      "end": 2209.56,
+      "text": " That was our ridge regression, ridge term, a.k.a. L2 norm or regularizer."
+    },
+    {
+      "chunk": 3,
+      "start": 2210.34,
+      "end": 2219.12,
+      "text": " And so remember, the way we talked about that is that really what you're doing is you're adding another objective to your optimization."
+    },
+    {
+      "chunk": 3,
+      "start": 2219.12,
+      "end": 2232.2799999999997,
+      "text": " We're fitting our data with one function, which is fitting, you know, this thing, our linear model, and then a second function that imposes some property that we want."
+    },
+    {
+      "chunk": 3,
+      "start": 2232.76,
+      "end": 2257.62,
+      "text": " In this case it was minimize this ridge term right which you know you could argue is for sparsity reasons or you could give this argument of minimizing the variance and blah blah blah all the stuff that we talked about over the last two weeks which is important right Now we have a different objective or rather the first one is the same objective one"
+    },
+    {
+      "chunk": 3,
+      "start": 2259.44,
+      "end": 2269.94,
+      "text": " but our second objective is to make g, which is going to be this function, smooth, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2269.94,
+      "end": 2274.04,
+      "text": " make the second derivative"
+    },
+    {
+      "chunk": 3,
+      "start": 2274.04,
+      "end": 2278.82,
+      "text": " have some property, right? So this is integrating over"
+    },
+    {
+      "chunk": 3,
+      "start": 2278.82,
+      "end": 2281.3,
+      "text": " the second derivative squared."
+    },
+    {
+      "chunk": 3,
+      "start": 2283.9,
+      "end": 2284.74,
+      "text": " So"
+    },
+    {
+      "chunk": 3,
+      "start": 2284.74,
+      "end": 2294.91998,
+      "text": " and we'll consider cases, these two extreme"
+    },
+    {
+      "chunk": 3,
+      "start": 2294.91998,
+      "end": 2298.74,
+      "text": " cases of where lambda is either zero."
+    },
+    {
+      "chunk": 3,
+      "start": 2298.74,
+      "end": 2303.2,
+      "text": " I mean, obviously, if lambda is 0, then that objective does what?"
+    },
+    {
+      "chunk": 3,
+      "start": 2306.48,
+      "end": 2307.34,
+      "text": " Oof, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2307.38,
+      "end": 2308.0,
+      "text": " It goes away."
+    },
+    {
+      "chunk": 3,
+      "start": 2308.34,
+      "end": 2313.94,
+      "text": " If lambda is 0, if you just say, I want lambda to be 0, then it does nothing, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2314.0,
+      "end": 2322.94,
+      "text": " So then you're not putting any constraint on the integral of this second derivative term, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2322.94,
+      "end": 2325.5,
+      "text": " So you're not imposing anything, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2325.5,
+      "end": 2328.06,
+      "text": " And we'll think about what happens when lambda goes to infinity."
+    },
+    {
+      "chunk": 3,
+      "start": 2328.06,
+      "end": 2330.42,
+      "text": " but at least for zero it's kind of obvious"
+    },
+    {
+      "chunk": 3,
+      "start": 2330.42,
+      "end": 2332.7,
+      "text": " if you zero out an objective"
+    },
+    {
+      "chunk": 3,
+      "start": 2332.7,
+      "end": 2335.18,
+      "text": " then that thing doesn't do anything"
+    },
+    {
+      "chunk": 3,
+      "start": 2335.18,
+      "end": 2341.2799999999997,
+      "text": " so if we"
+    },
+    {
+      "chunk": 3,
+      "start": 2341.2799999999997,
+      "end": 2346.92,
+      "text": " we can fit these to data"
+    },
+    {
+      "chunk": 3,
+      "start": 2346.92,
+      "end": 2348.9,
+      "text": " right"
+    },
+    {
+      "chunk": 3,
+      "start": 2348.9,
+      "end": 2350.64,
+      "text": " and"
+    },
+    {
+      "chunk": 3,
+      "start": 2350.64,
+      "end": 2356.92,
+      "text": " here's one example"
+    },
+    {
+      "chunk": 3,
+      "start": 2356.92,
+      "end": 2358.58,
+      "text": " where"
+    },
+    {
+      "chunk": 3,
+      "start": 2358.58,
+      "end": 2364.7799999999997,
+      "text": " if you use a very high degree of freedom,"
+    },
+    {
+      "chunk": 3,
+      "start": 2364.88,
+      "end": 2366.24,
+      "text": " which gives you a lot of flexibility,"
+    },
+    {
+      "chunk": 3,
+      "start": 2366.54,
+      "end": 2369.7200000000003,
+      "text": " then you get this very kind of wiggly thing."
+    },
+    {
+      "chunk": 3,
+      "start": 2370.68,
+      "end": 2372.74,
+      "text": " But here it's wiggly because you have so many"
+    },
+    {
+      "chunk": 3,
+      "start": 2372.74,
+      "end": 2378.98,
+      "text": " you have so much flexibility in the function."
+    },
+    {
+      "chunk": 3,
+      "start": 2379.88,
+      "end": 2380.36,
+      "text": " Right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2381.94,
+      "end": 2384.32,
+      "text": " Whereas if you use fewer degrees of freedom,"
+    },
+    {
+      "chunk": 3,
+      "start": 2384.44,
+      "end": 2386.4,
+      "text": " then it's going to be more smooth."
+    },
+    {
+      "chunk": 3,
+      "start": 2386.92,
+      "end": 2399.82,
+      "text": " sorry all right"
+    },
+    {
+      "chunk": 4,
+      "start": 2400.0,
+      "end": 2407.0,
+      "text": " So, yeah."
+    },
+    {
+      "chunk": 4,
+      "start": 2408.12,
+      "end": 2419.8,
+      "text": " And actually, I guess here we can also, yeah."
+    },
+    {
+      "chunk": 4,
+      "start": 2420.06,
+      "end": 2426.74,
+      "text": " So if lambda was infinity, right, then I just wanted to,"
+    },
+    {
+      "chunk": 4,
+      "start": 2426.74,
+      "end": 2428.2,
+      "text": " because I don't think we're going to get back to it."
+    },
+    {
+      "chunk": 4,
+      "start": 2428.2,
+      "end": 2432.22,
+      "text": " If lambda was infinity, right, or as it goes to infinity,"
+    },
+    {
+      "chunk": 4,
+      "start": 2432.38,
+      "end": 2435.94,
+      "text": " then this term will dominate the optimization, right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2435.98,
+      "end": 2438.56,
+      "text": " And then you don't really care about fitting the data so much,"
+    },
+    {
+      "chunk": 4,
+      "start": 2439.06,
+      "end": 2443.82,
+      "text": " but rather you care about the second derivative term, right,"
+    },
+    {
+      "chunk": 4,
+      "start": 2443.82,
+      "end": 2446.16,
+      "text": " that you want to minimize the second derivative."
+    },
+    {
+      "chunk": 4,
+      "start": 2447.66,
+      "end": 2454.32,
+      "text": " So then what's going to happen is that the second derivative is going to be"
+    },
+    {
+      "chunk": 4,
+      "start": 2454.32,
+      "end": 2456.72,
+      "text": " zero everywhere, right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2456.72,
+      "end": 2459.88,
+      "text": " and then what you get is a straight line"
+    },
+    {
+      "chunk": 4,
+      "start": 2459.88,
+      "end": 2464.96,
+      "text": " because it won't allow the function to wiggle anymore"
+    },
+    {
+      "chunk": 4,
+      "start": 2464.96,
+      "end": 2470.16,
+      "text": " because it's just going to be a straight line."
+    },
+    {
+      "chunk": 4,
+      "start": 2472.66,
+      "end": 2476.66,
+      "text": " So lambda is going from"
+    },
+    {
+      "chunk": 4,
+      "start": 2476.66,
+      "end": 2482.44,
+      "text": " two flexible"
+    },
+    {
+      "chunk": 4,
+      "start": 2482.44,
+      "end": 2489.06,
+      "text": " to straight line."
+    },
+    {
+      "chunk": 4,
+      "start": 2493.3,
+      "end": 2495.58,
+      "text": " And depending on how you fit the lambda"
+    },
+    {
+      "chunk": 4,
+      "start": 2495.58,
+      "end": 2497.04,
+      "text": " or how you set the lambda,"
+    },
+    {
+      "chunk": 4,
+      "start": 2497.6,
+      "end": 2499.56,
+      "text": " it will give you something between"
+    },
+    {
+      "chunk": 4,
+      "start": 2499.56,
+      "end": 2504.98,
+      "text": " a very extremely flexible model"
+    },
+    {
+      "chunk": 4,
+      "start": 2504.98,
+      "end": 2508.9,
+      "text": " and one that is a completely straight line."
+    },
+    {
+      "chunk": 4,
+      "start": 2512.44,
+      "end": 2517.78,
+      "text": " So, yeah, again, here's the degree 16, degree 7."
+    },
+    {
+      "chunk": 4,
+      "start": 2519.28,
+      "end": 2525.24,
+      "text": " And instead of getting into this, let's take a break,"
+    },
+    {
+      "chunk": 4,
+      "start": 2525.24,
+      "end": 2527.14,
+      "text": " and we'll come back in 15 minutes."
+    },
+    {
+      "chunk": 4,
+      "start": 2527.78,
+      "end": 2530.62,
+      "text": " Or wait, is there any questions that anyone has?"
+    },
+    {
+      "chunk": 4,
+      "start": 2531.3,
+      "end": 2533.34,
+      "text": " I need to stop and ask questions more."
+    },
+    {
+      "chunk": 4,
+      "start": 2534.52,
+      "end": 2534.92,
+      "text": " Anything?"
+    },
+    {
+      "chunk": 4,
+      "start": 2535.62,
+      "end": 2536.1,
+      "text": " You guys are good?"
+    },
+    {
+      "chunk": 4,
+      "start": 2536.94,
+      "end": 2541.0,
+      "text": " All right, let's take a break, and we'll start up again at 9."
+    },
+    {
+      "chunk": 4,
+      "start": 2542.44,
+      "end": 2543.36,
+      "text": " 13."
+    },
+    {
+      "chunk": 4,
+      "start": 2545.4,
+      "end": 2547.14,
+      "text": " All right Let take a break"
+    },
+    {
+      "chunk": 4,
+      "start": 2575.0,
+      "end": 2604.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2605.0,
+      "end": 2634.98001,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2635.0,
+      "end": 2664.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2665.0,
+      "end": 2694.97998,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2695.0,
+      "end": 2724.98,
+      "text": " Thank you"
+    },
+    {
+      "chunk": 4,
+      "start": 2725.0,
+      "end": 2754.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2755.0,
+      "end": 2784.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2785.0,
+      "end": 2814.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2815.0,
+      "end": 2844.97998,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2845.0,
+      "end": 2874.98,
+      "text": " Thank you"
+    },
+    {
+      "chunk": 4,
+      "start": 2875.0,
+      "end": 2904.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2905.0,
+      "end": 2934.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2935.0,
+      "end": 2964.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2965.0,
+      "end": 2994.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2995.0,
+      "end": 3024.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3000.0,
+      "end": 3029.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3030.0,
+      "end": 3059.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3060.0,
+      "end": 3089.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3090.0,
+      "end": 3119.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3120.0,
+      "end": 3174.98,
+      "text": " Thank you Thank you"
+    },
+    {
+      "chunk": 5,
+      "start": 3175.0,
+      "end": 3204.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3205.0,
+      "end": 3234.98001,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3235.0,
+      "end": 3264.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3265.0,
+      "end": 3294.97998,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3295.0,
+      "end": 3324.98,
+      "text": " Thank you"
+    },
+    {
+      "chunk": 5,
+      "start": 3325.0,
+      "end": 3354.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3355.0,
+      "end": 3384.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3385.0,
+      "end": 3414.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3415.0,
+      "end": 3444.97998,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3445.0,
+      "end": 3474.98,
+      "text": " Thank you"
+    },
+    {
+      "chunk": 5,
+      "start": 3475.0,
+      "end": 3504.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3505.0,
+      "end": 3528.16003,
+      "text": " All right, we're back."
+    },
+    {
+      "chunk": 5,
+      "start": 3528.96,
+      "end": 3534.98,
+      "text": " So, again, we're looking at these smoothing splines."
+    },
+    {
+      "chunk": 5,
+      "start": 3535.0,
+      "end": 3541.82,
+      "text": " Right. So the, as I said,"
+    },
+    {
+      "chunk": 5,
+      "start": 3541.88,
+      "end": 3545.46,
+      "text": " the book doesn't really go into the much of the details of how you fit these."
+    },
+    {
+      "chunk": 5,
+      "start": 3546.0,
+      "end": 3548.4,
+      "text": " I think it's because they want to keep it simple."
+    },
+    {
+      "chunk": 5,
+      "start": 3549.12,
+      "end": 3550.62,
+      "text": " But as we said,"
+    },
+    {
+      "chunk": 5,
+      "start": 3550.66003,
+      "end": 3554.76,
+      "text": " the main point is that you're adding this objective that constrains a second"
+    },
+    {
+      "chunk": 5,
+      "start": 3554.76,
+      "end": 3558.58,
+      "text": " derivative. So you're fitting a function at every,"
+    },
+    {
+      "chunk": 5,
+      "start": 3558.58,
+      "end": 3561.58,
+      "text": " all that values X. So you don't have this, not,"
+    },
+    {
+      "chunk": 5,
+      "start": 3561.58,
+      "end": 3569.9,
+      "text": " not the same way as you do in the basis function that we've talked about so far,"
+    },
+    {
+      "chunk": 5,
+      "start": 3570.12,
+      "end": 3576.06,
+      "text": " but rather you're just saying, I want my derivative to be nice everywhere."
+    },
+    {
+      "chunk": 5,
+      "start": 3576.6,
+      "end": 3579.08,
+      "text": " I want this nice, smooth, continuous derivative."
+    },
+    {
+      "chunk": 5,
+      "start": 3579.2200000000003,
+      "end": 3580.6,
+      "text": " So I want it to be nice and smooth."
+    },
+    {
+      "chunk": 5,
+      "start": 3580.6,
+      "end": 3586.88,
+      "text": " And the degree of smoothness is really determined by how strong this lambda is."
+    },
+    {
+      "chunk": 5,
+      "start": 3588.04,
+      "end": 3588.42,
+      "text": " Okay?"
+    },
+    {
+      "chunk": 5,
+      "start": 3588.42,
+      "end": 3597.54,
+      "text": " And so if lambda is very weak, meaning it's zero, then it's just going to be, you know, basically it's not worried about the smoothness at all."
+    },
+    {
+      "chunk": 5,
+      "start": 3599.06,
+      "end": 3599.82,
+      "text": " Or sorry."
+    },
+    {
+      "chunk": 6,
+      "start": 3600.0,
+      "end": 3603.26,
+      "text": " If it's zero, then it's just fitting some function to that."
+    },
+    {
+      "chunk": 6,
+      "start": 3603.58,
+      "end": 3606.38,
+      "text": " If it's very strong, then it's a straight line, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3607.5,
+      "end": 3612.04,
+      "text": " And then the way they talk about it,"
+    },
+    {
+      "chunk": 6,
+      "start": 3612.32,
+      "end": 3615.0,
+      "text": " or the way it's presented in the R package,"
+    },
+    {
+      "chunk": 6,
+      "start": 3615.82,
+      "end": 3616.98,
+      "text": " so this is the R package,"
+    },
+    {
+      "chunk": 6,
+      "start": 3617.44,
+      "end": 3619.36,
+      "text": " is effective degrees of freedom."
+    },
+    {
+      "chunk": 6,
+      "start": 3626.52,
+      "end": 3627.08,
+      "text": " Right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3627.08,
+      "end": 3630.08,
+      "text": " and this is related to the lambda."
+    },
+    {
+      "chunk": 6,
+      "start": 3632.04,
+      "end": 3635.58,
+      "text": " So instead of actually stating the lambda,"
+    },
+    {
+      "chunk": 6,
+      "start": 3635.8,
+      "end": 3638.44,
+      "text": " you can input the degrees of freedom that you want."
+    },
+    {
+      "chunk": 6,
+      "start": 3639.52,
+      "end": 3641.72,
+      "text": " And so if you have a very high degree of freedom,"
+    },
+    {
+      "chunk": 6,
+      "start": 3641.92,
+      "end": 3646.18,
+      "text": " then you have a small lambda."
+    },
+    {
+      "chunk": 6,
+      "start": 3647.46,
+      "end": 3651.0,
+      "text": " And then if it's a low degree of freedom,"
+    },
+    {
+      "chunk": 6,
+      "start": 3651.0,
+      "end": 3655.1,
+      "text": " then it gets closer to a straight line."
+    },
+    {
+      "chunk": 6,
+      "start": 3657.08,
+      "end": 3663.02,
+      "text": " you know, it penalizes the curvature or how much it's moving."
+    },
+    {
+      "chunk": 6,
+      "start": 3663.02,
+      "end": 3666.88,
+      "text": " So you can see the blue one with a higher degree of freedom is more wiggly,"
+    },
+    {
+      "chunk": 6,
+      "start": 3667.18,
+      "end": 3673.74,
+      "text": " and then it smooths out more or becomes less wiggly as you shorten it."
+    },
+    {
+      "chunk": 6,
+      "start": 3673.78,
+      "end": 3677.44,
+      "text": " But that's also why you can get non-integer values of degrees of freedom,"
+    },
+    {
+      "chunk": 6,
+      "start": 3677.6,
+      "end": 3681.5,
+      "text": " which, I mean, typically we think of degrees of freedom as being integer values."
+    },
+    {
+      "chunk": 6,
+      "start": 3682.04,
+      "end": 3684.3,
+      "text": " But here it's an effective degree of freedom."
+    },
+    {
+      "chunk": 6,
+      "start": 3684.3,
+      "end": 3687.86,
+      "text": " and they do explain how they define it."
+    },
+    {
+      "chunk": 6,
+      "start": 3688.86,
+      "end": 3696.18,
+      "text": " So if we let y be the fitted values,"
+    },
+    {
+      "chunk": 6,
+      "start": 3696.18,
+      "end": 3704.0,
+      "text": " so this is the solution to equation above."
+    },
+    {
+      "chunk": 6,
+      "start": 3707.14,
+      "end": 3707.7,
+      "text": " Right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3707.92,
+      "end": 3712.18,
+      "text": " So it's what you get from..."
+    },
+    {
+      "chunk": 6,
+      "start": 3712.18,
+      "end": 3713.82,
+      "text": " Well, I won't buy it."
+    },
+    {
+      "chunk": 6,
+      "start": 3713.82,
+      "end": 3727.72,
+      "text": " Where is it? This, right? So it's the prediction of Y, it's the G, right? Where it's not just a nice function. It's not just a function, but it has this amount of smoothness that you want."
+    },
+    {
+      "chunk": 6,
+      "start": 3727.72,
+      "end": 3730.88,
+      "text": " if you let y hat be that"
+    },
+    {
+      "chunk": 6,
+      "start": 3730.88,
+      "end": 3734.36,
+      "text": " then what you can do is say"
+    },
+    {
+      "chunk": 6,
+      "start": 3734.36,
+      "end": 3736.36,
+      "text": " I'm going to construct an S"
+    },
+    {
+      "chunk": 6,
+      "start": 3736.36,
+      "end": 3739.1,
+      "text": " which is just a linear matrix"
+    },
+    {
+      "chunk": 6,
+      "start": 3739.1,
+      "end": 3742.28,
+      "text": " between y hat and y"
+    },
+    {
+      "chunk": 6,
+      "start": 3742.28,
+      "end": 3754.18,
+      "text": " and then if you take that matrix and then you just sum up over the diagonal it be a square matrix right Because Y and Y are the same length"
+    },
+    {
+      "chunk": 6,
+      "start": 3758.9,
+      "end": 3760.86,
+      "text": " You can get the"
+    },
+    {
+      "chunk": 6,
+      "start": 3760.86,
+      "end": 3762.98,
+      "text": " trace of that matrix, so"
+    },
+    {
+      "chunk": 6,
+      "start": 3762.98,
+      "end": 3764.3,
+      "text": " the sum of the diagonal terms,"
+    },
+    {
+      "chunk": 6,
+      "start": 3764.56,
+      "end": 3766.98,
+      "text": " and that's your effective degrees of"
+    },
+    {
+      "chunk": 6,
+      "start": 3766.98,
+      "end": 3767.28,
+      "text": " freedom."
+    },
+    {
+      "chunk": 6,
+      "start": 3768.66,
+      "end": 3770.92,
+      "text": " It's not obvious, but that's how they"
+    },
+    {
+      "chunk": 6,
+      "start": 3770.92,
+      "end": 3771.45999,
+      "text": " define it."
+    },
+    {
+      "chunk": 6,
+      "start": 3772.4,
+      "end": 3772.66,
+      "text": " Okay?"
+    },
+    {
+      "chunk": 6,
+      "start": 3772.66,
+      "end": 3777.45999,
+      "text": " and that's the effective degrees of freedom,"
+    },
+    {
+      "chunk": 6,
+      "start": 3777.88,
+      "end": 3780.52,
+      "text": " it's not obvious how to set this, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3780.58,
+      "end": 3785.08,
+      "text": " So this effective degree of freedom,"
+    },
+    {
+      "chunk": 6,
+      "start": 3785.56,
+      "end": 3788.5,
+      "text": " you can either set apparently in the R package"
+    },
+    {
+      "chunk": 6,
+      "start": 3788.5,
+      "end": 3793.1,
+      "text": " or you can get out by seeing the answer, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3793.82,
+      "end": 3797.74,
+      "text": " So my guess is the way to make this work"
+    },
+    {
+      "chunk": 6,
+      "start": 3797.74,
+      "end": 3800.2,
+      "text": " is that they would try a different value of lambda"
+    },
+    {
+      "chunk": 6,
+      "start": 3800.2,
+      "end": 3803.54001,
+      "text": " until you get the degree of freedom you want, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3803.56,
+      "end": 3806.95999,
+      "text": " Because if you just, as you change lambda,"
+    },
+    {
+      "chunk": 6,
+      "start": 3807.68,
+      "end": 3810.8,
+      "text": " you'll be, you know, smoothly interpolating"
+    },
+    {
+      "chunk": 6,
+      "start": 3810.8,
+      "end": 3812.08,
+      "text": " between these degrees of freedom."
+    },
+    {
+      "chunk": 6,
+      "start": 3814.62,
+      "end": 3818.9,
+      "text": " But, so the question becomes,"
+    },
+    {
+      "chunk": 6,
+      "start": 3818.9,
+      "end": 3821.62,
+      "text": " how do I choose lambda, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3821.78,
+      "end": 3825.01999,
+      "text": " One could be just a decision you make, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3825.28,
+      "end": 3829.45999,
+      "text": " Or cross-validation, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3829.45999,
+      "end": 3833.82,
+      "text": " Which is, again, is a thing I think is particularly useful, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3833.84,
+      "end": 3838.94,
+      "text": " Because you're still letting the data tell you or give you indications as to what to do."
+    },
+    {
+      "chunk": 6,
+      "start": 3838.94,
+      "end": 3856.86,
+      "text": " So just as in cross-validation for the Lambda in the regularizer terms, and then for other decisions that we've made, such as like the model selection, you're training with a certain value of Lambda, and then you predict unheld out data, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3856.86,
+      "end": 3859.96,
+      "text": " In this case, they suggest using leave one out."
+    },
+    {
+      "chunk": 6,
+      "start": 3860.8,
+      "end": 3864.46,
+      "text": " So you're leaving out just one point each time,"
+    },
+    {
+      "chunk": 6,
+      "start": 3864.96,
+      "end": 3869.56,
+      "text": " and then you just see how good your prediction is of that point, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3870.54,
+      "end": 3873.94,
+      "text": " And then you can do that multiple times."
+    },
+    {
+      "chunk": 6,
+      "start": 3875.6,
+      "end": 3879.24,
+      "text": " And then they suggest doing it this way,"
+    },
+    {
+      "chunk": 6,
+      "start": 3879.34,
+      "end": 3882.2799999999997,
+      "text": " where you would do it for each of the endpoints,"
+    },
+    {
+      "chunk": 6,
+      "start": 3882.38,
+      "end": 3885.32,
+      "text": " and then you sum up, and hopefully you don't have too many points"
+    },
+    {
+      "chunk": 6,
+      "start": 3885.32,
+      "end": 3886.26,
+      "text": " and it won't take too long."
+    },
+    {
+      "chunk": 6,
+      "start": 3886.66,
+      "end": 3888.14,
+      "text": " I mean, it's computer, so it's fine."
+    },
+    {
+      "chunk": 6,
+      "start": 3890.62,
+      "end": 3892.2799999999997,
+      "text": " And this will give you"
+    },
+    {
+      "chunk": 6,
+      "start": 3892.2799999999997,
+      "end": 3895.0,
+      "text": " something that you can"
+    },
+    {
+      "chunk": 6,
+      "start": 3895.0,
+      "end": 3910.02,
+      "text": " minimize So this will give you a sum of squares error that you can then cross error that you can minimize as a function of lambda So you get some lambda value where this thing"
+    },
+    {
+      "chunk": 6,
+      "start": 3910.02,
+      "end": 3915.9,
+      "text": " is going to be minimized, and then that will probably give you a nice smooth function."
+    },
+    {
+      "chunk": 6,
+      "start": 3917.84,
+      "end": 3923.02,
+      "text": " Maybe that's how they came up with this. It probably is, right? So if you can see,"
+    },
+    {
+      "chunk": 6,
+      "start": 3923.02,
+      "end": 3926.7,
+      "text": " arguably that is better than the blue one, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3926.74,
+      "end": 3928.16,
+      "text": " Which was just some number they picked."
+    },
+    {
+      "chunk": 6,
+      "start": 3931.48,
+      "end": 3936.1,
+      "text": " So, yeah, so this would probably be, yeah."
+    },
+    {
+      "chunk": 6,
+      "start": 3937.4,
+      "end": 3941.68,
+      "text": " So this is probably where degree of freedom was"
+    },
+    {
+      "chunk": 6,
+      "start": 3941.68,
+      "end": 3946.56,
+      "text": " six point whatever."
+    },
+    {
+      "chunk": 6,
+      "start": 3950.56,
+      "end": 3951.82,
+      "text": " Right, probably here."
+    },
+    {
+      "chunk": 6,
+      "start": 3953.02,
+      "end": 3959.52,
+      "text": " So that's how you would determine the lambda for this smoothing spline, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3959.64,
+      "end": 3962.2200000000003,
+      "text": " The lambda controlling how smooth it is."
+    },
+    {
+      "chunk": 6,
+      "start": 3962.82,
+      "end": 3965.7200000000003,
+      "text": " So that is the smoothing spline."
+    },
+    {
+      "chunk": 6,
+      "start": 3968.7799999999997,
+      "end": 3979.34,
+      "text": " And they talk about yet another one in the book called local regression, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3979.34,
+      "end": 3990.6,
+      "text": " And again, yeah, whereas before we were fitting, you know,"
+    },
+    {
+      "chunk": 6,
+      "start": 3990.62,
+      "end": 3995.12,
+      "text": " kind of global functions with these beta terms, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3995.46,
+      "end": 3999.06,
+      "text": " That one you actually have to determine this lambda."
+    },
+    {
+      "chunk": 6,
+      "start": 3999.98,
+      "end": 4002.48,
+      "text": " And so it's a different functional form, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 4002.76,
+      "end": 4006.7799999999997,
+      "text": " You're not fitting the betas directly."
+    },
+    {
+      "chunk": 6,
+      "start": 4006.7799999999997,
+      "end": 4017.9,
+      "text": " now we're doing something also confusing only now we're just looking locally and we're defining"
+    },
+    {
+      "chunk": 6,
+      "start": 4017.9,
+      "end": 4026.03998,
+      "text": " a function locally wherever we want to put it right so what we do is we yeah it's basically"
+    },
+    {
+      "chunk": 6,
+      "start": 4026.03998,
+      "end": 4031.32,
+      "text": " the same idea as the nearest neighbor algorithm only now we're going to have a smoothing version"
+    },
+    {
+      "chunk": 6,
+      "start": 4031.32,
+      "end": 4038.08002,
+      "text": " of it, right? And what we do is we, let's say we look at a point. Here's a nice point."
+    },
+    {
+      "chunk": 6,
+      "start": 4039.14,
+      "end": 4057.14,
+      "text": " And we going to fit a line to this right Only we going to weight the points based off of a Gaussian So points over here when you evaluating when you trying to find the value of the prediction at this point"
+    },
+    {
+      "chunk": 6,
+      "start": 4057.46,
+      "end": 4060.3,
+      "text": " at point 48 or whatever,"
+    },
+    {
+      "chunk": 6,
+      "start": 4061.18,
+      "end": 4064.2200000000003,
+      "text": " these points far away"
+    },
+    {
+      "chunk": 6,
+      "start": 4064.2200000000003,
+      "end": 4066.0,
+      "text": " won't enter into the equation."
+    },
+    {
+      "chunk": 6,
+      "start": 4066.2799999999997,
+      "end": 4069.7799999999997,
+      "text": " You're only doing a linear regression locally, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 4069.82,
+      "end": 4071.48,
+      "text": " So it's a local regression"
+    },
+    {
+      "chunk": 6,
+      "start": 4071.48,
+      "end": 4079.08002,
+      "text": " using just the points nearby, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 4079.18,
+      "end": 4081.44,
+      "text": " So it's like a smooth k nearest neighbor,"
+    },
+    {
+      "chunk": 6,
+      "start": 4082.0,
+      "end": 4087.56,
+      "text": " only now we're defining kind of k through the distance that it has in x."
+    },
+    {
+      "chunk": 6,
+      "start": 4089.44,
+      "end": 4094.44,
+      "text": " So we do this at every value where we want to evaluate the spline."
+    },
+    {
+      "chunk": 6,
+      "start": 4094.44,
+      "end": 4097.68,
+      "text": " So you can, I mean, essentially defining a function, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 4097.68,
+      "end": 4101.02,
+      "text": " so wherever you want"
+    },
+    {
+      "chunk": 6,
+      "start": 4101.02,
+      "end": 4102.34,
+      "text": " wherever you're plotting"
+    },
+    {
+      "chunk": 6,
+      "start": 4102.34,
+      "end": 4107.28,
+      "text": " right and these are not really not vectors"
+    },
+    {
+      "chunk": 6,
+      "start": 4107.28,
+      "end": 4109.46,
+      "text": " because they're not"
+    },
+    {
+      "chunk": 6,
+      "start": 4109.46,
+      "end": 4112.28,
+      "text": " you're not constraining it there"
+    },
+    {
+      "chunk": 6,
+      "start": 4112.28,
+      "end": 4115.78,
+      "text": " you're just evaluating what the function should look like"
+    },
+    {
+      "chunk": 6,
+      "start": 4115.78,
+      "end": 4116.66003,
+      "text": " at that point"
+    },
+    {
+      "chunk": 6,
+      "start": 4116.66003,
+      "end": 4119.82,
+      "text": " so wherever you look at the x"
+    },
+    {
+      "chunk": 6,
+      "start": 4119.82,
+      "end": 4124.3,
+      "text": " you find a line through the local points"
+    },
+    {
+      "chunk": 6,
+      "start": 4124.3,
+      "end": 4125.32,
+      "text": " your best fit line"
+    },
+    {
+      "chunk": 6,
+      "start": 4125.32,
+      "end": 4129.4,
+      "text": " weighted by this Gaussian."
+    },
+    {
+      "chunk": 6,
+      "start": 4129.92,
+      "end": 4132.86,
+      "text": " And then you get locally a line."
+    },
+    {
+      "chunk": 6,
+      "start": 4133.46,
+      "end": 4136.26,
+      "text": " So the first derivative is nice, of course."
+    },
+    {
+      "chunk": 6,
+      "start": 4137.14,
+      "end": 4139.36,
+      "text": " And since you're smoothly going around,"
+    },
+    {
+      "chunk": 6,
+      "start": 4139.46,
+      "end": 4140.78,
+      "text": " it's going to be nice and smooth."
+    },
+    {
+      "chunk": 6,
+      "start": 4141.9,
+      "end": 4144.66003,
+      "text": " And then you get a nice smooth function"
+    },
+    {
+      "chunk": 6,
+      "start": 4144.66003,
+      "end": 4147.52,
+      "text": " that has basically nice derivatives everywhere."
+    },
+    {
+      "chunk": 6,
+      "start": 4150.66003,
+      "end": 4152.32,
+      "text": " But it's all defined locally."
+    },
+    {
+      "chunk": 6,
+      "start": 4154.54,
+      "end": 4154.74,
+      "text": " Right?"
+    },
+    {
+      "chunk": 6,
+      "start": 4155.32,
+      "end": 4164.92,
+      "text": " So to do this, you end up fitting this function, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 4165.1,
+      "end": 4167.88,
+      "text": " And that's not super obvious, but that's how it works."
+    },
+    {
+      "chunk": 6,
+      "start": 4171.0,
+      "end": 4180.33997,
+      "text": " So again, you would find these betas wherever you want to evaluate it."
+    },
+    {
+      "chunk": 6,
+      "start": 4185.32,
+      "end": 4188.58,
+      "text": " So they're looking at that here."
+    },
+    {
+      "chunk": 6,
+      "start": 4192.26,
+      "end": 4198.4,
+      "text": " Again, you have a lambda, which relates to the width of the Gaussian, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 4198.4400000000005,
+      "end": 4199.82,
+      "text": " If it's a very wide Gaussian."
+    },
+    {
+      "chunk": 7,
+      "start": 4200.5,
+      "end": 4203.1,
+      "text": " If it's super wide, then it's just going to give you a straight line"
+    },
+    {
+      "chunk": 7,
+      "start": 4203.1,
+      "end": 4204.28,
+      "text": " because everything's going to be in it."
+    },
+    {
+      "chunk": 7,
+      "start": 4204.76,
+      "end": 4206.44,
+      "text": " If it's very narrow, it gets wiggly."
+    },
+    {
+      "chunk": 7,
+      "start": 4208.06,
+      "end": 4212.08,
+      "text": " Only now you can see it gets wiggly in a rather different way, right?"
+    },
+    {
+      "chunk": 7,
+      "start": 4212.2,
+      "end": 4216.78,
+      "text": " It can actually get kind of choppy because it's only looking at the first derivative"
+    },
+    {
+      "chunk": 7,
+      "start": 4216.78,
+      "end": 4221.84,
+      "text": " and the Gaussian can get really tiny, right?"
+    },
+    {
+      "chunk": 7,
+      "start": 4222.38,
+      "end": 4225.48,
+      "text": " And in particular, I think it gets really bad."
+    },
+    {
+      "chunk": 7,
+      "start": 4226.58,
+      "end": 4229.6,
+      "text": " You see how the data was sampled in a certain way?"
+    },
+    {
+      "chunk": 7,
+      "start": 4230.0,
+      "end": 4237.54,
+      "text": " right? Well, I mean, they're ages, but it looks like, yes. And they didn't do like continuous"
+    },
+    {
+      "chunk": 7,
+      "start": 4237.54,
+      "end": 4246.58,
+      "text": " ages with month, right? It was just, how old are you? 38, 37. So if your Gaussian is so small"
+    },
+    {
+      "chunk": 7,
+      "start": 4246.58,
+      "end": 4252.96,
+      "text": " that it's just, you know, two things, then it's going to get choppy because it won't be,"
+    },
+    {
+      "chunk": 7,
+      "start": 4252.96,
+      "end": 4255.6,
+      "text": " it won't smoothly"
+    },
+    {
+      "chunk": 7,
+      "start": 4255.6,
+      "end": 4257.58,
+      "text": " you won't even see the points"
+    },
+    {
+      "chunk": 7,
+      "start": 4257.58,
+      "end": 4259.18,
+      "text": " that are another"
+    },
+    {
+      "chunk": 7,
+      "start": 4259.18,
+      "end": 4260.32,
+      "text": " fixed year away"
+    },
+    {
+      "chunk": 7,
+      "start": 4260.32,
+      "end": 4263.62,
+      "text": " so you get these"
+    },
+    {
+      "chunk": 7,
+      "start": 4263.62,
+      "end": 4264.86,
+      "text": " very choppy derivatives"
+    },
+    {
+      "chunk": 7,
+      "start": 4264.86,
+      "end": 4267.24,
+      "text": " but it's still a function"
+    },
+    {
+      "chunk": 7,
+      "start": 4267.24,
+      "end": 4268.72,
+      "text": " it's still something you can fit to the data"
+    },
+    {
+      "chunk": 7,
+      "start": 4268.72,
+      "end": 4269.52,
+      "text": " it's still interesting"
+    },
+    {
+      "chunk": 7,
+      "start": 4269.52,
+      "end": 4272.28,
+      "text": " still gives you a reasonable model"
+    },
+    {
+      "chunk": 7,
+      "start": 4272.28,
+      "end": 4277.54,
+      "text": " so again"
+    },
+    {
+      "chunk": 7,
+      "start": 4277.54,
+      "end": 4279.22,
+      "text": " similar to"
+    },
+    {
+      "chunk": 7,
+      "start": 4279.22,
+      "end": 4280.3,
+      "text": " how that"
+    },
+    {
+      "chunk": 7,
+      "start": 4280.3,
+      "end": 4284.4,
+      "text": " how the lambda in the smoothing spline"
+    },
+    {
+      "chunk": 7,
+      "start": 4284.4,
+      "end": 4286.84,
+      "text": " could be thought of as a degree of freedom."
+    },
+    {
+      "chunk": 7,
+      "start": 4287.42,
+      "end": 4289.46,
+      "text": " You have the same notion with the local regression"
+    },
+    {
+      "chunk": 7,
+      "start": 4289.46,
+      "end": 4298.24,
+      "text": " that now the Gaussian is related to the degrees of freedom."
+    },
+    {
+      "chunk": 7,
+      "start": 4304.28,
+      "end": 4307.16,
+      "text": " All right, so that is local regression."
+    },
+    {
+      "chunk": 7,
+      "start": 4307.16,
+      "end": 4312.26,
+      "text": " and sorry to go through these things like a list"
+    },
+    {
+      "chunk": 7,
+      "start": 4312.26,
+      "end": 4314.56,
+      "text": " I mean that's really kind of how the book does it"
+    },
+    {
+      "chunk": 7,
+      "start": 4314.56,
+      "end": 4315.44,
+      "text": " so it just kind of"
+    },
+    {
+      "chunk": 7,
+      "start": 4315.44,
+      "end": 4317.98,
+      "text": " I mean at least they're grouped right"
+    },
+    {
+      "chunk": 7,
+      "start": 4317.98,
+      "end": 4320.14,
+      "text": " so the local regression and the smoothing spline"
+    },
+    {
+      "chunk": 7,
+      "start": 4320.14,
+      "end": 4322.42,
+      "text": " are both kind of functions that you have to fit"
+    },
+    {
+      "chunk": 7,
+      "start": 4322.42,
+      "end": 4324.28,
+      "text": " right where it's not"
+    },
+    {
+      "chunk": 7,
+      "start": 4324.28,
+      "end": 4327.68,
+      "text": " these knots and stuff"
+    },
+    {
+      "chunk": 7,
+      "start": 4327.68,
+      "end": 4329.74,
+      "text": " it's not the worst book"
+    },
+    {
+      "chunk": 7,
+      "start": 4329.74,
+      "end": 4334.28,
+      "text": " but the thing that it"
+    },
+    {
+      "chunk": 7,
+      "start": 4334.28,
+      "end": 4335.66,
+      "text": " ends with"
+    },
+    {
+      "chunk": 7,
+      "start": 4335.66,
+      "end": 4343.2,
+      "text": " or that sort of wraps it up together is that so far we've been talking about this just with one value of x, right?"
+    },
+    {
+      "chunk": 7,
+      "start": 4343.2,
+      "end": 4357.48,
+      "text": " So here this was age right Now you can imagine that wage doesn just depend on age right But also"
+    },
+    {
+      "chunk": 7,
+      "start": 4357.92,
+      "end": 4360.98,
+      "text": " you know,"
+    },
+    {
+      "chunk": 7,
+      "start": 4361.04001,
+      "end": 4366.98,
+      "text": " education, right?"
+    },
+    {
+      "chunk": 7,
+      "start": 4367.4,
+      "end": 4370.4,
+      "text": " So then we want a"
+    },
+    {
+      "chunk": 7,
+      "start": 4370.4,
+      "end": 4374.86,
+      "text": " model that isn't just going to give us a linear regression model,"
+    },
+    {
+      "chunk": 7,
+      "start": 4375.0,
+      "end": 4379.88,
+      "text": " a simple, like, we don't want just the equivalent of a simple linear regression between"
+    },
+    {
+      "chunk": 7,
+      "start": 4379.88,
+      "end": 4384.22,
+      "text": " two variables, but we want the equivalent of a multivariate regression,"
+    },
+    {
+      "chunk": 7,
+      "start": 4386.02,
+      "end": 4395.18,
+      "text": " right, where now we have one way of modeling it for age and another one for education level,"
+    },
+    {
+      "chunk": 7,
+      "start": 4395.18,
+      "end": 4404.3,
+      "text": " another one for whatever, you know, occupation or whatever. I mean, that's hard to variable to"
+    },
+    {
+      "chunk": 7,
+      "start": 4404.3,
+      "end": 4410.36,
+      "text": " define height. I don't know why height would matter, but you could imagine that it somehow does."
+    },
+    {
+      "chunk": 7,
+      "start": 4411.76001,
+      "end": 4417.48001,
+      "text": " Then you would want to have a way to systematically make flexible basis functions for each of these"
+    },
+    {
+      "chunk": 7,
+      "start": 4417.48001,
+      "end": 4424.44,
+      "text": " things, flexibly model each one, allow for the nonlinear stuff, but still put them all into one"
+    },
+    {
+      "chunk": 7,
+      "start": 4424.44,
+      "end": 4434.0,
+      "text": " model. And additive models are a very natural way of doing it. And the way they do it is they just"
+    },
+    {
+      "chunk": 7,
+      "start": 4434.0,
+      "end": 4437.92,
+      "text": " assume that each of the components, so in this case, wage,"
+    },
+    {
+      "chunk": 7,
+      "start": 4437.92,
+      "end": 4441.84,
+      "text": " age, height, whatever, add together."
+    },
+    {
+      "chunk": 7,
+      "start": 4442.28,
+      "end": 4445.14,
+      "text": " So here's one for like age,"
+    },
+    {
+      "chunk": 7,
+      "start": 4445.6,
+      "end": 4449.45999,
+      "text": " and this one would be for like education level,"
+    },
+    {
+      "chunk": 7,
+      "start": 4450.38,
+      "end": 4456.04,
+      "text": " and whatever. And so each"
+    },
+    {
+      "chunk": 7,
+      "start": 4456.04,
+      "end": 4459.1,
+      "text": " one has a nice flexible form, but you just assume that"
+    },
+    {
+      "chunk": 7,
+      "start": 4459.1,
+      "end": 4463.91998,
+      "text": " they will just add together, so that they don't"
+    },
+    {
+      "chunk": 7,
+      "start": 4463.91998,
+      "end": 4465.96,
+      "text": " you're assuming that they don't interact."
+    },
+    {
+      "chunk": 7,
+      "start": 4466.78,
+      "end": 4469.06,
+      "text": " Like it's not like you have to be educated and old,"
+    },
+    {
+      "chunk": 7,
+      "start": 4469.06,
+      "end": 4473.28,
+      "text": " but rather the component that has to do with how old you are can be"
+    },
+    {
+      "chunk": 7,
+      "start": 4473.28,
+      "end": 4477.5,
+      "text": " considered separate from education, right?"
+    },
+    {
+      "chunk": 7,
+      "start": 4477.53998,
+      "end": 4480.56,
+      "text": " They combine in how they predict, right?"
+    },
+    {
+      "chunk": 7,
+      "start": 4480.74,
+      "end": 4483.18,
+      "text": " So, but they combine additively."
+    },
+    {
+      "chunk": 7,
+      "start": 4484.14,
+      "end": 4489.08002,
+      "text": " And if you make that assumption, which is often not a terrible one, right?"
+    },
+    {
+      "chunk": 7,
+      "start": 4489.14,
+      "end": 4493.06,
+      "text": " Either because the assumption is maybe a good one or because adding"
+    },
+    {
+      "chunk": 7,
+      "start": 4493.91998,
+      "end": 4506.54,
+      "text": " terms could be bad right Because they could get unwieldy So you do that and then basically everything we talked about today in terms of making things"
+    },
+    {
+      "chunk": 7,
+      "start": 4506.54,
+      "end": 4510.62,
+      "text": " going beyond just a linear regression and doing nonlinear stuff,"
+    },
+    {
+      "chunk": 7,
+      "start": 4511.12,
+      "end": 4513.78,
+      "text": " all of those can be the F."
+    },
+    {
+      "chunk": 7,
+      "start": 4514.78,
+      "end": 4517.86,
+      "text": " So this could be a spline,"
+    },
+    {
+      "chunk": 7,
+      "start": 4518.02,
+      "end": 4519.14,
+      "text": " like a cubic spline."
+    },
+    {
+      "chunk": 7,
+      "start": 4519.14,
+      "end": 4523.78,
+      "text": " this could be a"
+    },
+    {
+      "chunk": 7,
+      "start": 4523.78,
+      "end": 4525.12,
+      "text": " natural spline"
+    },
+    {
+      "chunk": 7,
+      "start": 4525.12,
+      "end": 4529.56,
+      "text": " this could be a"
+    },
+    {
+      "chunk": 7,
+      "start": 4529.56,
+      "end": 4533.86,
+      "text": " this could be a piecewise"
+    },
+    {
+      "chunk": 7,
+      "start": 4533.86,
+      "end": 4539.4,
+      "text": " linear model"
+    },
+    {
+      "chunk": 7,
+      "start": 4539.4,
+      "end": 4543.34,
+      "text": " this could be the"
+    },
+    {
+      "chunk": 7,
+      "start": 4543.34,
+      "end": 4545.18,
+      "text": " funky one we just talked about"
+    },
+    {
+      "chunk": 7,
+      "start": 4545.18,
+      "end": 4546.38,
+      "text": " the local regression"
+    },
+    {
+      "chunk": 7,
+      "start": 4546.38,
+      "end": 4553.86,
+      "text": " smoothing splines"
+    },
+    {
+      "chunk": 7,
+      "start": 4553.86,
+      "end": 4561.9,
+      "text": " all of these things can be ones where you just"
+    },
+    {
+      "chunk": 7,
+      "start": 4561.9,
+      "end": 4562.72,
+      "text": " set it up"
+    },
+    {
+      "chunk": 7,
+      "start": 4562.72,
+      "end": 4566.24,
+      "text": " all of the F's"
+    },
+    {
+      "chunk": 7,
+      "start": 4566.24,
+      "end": 4568.14,
+      "text": " can just be of those different"
+    },
+    {
+      "chunk": 7,
+      "start": 4568.14,
+      "end": 4570.06,
+      "text": " forms, right, so you can pick"
+    },
+    {
+      "chunk": 7,
+      "start": 4570.06,
+      "end": 4571.68,
+      "text": " your favorite format"
+    },
+    {
+      "chunk": 7,
+      "start": 4571.68,
+      "end": 4573.78,
+      "text": " and then the additive models"
+    },
+    {
+      "chunk": 7,
+      "start": 4573.78,
+      "end": 4575.12,
+      "text": " just assume that they add together"
+    },
+    {
+      "chunk": 7,
+      "start": 4575.12,
+      "end": 4584.4,
+      "text": " right so for example we can define a cubic spline for x1 and that's at 40 and 60"
+    },
+    {
+      "chunk": 7,
+      "start": 4584.4,
+      "end": 4594.56,
+      "text": " and this would be for the first thing right age and so this is the same cubic spline that we had"
+    },
+    {
+      "chunk": 7,
+      "start": 4594.56,
+      "end": 4601.0,
+      "text": " an example and then the next one could be the year"
+    },
+    {
+      "chunk": 7,
+      "start": 4601.0,
+      "end": 4606.8,
+      "text": " I don't know why year would matter"
+    },
+    {
+      "chunk": 7,
+      "start": 4606.8,
+      "end": 4607.86,
+      "text": " but okay"
+    },
+    {
+      "chunk": 7,
+      "start": 4607.86,
+      "end": 4609.48,
+      "text": " year so"
+    },
+    {
+      "chunk": 7,
+      "start": 4609.48,
+      "end": 4612.88,
+      "text": " whatever year it is from"
+    },
+    {
+      "chunk": 7,
+      "start": 4612.88,
+      "end": 4614.72,
+      "text": " that"
+    },
+    {
+      "chunk": 7,
+      "start": 4614.72,
+      "end": 4617.36,
+      "text": " you know with knots at those values"
+    },
+    {
+      "chunk": 7,
+      "start": 4617.36,
+      "end": 4619.32,
+      "text": " so you can see they have different"
+    },
+    {
+      "chunk": 7,
+      "start": 4619.32,
+      "end": 4621.28,
+      "text": " knot locations"
+    },
+    {
+      "chunk": 7,
+      "start": 4621.28,
+      "end": 4622.82,
+      "text": " right"
+    },
+    {
+      "chunk": 7,
+      "start": 4622.82,
+      "end": 4625.41998,
+      "text": " they don't even have to have the same number of knots"
+    },
+    {
+      "chunk": 7,
+      "start": 4625.41998,
+      "end": 4626.41998,
+      "text": " they don't have to have the"
+    },
+    {
+      "chunk": 7,
+      "start": 4626.41998,
+      "end": 4630.22,
+      "text": " yeah"
+    },
+    {
+      "chunk": 7,
+      "start": 4630.62,
+      "end": 4632.52002,
+      "text": " You can have different knots in different places."
+    },
+    {
+      "chunk": 7,
+      "start": 4632.62,
+      "end": 4633.47998,
+      "text": " They have different domains."
+    },
+    {
+      "chunk": 7,
+      "start": 4633.91998,
+      "end": 4636.22,
+      "text": " So that's all fine."
+    },
+    {
+      "chunk": 7,
+      "start": 4638.36,
+      "end": 4640.62,
+      "text": " Here's another one, education, right?"
+    },
+    {
+      "chunk": 7,
+      "start": 4640.62,
+      "end": 4655.6,
+      "text": " So this is it with indicator values because that what you have So advanced degree high school I forget what the other ones would be"
+    },
+    {
+      "chunk": 7,
+      "start": 4658.8,
+      "end": 4666.32,
+      "text": " I don't know. Oh, some college, college graduate. So you guys would be somewhere in there."
+    },
+    {
+      "chunk": 7,
+      "start": 4667.16,
+      "end": 4672.16,
+      "text": " Advanced degree. All right. So you have these three components and each one in this case"
+    },
+    {
+      "chunk": 7,
+      "start": 4672.16,
+      "end": 4673.92,
+      "text": " is modeled with some form of spline,"
+    },
+    {
+      "chunk": 7,
+      "start": 4674.36,
+      "end": 4677.18,
+      "text": " and then you just add them together, right?"
+    },
+    {
+      "chunk": 7,
+      "start": 4677.82,
+      "end": 4681.12,
+      "text": " And then in the case of the cubic splines,"
+    },
+    {
+      "chunk": 7,
+      "start": 4681.41998,
+      "end": 4684.68,
+      "text": " you just end up getting a very large X matrix, right?"
+    },
+    {
+      "chunk": 7,
+      "start": 4684.74,
+      "end": 4686.52,
+      "text": " I'll just stack up,"
+    },
+    {
+      "chunk": 7,
+      "start": 4686.91998,
+      "end": 4690.26,
+      "text": " and then you find the betas the same way you normally would."
+    },
+    {
+      "chunk": 7,
+      "start": 4693.06,
+      "end": 4697.36,
+      "text": " So these are typically called generalized"
+    },
+    {
+      "chunk": 7,
+      "start": 4697.36,
+      "end": 4700.36,
+      "text": " generalized"
+    },
+    {
+      "chunk": 7,
+      "start": 4700.36,
+      "end": 4704.36,
+      "text": " additive"
+    },
+    {
+      "chunk": 7,
+      "start": 4704.36,
+      "end": 4707.48,
+      "text": " models"
+    },
+    {
+      "chunk": 7,
+      "start": 4707.48,
+      "end": 4711.46,
+      "text": " or GAMs."
+    },
+    {
+      "chunk": 7,
+      "start": 4714.46,
+      "end": 4716.26,
+      "text": " Sounds better like GAMs, right?"
+    },
+    {
+      "chunk": 7,
+      "start": 4716.32,
+      "end": 4719.5,
+      "text": " Because it sounds like you're, I don't know, like jelly or something."
+    },
+    {
+      "chunk": 7,
+      "start": 4721.18,
+      "end": 4724.68,
+      "text": " But they are often called GAMs and then you"
+    },
+    {
+      "chunk": 7,
+      "start": 4724.68,
+      "end": 4728.9,
+      "text": " you fit them the same way you would any linear model,"
+    },
+    {
+      "chunk": 7,
+      "start": 4729.5,
+      "end": 4732.66003,
+      "text": " or they fit the largely the same way."
+    },
+    {
+      "chunk": 7,
+      "start": 4733.3,
+      "end": 4736.82,
+      "text": " And then you can get again,"
+    },
+    {
+      "chunk": 7,
+      "start": 4737.14,
+      "end": 4740.33997,
+      "text": " the same kind of predictions and,"
+    },
+    {
+      "chunk": 7,
+      "start": 4740.33997,
+      "end": 4743.64,
+      "text": " and confidence intervals for the,"
+    },
+    {
+      "chunk": 7,
+      "start": 4743.74,
+      "end": 4747.2,
+      "text": " for the variables or for the, you know, for,"
+    },
+    {
+      "chunk": 7,
+      "start": 4747.4400000000005,
+      "end": 4752.96,
+      "text": " for how the, how your response variable varies as a function of the individual"
+    },
+    {
+      "chunk": 7,
+      "start": 4752.96,
+      "end": 4753.6,
+      "text": " components."
+    },
+    {
+      "chunk": 7,
+      "start": 4754.68,
+      "end": 4757.38,
+      "text": " And since they're additive, they're going to separate quite well,"
+    },
+    {
+      "chunk": 7,
+      "start": 4758.12,
+      "end": 4759.6,
+      "text": " or at least you can see them individually,"
+    },
+    {
+      "chunk": 7,
+      "start": 4759.6,
+      "end": 4764.8,
+      "text": " like predictions on each one's posteriors."
+    },
+    {
+      "chunk": 7,
+      "start": 4769.36,
+      "end": 4775.02,
+      "text": " Yeah, or these are specifically the Fs."
+    },
+    {
+      "chunk": 7,
+      "start": 4775.98,
+      "end": 4779.92,
+      "text": " So these are your, these guys here."
+    },
+    {
+      "chunk": 7,
+      "start": 4779.92,
+      "end": 4799.68,
+      "text": " All right, for this data."
+    },
+    {
+      "chunk": 8,
+      "start": 4800.0,
+      "end": 4801.84,
+      "text": " Oh."
+    },
+    {
+      "chunk": 8,
+      "start": 4803.62,
+      "end": 4805.38,
+      "text": " Yeah, this is for a different model."
+    },
+    {
+      "chunk": 8,
+      "start": 4805.6,
+      "end": 4809.0,
+      "text": " So this is the..."
+    },
+    {
+      "chunk": 8,
+      "start": 4809.0,
+      "end": 4812.34,
+      "text": " You can see this one, they're included in different ways."
+    },
+    {
+      "chunk": 8,
+      "start": 4812.56,
+      "end": 4815.18,
+      "text": " So this is one where these are, I think this is a B-spline."
+    },
+    {
+      "chunk": 8,
+      "start": 4815.36,
+      "end": 4817.0,
+      "text": " So this is a..."
+    },
+    {
+      "chunk": 8,
+      "start": 4817.0,
+      "end": 4819.12,
+      "text": " And this is a natural spline."
+    },
+    {
+      "chunk": 8,
+      "start": 4820.04,
+      "end": 4824.0,
+      "text": " Whereas in this case, this one is..."
+    },
+    {
+      "chunk": 8,
+      "start": 4824.0,
+      "end": 4828.0,
+      "text": " I think it's that linear model."
+    },
+    {
+      "chunk": 8,
+      "start": 4828.12,
+      "end": 4828.62,
+      "text": " What's it called?"
+    },
+    {
+      "chunk": 8,
+      "start": 4830.0,
+      "end": 4834.16,
+      "text": " the local regression model, right?"
+    },
+    {
+      "chunk": 8,
+      "start": 4834.24,
+      "end": 4835.12,
+      "text": " Because that's the low."
+    },
+    {
+      "chunk": 8,
+      "start": 4837.04,
+      "end": 4837.22,
+      "text": " So,"
+    },
+    {
+      "chunk": 8,
+      "start": 4838.0,
+      "end": 4841.38,
+      "text": " but yeah, this is just making the point"
+    },
+    {
+      "chunk": 8,
+      "start": 4841.38,
+      "end": 4844.9,
+      "text": " that you can use different ways of modeling each one."
+    },
+    {
+      "chunk": 8,
+      "start": 4845.14,
+      "end": 4847.18,
+      "text": " So different kinds of splines."
+    },
+    {
+      "chunk": 8,
+      "start": 4848.86,
+      "end": 4852.82,
+      "text": " And then you can also use these."
+    },
+    {
+      "chunk": 8,
+      "start": 4855.28,
+      "end": 4857.82,
+      "text": " And I mean, you can't do too much with education"
+    },
+    {
+      "chunk": 8,
+      "start": 4857.82,
+      "end": 4862.54,
+      "text": " just because it's their discrete values, the way they did it."
+    },
+    {
+      "chunk": 8,
+      "start": 4862.6,
+      "end": 4873.56572,
+      "text": " If they would have added like I don know semesters taken or something then you could have done something more creative Okay"
+    },
+    {
+      "chunk": 8,
+      "start": 4877.52572,
+      "end": 4881.84572,
+      "text": " So that's as far as I wanted to go today."
+    },
+    {
+      "chunk": 8,
+      "start": 4883.70572,
+      "end": 4887.685715,
+      "text": " But we're almost done with this section."
+    },
+    {
+      "chunk": 8,
+      "start": 4889.42572,
+      "end": 4892.12572,
+      "text": " Made a little bit faster progress than normal."
+    },
+    {
+      "chunk": 8,
+      "start": 4892.64571,
+      "end": 4893.30572,
+      "text": " So that's good."
+    },
+    {
+      "chunk": 8,
+      "start": 4893.30572,
+      "end": 4904.10571,
+      "text": " So tomorrow we're going to wrap up this module seven, and we're going to start the next module eight."
+    },
+    {
+      "chunk": 8,
+      "start": 4904.905716,
+      "end": 4905.16572,
+      "text": " Okay?"
+    },
+    {
+      "chunk": 8,
+      "start": 4906.545715,
+      "end": 4908.48572,
+      "text": " So we'll get into that tomorrow."
+    },
+    {
+      "chunk": 8,
+      "start": 4909.92572,
+      "end": 4916.725716,
+      "text": " And I'll stop here, but one of the students wanted to explain something briefly."
+    },
+    {
+      "chunk": 8,
+      "start": 4917.44572,
+      "end": 4918.92572,
+      "text": " I don't know what it is."
+    },
+    {
+      "chunk": 8,
+      "start": 4923.30572,
+      "end": 4927.66572,
+      "text": " But I'll just stop the video because that's too hard."
+    },
+    {
+      "chunk": 8,
+      "start": 4929.28572,
+      "end": 4933.22571,
+      "text": " So everyone online, we'll see you later."
+    },
+    {
+      "chunk": 8,
+      "start": 4934.98572,
+      "end": 4936.84572,
+      "text": " Let me just wait for this stopping."
+    }
+  ]
+}

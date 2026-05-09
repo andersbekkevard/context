@@ -1,0 +1,5443 @@
+{
+  "model": "whisper-large-v3-turbo",
+  "text": "All right. So we were talking about shrinkage methods and regularization and how that's good for variance, for getting, you know, a nice reduced variance, as well as a nice reduction in biases or in particular with just a little bit of increased bias. and typically these methods do well in held out data, right? And cross-validated mean squared error. So we talked about subset selection, forward selection, backward selection for model selection, picking the variables. We talked about using regularization, ridge and lasso, and also this combined elastic net one. And now we're talking about PCA as a way of kind of cheating where you would actually reduce the number of variables you have before you even go to regression, right? So you're essentially going from your data matrix X to a new matrix Z, which is smaller, right? So you're doing a dimensionality reduction. You're reducing the number of dimensions of the matrix, compressing it, throwing away some stuff. Hopefully that doesn't matter, such that later you can regress with those things. So we talked about this notion of principal components. Roughly sketch out how you get them, right? So basically you're doing a linear sum over the rows such that they have the maximum variance, subject to this condition that the sum of those weights squared is equal to one. So that's a constraint. And also that subsequent components that you get. So you get the first component, and then the next component has to be something that's orthogonal to the first. Right? There's a lot of shit that's orthogonal to the first. Remember that you're in high dimension, so it's okay. It's not so restrictive. But it has to be orthogonal. And then of all possible things that are orthogonal, which one has the highest variance where, again, the weights are constrained to add up to one if you square them. And you do that up to the number If you have p variables you do that p times assuming that you have more data points than p So n is larger than p You do that up to p. And that gives you the full principal components of your data. So now you've taken your data. You've transformed it. And conveniently, since you've done it in such a way that the first thing was the one that maximized the variance, then the first component is the strongest one, and the last component is going to have the smallest variance. So if you stack them together, you get plots like this, where you see the first component, the first principal component explains a certain amount of variance like this, and then the second less and less and less, and then eventually it'll saturate up to one. All right. There was a question about how to make these. I'll show it in a second. it was actually in the i i might app it's in like two slides so we'll get there in a second but you have you do this and you can imagine that up here right above this threshold which is just something you would decide as a scientist or an engineer or statistician you make a decision i don't give a shit about the the weak shit the stuff that doesn't vary much so and it's not a terrible assumption So you see that these are very small increase in total variance. And you can think of it like the actual variance of it along the data is so tiny that the thing is essentially constant. And you don't really care about constants, right? I mean, that won't matter. If you, in a regression model, adding something that's constant is the same as just adding a bias term. You need for the thing to actually matter in the model, it should vary somewhat. So it makes sense. And here's the illustration of how PCA kind of like this is the data. And you can see the one component is the biggest one is along the obvious axis. And then the second one is orthogonal to that and obviously smaller. So it makes sense. So that's how PCA works. We haven't done the PCR in PCR. This is just the PCA part. And so as an overview it a dimensionality reduction technique It to visualize the data It gets to lower dimensions Yeah, many models, basically all models, will suffer when there's a high correlation between variables. I can't think of a model that really benefits from it. Normally, you want them to be orthogonal, or you want them to be less related to each other. So yeah, that's, yeah, we'll get to in a second. But one real benefit of PCR is that since everything is orthogonal, it just learns it super fast. Orthogonalizing your data makes things quick. Because then the assumption that things are, you know, having it defined, having the model to find some sort of convenient trade-off is always going to take longer than if things are never trading off each other. All right. So, yeah, and then an important thing is that PCA is not scale invariant, so you have to standardize your variables, right? If you don't standardize, then it'll just be dominated by the strong one, and then that doesn't really tell you what you want. So standardize so that, you know, if one, you imagine one, the x is in kilometers and then another x is in millimeters and then you know one just looks bigger because it's a different scale that's useless so you standardize them they all have the same scale uh because it's all in in um in terms of like the standard deviation of the data So let's see. Assume. Yeah, and then here is this. It was asked yesterday, and I didn't remember, how do you compute this explained variance? In practice, you do this. You get the eigenvalues. So these are the eigenvalues. associated with each principal component. Now, the eigenvalue is actually, and this is not obvious, but the eigenvalue is equal to the variance of the component I am afraid of the principal component I It's not an I. So if you just take the principal component, take the variance of it, that is actually going to be the same number or very, very close. It should be the same to your eigenvalue. And so then you just take the eigenvalue. Yeah, so to make this plot, you would, P is the number of variables total. and M is the number on the y-axis below. Right, so, or no, it's not, sorry, it's the number on the x-axis. Yeah, so, for example, if M is 5, right, Then you're taking the, you want to get the total explained, the fraction of explained variance. Then you're summing up, right? So if m is 5, then you're summing up over all the eigenvalues up to the first 5. So you're summing up over all the variances. And then you're normalizing by the sum of all the variances. So obviously you're going to go from 0 up to 1. Well, I mean, they converted its percentages, but you can see that. So it goes up to 1. And then here is the... These guys are the eigenvalues. 1, this is limited to 2, 3, oh, divided by the sum. It's the normalized variance. Whatever. Does that make sense? You get it? Alright, cool. So, yeah, as always, it's good to look at this credit data set. It's a good data set to look at. go through these shrinkage issues. So now we're getting to the principal component regression part. So this is where we're using those principal components. So we take our data, we take our matrix X, we do PCA on it. That part is exactly the same as we just described. And then what we want to do is construct regression models that include more and more of the X, Right. So we would start with including just the first principal component as a single X in our regression model. And then we can add more and more until we're happy with how well we explain our data. So and then you just use the standard linear regression model. So, yeah, the idea is that by doing this, we need fewer variables to explain our data, and also that the PCA has done a nice compression that will generalize better. Yeah, so, yeah, the key assumptions is that most of the... Oh, yeah, a key assumption of the data is that it actually does have strong components where things vary. You know, so like these figures are often very good to make because you can see, like in this case, quite a lot was explained by just one PC, but others will look more like that, in which case, you know, the variables were already orthogonal and then adding more PCs is just the same as adding another variable. In that case, PCA isn't doing nothing for you. Also, it is a linear thing. So if the relationships are nonlinear, then it's not so good either, or it might not be so good, right, if they're not well captured by a linear assumption. A lot of things are, though. So most of the variability, yeah, PCA is that it will actually, that the variability is compressible, and that those axes of variation are the ones that are relevant for the response, right? And that also is an assumption that may not be true. I can think of complicated examples where this is not true but I won go into those But yeah it not always the best idea but it not generally a bad one either And they're not guaranteed to hold, of course. It all depends on the data. Yeah, and I guess you could think of this as a form of unsupervised learning. Because it's unsupervised, you make an assumption, hit go. So, all right, so how does it do? So we can compare, yeah, like we said, what we do is we go from X to Z, right, with PCA. And then now we're doing our Y minus beta Z squared instead of doing X squared, right? And we just fit this, fit that, and then we can see all the same things. We can see how well our error is. We can look at our test error, and we can decompose it into this bias term and the variance term the same way we did with linear regression, the same way we did with ridge regression, with lasso regression, and we can compare them. And that's what they've done here. On the y-axis, the mean squared error. Here's the number of components. starting, of course, from including the strongest component, right, because that's the one explaining most variation in X. So you see already it does explain something. So here you can see the test error. Sorry, the test error is purple. Right, we see this test error go down, and then eventually go back up again. right, as you start including directions in PC directions that don't matter to the Y. In this case, this was a simulated example, and here the PCA assumption is a good one, right? So you can see that it actually is reducing the error quite a lot with just a few number of PCs, and then it starts going up again. And similarly, you see in the bias that you get a a quick reduction in bias, and then it stays low because you add more parameters it doesn really affect the bias But adding more parameters will change the variance right And it the as we discussed you have lots of solutions. You typically have a lot of solutions with a low bias. So the other part of the error you really want to watch out for is this variance. And it goes up typically with this test mean squared error, right? Obviously, this is test. If it was not test, it would be flat like the bias one. So this is PCR, right? And we can look at the same idea, but see how well this compares with ridge and lasso. So here we have the two methods, one in dotted line and one is the solid line. Let's see. Since the ridge one tends to be, I'm guessing the dotted line is less so because it's behaving more linearly, whereas ridges seems to be more quadratic. So I think that's the solid, but it would have been nice if they put the thing here. The shrinkage factor, this is the, I gave the, I put an example of it from before. It's not the lambda that we use, right? When we talked about ridge regression, we talk about this lambda term, and that's the one that you can vary, and then you get a different, you can get a different solution for each one, and then you probably pick one. Instead, what they do is they call this the shrinkage factor. So we don't actually know in this plot what the value of lambda is. It was just assigned this notion of the shrinkage factor. I mean, it is nice. see it kind of it's cute. It gets rid of the scaling, the relative scaling of the different models. I don't know. But anyways, this is that's what this shrinkage factor is here. So this is the absolute value of beta lambda and it would depend on what norm you use so I just put it as P Oh, P is the other letter. We'll go with Q, because here in the plot, they show both the L1 and L2. All right. So, yeah. Yeah. So we have, so what we can see here is it has a similar form to the PCR, right? In which case both the, you see this kind of shape with the test error, that it does have a minimum at one place. And that minimum is also where you have a low variance and you have a low mean squared error. So wherever the mean squared error, sorry, the bias. So of the many terms, of the many solutions that have a low bias, the mean squared error on the held out data is in a similar location to where the variance is minimized. Right. So you can see they have similar form. they don't get into quantitatively what this means in terms of how many variables but of course you could look at it you could look at the how many of the lasso terms are actually zero versus the number of components that you needed so that would be something you could do so yeah and here's the summary of what they wrote that it performed well on simulated data. Of course, everything works on simulated data. That's why we use it. PCR needed five components. I guess that's what this number here is, five. And the results are only slightly better than Lasso and very similar to Ridge. All right. in this case just like Ridge it doesn't actually select the parameters it gives you component and each component is a combination of the original axis. So it's not going to tell you only these three matter, right? But in some cases, you don't care. So like PCR would be good in a situation where really you just want to make a predictive model and you don't really care what the underlying variables are or if you're okay with having combinations of variables and things like this. If you want more specific, like it's this or that one, that's where lasso comes in or in the model selection that we talked about first. Let's see. Yeah, and also, it's not super obvious, but you ridge PCR, it can be seen as a discretized version of ridge regression. So it's, you know how ridge regression encourages ties, right? So it says like if two things explain the same thing, then have them share the weight, right? Don't let them trade off of each other, make them share. It's a very similar notion, right? The point where they share is actually very similar to getting a principal component that captures the part that both share, right? So it's this averaging. So PCR is doing it more continuously because it can be any point. whereas sorry, ridge regression doesn't work continuously because it can be any point but PCR does it more abruptly because it simply says okay, direction, direction, direction new axes, new data everything that's shared go here yeah so yeah, you can you can also think of it as how much, you can also see how much the ridge regression term would shrink the principal components of the data, depending on how strong the lambda is. So I will show a plot in a second. In both cases, they put a lot of pressure on the less important principal components, so in the case of PCR you simply don include them In ridge regression you penalizing the less important ones because of the shrinkage term So it making them go away by penalizing them Yeah, that's the same as the less important PCs are also the ones with the smallest eigenvalue because they're the ones that vary the most or the least. right so both models yeah there's a there's a similarity and we're just sort of sketching the similarity between the ridge regression and PCR so again in the case of PCR here's the number of components right so at eight components that's your P I should yeah So, P equal to 8. And then you have, basically, I don't like this figure because the axes are not well defined. But assuming I've read it correctly, what this is getting at is that by 8 components, where eight is the number of variables, at least it has been in the past, PCR, or principal component regression, will explain everything. Will shrink, yeah. I mean, what it's trying to show is this same notion that I said here, that PCR is a disparaged version of Ridge. So as you add more components, whereas Ridge will have it be gradually being more permissive this is confusing this is a confusing figure I'll try to make another one for next time because I don't like this figure. The axis should be labeled. New one. Another day I did figure out what he was trying to say but now I forgot I mean I can guess what was on the labels Yeah, so it makes more sense. You have the number of components, right? And then what you can see is that as you add more components, and each time what you're doing is you add more components, you solve the linear regression model and then you can back out the value of the variables in the original x so you can get the betas for the original x even though you fit it with the z so you go you fit y minus beta z squared and then go from God I defined it somewhere better before from beta z to beta x just by doing the inverse of the mapping So you can find that above. Right? So we already looked at that before. So that's what has been done here. You fit it with PCR with a given number of components, and then you back out what the coefficients are. So, of course, with just one component, you're not doing very well, or you haven't given a lot of value to the weights. They're not doing much, right? These betas and the standardized coefficients for the individual things. But as you add more components, right? So now here you see a big transition at nine. I think that's nine. It should be nine. You see this jump in the value of some of these coefficients. So you can imagine that the thing that mattered the thing where income lied was income didn't really come in until the ninth PC given it just whatever the X were right it might be that income just happened not to vary as much or wasn as correlated as other things right Whereas some of the other stuff probably came in earlier like the student variability was probably very high and probably a lot of things varied with respect to the student right so whatever variation that correlated heavily with the student and not so much with these other variables that came out most strongly early on and so that's why you get more of this beta coming in early right because you do have to kind of get lucky that the variables you care about for y are in the dominant pcs of x it's like a guess right you don't actually know that It might be a smaller one. But what you can see here is the standardized coefficients, and then on the y-axis of this other plot is the cross-validated mean squared error of this model. And you can see it was kind of, you know, improving, improving, improving, and then from 9 to 10, it got massively better. So when it came to 10, then you had a big drop in mean squared error. so I would read this as you'd be happy with 10 components and then at 10 components you can see that it's heavily driven by this black one which is income and then student and you have rating has a nice number you have limit and then a lot of other stuff, which are zeros. So I don't know how many Xs are in there, but you can see that a lot of things are zeros. So even though it takes you, even though the things that you care about were just ended up being four variables, right? Primarily, it took you 10 PCs, 10 principal components to get there, right? Probably because other stuff was in there and that stuff just didn't matter. but the nice thing is that 10 is still smaller than the total number of variables in this data so it was still helpful but maybe not maybe the other approaches that we talked about earlier with respect to this particular data would be more useful. So another recommended exercise to do this with this famous credit data and see how it works and compare that with the results from the other ones. I think you'll find it was helpful, but maybe not the most helpful. A drawback is, of course, the fact that you're using, it's building on PCA. PCA is an unsupervised method. It's also, you're making a big assumption here. You're saying, I'm assuming that the things that Y cares about are the strongest directions of variance in my data, X, right? And so if it's not, if it's one of the weaker ones, or also if it's not the variance, right? Like let's say the data, I don't want to give an example. All my examples are confusing. But, you know, this is a big assumption. Like if, for example, you know, like let's say the X value is actually changing like this, but what the thing cares about what y is is it's basically a function of some you know whenever the value is here this is not a good example then just getting the direction of variance is not going to capture that because what you care about is when it's at a specific value yeah sorry again i should not try to come up with an example on the fly, but PCR has a big assumption on the idea that the PCA is a good way to transform your variables to explain why. It's not always obvious. So yeah, no guarantee that the directions that best explain the predictors will also be the best directions to use for predicting the response. So they're saying that. I made it, I used a lot more words that say the same thing, and it didn't come across more interesting, but hey, I heard it twice. And there a lot of examples that I just don come to mind anything easy So that one way of doing this dimensionality reduction in order to solve the problem Another one is partial least squares. Again, developed by Volt. Swede. how do you, never mind Swedish, yeah insert Swedish joke here I don't have one but in the 70s for chemometrics chemometrics but is used elsewhere. So their problem is very much this setting where they have a lot of variables that they could potentially use and they need to reduce it and they want to do it quickly because they are impatient and this was the 70s and the computers were terrible in the 70s. So they needed something that worked efficiently and well and they were fine with linear assumptions, but PCA wasn't doing it for them. And yeah, they needed something else. So they needed something more. And they came up with this idea of partial least squares. So it's very similar to partial, to PCR, right? It's a dimensionality reduction. You're again going from X to Z to reduce the number of variables. It's doing it in a linear combination. So Z is sum of some fees times X. So you're taking some linear combination of these. That's going to give you your so the z's are going to be linear combinations of x they're not crazy they're just not whereas pca you specifically have this rule that you want to find the best the linear combination that gives you the maximum variance right What you want to do now and it in the yeah now instead of so PCA the goal was find fees such that, hold on. such that the variance of is max. Right? Certainly for the first PC, subject to the constraint that the sum of the things varying squared but those two constraints right so that's PCA is there now what we're going to say is instead of that we're going to say PLS is the same thing only now we replace this with we add a y and we say the covariance. So now we're trying to find the weighted sum of the x's such that the covariance with the y is maximal. right so are you it kind of it sounds like we're cheating because we're going to find a transformation of the y's uh sorry transformation of the x's such that the covariance is high and then we're going to use those things to explain the data again so it seems a bit counterintuitive but it it works it kind of sounds like you're doing regression twice um but that's okay but this is the main idea. So here, in more words, we see transformation of Z, of X, a Lin transformation of X to make Z. Again these are these are these are yeah so this coefficient is proportional to the correlation between y and xj And it puts, yeah. Yeah, so this is equivalent to what I said. about the covariance. So the way you can get this PLS is to find the regression value of Y onto X and then use those fees. So this is the algorithm to fit this. Right? So in order to find the weights that maximize the covariance, what you do is you actually solve the regression problem backwards. So instead of finding y as a function of x, you're finding x as a function of y. All right. And then those fees are, the first set of fees are the same idea as the first component, first principle component. And then to get the second one, you do the same thing again, but now on the residuals after you've removed the first component, the first Z1. And you just keep going and doing that again and again and again. But you see, it's the same idea as the principal component analysis, only now you're finding the principal components not as the directions of maximal variance of X, but the maximal covariance of X and Y. so if you do that then you can see similar stuff as with PCR so again you should do it on the credit data so good and then yeah this is funny so PLS often performs no better than ridge regression or PCR but it's Swedish so it's like they're meatballs right they're not better but they're they sound good I don't know yeah insert Swedish joke here I don't know Okay. Demence. It can reduce bias, but it can also increase variance. So it's a little more. Yeah. Honestly, I've never really used it much because it's kind of a niche thing. but I mean people swear by it like I said there's actually a guy here who made a whole company about it and he goes around he'll gladly come in and talk to us for like three hours about how PLS saves the world I don't know but it is very much the same idea as PCR only now using the covariance instead of the variants and all of these tend to behave similarly A lot of things come down to looking like ridge regression, surprisingly. And conveniently, ridge regression, again, behaves smoothly instead of this kind of discrete thing, which PCR and PLS both have. Yeah, I would agree that lasso falls somewhere between ridge and best subset regression and has some nice properties of each. For me, definitely the most interesting things are lasso and also implicit lasso. Many different ways you can get lasso and ridge regression. Those are, I think, the most interesting part of this module. But being exposed to the ideas of partial e-squares regression PCR are good because not only are those two fairly common, I mean, certainly PCR is very common. There's also random things that people come up with where they're like, okay, I have my data matrix and now I'm going to transform it into something else and then do regression. For example, a lot of people have images, right? So let's say you have a video of, and videos are very high dimensional, right? So like a video of a natural scene is huge or video of animals or something like this. It could just be very long and weird. And regressing something from the video is going to be very hard But what you can do is you could use like a machine learning model that essentially compresses that down into some very small number of features right So one of these modern feature detector ones, or simply compresses it down to a representative. Each image will then be a representative image, which is a very simple vector. So that dimensionality reduction will be very nonlinear, confusing, thing, but hopefully still capture aspects of the original images in each frame, such that when you play the video, there's, you know, things will pop up again and again. And then, so if you're using, following a similar notion of PCR, instead of taking the entire video frame, you could take this dimensionality reduced, smaller subset, where it's been compressed through this network. and again you don't know what it's doing so maybe it's doing something terrible and stupid but either way you can get it compressed to something small and then that you can use in something like a regression model so the notion of this actually expands quite well to many other more complicated ways of doing things more than principal component regression or pls yeah so that's that and and it's one let's take a short break and then we'll come back and finish this up so let's take a 15 minute break and then at 1.15 we'll finish up this section okay Thank you. Thank you Thank you. Thank you. Thank you. Thank you. Thank you Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you Thank you Thank you. Thank you. Thank you. Thank you. Thank you Thank you. Thank you. Thank you. Thank you. Thank you Thank you. so actually we don't have too much more to go and i also like i said i am a bit of a headache so we'll be ending early today too. Yeah. But that's okay. It's good to start next week with a new section that's going to be on these nonlinear methods like splines and things which are very useful. So this last part is a bit of a motivation as to why we care about I mean it's kind of almost like an introduction to this whole module about why it's increasingly important to understand these different ways of dealing with too many parameters and dealing with this. And mainly the fact is that we have more and more problems of this type where the number of parameters is more than the number of data points. And the reality is most of statistics has really been built on the notion that you have more data points than your parameters. So a lot of what happens when the situation when the situation is reversed, it's just not well understood. And so it's very important. Someone's calling me. And now it's also very common. Yeah, it's very common because hardware got better. We can record things with cameras everywhere, sensors everywhere. They're cheaper, they're faster, they're better. Storage is cheaper. So now more and more places have more and more variables, and it's this kind of double-edged sword that you have lots of parameters, lots of data things, but now it's harder to find things. So in this high-dimensional situation, standard linear regression, meaning without any regularization of any kind, will suck, right? And we showed this the first day, I think, that if you get a lot of variables, then the R squared goes up meaning how well you fit the the training data this is training data you do better and better and better but of course how well you fit the yeah so the training also the training mean squared error goes up or goes down but the test error quickly can rise this is a very pessimistic setting where apparently the variables they're including don't help at all. Cause you know, the test error just keeps going up and up. So my guess is, I mean, it's, it's, it's exaggerating the problem. So if you have a lot of variables, then you're going to perfectly fit the data. Even though the relationship might be completely meaningless because no matter what the variables are, if you have enough of them, you will fit the training data perfectly. We'll do terribly out of sample on the test data, but maybe you have so little data that you don't have enough to make a test set. And then what do you do, right? This is very confusing. So it's a big problem. But yeah, so you're perfect for the test data. These methods like CP and AIC and BIC, they're problematic, partially because it's hard to estimate the sigma squared. I would say they more problematic because their assumptions are always wrong and they typically always wrong So I wouldn recommend using those In every situation, you might have a different setting. For example, here, the total number of parameters is 20. And then you can see these different settings where these are three different data sets. Here, you include one parameter. Here, like 16, so somewhere in the middle. and this is including all of them. And you can see some situations, the error actually goes down, right? This is the test error. Here's another, that's with the number of predictors being 20. I don't know what these data sets are, but here's another one where 50 and this situation is different where the error does go down when you have 28 parameters or 28 degrees of freedom in your model. but then when you include all of them it goes up again right so in this case you don't want to include here you want to include everything here you don't and then in this one on the right it seems like all of it sucks right so you have a lot of parameters and it's hard to figure out which ones to use and it's hard increasing the number you include in the model um it doesn't seem to help much on the test error. So I would say this is, can be common in test error situations, in particular, if you do nothing, right? So I think these figures were made where there was zero regularization put in the model. This is just standard regression when you probably shouldn't use regression, right? So you want to do something. Probably all of these would look better with some regularization. But yeah, no matter what, your test error will go up, it tends to go up with the number of dimensionality in the problem, and that's because you have this additional problem of figuring out which parameters matter. Right? And so you have a higher variance across samples, and that contributes more to the test error. So yeah, it's the danger of too many features. Adding more features can help. Smaller can help if you have the right ones But adding noise features that are not associated with the response increases test area And that's kind of obvious, right? You add more things and it's just noise to the model, then it's going to make things worse, typically, not always. Noise features exasperates the risk of overfitting because you start fitting to the noise instead of the variables that matter. And remember, noise, it could be actual noise. It could just be things that are real but don't matter, right? So if you're doing a regression on, you know, something that's happening in the classroom and then you include details about what's happening at the same time in Japan, that's not noise. It's just completely irrelevant to the current data set. So noise can be actual noise or just noise that it just, because they're completely unrelated things. Yeah, regularization does not entirely, entirely, does not entirely eliminate the problem. It certainly helps. And these things are actually ongoing and improving over the years. I would say this aspect of what we talk about in this course is developing continuously. And largely because the models we care about, a lot of people care about, have way too many parameters. It's just the setting is more. And yeah, the reason this, like I said, the setting is just more common, both because of the explosion of machine learning models, but also because of the new technologies that allow us to record so much more data. In my field, when I started in it, they were getting like eight neurons, 10 neurons, 15 neurons at a time and recording for those. And now we're doing like 6,000, 7,000. So it's a couple orders of magnitude more. And also we went from just tracking the animal in XY position in a box So now we have eye cameras and face cameras. We're getting whisker angles of multiple whiskers. We're getting the eye pupil diameter and the rotation. We're getting their head tilt, their body posture, their limb movements. We're getting behavioral decomposition. So the number of variables we have to explain the neurons is exploding and the number of neurons are exploding And so then it really has become quite difficult to figure out what is our best what's the best relationship between X and Y in this data set when you're asking that question. I suppose one aspect that I do want to mention that is often not said well often enough is that, Remember, right now I'm saying you're trying to explore for relationships in your data. That's not often what we want to do scientifically. Often we want to test relationships. So this would be more in the exploratory phase of trying to understand what relationships are there. That's not really typically how you want to do science. You want to do science in such a way that you make a hypothesis about what there is, and then you formulate as a null hypothesis, and then you get the data, and then you test that one thing, right? Here, we're not testing things, right? We're just seeing what relationships are the strongest. So it's still called statistics, but we're not doing hypothesis testing. We're not doing like good science in a way. We're just kind of fishing around in this sense. It would be like a first step, like here you fish and then maybe you have another set of data where you would test something, some kind of non-trivial relationship that you found or understood. Yeah, that's a bit of an aside, but I think it's relevant to remind everyone of this difference between when you explore data and when you actually test something. So, yeah, more data. And interpreting results in high dimensions is tricky. I thought it was funny. Whoever, this guy wrote it, I would not say things so extreme. He's Brazilian, so of course he's going to exaggerate everything. I say this with endearment because I like Portuguese a lot. My favorite language, Brazilian Portuguese, by the way. I think it's amazing. I don't speak it, but I love it. So anyways, it's very exaggerated, but in the high-dimensional setting, the multi-colonarity problem is extreme. That's the one where your X's are correlated, and therefore it screws up your model. That's collinearity. It's like a linear correlation between the variables. But in this high-dimensional setting, typically, typically, the multi-colinear problem is extreme. So what this means, essentially, is we can never know exactly which variables, if any, truly are predictive of the outcome. We can never identify the best coefficients for use in the regression. At most, we can hope to assign the large regression coefficients to variables that are correlated with the variables that truly are predictive of the outcome. we will find one of possibly many suitable predictive models. I mean, I see his point. It's true. You have too many parameters. You don't have enough data. You're doing the best you can. You can't really, you typically can never say, ah, it's only this one thing. It's only this two things. It's typically kind of a mush, especially if you're in the world of like genetics and that kind of messy stuff. Sometimes it works. sometimes you can say oh actually everything can be reduced onto this one variable and it's super clear I mean I agree that's not the typical setting the typical setting is it's just a big mess but sometimes it works I think he just saying it always a big mess that way when he gets a big mess in his data he can blame the high problem It is particularly... I would add to this, one of the key problems with high-dimensional stuff is that distances between points become less variable. So when you have a lot of dimensions, you have this curse of dimensionality. so then it's harder to distinguish between things. That is very true. It's related to all of this, but if you haven't thought about it, it's worth thinking about. Okay, so that will end there. Thank you for showing up, as he says. These are the only slides from this guy. He's wonderful, but we'll get back to the Swiss slides next week. which will be fun and we'll talk about a nice topic about how to deal with you know some simple nonlinear stuff and particular splines which are a very nice trick so we'll talk about that next time",
+  "duration": 4356.899438,
+  "segments": [
+    {
+      "chunk": 0,
+      "start": 0.0,
+      "end": 24.26,
+      "text": " All right. So we were talking about shrinkage methods and regularization and how that's good for variance, for getting, you know, a nice reduced variance, as well as a nice reduction in biases or in particular with just a little bit of increased bias."
+    },
+    {
+      "chunk": 0,
+      "start": 24.26,
+      "end": 29.48,
+      "text": " and typically these methods do well in held out data, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 29.62,
+      "end": 31.78,
+      "text": " And cross-validated mean squared error."
+    },
+    {
+      "chunk": 0,
+      "start": 32.64,
+      "end": 37.36,
+      "text": " So we talked about subset selection, forward selection,"
+    },
+    {
+      "chunk": 0,
+      "start": 37.54,
+      "end": 39.82,
+      "text": " backward selection for model selection, picking the variables."
+    },
+    {
+      "chunk": 0,
+      "start": 40.38,
+      "end": 44.4,
+      "text": " We talked about using regularization, ridge and lasso,"
+    },
+    {
+      "chunk": 0,
+      "start": 44.4,
+      "end": 48.34,
+      "text": " and also this combined elastic net one."
+    },
+    {
+      "chunk": 0,
+      "start": 49.7,
+      "end": 53.94,
+      "text": " And now we're talking about PCA as a way of kind of cheating"
+    },
+    {
+      "chunk": 0,
+      "start": 53.94,
+      "end": 58.12,
+      "text": " where you would actually reduce the number of variables you have"
+    },
+    {
+      "chunk": 0,
+      "start": 58.12,
+      "end": 60.98,
+      "text": " before you even go to regression, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 60.98,
+      "end": 67.52,
+      "text": " So you're essentially going from your data matrix X to a new matrix Z,"
+    },
+    {
+      "chunk": 0,
+      "start": 67.88,
+      "end": 70.34,
+      "text": " which is smaller, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 70.48,
+      "end": 72.52,
+      "text": " So you're doing a dimensionality reduction."
+    },
+    {
+      "chunk": 0,
+      "start": 72.72,
+      "end": 77.08,
+      "text": " You're reducing the number of dimensions of the matrix, compressing it,"
+    },
+    {
+      "chunk": 0,
+      "start": 78.18,
+      "end": 80.0,
+      "text": " throwing away some stuff."
+    },
+    {
+      "chunk": 0,
+      "start": 80.0,
+      "end": 86.52,
+      "text": " Hopefully that doesn't matter, such that later you can regress with those things."
+    },
+    {
+      "chunk": 0,
+      "start": 87.26,
+      "end": 89.98,
+      "text": " So we talked about this notion of principal components."
+    },
+    {
+      "chunk": 0,
+      "start": 91.44,
+      "end": 95.1,
+      "text": " Roughly sketch out how you get them, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 95.1,
+      "end": 107.14,
+      "text": " So basically you're doing a linear sum over the rows such that they have the maximum variance,"
+    },
+    {
+      "chunk": 0,
+      "start": 107.14,
+      "end": 112.4,
+      "text": " subject to this condition that the sum of those weights squared is equal to one."
+    },
+    {
+      "chunk": 0,
+      "start": 112.98,
+      "end": 113.94,
+      "text": " So that's a constraint."
+    },
+    {
+      "chunk": 0,
+      "start": 114.44,
+      "end": 118.6,
+      "text": " And also that subsequent components that you get."
+    },
+    {
+      "chunk": 0,
+      "start": 118.7,
+      "end": 119.8,
+      "text": " So you get the first component,"
+    },
+    {
+      "chunk": 0,
+      "start": 119.8,
+      "end": 126.1,
+      "text": " and then the next component has to be something that's orthogonal to the first."
+    },
+    {
+      "chunk": 0,
+      "start": 127.2,
+      "end": 127.38,
+      "text": " Right?"
+    },
+    {
+      "chunk": 0,
+      "start": 127.54,
+      "end": 129.62,
+      "text": " There's a lot of shit that's orthogonal to the first."
+    },
+    {
+      "chunk": 0,
+      "start": 129.76,
+      "end": 131.82,
+      "text": " Remember that you're in high dimension, so it's okay."
+    },
+    {
+      "chunk": 0,
+      "start": 132.42,
+      "end": 133.42,
+      "text": " It's not so restrictive."
+    },
+    {
+      "chunk": 0,
+      "start": 134.08,
+      "end": 135.58,
+      "text": " But it has to be orthogonal."
+    },
+    {
+      "chunk": 0,
+      "start": 135.58,
+      "end": 144.22,
+      "text": " And then of all possible things that are orthogonal, which one has the highest variance where, again, the weights are constrained to add up to one if you square them."
+    },
+    {
+      "chunk": 0,
+      "start": 145.06,
+      "end": 155.62,
+      "text": " And you do that up to the number If you have p variables you do that p times assuming that you have more data points than p So n is larger than p"
+    },
+    {
+      "chunk": 0,
+      "start": 155.7,
+      "end": 156.86,
+      "text": " You do that up to p."
+    },
+    {
+      "chunk": 0,
+      "start": 157.24,
+      "end": 160.18,
+      "text": " And that gives you the full principal components of your data."
+    },
+    {
+      "chunk": 0,
+      "start": 160.36,
+      "end": 161.32,
+      "text": " So now you've taken your data."
+    },
+    {
+      "chunk": 0,
+      "start": 161.42,
+      "end": 162.32,
+      "text": " You've transformed it."
+    },
+    {
+      "chunk": 0,
+      "start": 163.26,
+      "end": 166.22,
+      "text": " And conveniently, since you've done it in such a way"
+    },
+    {
+      "chunk": 0,
+      "start": 166.22,
+      "end": 170.6,
+      "text": " that the first thing was the one that maximized the variance,"
+    },
+    {
+      "chunk": 0,
+      "start": 170.94,
+      "end": 173.56,
+      "text": " then the first component is the strongest one,"
+    },
+    {
+      "chunk": 0,
+      "start": 173.56,
+      "end": 176.26,
+      "text": " and the last component is going to have the smallest variance."
+    },
+    {
+      "chunk": 0,
+      "start": 177.16,
+      "end": 180.16,
+      "text": " So if you stack them together, you get plots like this,"
+    },
+    {
+      "chunk": 0,
+      "start": 181.06,
+      "end": 183.45999,
+      "text": " where you see the first component,"
+    },
+    {
+      "chunk": 0,
+      "start": 184.66,
+      "end": 189.38,
+      "text": " the first principal component explains a certain amount of variance like this,"
+    },
+    {
+      "chunk": 0,
+      "start": 189.54001,
+      "end": 191.58,
+      "text": " and then the second less and less and less,"
+    },
+    {
+      "chunk": 0,
+      "start": 191.68,
+      "end": 193.58,
+      "text": " and then eventually it'll saturate up to one."
+    },
+    {
+      "chunk": 0,
+      "start": 195.32,
+      "end": 195.66,
+      "text": " All right."
+    },
+    {
+      "chunk": 0,
+      "start": 196.2,
+      "end": 198.04001,
+      "text": " There was a question about how to make these."
+    },
+    {
+      "chunk": 0,
+      "start": 198.12,
+      "end": 199.14,
+      "text": " I'll show it in a second."
+    },
+    {
+      "chunk": 0,
+      "start": 199.14,
+      "end": 207.48,
+      "text": " it was actually in the i i might app it's in like two slides so we'll get there in a second but you"
+    },
+    {
+      "chunk": 0,
+      "start": 207.48,
+      "end": 214.8,
+      "text": " have you do this and you can imagine that up here right above this threshold which is just something"
+    },
+    {
+      "chunk": 0,
+      "start": 214.8,
+      "end": 221.42,
+      "text": " you would decide as a scientist or an engineer or statistician you make a decision i don't give a"
+    },
+    {
+      "chunk": 0,
+      "start": 221.42,
+      "end": 228.1,
+      "text": " shit about the the weak shit the stuff that doesn't vary much so and it's not a terrible assumption"
+    },
+    {
+      "chunk": 0,
+      "start": 228.1,
+      "end": 232.95999,
+      "text": " So you see that these are very small increase in total variance."
+    },
+    {
+      "chunk": 0,
+      "start": 233.98001,
+      "end": 243.48001,
+      "text": " And you can think of it like the actual variance of it along the data is so tiny that the thing is essentially constant."
+    },
+    {
+      "chunk": 0,
+      "start": 244.58,
+      "end": 247.42,
+      "text": " And you don't really care about constants, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 247.51999,
+      "end": 248.84,
+      "text": " I mean, that won't matter."
+    },
+    {
+      "chunk": 0,
+      "start": 249.66,
+      "end": 256.82,
+      "text": " If you, in a regression model, adding something that's constant is the same as just adding a bias term."
+    },
+    {
+      "chunk": 0,
+      "start": 256.82,
+      "end": 262.66,
+      "text": " You need for the thing to actually matter in the model, it should vary somewhat."
+    },
+    {
+      "chunk": 0,
+      "start": 265.06,
+      "end": 266.28,
+      "text": " So it makes sense."
+    },
+    {
+      "chunk": 0,
+      "start": 268.14,
+      "end": 272.16,
+      "text": " And here's the illustration of how PCA kind of like this is the data."
+    },
+    {
+      "chunk": 0,
+      "start": 272.28,
+      "end": 277.38,
+      "text": " And you can see the one component is the biggest one is along the obvious axis."
+    },
+    {
+      "chunk": 0,
+      "start": 277.86,
+      "end": 282.58002,
+      "text": " And then the second one is orthogonal to that and obviously smaller."
+    },
+    {
+      "chunk": 0,
+      "start": 283.46002,
+      "end": 284.88,
+      "text": " So it makes sense."
+    },
+    {
+      "chunk": 0,
+      "start": 286.82,
+      "end": 288.58002,
+      "text": " So that's how PCA works."
+    },
+    {
+      "chunk": 0,
+      "start": 289.66,
+      "end": 292.24,
+      "text": " We haven't done the PCR in PCR."
+    },
+    {
+      "chunk": 0,
+      "start": 292.82,
+      "end": 294.03998,
+      "text": " This is just the PCA part."
+    },
+    {
+      "chunk": 0,
+      "start": 295.3,
+      "end": 303.8,
+      "text": " And so as an overview it a dimensionality reduction technique It to visualize the data It gets to lower dimensions"
+    },
+    {
+      "chunk": 0,
+      "start": 305.96,
+      "end": 309.24,
+      "text": " Yeah, many models, basically all models,"
+    },
+    {
+      "chunk": 0,
+      "start": 309.32,
+      "end": 313.18,
+      "text": " will suffer when there's a high correlation between variables."
+    },
+    {
+      "chunk": 0,
+      "start": 314.04,
+      "end": 316.94,
+      "text": " I can't think of a model that really benefits from it."
+    },
+    {
+      "chunk": 0,
+      "start": 317.04,
+      "end": 319.8,
+      "text": " Normally, you want them to be orthogonal,"
+    },
+    {
+      "chunk": 0,
+      "start": 320.18,
+      "end": 323.18,
+      "text": " or you want them to be less related to each other."
+    },
+    {
+      "chunk": 0,
+      "start": 324.06,
+      "end": 326.4,
+      "text": " So yeah, that's, yeah, we'll get to in a second."
+    },
+    {
+      "chunk": 0,
+      "start": 326.5,
+      "end": 329.38,
+      "text": " But one real benefit of PCR is that since everything is orthogonal,"
+    },
+    {
+      "chunk": 0,
+      "start": 329.64,
+      "end": 331.1,
+      "text": " it just learns it super fast."
+    },
+    {
+      "chunk": 0,
+      "start": 332.64,
+      "end": 335.2,
+      "text": " Orthogonalizing your data makes things quick."
+    },
+    {
+      "chunk": 0,
+      "start": 336.24,
+      "end": 339.7,
+      "text": " Because then the assumption that things are, you know,"
+    },
+    {
+      "chunk": 0,
+      "start": 340.2,
+      "end": 346.24,
+      "text": " having it defined, having the model to find some sort of convenient trade-off"
+    },
+    {
+      "chunk": 0,
+      "start": 346.24,
+      "end": 351.02,
+      "text": " is always going to take longer than if things are never trading off each other."
+    },
+    {
+      "chunk": 0,
+      "start": 352.46,
+      "end": 353.04,
+      "text": " All right."
+    },
+    {
+      "chunk": 0,
+      "start": 353.18,
+      "end": 358.08002,
+      "text": " So, yeah, and then an important thing is that PCA is not scale invariant,"
+    },
+    {
+      "chunk": 0,
+      "start": 358.18,
+      "end": 363.12,
+      "text": " so you have to standardize your variables, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 363.54,
+      "end": 367.36,
+      "text": " If you don't standardize, then it'll just be dominated by the strong one,"
+    },
+    {
+      "chunk": 0,
+      "start": 367.74,
+      "end": 371.06,
+      "text": " and then that doesn't really tell you what you want."
+    },
+    {
+      "chunk": 0,
+      "start": 372.98,
+      "end": 378.5,
+      "text": " So standardize so that, you know, if one, you imagine one,"
+    },
+    {
+      "chunk": 0,
+      "start": 378.5,
+      "end": 386.94,
+      "text": " the x is in kilometers and then another x is in millimeters and then you know one just looks"
+    },
+    {
+      "chunk": 0,
+      "start": 386.94,
+      "end": 390.84,
+      "text": " bigger because it's a different scale that's useless so you standardize them they all have"
+    },
+    {
+      "chunk": 0,
+      "start": 390.84,
+      "end": 398.64,
+      "text": " the same scale uh because it's all in in um in terms of like the standard deviation of the data"
+    },
+    {
+      "chunk": 0,
+      "start": 398.64,
+      "end": 401.7,
+      "text": " So let's see."
+    },
+    {
+      "chunk": 0,
+      "start": 402.48,
+      "end": 403.08002,
+      "text": " Assume."
+    },
+    {
+      "chunk": 0,
+      "start": 405.22,
+      "end": 406.9,
+      "text": " Yeah, and then here is this."
+    },
+    {
+      "chunk": 0,
+      "start": 407.58002,
+      "end": 409.62,
+      "text": " It was asked yesterday, and I didn't remember,"
+    },
+    {
+      "chunk": 0,
+      "start": 410.24,
+      "end": 413.44,
+      "text": " how do you compute this explained variance?"
+    },
+    {
+      "chunk": 0,
+      "start": 414.62,
+      "end": 416.2,
+      "text": " In practice, you do this."
+    },
+    {
+      "chunk": 0,
+      "start": 416.28,
+      "end": 417.6,
+      "text": " You get the eigenvalues."
+    },
+    {
+      "chunk": 0,
+      "start": 418.4,
+      "end": 419.72,
+      "text": " So these are the eigenvalues."
+    },
+    {
+      "chunk": 0,
+      "start": 419.72,
+      "end": 424.06,
+      "text": " associated"
+    },
+    {
+      "chunk": 0,
+      "start": 424.06,
+      "end": 431.8,
+      "text": " with each"
+    },
+    {
+      "chunk": 0,
+      "start": 431.8,
+      "end": 434.4,
+      "text": " principal component."
+    },
+    {
+      "chunk": 0,
+      "start": 435.76,
+      "end": 439.68,
+      "text": " Now, the eigenvalue is actually, and this is not obvious,"
+    },
+    {
+      "chunk": 0,
+      "start": 439.68,
+      "end": 444.02002,
+      "text": " but the eigenvalue is equal to the variance"
+    },
+    {
+      "chunk": 0,
+      "start": 444.02002,
+      "end": 459.22,
+      "text": " of the component I am afraid of the principal component I"
+    },
+    {
+      "chunk": 0,
+      "start": 459.86,
+      "end": 461.02,
+      "text": " It's not an I."
+    },
+    {
+      "chunk": 0,
+      "start": 463.02,
+      "end": 465.12,
+      "text": " So if you just take the principal component,"
+    },
+    {
+      "chunk": 0,
+      "start": 465.24,
+      "end": 466.16,
+      "text": " take the variance of it,"
+    },
+    {
+      "chunk": 0,
+      "start": 466.16,
+      "end": 468.78,
+      "text": " that is actually going to be"
+    },
+    {
+      "chunk": 0,
+      "start": 468.78,
+      "end": 472.54,
+      "text": " the same number or very, very close."
+    },
+    {
+      "chunk": 0,
+      "start": 472.54,
+      "end": 475.56,
+      "text": " It should be the same to your eigenvalue."
+    },
+    {
+      "chunk": 0,
+      "start": 476.76,
+      "end": 484.04,
+      "text": " And so then you just take the eigenvalue."
+    },
+    {
+      "chunk": 0,
+      "start": 485.68,
+      "end": 487.48,
+      "text": " Yeah, so to make this plot,"
+    },
+    {
+      "chunk": 0,
+      "start": 488.56,
+      "end": 502.1,
+      "text": " you would, P is the number of variables total."
+    },
+    {
+      "chunk": 0,
+      "start": 502.54,
+      "end": 514.16003,
+      "text": " and M is the number on the y-axis below."
+    },
+    {
+      "chunk": 0,
+      "start": 515.62,
+      "end": 521.3,
+      "text": " Right, so, or no, it's not, sorry, it's the number on the x-axis."
+    },
+    {
+      "chunk": 0,
+      "start": 525.96,
+      "end": 531.66003,
+      "text": " Yeah, so, for example, if M is 5, right,"
+    },
+    {
+      "chunk": 0,
+      "start": 532.4,
+      "end": 537.18,
+      "text": " Then you're taking the, you want to get the total explained,"
+    },
+    {
+      "chunk": 0,
+      "start": 537.36,
+      "end": 538.72,
+      "text": " the fraction of explained variance."
+    },
+    {
+      "chunk": 0,
+      "start": 539.24,
+      "end": 542.06,
+      "text": " Then you're summing up, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 542.16003,
+      "end": 547.8,
+      "text": " So if m is 5, then you're summing up over all the eigenvalues"
+    },
+    {
+      "chunk": 0,
+      "start": 547.8,
+      "end": 549.3,
+      "text": " up to the first 5."
+    },
+    {
+      "chunk": 0,
+      "start": 549.38,
+      "end": 551.02,
+      "text": " So you're summing up over all the variances."
+    },
+    {
+      "chunk": 0,
+      "start": 551.64,
+      "end": 554.38,
+      "text": " And then you're normalizing by the sum of all the variances."
+    },
+    {
+      "chunk": 0,
+      "start": 555.12,
+      "end": 557.83997,
+      "text": " So obviously you're going to go from 0 up to 1."
+    },
+    {
+      "chunk": 0,
+      "start": 558.28,
+      "end": 560.4,
+      "text": " Well, I mean, they converted its percentages,"
+    },
+    {
+      "chunk": 0,
+      "start": 560.4,
+      "end": 562.02,
+      "text": " but you can see that."
+    },
+    {
+      "chunk": 0,
+      "start": 562.72,
+      "end": 563.62,
+      "text": " So it goes up to 1."
+    },
+    {
+      "chunk": 0,
+      "start": 564.76,
+      "end": 570.66003,
+      "text": " And then here is the..."
+    },
+    {
+      "chunk": 0,
+      "start": 570.66003,
+      "end": 572.8,
+      "text": " These guys are the eigenvalues."
+    },
+    {
+      "chunk": 0,
+      "start": 573.6,
+      "end": 575.8,
+      "text": " 1, this is limited to 2,"
+    },
+    {
+      "chunk": 0,
+      "start": 576.9,
+      "end": 579.54,
+      "text": " 3, oh, divided by the sum."
+    },
+    {
+      "chunk": 0,
+      "start": 581.0,
+      "end": 583.0,
+      "text": " It's the normalized variance."
+    },
+    {
+      "chunk": 0,
+      "start": 583.86,
+      "end": 584.08,
+      "text": " Whatever."
+    },
+    {
+      "chunk": 0,
+      "start": 586.02,
+      "end": 587.14,
+      "text": " Does that make sense?"
+    },
+    {
+      "chunk": 0,
+      "start": 587.54,
+      "end": 588.1,
+      "text": " You get it?"
+    },
+    {
+      "chunk": 0,
+      "start": 588.1,
+      "end": 590.1,
+      "text": " Alright, cool."
+    },
+    {
+      "chunk": 0,
+      "start": 590.1,
+      "end": 596.1,
+      "text": " So, yeah, as always, it's good to look at this credit data set."
+    },
+    {
+      "chunk": 0,
+      "start": 596.1,
+      "end": 599.82,
+      "text": " It's a good data set to look at."
+    },
+    {
+      "chunk": 1,
+      "start": 600.0,
+      "end": 605.58,
+      "text": " go through these shrinkage issues. So now we're getting to the principal component regression part."
+    },
+    {
+      "chunk": 1,
+      "start": 605.88,
+      "end": 610.48,
+      "text": " So this is where we're using those principal components. So we take our data, we take our"
+    },
+    {
+      "chunk": 1,
+      "start": 610.48,
+      "end": 615.14,
+      "text": " matrix X, we do PCA on it. That part is exactly the same as we just described."
+    },
+    {
+      "chunk": 1,
+      "start": 616.48,
+      "end": 623.52,
+      "text": " And then what we want to do is construct regression models that include more and more of the X,"
+    },
+    {
+      "chunk": 1,
+      "start": 623.52,
+      "end": 634.48,
+      "text": " Right. So we would start with including just the first principal component as a single X in our regression model."
+    },
+    {
+      "chunk": 1,
+      "start": 634.72,
+      "end": 639.24,
+      "text": " And then we can add more and more until we're happy with how well we explain our data."
+    },
+    {
+      "chunk": 1,
+      "start": 641.34,
+      "end": 644.58,
+      "text": " So and then you just use the standard linear regression model."
+    },
+    {
+      "chunk": 1,
+      "start": 644.58,
+      "end": 651.92,
+      "text": " So, yeah, the idea is that by doing this,"
+    },
+    {
+      "chunk": 1,
+      "start": 651.98,
+      "end": 654.02,
+      "text": " we need fewer variables to explain our data,"
+    },
+    {
+      "chunk": 1,
+      "start": 654.14,
+      "end": 657.96,
+      "text": " and also that the PCA has done a nice compression"
+    },
+    {
+      "chunk": 1,
+      "start": 657.96,
+      "end": 659.66,
+      "text": " that will generalize better."
+    },
+    {
+      "chunk": 1,
+      "start": 662.74,
+      "end": 666.96,
+      "text": " Yeah, so, yeah, the key assumptions is that most of the..."
+    },
+    {
+      "chunk": 1,
+      "start": 666.96,
+      "end": 670.02,
+      "text": " Oh, yeah, a key assumption of the data"
+    },
+    {
+      "chunk": 1,
+      "start": 670.02,
+      "end": 673.04,
+      "text": " is that it actually does have strong components"
+    },
+    {
+      "chunk": 1,
+      "start": 673.04,
+      "end": 673.98,
+      "text": " where things vary."
+    },
+    {
+      "chunk": 1,
+      "start": 674.58,
+      "end": 698.24,
+      "text": " You know, so like these figures are often very good to make because you can see, like in this case, quite a lot was explained by just one PC, but others will look more like that, in which case, you know, the variables were already orthogonal and then adding more PCs is just the same as adding another variable."
+    },
+    {
+      "chunk": 1,
+      "start": 698.34,
+      "end": 700.3199999999999,
+      "text": " In that case, PCA isn't doing nothing for you."
+    },
+    {
+      "chunk": 1,
+      "start": 701.12,
+      "end": 702.9,
+      "text": " Also, it is a linear thing."
+    },
+    {
+      "chunk": 1,
+      "start": 702.9,
+      "end": 706.92,
+      "text": " So if the relationships are nonlinear, then it's not so good either,"
+    },
+    {
+      "chunk": 1,
+      "start": 707.28,
+      "end": 710.2,
+      "text": " or it might not be so good, right,"
+    },
+    {
+      "chunk": 1,
+      "start": 710.2,
+      "end": 712.98,
+      "text": " if they're not well captured by a linear assumption."
+    },
+    {
+      "chunk": 1,
+      "start": 714.64,
+      "end": 715.92,
+      "text": " A lot of things are, though."
+    },
+    {
+      "chunk": 1,
+      "start": 717.44,
+      "end": 721.74,
+      "text": " So most of the variability, yeah, PCA is that it will actually,"
+    },
+    {
+      "chunk": 1,
+      "start": 722.96,
+      "end": 725.1800000000001,
+      "text": " that the variability is compressible,"
+    },
+    {
+      "chunk": 1,
+      "start": 726.72,
+      "end": 732.64,
+      "text": " and that those axes of variation are the ones that are relevant"
+    },
+    {
+      "chunk": 1,
+      "start": 732.64,
+      "end": 739.28,
+      "text": " for the response, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 739.92,
+      "end": 742.6800000000001,
+      "text": " And that also is an assumption that may not be true."
+    },
+    {
+      "chunk": 1,
+      "start": 744.46,
+      "end": 755.46,
+      "text": " I can think of complicated examples where this is not true but I won go into those But yeah it not always the best idea but it not generally a bad one either"
+    },
+    {
+      "chunk": 1,
+      "start": 757.22,
+      "end": 759.48,
+      "text": " And they're not guaranteed to hold, of course."
+    },
+    {
+      "chunk": 1,
+      "start": 759.74,
+      "end": 760.8,
+      "text": " It all depends on the data."
+    },
+    {
+      "chunk": 1,
+      "start": 763.9599900000001,
+      "end": 768.28,
+      "text": " Yeah, and I guess you could think of this as a form of unsupervised learning."
+    },
+    {
+      "chunk": 1,
+      "start": 769.42,
+      "end": 773.0,
+      "text": " Because it's unsupervised, you make an assumption, hit go."
+    },
+    {
+      "chunk": 1,
+      "start": 773.0,
+      "end": 776.62,
+      "text": " So, all right, so how does it do?"
+    },
+    {
+      "chunk": 1,
+      "start": 777.42,
+      "end": 780.42,
+      "text": " So we can compare, yeah, like we said,"
+    },
+    {
+      "chunk": 1,
+      "start": 780.48,
+      "end": 785.4599900000001,
+      "text": " what we do is we go from X to Z, right, with PCA."
+    },
+    {
+      "chunk": 1,
+      "start": 786.94,
+      "end": 798.44,
+      "text": " And then now we're doing our Y minus beta Z squared"
+    },
+    {
+      "chunk": 1,
+      "start": 798.44,
+      "end": 801.78,
+      "text": " instead of doing X squared, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 801.78,
+      "end": 808.52,
+      "text": " And we just fit this, fit that, and then we can see all the same things."
+    },
+    {
+      "chunk": 1,
+      "start": 808.6,
+      "end": 810.23999,
+      "text": " We can see how well our error is."
+    },
+    {
+      "chunk": 1,
+      "start": 810.5400099999999,
+      "end": 816.8199999999999,
+      "text": " We can look at our test error, and we can decompose it into this bias term and the variance term"
+    },
+    {
+      "chunk": 1,
+      "start": 816.8199999999999,
+      "end": 821.08,
+      "text": " the same way we did with linear regression, the same way we did with ridge regression,"
+    },
+    {
+      "chunk": 1,
+      "start": 821.3,
+      "end": 824.44,
+      "text": " with lasso regression, and we can compare them."
+    },
+    {
+      "chunk": 1,
+      "start": 824.48001,
+      "end": 825.62,
+      "text": " And that's what they've done here."
+    },
+    {
+      "chunk": 1,
+      "start": 826.0,
+      "end": 828.22,
+      "text": " On the y-axis, the mean squared error."
+    },
+    {
+      "chunk": 1,
+      "start": 828.9,
+      "end": 830.38,
+      "text": " Here's the number of components."
+    },
+    {
+      "chunk": 1,
+      "start": 831.78,
+      "end": 836.22,
+      "text": " starting, of course, from including the strongest component, right,"
+    },
+    {
+      "chunk": 1,
+      "start": 836.23999,
+      "end": 838.38,
+      "text": " because that's the one explaining most variation in X."
+    },
+    {
+      "chunk": 1,
+      "start": 839.58,
+      "end": 846.98001,
+      "text": " So you see already it does explain something."
+    },
+    {
+      "chunk": 1,
+      "start": 847.1800000000001,
+      "end": 848.98001,
+      "text": " So here you can see the test error."
+    },
+    {
+      "chunk": 1,
+      "start": 849.72,
+      "end": 851.26001,
+      "text": " Sorry, the test error is purple."
+    },
+    {
+      "chunk": 1,
+      "start": 856.64,
+      "end": 858.8399999999999,
+      "text": " Right, we see this test error go down,"
+    },
+    {
+      "chunk": 1,
+      "start": 859.52,
+      "end": 861.58002,
+      "text": " and then eventually go back up again."
+    },
+    {
+      "chunk": 1,
+      "start": 861.78,
+      "end": 868.6600000000001,
+      "text": " right, as you start including directions in PC directions that don't matter to the Y."
+    },
+    {
+      "chunk": 1,
+      "start": 870.8199999999999,
+      "end": 878.1,
+      "text": " In this case, this was a simulated example, and here the PCA assumption is a good one,"
+    },
+    {
+      "chunk": 1,
+      "start": 878.8199999999999,
+      "end": 883.38,
+      "text": " right? So you can see that it actually is reducing the error quite a lot with just a few number of"
+    },
+    {
+      "chunk": 1,
+      "start": 883.38,
+      "end": 890.24,
+      "text": " PCs, and then it starts going up again. And similarly, you see in the bias that you get a"
+    },
+    {
+      "chunk": 1,
+      "start": 890.24,
+      "end": 891.8,
+      "text": " a quick reduction in bias,"
+    },
+    {
+      "chunk": 1,
+      "start": 892.1,
+      "end": 893.8,
+      "text": " and then it stays low"
+    },
+    {
+      "chunk": 1,
+      "start": 893.8,
+      "end": 904.12,
+      "text": " because you add more parameters it doesn really affect the bias But adding more parameters will change the variance right And it the as we discussed"
+    },
+    {
+      "chunk": 1,
+      "start": 906.1800000000001,
+      "end": 910.88,
+      "text": " you have lots of solutions. You typically have a lot of solutions with a low bias."
+    },
+    {
+      "chunk": 1,
+      "start": 911.5799999999999,
+      "end": 915.0,
+      "text": " So the other part of the error you really want to watch out for is this variance."
+    },
+    {
+      "chunk": 1,
+      "start": 915.76,
+      "end": 918.6800000000001,
+      "text": " And it goes up typically with this"
+    },
+    {
+      "chunk": 1,
+      "start": 918.6800000000001,
+      "end": 921.4200000000001,
+      "text": " test mean squared error, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 921.4200000000001,
+      "end": 925.48,
+      "text": " Obviously, this is test."
+    },
+    {
+      "chunk": 1,
+      "start": 925.8199999999999,
+      "end": 934.12,
+      "text": " If it was not test, it would be flat like the bias one."
+    },
+    {
+      "chunk": 1,
+      "start": 936.3399999999999,
+      "end": 940.12,
+      "text": " So this is PCR, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 940.88,
+      "end": 947.12,
+      "text": " And we can look at the same idea, but see how well this compares with ridge and lasso."
+    },
+    {
+      "chunk": 1,
+      "start": 947.12,
+      "end": 958.26,
+      "text": " So here we have the two methods, one in dotted line and one is the solid line."
+    },
+    {
+      "chunk": 1,
+      "start": 959.04,
+      "end": 959.5,
+      "text": " Let's see."
+    },
+    {
+      "chunk": 1,
+      "start": 960.48,
+      "end": 970.46,
+      "text": " Since the ridge one tends to be, I'm guessing the dotted line is less so"
+    },
+    {
+      "chunk": 1,
+      "start": 970.46,
+      "end": 975.64,
+      "text": " because it's behaving more linearly, whereas ridges seems to be more quadratic."
+    },
+    {
+      "chunk": 1,
+      "start": 975.64,
+      "end": 980.3199999999999,
+      "text": " So I think that's the solid, but it would have been nice if they put the thing here."
+    },
+    {
+      "chunk": 1,
+      "start": 981.04,
+      "end": 987.44,
+      "text": " The shrinkage factor, this is the, I gave the, I put an example of it from before."
+    },
+    {
+      "chunk": 1,
+      "start": 988.26,
+      "end": 991.9,
+      "text": " It's not the lambda that we use, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 992.02,
+      "end": 996.14,
+      "text": " When we talked about ridge regression, we talk about this lambda term, and that's the"
+    },
+    {
+      "chunk": 1,
+      "start": 996.14,
+      "end": 999.86,
+      "text": " one that you can vary, and then you get a different, you can get a different solution"
+    },
+    {
+      "chunk": 1,
+      "start": 999.86,
+      "end": 1001.8399999999999,
+      "text": " for each one, and then you probably pick one."
+    },
+    {
+      "chunk": 1,
+      "start": 1002.76,
+      "end": 1006.24,
+      "text": " Instead, what they do is they call this the shrinkage factor."
+    },
+    {
+      "chunk": 1,
+      "start": 1012.76,
+      "end": 1018.8,
+      "text": " So we don't actually know in this plot what the value of lambda is."
+    },
+    {
+      "chunk": 1,
+      "start": 1019.36,
+      "end": 1025.38,
+      "text": " It was just assigned this notion of the shrinkage factor."
+    },
+    {
+      "chunk": 1,
+      "start": 1027.12,
+      "end": 1028.44,
+      "text": " I mean, it is nice."
+    },
+    {
+      "chunk": 1,
+      "start": 1028.44,
+      "end": 1029.78,
+      "text": " see it kind of"
+    },
+    {
+      "chunk": 1,
+      "start": 1029.78,
+      "end": 1031.96002,
+      "text": " it's cute."
+    },
+    {
+      "chunk": 1,
+      "start": 1033.1,
+      "end": 1034.46002,
+      "text": " It gets rid of"
+    },
+    {
+      "chunk": 1,
+      "start": 1034.46002,
+      "end": 1036.26,
+      "text": " the scaling, the relative"
+    },
+    {
+      "chunk": 1,
+      "start": 1036.26,
+      "end": 1037.72,
+      "text": " scaling of the different models."
+    },
+    {
+      "chunk": 1,
+      "start": 1039.44,
+      "end": 1040.4,
+      "text": " I don't know."
+    },
+    {
+      "chunk": 1,
+      "start": 1041.24,
+      "end": 1042.32,
+      "text": " But anyways, this is"
+    },
+    {
+      "chunk": 1,
+      "start": 1042.32,
+      "end": 1044.3,
+      "text": " that's what this shrinkage factor is here."
+    },
+    {
+      "chunk": 1,
+      "start": 1044.4,
+      "end": 1059.96,
+      "text": " So this is the absolute value of beta lambda and it would depend on what norm you use so I just put it as P"
+    },
+    {
+      "chunk": 1,
+      "start": 1061.04,
+      "end": 1070.98,
+      "text": " Oh, P is the other letter. We'll go with Q, because here in the plot, they show both the L1 and L2."
+    },
+    {
+      "chunk": 1,
+      "start": 1070.98,
+      "end": 1074.54,
+      "text": " All right."
+    },
+    {
+      "chunk": 1,
+      "start": 1074.54,
+      "end": 1078.88,
+      "text": " So, yeah."
+    },
+    {
+      "chunk": 1,
+      "start": 1080.22,
+      "end": 1080.3600000000001,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 1,
+      "start": 1081.94,
+      "end": 1092.24,
+      "text": " So we have, so what we can see here is it has a similar form to the PCR, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 1092.32,
+      "end": 1098.74,
+      "text": " In which case both the, you see this kind of shape with the test error, that it does"
+    },
+    {
+      "chunk": 1,
+      "start": 1098.74,
+      "end": 1100.18,
+      "text": " have a minimum at one place."
+    },
+    {
+      "chunk": 1,
+      "start": 1100.18,
+      "end": 1111.0,
+      "text": " And that minimum is also where you have a low variance and you have a low mean squared error."
+    },
+    {
+      "chunk": 1,
+      "start": 1111.0,
+      "end": 1117.0,
+      "text": " So wherever the mean squared error, sorry, the bias."
+    },
+    {
+      "chunk": 1,
+      "start": 1117.94,
+      "end": 1121.28,
+      "text": " So of the many terms, of the many solutions that have a low bias,"
+    },
+    {
+      "chunk": 1,
+      "start": 1123.12,
+      "end": 1131.2,
+      "text": " the mean squared error on the held out data is in a similar location to where the variance is minimized."
+    },
+    {
+      "chunk": 1,
+      "start": 1132.9,
+      "end": 1135.74,
+      "text": " Right. So you can see they have similar form."
+    },
+    {
+      "chunk": 1,
+      "start": 1135.74,
+      "end": 1138.54,
+      "text": " they don't get into"
+    },
+    {
+      "chunk": 1,
+      "start": 1138.54,
+      "end": 1140.74,
+      "text": " quantitatively what this means in terms of"
+    },
+    {
+      "chunk": 1,
+      "start": 1140.74,
+      "end": 1142.4,
+      "text": " how many variables"
+    },
+    {
+      "chunk": 1,
+      "start": 1142.4,
+      "end": 1144.6,
+      "text": " but of course you could look at it"
+    },
+    {
+      "chunk": 1,
+      "start": 1144.6,
+      "end": 1146.16003,
+      "text": " you could look at the"
+    },
+    {
+      "chunk": 1,
+      "start": 1146.16003,
+      "end": 1148.83997,
+      "text": " how many of the"
+    },
+    {
+      "chunk": 1,
+      "start": 1148.83997,
+      "end": 1150.56,
+      "text": " lasso terms"
+    },
+    {
+      "chunk": 1,
+      "start": 1150.56,
+      "end": 1152.58,
+      "text": " are actually zero versus the number"
+    },
+    {
+      "chunk": 1,
+      "start": 1152.58,
+      "end": 1153.78,
+      "text": " of components that you needed"
+    },
+    {
+      "chunk": 1,
+      "start": 1153.78,
+      "end": 1156.3200000000002,
+      "text": " so"
+    },
+    {
+      "chunk": 1,
+      "start": 1156.3200000000002,
+      "end": 1158.1799999999998,
+      "text": " that would be something you could do"
+    },
+    {
+      "chunk": 1,
+      "start": 1158.1799999999998,
+      "end": 1161.8600000000001,
+      "text": " so yeah"
+    },
+    {
+      "chunk": 1,
+      "start": 1161.8600000000001,
+      "end": 1163.4,
+      "text": " and here's the summary"
+    },
+    {
+      "chunk": 1,
+      "start": 1163.4,
+      "end": 1165.4,
+      "text": " of what they wrote"
+    },
+    {
+      "chunk": 1,
+      "start": 1165.4,
+      "end": 1168.28,
+      "text": " that it performed well on simulated data."
+    },
+    {
+      "chunk": 1,
+      "start": 1168.72,
+      "end": 1170.94,
+      "text": " Of course, everything works on simulated data."
+    },
+    {
+      "chunk": 1,
+      "start": 1171.04,
+      "end": 1171.8,
+      "text": " That's why we use it."
+    },
+    {
+      "chunk": 1,
+      "start": 1173.9,
+      "end": 1175.8200000000002,
+      "text": " PCR needed five components."
+    },
+    {
+      "chunk": 1,
+      "start": 1176.28,
+      "end": 1178.54,
+      "text": " I guess that's what this number here is, five."
+    },
+    {
+      "chunk": 1,
+      "start": 1181.46,
+      "end": 1184.38,
+      "text": " And the results are only slightly better than Lasso"
+    },
+    {
+      "chunk": 1,
+      "start": 1184.38,
+      "end": 1186.48,
+      "text": " and very similar to Ridge."
+    },
+    {
+      "chunk": 1,
+      "start": 1188.78,
+      "end": 1189.16003,
+      "text": " All right."
+    },
+    {
+      "chunk": 1,
+      "start": 1189.16003,
+      "end": 1192.88,
+      "text": " in this case"
+    },
+    {
+      "chunk": 1,
+      "start": 1192.88,
+      "end": 1197.02,
+      "text": " just like Ridge"
+    },
+    {
+      "chunk": 1,
+      "start": 1197.02,
+      "end": 1198.52,
+      "text": " it doesn't actually select the parameters"
+    },
+    {
+      "chunk": 1,
+      "start": 1198.52,
+      "end": 1199.8200000000002,
+      "text": " it gives you component"
+    },
+    {
+      "chunk": 2,
+      "start": 1200.0,
+      "end": 1204.88,
+      "text": " and each component is a combination of the original axis."
+    },
+    {
+      "chunk": 2,
+      "start": 1205.0,
+      "end": 1208.14,
+      "text": " So it's not going to tell you only these three matter, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1208.74,
+      "end": 1210.46,
+      "text": " But in some cases, you don't care."
+    },
+    {
+      "chunk": 2,
+      "start": 1210.8,
+      "end": 1213.04,
+      "text": " So like PCR would be good in a situation"
+    },
+    {
+      "chunk": 2,
+      "start": 1213.04,
+      "end": 1214.8,
+      "text": " where really you just want to make a predictive model"
+    },
+    {
+      "chunk": 2,
+      "start": 1214.8,
+      "end": 1217.26,
+      "text": " and you don't really care what the underlying variables are"
+    },
+    {
+      "chunk": 2,
+      "start": 1217.26,
+      "end": 1220.42,
+      "text": " or if you're okay with having combinations of variables"
+    },
+    {
+      "chunk": 2,
+      "start": 1220.42,
+      "end": 1221.26,
+      "text": " and things like this."
+    },
+    {
+      "chunk": 2,
+      "start": 1221.7,
+      "end": 1225.82,
+      "text": " If you want more specific, like it's this or that one,"
+    },
+    {
+      "chunk": 2,
+      "start": 1226.08,
+      "end": 1228.84,
+      "text": " that's where lasso comes in or in the model selection"
+    },
+    {
+      "chunk": 2,
+      "start": 1228.84,
+      "end": 1230.14,
+      "text": " that we talked about first."
+    },
+    {
+      "chunk": 2,
+      "start": 1232.34,
+      "end": 1233.46,
+      "text": " Let's see."
+    },
+    {
+      "chunk": 2,
+      "start": 1235.52,
+      "end": 1238.3,
+      "text": " Yeah, and also, it's not super obvious,"
+    },
+    {
+      "chunk": 2,
+      "start": 1238.8,
+      "end": 1240.98,
+      "text": " but you ridge PCR,"
+    },
+    {
+      "chunk": 2,
+      "start": 1241.28,
+      "end": 1245.16,
+      "text": " it can be seen as a discretized version"
+    },
+    {
+      "chunk": 2,
+      "start": 1245.16,
+      "end": 1245.96,
+      "text": " of ridge regression."
+    },
+    {
+      "chunk": 2,
+      "start": 1247.36,
+      "end": 1250.42,
+      "text": " So it's, you know how ridge regression"
+    },
+    {
+      "chunk": 2,
+      "start": 1250.42,
+      "end": 1253.06,
+      "text": " encourages ties, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1253.06,
+      "end": 1255.84,
+      "text": " So it says like if two things explain the same thing,"
+    },
+    {
+      "chunk": 2,
+      "start": 1255.94,
+      "end": 1258.78,
+      "text": " then have them share the weight, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1258.84,
+      "end": 1261.58,
+      "text": " Don't let them trade off of each other, make them share."
+    },
+    {
+      "chunk": 2,
+      "start": 1262.5,
+      "end": 1264.16,
+      "text": " It's a very similar notion, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1264.5,
+      "end": 1277.36,
+      "text": " The point where they share is actually very similar to getting a principal component that captures the part that both share, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1277.9,
+      "end": 1279.34,
+      "text": " So it's this averaging."
+    },
+    {
+      "chunk": 2,
+      "start": 1281.66,
+      "end": 1285.52,
+      "text": " So PCR is doing it more continuously because it can be any point."
+    },
+    {
+      "chunk": 2,
+      "start": 1285.52,
+      "end": 1286.56,
+      "text": " whereas"
+    },
+    {
+      "chunk": 2,
+      "start": 1286.56,
+      "end": 1289.68,
+      "text": " sorry, ridge regression doesn't work"
+    },
+    {
+      "chunk": 2,
+      "start": 1289.68,
+      "end": 1291.44,
+      "text": " continuously because it can be any point"
+    },
+    {
+      "chunk": 2,
+      "start": 1291.44,
+      "end": 1293.86,
+      "text": " but PCR does it more abruptly"
+    },
+    {
+      "chunk": 2,
+      "start": 1293.86,
+      "end": 1295.52,
+      "text": " because it simply says"
+    },
+    {
+      "chunk": 2,
+      "start": 1295.52,
+      "end": 1297.84,
+      "text": " okay, direction, direction, direction"
+    },
+    {
+      "chunk": 2,
+      "start": 1297.84,
+      "end": 1299.56,
+      "text": " new axes, new data"
+    },
+    {
+      "chunk": 2,
+      "start": 1299.56,
+      "end": 1301.8,
+      "text": " everything that's shared"
+    },
+    {
+      "chunk": 2,
+      "start": 1301.8,
+      "end": 1302.4,
+      "text": " go here"
+    },
+    {
+      "chunk": 2,
+      "start": 1302.4,
+      "end": 1304.96,
+      "text": " yeah"
+    },
+    {
+      "chunk": 2,
+      "start": 1304.96,
+      "end": 1307.36,
+      "text": " so"
+    },
+    {
+      "chunk": 2,
+      "start": 1307.36,
+      "end": 1312.76,
+      "text": " yeah, you can"
+    },
+    {
+      "chunk": 2,
+      "start": 1312.76,
+      "end": 1316.54,
+      "text": " you can also think of it as"
+    },
+    {
+      "chunk": 2,
+      "start": 1316.54,
+      "end": 1321.1,
+      "text": " how much, you can also see how much the ridge"
+    },
+    {
+      "chunk": 2,
+      "start": 1321.1,
+      "end": 1325.0,
+      "text": " regression term would shrink the principal components of the"
+    },
+    {
+      "chunk": 2,
+      "start": 1325.0,
+      "end": 1329.22,
+      "text": " data, depending on how strong the lambda is."
+    },
+    {
+      "chunk": 2,
+      "start": 1330.02,
+      "end": 1332.02,
+      "text": " So I will show a plot in a second."
+    },
+    {
+      "chunk": 2,
+      "start": 1334.08,
+      "end": 1336.8,
+      "text": " In both cases, they put a lot of"
+    },
+    {
+      "chunk": 2,
+      "start": 1336.8,
+      "end": 1341.18,
+      "text": " pressure on the less important principal components, so in the case of"
+    },
+    {
+      "chunk": 2,
+      "start": 1341.18,
+      "end": 1356.04,
+      "text": " PCR you simply don include them In ridge regression you penalizing the less important ones because of the shrinkage term So it making them go away by penalizing them"
+    },
+    {
+      "chunk": 2,
+      "start": 1359.74,
+      "end": 1366.6399999999999,
+      "text": " Yeah, that's the same as the less important PCs are also the ones with the smallest eigenvalue"
+    },
+    {
+      "chunk": 2,
+      "start": 1366.6399999999999,
+      "end": 1369.22,
+      "text": " because they're the ones that vary the most or the least."
+    },
+    {
+      "chunk": 2,
+      "start": 1369.22,
+      "end": 1371.4,
+      "text": " right"
+    },
+    {
+      "chunk": 2,
+      "start": 1371.4,
+      "end": 1373.24,
+      "text": " so both models"
+    },
+    {
+      "chunk": 2,
+      "start": 1373.24,
+      "end": 1375.08,
+      "text": " yeah there's a"
+    },
+    {
+      "chunk": 2,
+      "start": 1375.08,
+      "end": 1377.2,
+      "text": " there's a similarity"
+    },
+    {
+      "chunk": 2,
+      "start": 1377.2,
+      "end": 1379.92,
+      "text": " and we're just sort of sketching the similarity"
+    },
+    {
+      "chunk": 2,
+      "start": 1379.92,
+      "end": 1382.16,
+      "text": " between the ridge regression"
+    },
+    {
+      "chunk": 2,
+      "start": 1382.16,
+      "end": 1383.66,
+      "text": " and PCR so again"
+    },
+    {
+      "chunk": 2,
+      "start": 1383.66,
+      "end": 1385.45999,
+      "text": " in the case of PCR"
+    },
+    {
+      "chunk": 2,
+      "start": 1385.45999,
+      "end": 1387.9,
+      "text": " here's the number of components"
+    },
+    {
+      "chunk": 2,
+      "start": 1387.9,
+      "end": 1389.48,
+      "text": " right"
+    },
+    {
+      "chunk": 2,
+      "start": 1389.48,
+      "end": 1390.94,
+      "text": " so at eight components"
+    },
+    {
+      "chunk": 2,
+      "start": 1390.94,
+      "end": 1393.3600000000001,
+      "text": " that's your"
+    },
+    {
+      "chunk": 2,
+      "start": 1393.3600000000001,
+      "end": 1394.06,
+      "text": " P"
+    },
+    {
+      "chunk": 2,
+      "start": 1394.06,
+      "end": 1397.66,
+      "text": " I should"
+    },
+    {
+      "chunk": 2,
+      "start": 1397.66,
+      "end": 1398.3,
+      "text": " yeah"
+    },
+    {
+      "chunk": 2,
+      "start": 1398.3,
+      "end": 1406.8,
+      "text": " So, P equal to 8."
+    },
+    {
+      "chunk": 2,
+      "start": 1409.2,
+      "end": 1418.38,
+      "text": " And then you have, basically, I don't like this figure because the axes are not well defined."
+    },
+    {
+      "chunk": 2,
+      "start": 1419.32,
+      "end": 1426.32,
+      "text": " But assuming I've read it correctly, what this is getting at is that by 8 components,"
+    },
+    {
+      "chunk": 2,
+      "start": 1426.32,
+      "end": 1428.0,
+      "text": " where eight is the number of variables,"
+    },
+    {
+      "chunk": 2,
+      "start": 1428.2,
+      "end": 1429.68,
+      "text": " at least it has been in the past,"
+    },
+    {
+      "chunk": 2,
+      "start": 1431.01999,
+      "end": 1434.22,
+      "text": " PCR, or principal component regression,"
+    },
+    {
+      "chunk": 2,
+      "start": 1434.51999,
+      "end": 1435.73999,
+      "text": " will explain everything."
+    },
+    {
+      "chunk": 2,
+      "start": 1437.66,
+      "end": 1438.68,
+      "text": " Will shrink, yeah."
+    },
+    {
+      "chunk": 2,
+      "start": 1441.38,
+      "end": 1443.34,
+      "text": " I mean, what it's trying to show"
+    },
+    {
+      "chunk": 2,
+      "start": 1443.34,
+      "end": 1445.8,
+      "text": " is this same notion that I said here,"
+    },
+    {
+      "chunk": 2,
+      "start": 1446.62,
+      "end": 1451.92,
+      "text": " that PCR is a disparaged version of Ridge."
+    },
+    {
+      "chunk": 2,
+      "start": 1454.16,
+      "end": 1456.1399999999999,
+      "text": " So as you add more components,"
+    },
+    {
+      "chunk": 2,
+      "start": 1456.32,
+      "end": 1466.2,
+      "text": " whereas Ridge will have it be gradually"
+    },
+    {
+      "chunk": 2,
+      "start": 1466.2,
+      "end": 1472.3,
+      "text": " being more permissive"
+    },
+    {
+      "chunk": 2,
+      "start": 1472.3,
+      "end": 1474.26,
+      "text": " this is confusing"
+    },
+    {
+      "chunk": 2,
+      "start": 1474.26,
+      "end": 1476.34,
+      "text": " this is a confusing figure"
+    },
+    {
+      "chunk": 2,
+      "start": 1476.34,
+      "end": 1485.46002,
+      "text": " I'll try to make another one for next time"
+    },
+    {
+      "chunk": 2,
+      "start": 1485.46002,
+      "end": 1488.38,
+      "text": " because I don't like this figure. The axis should be labeled."
+    },
+    {
+      "chunk": 2,
+      "start": 1492.06,
+      "end": 1493.0,
+      "text": " New one."
+    },
+    {
+      "chunk": 2,
+      "start": 1495.5800199999999,
+      "end": 1506.08,
+      "text": " Another day I did figure out what he was trying to say but now I forgot I mean I can guess what was on the labels"
+    },
+    {
+      "chunk": 2,
+      "start": 1509.0,
+      "end": 1511.3600000000001,
+      "text": " Yeah, so it makes more sense."
+    },
+    {
+      "chunk": 2,
+      "start": 1511.48,
+      "end": 1513.32,
+      "text": " You have the number of components, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1514.32,
+      "end": 1517.72,
+      "text": " And then what you can see is that as you add more components,"
+    },
+    {
+      "chunk": 2,
+      "start": 1518.38,
+      "end": 1522.18,
+      "text": " and each time what you're doing is you add more components,"
+    },
+    {
+      "chunk": 2,
+      "start": 1522.18,
+      "end": 1525.04,
+      "text": " you solve the linear regression model"
+    },
+    {
+      "chunk": 2,
+      "start": 1525.04,
+      "end": 1528.74,
+      "text": " and then you can back out the value of the variables"
+    },
+    {
+      "chunk": 2,
+      "start": 1528.74,
+      "end": 1531.48,
+      "text": " in the original x"
+    },
+    {
+      "chunk": 2,
+      "start": 1531.48,
+      "end": 1533.9,
+      "text": " so you can get the betas for the original x"
+    },
+    {
+      "chunk": 2,
+      "start": 1533.9,
+      "end": 1536.46,
+      "text": " even though you fit it with the z"
+    },
+    {
+      "chunk": 2,
+      "start": 1536.46,
+      "end": 1538.16,
+      "text": " so you go"
+    },
+    {
+      "chunk": 2,
+      "start": 1538.16,
+      "end": 1539.84,
+      "text": " you fit"
+    },
+    {
+      "chunk": 2,
+      "start": 1539.84,
+      "end": 1546.48,
+      "text": " y minus beta z"
+    },
+    {
+      "chunk": 2,
+      "start": 1546.48,
+      "end": 1552.3,
+      "text": " squared"
+    },
+    {
+      "chunk": 2,
+      "start": 1552.3,
+      "end": 1555.04,
+      "text": " and then"
+    },
+    {
+      "chunk": 2,
+      "start": 1555.04,
+      "end": 1558.6399999999999,
+      "text": " go from"
+    },
+    {
+      "chunk": 2,
+      "start": 1558.6399999999999,
+      "end": 1560.66,
+      "text": " God"
+    },
+    {
+      "chunk": 2,
+      "start": 1560.66,
+      "end": 1564.96,
+      "text": " I defined it somewhere better before"
+    },
+    {
+      "chunk": 2,
+      "start": 1564.96,
+      "end": 1566.02,
+      "text": " from beta z"
+    },
+    {
+      "chunk": 2,
+      "start": 1566.02,
+      "end": 1568.1399999999999,
+      "text": " to"
+    },
+    {
+      "chunk": 2,
+      "start": 1568.1399999999999,
+      "end": 1570.4199800000001,
+      "text": " beta x"
+    },
+    {
+      "chunk": 2,
+      "start": 1570.4199800000001,
+      "end": 1572.78,
+      "text": " just by"
+    },
+    {
+      "chunk": 2,
+      "start": 1572.78,
+      "end": 1574.72,
+      "text": " doing the inverse of"
+    },
+    {
+      "chunk": 2,
+      "start": 1574.72,
+      "end": 1575.84,
+      "text": " the mapping"
+    },
+    {
+      "chunk": 2,
+      "start": 1576.5,
+      "end": 1577.82,
+      "text": " So you can find that above."
+    },
+    {
+      "chunk": 2,
+      "start": 1587.4199800000001,
+      "end": 1587.9,
+      "text": " Right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1589.12,
+      "end": 1590.84,
+      "text": " So we already looked at that before."
+    },
+    {
+      "chunk": 2,
+      "start": 1592.74,
+      "end": 1594.72,
+      "text": " So that's what has been done here."
+    },
+    {
+      "chunk": 2,
+      "start": 1594.72,
+      "end": 1598.3600000000001,
+      "text": " You fit it with PCR with a given number of components,"
+    },
+    {
+      "chunk": 2,
+      "start": 1598.5,
+      "end": 1600.22,
+      "text": " and then you back out what the coefficients are."
+    },
+    {
+      "chunk": 2,
+      "start": 1600.38,
+      "end": 1601.8600000000001,
+      "text": " So, of course, with just one component,"
+    },
+    {
+      "chunk": 2,
+      "start": 1602.9,
+      "end": 1604.7,
+      "text": " you're not doing very well,"
+    },
+    {
+      "chunk": 2,
+      "start": 1604.7,
+      "end": 1611.48,
+      "text": " or you haven't given a lot of value to the weights."
+    },
+    {
+      "chunk": 2,
+      "start": 1611.6,
+      "end": 1613.1399999999999,
+      "text": " They're not doing much, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1613.2,
+      "end": 1615.66,
+      "text": " These betas and the standardized coefficients"
+    },
+    {
+      "chunk": 2,
+      "start": 1615.66,
+      "end": 1617.32,
+      "text": " for the individual things."
+    },
+    {
+      "chunk": 2,
+      "start": 1619.1399999999999,
+      "end": 1622.3600000000001,
+      "text": " But as you add more components, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1622.46,
+      "end": 1625.22,
+      "text": " So now here you see a big transition at nine."
+    },
+    {
+      "chunk": 2,
+      "start": 1626.56,
+      "end": 1627.56,
+      "text": " I think that's nine."
+    },
+    {
+      "chunk": 2,
+      "start": 1627.68,
+      "end": 1628.18,
+      "text": " It should be nine."
+    },
+    {
+      "chunk": 2,
+      "start": 1629.03998,
+      "end": 1632.5800199999999,
+      "text": " You see this jump in the value of some of these coefficients."
+    },
+    {
+      "chunk": 2,
+      "start": 1632.5800199999999,
+      "end": 1634.6,
+      "text": " So you can imagine that the thing that mattered"
+    },
+    {
+      "chunk": 2,
+      "start": 1634.6,
+      "end": 1637.74,
+      "text": " the thing where income lied"
+    },
+    {
+      "chunk": 2,
+      "start": 1637.74,
+      "end": 1639.44,
+      "text": " was"
+    },
+    {
+      "chunk": 2,
+      "start": 1639.44,
+      "end": 1641.5800199999999,
+      "text": " income didn't really come in until"
+    },
+    {
+      "chunk": 2,
+      "start": 1641.5800199999999,
+      "end": 1643.74,
+      "text": " the ninth PC"
+    },
+    {
+      "chunk": 2,
+      "start": 1643.74,
+      "end": 1668.3,
+      "text": " given it just whatever the X were right it might be that income just happened not to vary as much or wasn as correlated as other things right Whereas some of the other stuff probably came in earlier like the student variability was probably very high and probably a lot of things varied with respect to the student right"
+    },
+    {
+      "chunk": 2,
+      "start": 1668.3,
+      "end": 1671.1,
+      "text": " so whatever variation"
+    },
+    {
+      "chunk": 2,
+      "start": 1671.1,
+      "end": 1672.96,
+      "text": " that correlated heavily with the student"
+    },
+    {
+      "chunk": 2,
+      "start": 1672.96,
+      "end": 1674.92,
+      "text": " and not so much with these other variables"
+    },
+    {
+      "chunk": 2,
+      "start": 1674.92,
+      "end": 1677.4,
+      "text": " that came out most strongly early on"
+    },
+    {
+      "chunk": 2,
+      "start": 1677.4,
+      "end": 1679.3600000000001,
+      "text": " and so that's why you get"
+    },
+    {
+      "chunk": 2,
+      "start": 1679.3600000000001,
+      "end": 1681.4,
+      "text": " more of this beta coming"
+    },
+    {
+      "chunk": 2,
+      "start": 1681.4,
+      "end": 1681.96,
+      "text": " in early"
+    },
+    {
+      "chunk": 2,
+      "start": 1681.96,
+      "end": 1683.98,
+      "text": " right"
+    },
+    {
+      "chunk": 2,
+      "start": 1683.98,
+      "end": 1687.28,
+      "text": " because you do have to kind of get lucky that the variables you"
+    },
+    {
+      "chunk": 2,
+      "start": 1687.28,
+      "end": 1689.0,
+      "text": " care about for y"
+    },
+    {
+      "chunk": 2,
+      "start": 1689.0,
+      "end": 1690.88,
+      "text": " are in the dominant"
+    },
+    {
+      "chunk": 2,
+      "start": 1690.88,
+      "end": 1692.56,
+      "text": " pcs of x"
+    },
+    {
+      "chunk": 2,
+      "start": 1692.56,
+      "end": 1694.66,
+      "text": " it's like a guess right"
+    },
+    {
+      "chunk": 2,
+      "start": 1694.66,
+      "end": 1696.2,
+      "text": " you don't actually know that"
+    },
+    {
+      "chunk": 2,
+      "start": 1697.0800199999999,
+      "end": 1698.66,
+      "text": " It might be a smaller one."
+    },
+    {
+      "chunk": 2,
+      "start": 1700.72,
+      "end": 1703.3600000000001,
+      "text": " But what you can see here is the standardized coefficients,"
+    },
+    {
+      "chunk": 2,
+      "start": 1703.76,
+      "end": 1710.24,
+      "text": " and then on the y-axis of this other plot is the cross-validated mean squared error of this model."
+    },
+    {
+      "chunk": 2,
+      "start": 1710.8,
+      "end": 1714.28,
+      "text": " And you can see it was kind of, you know, improving, improving, improving,"
+    },
+    {
+      "chunk": 2,
+      "start": 1714.28,
+      "end": 1718.46,
+      "text": " and then from 9 to 10, it got massively better."
+    },
+    {
+      "chunk": 2,
+      "start": 1718.46,
+      "end": 1725.58,
+      "text": " So when it came to 10, then you had a big drop in mean squared error."
+    },
+    {
+      "chunk": 2,
+      "start": 1726.2,
+      "end": 1736.1799999999998,
+      "text": " so I would read this as you'd be happy with 10 components"
+    },
+    {
+      "chunk": 2,
+      "start": 1736.1799999999998,
+      "end": 1741.3600000000001,
+      "text": " and then at 10 components you can see that it's heavily driven"
+    },
+    {
+      "chunk": 2,
+      "start": 1741.3600000000001,
+      "end": 1745.16003,
+      "text": " by this black one which is income"
+    },
+    {
+      "chunk": 2,
+      "start": 1745.16003,
+      "end": 1750.04,
+      "text": " and then student and you have"
+    },
+    {
+      "chunk": 2,
+      "start": 1750.04,
+      "end": 1754.2,
+      "text": " rating has a nice number you have limit"
+    },
+    {
+      "chunk": 2,
+      "start": 1754.2,
+      "end": 1758.1,
+      "text": " and then a lot of other stuff, which are zeros."
+    },
+    {
+      "chunk": 2,
+      "start": 1759.24,
+      "end": 1761.72,
+      "text": " So I don't know how many Xs are in there,"
+    },
+    {
+      "chunk": 2,
+      "start": 1761.8200000000002,
+      "end": 1764.1,
+      "text": " but you can see that a lot of things are zeros."
+    },
+    {
+      "chunk": 2,
+      "start": 1765.42,
+      "end": 1766.9,
+      "text": " So even though it takes you,"
+    },
+    {
+      "chunk": 2,
+      "start": 1767.44,
+      "end": 1769.22,
+      "text": " even though the things that you care about"
+    },
+    {
+      "chunk": 2,
+      "start": 1769.22,
+      "end": 1772.78,
+      "text": " were just ended up being four variables, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1773.22,
+      "end": 1775.9,
+      "text": " Primarily, it took you 10 PCs,"
+    },
+    {
+      "chunk": 2,
+      "start": 1776.42,
+      "end": 1779.6,
+      "text": " 10 principal components to get there, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1779.66003,
+      "end": 1781.38,
+      "text": " Probably because other stuff was in there"
+    },
+    {
+      "chunk": 2,
+      "start": 1781.38,
+      "end": 1782.56,
+      "text": " and that stuff just didn't matter."
+    },
+    {
+      "chunk": 2,
+      "start": 1782.56,
+      "end": 1785.22,
+      "text": " but the nice thing is that 10 is still"
+    },
+    {
+      "chunk": 2,
+      "start": 1785.22,
+      "end": 1787.6,
+      "text": " smaller than the total number of variables"
+    },
+    {
+      "chunk": 2,
+      "start": 1787.6,
+      "end": 1788.38,
+      "text": " in this data"
+    },
+    {
+      "chunk": 2,
+      "start": 1788.38,
+      "end": 1791.8600000000001,
+      "text": " so it was still"
+    },
+    {
+      "chunk": 2,
+      "start": 1791.8600000000001,
+      "end": 1792.76,
+      "text": " helpful"
+    },
+    {
+      "chunk": 2,
+      "start": 1792.76,
+      "end": 1794.8,
+      "text": " but maybe not"
+    },
+    {
+      "chunk": 2,
+      "start": 1794.8,
+      "end": 1796.16003,
+      "text": " maybe"
+    },
+    {
+      "chunk": 2,
+      "start": 1796.16003,
+      "end": 1799.8200000000002,
+      "text": " the other approaches"
+    },
+    {
+      "chunk": 3,
+      "start": 1800.0,
+      "end": 1803.16,
+      "text": " that we talked about earlier with respect to this particular data"
+    },
+    {
+      "chunk": 3,
+      "start": 1803.16,
+      "end": 1803.94,
+      "text": " would be more useful."
+    },
+    {
+      "chunk": 3,
+      "start": 1806.42,
+      "end": 1811.74,
+      "text": " So another recommended exercise to do this with this famous credit data"
+    },
+    {
+      "chunk": 3,
+      "start": 1811.74,
+      "end": 1816.26,
+      "text": " and see how it works and compare that with the results from the other ones."
+    },
+    {
+      "chunk": 3,
+      "start": 1816.48,
+      "end": 1820.64,
+      "text": " I think you'll find it was helpful, but maybe not the most helpful."
+    },
+    {
+      "chunk": 3,
+      "start": 1824.58,
+      "end": 1829.04,
+      "text": " A drawback is, of course, the fact that you're using,"
+    },
+    {
+      "chunk": 3,
+      "start": 1829.04,
+      "end": 1839.66,
+      "text": " it's building on PCA. PCA is an unsupervised method. It's also, you're making a big assumption"
+    },
+    {
+      "chunk": 3,
+      "start": 1839.66,
+      "end": 1846.24,
+      "text": " here. You're saying, I'm assuming that the things that Y cares about are the strongest"
+    },
+    {
+      "chunk": 3,
+      "start": 1846.24,
+      "end": 1854.44,
+      "text": " directions of variance in my data, X, right? And so if it's not, if it's one of the weaker ones,"
+    },
+    {
+      "chunk": 3,
+      "start": 1854.44,
+      "end": 1857.68,
+      "text": " or also if it's not the variance, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 1857.78,
+      "end": 1862.98,
+      "text": " Like let's say the data, I don't want to give an example."
+    },
+    {
+      "chunk": 3,
+      "start": 1863.08,
+      "end": 1864.18,
+      "text": " All my examples are confusing."
+    },
+    {
+      "chunk": 3,
+      "start": 1866.82,
+      "end": 1869.1,
+      "text": " But, you know, this is a big assumption."
+    },
+    {
+      "chunk": 3,
+      "start": 1870.04,
+      "end": 1880.96,
+      "text": " Like if, for example, you know, like let's say the X value is actually changing like this,"
+    },
+    {
+      "chunk": 3,
+      "start": 1880.96,
+      "end": 1887.64,
+      "text": " but what the thing cares about what y is is it's basically a function of some"
+    },
+    {
+      "chunk": 3,
+      "start": 1887.64,
+      "end": 1893.02,
+      "text": " you know whenever the value is here this is not a good example"
+    },
+    {
+      "chunk": 3,
+      "start": 1893.02,
+      "end": 1899.76,
+      "text": " then just getting the direction of variance is not going to capture that"
+    },
+    {
+      "chunk": 3,
+      "start": 1899.76,
+      "end": 1906.82,
+      "text": " because what you care about is when it's at a specific value yeah sorry again i should not try"
+    },
+    {
+      "chunk": 3,
+      "start": 1906.82,
+      "end": 1908.62,
+      "text": " to come up with an example on the fly,"
+    },
+    {
+      "chunk": 3,
+      "start": 1908.76,
+      "end": 1911.18,
+      "text": " but PCR has a big assumption"
+    },
+    {
+      "chunk": 3,
+      "start": 1911.18,
+      "end": 1915.92,
+      "text": " on the idea that the PCA is a good way"
+    },
+    {
+      "chunk": 3,
+      "start": 1915.92,
+      "end": 1919.8,
+      "text": " to transform your variables to explain why."
+    },
+    {
+      "chunk": 3,
+      "start": 1920.86,
+      "end": 1922.42,
+      "text": " It's not always obvious."
+    },
+    {
+      "chunk": 3,
+      "start": 1924.26,
+      "end": 1927.12,
+      "text": " So yeah, no guarantee that the directions"
+    },
+    {
+      "chunk": 3,
+      "start": 1927.12,
+      "end": 1928.58,
+      "text": " that best explain the predictors"
+    },
+    {
+      "chunk": 3,
+      "start": 1928.58,
+      "end": 1930.3,
+      "text": " will also be the best directions"
+    },
+    {
+      "chunk": 3,
+      "start": 1930.3,
+      "end": 1931.88,
+      "text": " to use for predicting the response."
+    },
+    {
+      "chunk": 3,
+      "start": 1932.12,
+      "end": 1933.8,
+      "text": " So they're saying that."
+    },
+    {
+      "chunk": 3,
+      "start": 1934.22,
+      "end": 1935.94,
+      "text": " I made it, I used a lot more words"
+    },
+    {
+      "chunk": 3,
+      "start": 1935.94,
+      "end": 1939.92,
+      "text": " that say the same thing, and it didn't come across more interesting,"
+    },
+    {
+      "chunk": 3,
+      "start": 1940.1399999999999,
+      "end": 1941.68,
+      "text": " but hey, I heard it twice."
+    },
+    {
+      "chunk": 3,
+      "start": 1943.8,
+      "end": 1956.66,
+      "text": " And there a lot of examples that I just don come to mind anything easy So that one way of doing this dimensionality reduction in order to solve the problem"
+    },
+    {
+      "chunk": 3,
+      "start": 1958.8600000000001,
+      "end": 1961.4,
+      "text": " Another one is partial least squares."
+    },
+    {
+      "chunk": 3,
+      "start": 1962.2,
+      "end": 1967.02,
+      "text": " Again, developed by Volt."
+    },
+    {
+      "chunk": 3,
+      "start": 1968.6399999999999,
+      "end": 1969.22,
+      "text": " Swede."
+    },
+    {
+      "chunk": 3,
+      "start": 1969.22,
+      "end": 1975.58,
+      "text": " how do you, never mind"
+    },
+    {
+      "chunk": 3,
+      "start": 1975.58,
+      "end": 1979.9,
+      "text": " Swedish, yeah insert Swedish joke here"
+    },
+    {
+      "chunk": 3,
+      "start": 1979.9,
+      "end": 1982.58,
+      "text": " I don't have one but"
+    },
+    {
+      "chunk": 3,
+      "start": 1982.58,
+      "end": 1985.95999,
+      "text": " in the 70s"
+    },
+    {
+      "chunk": 3,
+      "start": 1985.95999,
+      "end": 1993.1,
+      "text": " for chemometrics"
+    },
+    {
+      "chunk": 3,
+      "start": 1993.1,
+      "end": 1995.72,
+      "text": " chemometrics"
+    },
+    {
+      "chunk": 3,
+      "start": 1995.72,
+      "end": 2002.6399999999999,
+      "text": " but is used elsewhere."
+    },
+    {
+      "chunk": 3,
+      "start": 2005.4,
+      "end": 2008.34,
+      "text": " So their problem is very much this setting"
+    },
+    {
+      "chunk": 3,
+      "start": 2008.34,
+      "end": 2010.98001,
+      "text": " where they have a lot of variables that they could potentially use"
+    },
+    {
+      "chunk": 3,
+      "start": 2010.98001,
+      "end": 2014.92,
+      "text": " and they need to reduce it and they want to do it quickly"
+    },
+    {
+      "chunk": 3,
+      "start": 2014.92,
+      "end": 2018.73999,
+      "text": " because they are impatient and this was the 70s"
+    },
+    {
+      "chunk": 3,
+      "start": 2018.73999,
+      "end": 2021.44,
+      "text": " and the computers were terrible in the 70s."
+    },
+    {
+      "chunk": 3,
+      "start": 2021.73999,
+      "end": 2025.4,
+      "text": " So they needed something that worked efficiently and well"
+    },
+    {
+      "chunk": 3,
+      "start": 2025.4,
+      "end": 2028.54001,
+      "text": " and they were fine with linear assumptions,"
+    },
+    {
+      "chunk": 3,
+      "start": 2029.12,
+      "end": 2032.42,
+      "text": " but PCA wasn't doing it for them."
+    },
+    {
+      "chunk": 3,
+      "start": 2033.66,
+      "end": 2035.84,
+      "text": " And yeah, they needed something else."
+    },
+    {
+      "chunk": 3,
+      "start": 2036.01999,
+      "end": 2037.06,
+      "text": " So they needed something more."
+    },
+    {
+      "chunk": 3,
+      "start": 2037.54001,
+      "end": 2039.72,
+      "text": " And they came up with this idea of partial least squares."
+    },
+    {
+      "chunk": 3,
+      "start": 2040.62,
+      "end": 2045.4,
+      "text": " So it's very similar to partial, to PCR, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2045.45999,
+      "end": 2046.98001,
+      "text": " It's a dimensionality reduction."
+    },
+    {
+      "chunk": 3,
+      "start": 2046.98001,
+      "end": 2050.12,
+      "text": " You're again going from X to Z"
+    },
+    {
+      "chunk": 3,
+      "start": 2050.12,
+      "end": 2056.04,
+      "text": " to reduce the number of variables."
+    },
+    {
+      "chunk": 3,
+      "start": 2056.2799999999997,
+      "end": 2058.91998,
+      "text": " It's doing it in a linear combination."
+    },
+    {
+      "chunk": 3,
+      "start": 2061.2799999999997,
+      "end": 2064.12,
+      "text": " So Z is"
+    },
+    {
+      "chunk": 3,
+      "start": 2064.12,
+      "end": 2067.91998,
+      "text": " sum of some"
+    },
+    {
+      "chunk": 3,
+      "start": 2067.91998,
+      "end": 2070.34,
+      "text": " fees times X."
+    },
+    {
+      "chunk": 3,
+      "start": 2071.24,
+      "end": 2074.3,
+      "text": " So you're taking some linear combination of these."
+    },
+    {
+      "chunk": 3,
+      "start": 2077.91998,
+      "end": 2079.5,
+      "text": " That's going to give you your"
+    },
+    {
+      "chunk": 3,
+      "start": 2079.5,
+      "end": 2089.2200000000003,
+      "text": " so the z's are going to be linear combinations of x"
+    },
+    {
+      "chunk": 3,
+      "start": 2089.2200000000003,
+      "end": 2094.6,
+      "text": " they're not crazy they're just not whereas pca you specifically have this"
+    },
+    {
+      "chunk": 3,
+      "start": 2094.6,
+      "end": 2106.84,
+      "text": " rule that you want to find the best the linear combination that gives you the maximum variance right What you want to do now and it in the yeah now instead of so PCA"
+    },
+    {
+      "chunk": 3,
+      "start": 2108.12,
+      "end": 2120.76,
+      "text": " the goal was find fees such that, hold on."
+    },
+    {
+      "chunk": 3,
+      "start": 2120.76,
+      "end": 2133.3,
+      "text": " such that the variance"
+    },
+    {
+      "chunk": 3,
+      "start": 2133.3,
+      "end": 2135.08002,
+      "text": " of"
+    },
+    {
+      "chunk": 3,
+      "start": 2135.08002,
+      "end": 2142.41998,
+      "text": " is max."
+    },
+    {
+      "chunk": 3,
+      "start": 2143.34,
+      "end": 2145.12,
+      "text": " Right? Certainly for the first"
+    },
+    {
+      "chunk": 3,
+      "start": 2145.12,
+      "end": 2146.2200000000003,
+      "text": " PC,"
+    },
+    {
+      "chunk": 3,
+      "start": 2147.06,
+      "end": 2149.38,
+      "text": " subject to the constraint that the sum"
+    },
+    {
+      "chunk": 3,
+      "start": 2149.38,
+      "end": 2149.88,
+      "text": " of the things"
+    },
+    {
+      "chunk": 3,
+      "start": 2149.88,
+      "end": 2150.62,
+      "text": " varying squared"
+    },
+    {
+      "chunk": 3,
+      "start": 2150.62,
+      "end": 2151.7200000000003,
+      "text": " but those two"
+    },
+    {
+      "chunk": 3,
+      "start": 2151.7200000000003,
+      "end": 2152.52,
+      "text": " constraints right"
+    },
+    {
+      "chunk": 3,
+      "start": 2152.52,
+      "end": 2154.54,
+      "text": " so that's PCA"
+    },
+    {
+      "chunk": 3,
+      "start": 2154.54,
+      "end": 2155.38,
+      "text": " is there"
+    },
+    {
+      "chunk": 3,
+      "start": 2155.38,
+      "end": 2158.74,
+      "text": " now"
+    },
+    {
+      "chunk": 3,
+      "start": 2158.74,
+      "end": 2159.48,
+      "text": " what we're going"
+    },
+    {
+      "chunk": 3,
+      "start": 2159.48,
+      "end": 2160.18,
+      "text": " to say is"
+    },
+    {
+      "chunk": 3,
+      "start": 2160.18,
+      "end": 2161.02,
+      "text": " instead of that"
+    },
+    {
+      "chunk": 3,
+      "start": 2161.02,
+      "end": 2161.56,
+      "text": " we're going to"
+    },
+    {
+      "chunk": 3,
+      "start": 2161.56,
+      "end": 2162.16,
+      "text": " say"
+    },
+    {
+      "chunk": 3,
+      "start": 2162.16,
+      "end": 2164.12,
+      "text": " PLS"
+    },
+    {
+      "chunk": 3,
+      "start": 2164.12,
+      "end": 2165.94,
+      "text": " is"
+    },
+    {
+      "chunk": 3,
+      "start": 2165.94,
+      "end": 2167.48,
+      "text": " the same"
+    },
+    {
+      "chunk": 3,
+      "start": 2167.48,
+      "end": 2168.02,
+      "text": " thing"
+    },
+    {
+      "chunk": 3,
+      "start": 2168.02,
+      "end": 2177.24,
+      "text": " only now"
+    },
+    {
+      "chunk": 3,
+      "start": 2177.24,
+      "end": 2190.7799999999997,
+      "text": " we replace this with we add a y and we say the covariance."
+    },
+    {
+      "chunk": 3,
+      "start": 2192.16,
+      "end": 2203.46,
+      "text": " So now we're trying to find the weighted sum of the x's such that the covariance with the y is maximal."
+    },
+    {
+      "chunk": 3,
+      "start": 2203.46,
+      "end": 2209.4,
+      "text": " right so are you it kind of it sounds like we're cheating because we're going to find"
+    },
+    {
+      "chunk": 3,
+      "start": 2209.4,
+      "end": 2217.66,
+      "text": " a transformation of the y's uh sorry transformation of the x's such that the covariance is high and"
+    },
+    {
+      "chunk": 3,
+      "start": 2217.66,
+      "end": 2222.6,
+      "text": " then we're going to use those things to explain the data again so it seems a bit counterintuitive"
+    },
+    {
+      "chunk": 3,
+      "start": 2222.6,
+      "end": 2229.3,
+      "text": " but it it works it kind of sounds like you're doing regression twice um but that's okay but"
+    },
+    {
+      "chunk": 3,
+      "start": 2229.3,
+      "end": 2230.38,
+      "text": " this is the main idea."
+    },
+    {
+      "chunk": 3,
+      "start": 2232.82,
+      "end": 2236.7799999999997,
+      "text": " So here, in more words, we see"
+    },
+    {
+      "chunk": 3,
+      "start": 2236.7799999999997,
+      "end": 2240.34,
+      "text": " transformation of Z, of X,"
+    },
+    {
+      "chunk": 3,
+      "start": 2241.24,
+      "end": 2243.41998,
+      "text": " a Lin transformation of X to make Z."
+    },
+    {
+      "chunk": 3,
+      "start": 2244.7,
+      "end": 2260.42,
+      "text": " Again these are these are these are yeah so this coefficient is proportional to the correlation between y and xj"
+    },
+    {
+      "chunk": 3,
+      "start": 2262.08,
+      "end": 2264.66,
+      "text": " And it puts, yeah."
+    },
+    {
+      "chunk": 3,
+      "start": 2270.7200000000003,
+      "end": 2274.44,
+      "text": " Yeah, so this is equivalent to what I said."
+    },
+    {
+      "chunk": 3,
+      "start": 2275.0,
+      "end": 2276.08,
+      "text": " about the covariance."
+    },
+    {
+      "chunk": 3,
+      "start": 2276.92,
+      "end": 2281.2200000000003,
+      "text": " So the way you can get this PLS"
+    },
+    {
+      "chunk": 3,
+      "start": 2281.2200000000003,
+      "end": 2286.56,
+      "text": " is to find the regression value of Y onto X"
+    },
+    {
+      "chunk": 3,
+      "start": 2286.56,
+      "end": 2293.48,
+      "text": " and then use those fees."
+    },
+    {
+      "chunk": 3,
+      "start": 2294.7,
+      "end": 2299.7799999999997,
+      "text": " So this is the algorithm to fit this."
+    },
+    {
+      "chunk": 3,
+      "start": 2301.3,
+      "end": 2301.5,
+      "text": " Right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2301.68,
+      "end": 2304.6,
+      "text": " So in order to find the weights that maximize the covariance,"
+    },
+    {
+      "chunk": 3,
+      "start": 2305.0,
+      "end": 2309.06,
+      "text": " what you do is you actually solve the regression problem backwards."
+    },
+    {
+      "chunk": 3,
+      "start": 2310.02,
+      "end": 2315.7799999999997,
+      "text": " So instead of finding y as a function of x,"
+    },
+    {
+      "chunk": 3,
+      "start": 2315.83997,
+      "end": 2317.44,
+      "text": " you're finding x as a function of y."
+    },
+    {
+      "chunk": 3,
+      "start": 2320.24,
+      "end": 2320.6,
+      "text": " All right."
+    },
+    {
+      "chunk": 3,
+      "start": 2321.2200000000003,
+      "end": 2323.3,
+      "text": " And then those fees are,"
+    },
+    {
+      "chunk": 3,
+      "start": 2323.48,
+      "end": 2327.36,
+      "text": " the first set of fees are the same idea as the first component,"
+    },
+    {
+      "chunk": 3,
+      "start": 2327.6,
+      "end": 2328.4,
+      "text": " first principle component."
+    },
+    {
+      "chunk": 3,
+      "start": 2328.92,
+      "end": 2333.08,
+      "text": " And then to get the second one, you do the same thing again,"
+    },
+    {
+      "chunk": 3,
+      "start": 2333.08,
+      "end": 2338.68,
+      "text": " but now on the residuals after you've removed the first component,"
+    },
+    {
+      "chunk": 3,
+      "start": 2339.7799999999997,
+      "end": 2341.32,
+      "text": " the first Z1."
+    },
+    {
+      "chunk": 3,
+      "start": 2342.74,
+      "end": 2345.2799999999997,
+      "text": " And you just keep going and doing that again and again and again."
+    },
+    {
+      "chunk": 3,
+      "start": 2345.7,
+      "end": 2348.96,
+      "text": " But you see, it's the same idea as the principal component analysis,"
+    },
+    {
+      "chunk": 3,
+      "start": 2349.14,
+      "end": 2352.08,
+      "text": " only now you're finding the principal components"
+    },
+    {
+      "chunk": 3,
+      "start": 2352.08,
+      "end": 2355.6,
+      "text": " not as the directions of maximal variance of X,"
+    },
+    {
+      "chunk": 3,
+      "start": 2356.02,
+      "end": 2358.33997,
+      "text": " but the maximal covariance of X and Y."
+    },
+    {
+      "chunk": 3,
+      "start": 2358.33997,
+      "end": 2363.08,
+      "text": " so if you do that"
+    },
+    {
+      "chunk": 3,
+      "start": 2363.08,
+      "end": 2365.46,
+      "text": " then you can see similar stuff"
+    },
+    {
+      "chunk": 3,
+      "start": 2365.46,
+      "end": 2366.7799999999997,
+      "text": " as with PCR"
+    },
+    {
+      "chunk": 3,
+      "start": 2366.7799999999997,
+      "end": 2370.08,
+      "text": " so again you should do it on the credit data"
+    },
+    {
+      "chunk": 3,
+      "start": 2370.08,
+      "end": 2370.94,
+      "text": " so good"
+    },
+    {
+      "chunk": 3,
+      "start": 2370.94,
+      "end": 2373.76,
+      "text": " and then"
+    },
+    {
+      "chunk": 3,
+      "start": 2373.76,
+      "end": 2380.12,
+      "text": " yeah this is funny"
+    },
+    {
+      "chunk": 3,
+      "start": 2380.12,
+      "end": 2385.86,
+      "text": " so PLS often performs no better than ridge regression or PCR"
+    },
+    {
+      "chunk": 3,
+      "start": 2385.86,
+      "end": 2387.38,
+      "text": " but it's Swedish"
+    },
+    {
+      "chunk": 3,
+      "start": 2387.38,
+      "end": 2391.08,
+      "text": " so it's like they're meatballs right they're not better but they're"
+    },
+    {
+      "chunk": 3,
+      "start": 2391.08,
+      "end": 2395.94,
+      "text": " they sound good I don't know yeah insert Swedish joke here"
+    },
+    {
+      "chunk": 3,
+      "start": 2395.94,
+      "end": 2399.44,
+      "text": " I don't know"
+    },
+    {
+      "chunk": 4,
+      "start": 2400.0,
+      "end": 2407.24,
+      "text": " Okay."
+    },
+    {
+      "chunk": 4,
+      "start": 2409.24,
+      "end": 2409.92,
+      "text": " Demence."
+    },
+    {
+      "chunk": 4,
+      "start": 2413.36,
+      "end": 2417.46,
+      "text": " It can reduce bias, but it can also increase variance."
+    },
+    {
+      "chunk": 4,
+      "start": 2418.22,
+      "end": 2420.2,
+      "text": " So it's a little more."
+    },
+    {
+      "chunk": 4,
+      "start": 2422.2,
+      "end": 2422.84,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 4,
+      "start": 2424.8,
+      "end": 2429.22,
+      "text": " Honestly, I've never really used it much because it's kind of a niche thing."
+    },
+    {
+      "chunk": 4,
+      "start": 2429.22,
+      "end": 2432.04,
+      "text": " but I mean people swear by it"
+    },
+    {
+      "chunk": 4,
+      "start": 2432.04,
+      "end": 2433.46,
+      "text": " like I said there's actually a guy here"
+    },
+    {
+      "chunk": 4,
+      "start": 2433.46,
+      "end": 2435.54,
+      "text": " who made a whole company about it"
+    },
+    {
+      "chunk": 4,
+      "start": 2435.54,
+      "end": 2436.88,
+      "text": " and he goes around"
+    },
+    {
+      "chunk": 4,
+      "start": 2436.88,
+      "end": 2439.02,
+      "text": " he'll gladly come in and talk to us"
+    },
+    {
+      "chunk": 4,
+      "start": 2439.02,
+      "end": 2441.56,
+      "text": " for like three hours about how PLS saves the world"
+    },
+    {
+      "chunk": 4,
+      "start": 2441.56,
+      "end": 2443.9,
+      "text": " I don't know"
+    },
+    {
+      "chunk": 4,
+      "start": 2443.9,
+      "end": 2447.34,
+      "text": " but it is very much the same idea"
+    },
+    {
+      "chunk": 4,
+      "start": 2447.34,
+      "end": 2450.26,
+      "text": " as PCR"
+    },
+    {
+      "chunk": 4,
+      "start": 2450.26,
+      "end": 2452.62,
+      "text": " only now using the covariance"
+    },
+    {
+      "chunk": 4,
+      "start": 2452.62,
+      "end": 2454.06,
+      "text": " instead of the variants"
+    },
+    {
+      "chunk": 4,
+      "start": 2454.06,
+      "end": 2457.5,
+      "text": " and all of these tend to behave similarly"
+    },
+    {
+      "chunk": 4,
+      "start": 2457.5,
+      "end": 2462.8,
+      "text": " A lot of things come down to looking like ridge regression, surprisingly."
+    },
+    {
+      "chunk": 4,
+      "start": 2465.82,
+      "end": 2468.78,
+      "text": " And conveniently, ridge regression, again, behaves smoothly"
+    },
+    {
+      "chunk": 4,
+      "start": 2468.78,
+      "end": 2473.06,
+      "text": " instead of this kind of discrete thing, which PCR and PLS both have."
+    },
+    {
+      "chunk": 4,
+      "start": 2476.04,
+      "end": 2479.46,
+      "text": " Yeah, I would agree that lasso falls somewhere between ridge"
+    },
+    {
+      "chunk": 4,
+      "start": 2479.46,
+      "end": 2483.96,
+      "text": " and best subset regression and has some nice properties of each."
+    },
+    {
+      "chunk": 4,
+      "start": 2483.96,
+      "end": 2490.66,
+      "text": " For me, definitely the most interesting things are lasso and also implicit lasso."
+    },
+    {
+      "chunk": 4,
+      "start": 2491.26,
+      "end": 2494.74,
+      "text": " Many different ways you can get lasso and ridge regression."
+    },
+    {
+      "chunk": 4,
+      "start": 2497.4,
+      "end": 2501.54,
+      "text": " Those are, I think, the most interesting part of this module."
+    },
+    {
+      "chunk": 4,
+      "start": 2504.34,
+      "end": 2510.82,
+      "text": " But being exposed to the ideas of partial e-squares regression PCR are good"
+    },
+    {
+      "chunk": 4,
+      "start": 2510.82,
+      "end": 2514.02,
+      "text": " because not only are those two fairly common,"
+    },
+    {
+      "chunk": 4,
+      "start": 2514.12,
+      "end": 2515.46,
+      "text": " I mean, certainly PCR is very common."
+    },
+    {
+      "chunk": 4,
+      "start": 2516.8,
+      "end": 2519.26,
+      "text": " There's also random things that people come up with"
+    },
+    {
+      "chunk": 4,
+      "start": 2519.26,
+      "end": 2521.98,
+      "text": " where they're like, okay, I have my data matrix"
+    },
+    {
+      "chunk": 4,
+      "start": 2521.98,
+      "end": 2524.38,
+      "text": " and now I'm going to transform it into something else"
+    },
+    {
+      "chunk": 4,
+      "start": 2524.38,
+      "end": 2526.82,
+      "text": " and then do regression."
+    },
+    {
+      "chunk": 4,
+      "start": 2527.22,
+      "end": 2531.52,
+      "text": " For example, a lot of people have images, right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2531.52,
+      "end": 2533.24,
+      "text": " So let's say you have a video of,"
+    },
+    {
+      "chunk": 4,
+      "start": 2533.98,
+      "end": 2535.72,
+      "text": " and videos are very high dimensional, right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2535.78,
+      "end": 2538.62,
+      "text": " So like a video of a natural scene is huge"
+    },
+    {
+      "chunk": 4,
+      "start": 2538.62,
+      "end": 2541.14,
+      "text": " or video of animals or something like this."
+    },
+    {
+      "chunk": 4,
+      "start": 2541.18,
+      "end": 2542.88,
+      "text": " It could just be very long and weird."
+    },
+    {
+      "chunk": 4,
+      "start": 2543.46,
+      "end": 2557.82,
+      "text": " And regressing something from the video is going to be very hard But what you can do is you could use like a machine learning model that essentially compresses that down into some very small number of features right"
+    },
+    {
+      "chunk": 4,
+      "start": 2557.94,
+      "end": 2559.98,
+      "text": " So one of these modern feature detector ones,"
+    },
+    {
+      "chunk": 4,
+      "start": 2560.38,
+      "end": 2563.62,
+      "text": " or simply compresses it down to a representative."
+    },
+    {
+      "chunk": 4,
+      "start": 2564.02,
+      "end": 2566.18,
+      "text": " Each image will then be a representative image,"
+    },
+    {
+      "chunk": 4,
+      "start": 2566.58,
+      "end": 2568.28,
+      "text": " which is a very simple vector."
+    },
+    {
+      "chunk": 4,
+      "start": 2568.66,
+      "end": 2572.0,
+      "text": " So that dimensionality reduction will be very nonlinear, confusing,"
+    },
+    {
+      "chunk": 4,
+      "start": 2572.0,
+      "end": 2579.32,
+      "text": " thing, but hopefully still capture aspects of the original images in each frame, such that when you"
+    },
+    {
+      "chunk": 4,
+      "start": 2579.32,
+      "end": 2586.34,
+      "text": " play the video, there's, you know, things will pop up again and again. And then, so if you're using,"
+    },
+    {
+      "chunk": 4,
+      "start": 2587.38,
+      "end": 2592.42,
+      "text": " following a similar notion of PCR, instead of taking the entire video frame, you could take"
+    },
+    {
+      "chunk": 4,
+      "start": 2592.42,
+      "end": 2598.5,
+      "text": " this dimensionality reduced, smaller subset, where it's been compressed through this network."
+    },
+    {
+      "chunk": 4,
+      "start": 2598.5,
+      "end": 2603.22,
+      "text": " and again you don't know what it's doing so maybe it's doing something terrible and stupid but"
+    },
+    {
+      "chunk": 4,
+      "start": 2603.22,
+      "end": 2609.54001,
+      "text": " either way you can get it compressed to something small and then that you can use in something like"
+    },
+    {
+      "chunk": 4,
+      "start": 2609.54001,
+      "end": 2615.28,
+      "text": " a regression model so the notion of this actually expands quite well to many other"
+    },
+    {
+      "chunk": 4,
+      "start": 2615.28,
+      "end": 2621.9,
+      "text": " more complicated ways of doing things more than principal component regression or pls"
+    },
+    {
+      "chunk": 4,
+      "start": 2621.9,
+      "end": 2627.12,
+      "text": " yeah"
+    },
+    {
+      "chunk": 4,
+      "start": 2627.12,
+      "end": 2629.73999,
+      "text": " so that's that"
+    },
+    {
+      "chunk": 4,
+      "start": 2629.73999,
+      "end": 2632.56,
+      "text": " and"
+    },
+    {
+      "chunk": 4,
+      "start": 2632.56,
+      "end": 2635.32,
+      "text": " and it's one"
+    },
+    {
+      "chunk": 4,
+      "start": 2635.32,
+      "end": 2637.48001,
+      "text": " let's take a short break"
+    },
+    {
+      "chunk": 4,
+      "start": 2637.48001,
+      "end": 2640.16,
+      "text": " and then we'll come back and finish this up"
+    },
+    {
+      "chunk": 4,
+      "start": 2640.16,
+      "end": 2641.6,
+      "text": " so let's take a 15 minute break"
+    },
+    {
+      "chunk": 4,
+      "start": 2641.6,
+      "end": 2645.32,
+      "text": " and then at 1.15 we'll finish up this section"
+    },
+    {
+      "chunk": 4,
+      "start": 2645.32,
+      "end": 2645.8,
+      "text": " okay"
+    },
+    {
+      "chunk": 4,
+      "start": 2645.8,
+      "end": 2652.8,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2675.8,
+      "end": 2724.98,
+      "text": " Thank you"
+    },
+    {
+      "chunk": 4,
+      "start": 2725.0,
+      "end": 2754.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2755.0,
+      "end": 2784.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2785.0,
+      "end": 2814.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2815.0,
+      "end": 2844.97998,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2845.0,
+      "end": 2874.98,
+      "text": " Thank you"
+    },
+    {
+      "chunk": 4,
+      "start": 2875.0,
+      "end": 2904.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2905.0,
+      "end": 2934.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2935.0,
+      "end": 2964.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2965.0,
+      "end": 2994.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2995.0,
+      "end": 3024.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3000.0,
+      "end": 3029.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3030.0,
+      "end": 3059.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3060.0,
+      "end": 3089.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3090.0,
+      "end": 3119.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3120.0,
+      "end": 3174.98,
+      "text": " Thank you Thank you"
+    },
+    {
+      "chunk": 5,
+      "start": 3175.0,
+      "end": 3204.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3205.0,
+      "end": 3234.98001,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3235.0,
+      "end": 3264.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3265.0,
+      "end": 3294.97998,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3295.0,
+      "end": 3324.98,
+      "text": " Thank you"
+    },
+    {
+      "chunk": 5,
+      "start": 3325.0,
+      "end": 3354.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3355.0,
+      "end": 3384.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3385.0,
+      "end": 3414.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3415.0,
+      "end": 3444.97998,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3445.0,
+      "end": 3474.98,
+      "text": " Thank you"
+    },
+    {
+      "chunk": 5,
+      "start": 3475.0,
+      "end": 3504.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3505.0,
+      "end": 3525.88,
+      "text": " so actually we don't have too much more to go and i also like i said i am a bit of a headache so"
+    },
+    {
+      "chunk": 5,
+      "start": 3525.88,
+      "end": 3528.54,
+      "text": " we'll be ending early today too."
+    },
+    {
+      "chunk": 5,
+      "start": 3530.4,
+      "end": 3530.92,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 5,
+      "start": 3531.64,
+      "end": 3533.62,
+      "text": " But that's okay."
+    },
+    {
+      "chunk": 5,
+      "start": 3534.24,
+      "end": 3536.2200000000003,
+      "text": " It's good to start next week"
+    },
+    {
+      "chunk": 5,
+      "start": 3536.2200000000003,
+      "end": 3538.88,
+      "text": " with a new section"
+    },
+    {
+      "chunk": 5,
+      "start": 3538.88,
+      "end": 3540.62,
+      "text": " that's going to be on these"
+    },
+    {
+      "chunk": 5,
+      "start": 3540.62,
+      "end": 3542.76,
+      "text": " nonlinear methods like splines"
+    },
+    {
+      "chunk": 5,
+      "start": 3542.76,
+      "end": 3544.8,
+      "text": " and things which are very useful."
+    },
+    {
+      "chunk": 5,
+      "start": 3546.2,
+      "end": 3548.62,
+      "text": " So this last part"
+    },
+    {
+      "chunk": 5,
+      "start": 3548.62,
+      "end": 3549.8,
+      "text": " is a bit of a motivation"
+    },
+    {
+      "chunk": 5,
+      "start": 3549.8,
+      "end": 3551.54,
+      "text": " as to why we care about"
+    },
+    {
+      "chunk": 5,
+      "start": 3551.54,
+      "end": 3554.2799999999997,
+      "text": " I mean it's kind of almost like"
+    },
+    {
+      "chunk": 5,
+      "start": 3554.2799999999997,
+      "end": 3558.14,
+      "text": " an introduction to this whole module"
+    },
+    {
+      "chunk": 5,
+      "start": 3558.14,
+      "end": 3562.24,
+      "text": " about why it's increasingly important"
+    },
+    {
+      "chunk": 5,
+      "start": 3562.24,
+      "end": 3566.54,
+      "text": " to understand these different ways of dealing with too many parameters"
+    },
+    {
+      "chunk": 5,
+      "start": 3566.54,
+      "end": 3570.33997,
+      "text": " and dealing with this. And mainly the fact is"
+    },
+    {
+      "chunk": 5,
+      "start": 3570.33997,
+      "end": 3573.96,
+      "text": " that we have more and more problems of this"
+    },
+    {
+      "chunk": 5,
+      "start": 3573.96,
+      "end": 3577.0,
+      "text": " type where the number of parameters"
+    },
+    {
+      "chunk": 5,
+      "start": 3577.0,
+      "end": 3582.32,
+      "text": " is more"
+    },
+    {
+      "chunk": 5,
+      "start": 3582.32,
+      "end": 3584.02,
+      "text": " than the number of data points."
+    },
+    {
+      "chunk": 5,
+      "start": 3586.92,
+      "end": 3591.16003,
+      "text": " And the reality is most of statistics"
+    },
+    {
+      "chunk": 5,
+      "start": 3591.16003,
+      "end": 3592.7,
+      "text": " has really been built on the notion"
+    },
+    {
+      "chunk": 5,
+      "start": 3592.7,
+      "end": 3596.1,
+      "text": " that you have more data points than your parameters."
+    },
+    {
+      "chunk": 5,
+      "start": 3596.1,
+      "end": 3599.82,
+      "text": " So a lot of what happens when the situation"
+    },
+    {
+      "chunk": 6,
+      "start": 3600.0,
+      "end": 3603.48,
+      "text": " when the situation is reversed, it's just not well understood."
+    },
+    {
+      "chunk": 6,
+      "start": 3605.08,
+      "end": 3606.68,
+      "text": " And so it's very important."
+    },
+    {
+      "chunk": 6,
+      "start": 3607.4,
+      "end": 3608.18,
+      "text": " Someone's calling me."
+    },
+    {
+      "chunk": 6,
+      "start": 3608.84,
+      "end": 3613.82,
+      "text": " And now it's also very common."
+    },
+    {
+      "chunk": 6,
+      "start": 3617.7,
+      "end": 3620.48,
+      "text": " Yeah, it's very common because hardware got better."
+    },
+    {
+      "chunk": 6,
+      "start": 3620.48,
+      "end": 3624.44,
+      "text": " We can record things with cameras everywhere, sensors everywhere."
+    },
+    {
+      "chunk": 6,
+      "start": 3624.68,
+      "end": 3626.2,
+      "text": " They're cheaper, they're faster, they're better."
+    },
+    {
+      "chunk": 6,
+      "start": 3626.4,
+      "end": 3627.1,
+      "text": " Storage is cheaper."
+    },
+    {
+      "chunk": 6,
+      "start": 3628.04,
+      "end": 3631.82,
+      "text": " So now more and more places have more and more variables,"
+    },
+    {
+      "chunk": 6,
+      "start": 3632.46,
+      "end": 3635.82,
+      "text": " and it's this kind of double-edged sword that you have lots of parameters,"
+    },
+    {
+      "chunk": 6,
+      "start": 3636.38,
+      "end": 3639.16,
+      "text": " lots of data things, but now it's harder to find things."
+    },
+    {
+      "chunk": 6,
+      "start": 3640.7,
+      "end": 3644.5,
+      "text": " So in this high-dimensional situation, standard linear regression,"
+    },
+    {
+      "chunk": 6,
+      "start": 3644.5,
+      "end": 3650.46,
+      "text": " meaning without any regularization of any kind, will suck, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3650.96,
+      "end": 3654.78,
+      "text": " And we showed this the first day, I think, that if you get a lot of variables,"
+    },
+    {
+      "chunk": 6,
+      "start": 3654.78,
+      "end": 3657.74,
+      "text": " then the R squared goes up"
+    },
+    {
+      "chunk": 6,
+      "start": 3657.74,
+      "end": 3659.64,
+      "text": " meaning how well you fit the"
+    },
+    {
+      "chunk": 6,
+      "start": 3659.64,
+      "end": 3662.74,
+      "text": " the training data"
+    },
+    {
+      "chunk": 6,
+      "start": 3662.74,
+      "end": 3664.78,
+      "text": " this is training data"
+    },
+    {
+      "chunk": 6,
+      "start": 3664.78,
+      "end": 3669.16,
+      "text": " you do better and better and better"
+    },
+    {
+      "chunk": 6,
+      "start": 3669.16,
+      "end": 3671.64,
+      "text": " but of course how well you fit the"
+    },
+    {
+      "chunk": 6,
+      "start": 3671.64,
+      "end": 3674.96,
+      "text": " yeah so the training"
+    },
+    {
+      "chunk": 6,
+      "start": 3674.96,
+      "end": 3679.56,
+      "text": " also the training mean squared error"
+    },
+    {
+      "chunk": 6,
+      "start": 3679.56,
+      "end": 3682.7,
+      "text": " goes up or goes down but the test error"
+    },
+    {
+      "chunk": 6,
+      "start": 3682.7,
+      "end": 3684.24,
+      "text": " quickly can rise"
+    },
+    {
+      "chunk": 6,
+      "start": 3684.24,
+      "end": 3689.86,
+      "text": " this is a very pessimistic setting where apparently the variables they're"
+    },
+    {
+      "chunk": 6,
+      "start": 3689.86,
+      "end": 3691.22,
+      "text": " including don't help at all."
+    },
+    {
+      "chunk": 6,
+      "start": 3692.38,
+      "end": 3693.48,
+      "text": " Cause you know,"
+    },
+    {
+      "chunk": 6,
+      "start": 3694.46,
+      "end": 3696.52,
+      "text": " the test error just keeps going up and up."
+    },
+    {
+      "chunk": 6,
+      "start": 3696.64,
+      "end": 3697.62,
+      "text": " So my guess is,"
+    },
+    {
+      "chunk": 6,
+      "start": 3697.74,
+      "end": 3698.12,
+      "text": " I mean,"
+    },
+    {
+      "chunk": 6,
+      "start": 3698.58,
+      "end": 3699.24,
+      "text": " it's,"
+    },
+    {
+      "chunk": 6,
+      "start": 3699.24,
+      "end": 3699.76,
+      "text": " it's,"
+    },
+    {
+      "chunk": 6,
+      "start": 3699.84,
+      "end": 3701.38,
+      "text": " it's exaggerating the problem."
+    },
+    {
+      "chunk": 6,
+      "start": 3702.64,
+      "end": 3705.9,
+      "text": " So if you have a lot of variables,"
+    },
+    {
+      "chunk": 6,
+      "start": 3705.9,
+      "end": 3707.66,
+      "text": " then you're going to perfectly fit the data."
+    },
+    {
+      "chunk": 6,
+      "start": 3708.56,
+      "end": 3712.14,
+      "text": " Even though the relationship might be completely meaningless because no matter"
+    },
+    {
+      "chunk": 6,
+      "start": 3712.14,
+      "end": 3719.18,
+      "text": " what the variables are, if you have enough of them, you will fit the training data perfectly."
+    },
+    {
+      "chunk": 6,
+      "start": 3719.4,
+      "end": 3724.58,
+      "text": " We'll do terribly out of sample on the test data, but maybe you have so little data that"
+    },
+    {
+      "chunk": 6,
+      "start": 3724.58,
+      "end": 3726.06,
+      "text": " you don't have enough to make a test set."
+    },
+    {
+      "chunk": 6,
+      "start": 3726.12,
+      "end": 3727.12,
+      "text": " And then what do you do, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3727.16,
+      "end": 3727.96,
+      "text": " This is very confusing."
+    },
+    {
+      "chunk": 6,
+      "start": 3728.98,
+      "end": 3731.68,
+      "text": " So it's a big problem."
+    },
+    {
+      "chunk": 6,
+      "start": 3733.06,
+      "end": 3734.84,
+      "text": " But yeah, so you're perfect for the test data."
+    },
+    {
+      "chunk": 6,
+      "start": 3735.36,
+      "end": 3741.72,
+      "text": " These methods like CP and AIC and BIC, they're problematic, partially because it's hard to"
+    },
+    {
+      "chunk": 6,
+      "start": 3741.72,
+      "end": 3743.48,
+      "text": " estimate the sigma squared."
+    },
+    {
+      "chunk": 6,
+      "start": 3743.68,
+      "end": 3750.88,
+      "text": " I would say they more problematic because their assumptions are always wrong and they typically always wrong So I wouldn recommend using those"
+    },
+    {
+      "chunk": 6,
+      "start": 3755.44,
+      "end": 3759.0,
+      "text": " In every situation, you might have a different setting."
+    },
+    {
+      "chunk": 6,
+      "start": 3759.1,
+      "end": 3763.18,
+      "text": " For example, here, the total number of parameters is 20."
+    },
+    {
+      "chunk": 6,
+      "start": 3765.28,
+      "end": 3769.56,
+      "text": " And then you can see these different settings where these are three different data sets."
+    },
+    {
+      "chunk": 6,
+      "start": 3769.72,
+      "end": 3771.06,
+      "text": " Here, you include one parameter."
+    },
+    {
+      "chunk": 6,
+      "start": 3771.74,
+      "end": 3774.72,
+      "text": " Here, like 16, so somewhere in the middle."
+    },
+    {
+      "chunk": 6,
+      "start": 3774.72,
+      "end": 3776.66,
+      "text": " and this is including all of them."
+    },
+    {
+      "chunk": 6,
+      "start": 3777.24,
+      "end": 3778.66,
+      "text": " And you can see some situations,"
+    },
+    {
+      "chunk": 6,
+      "start": 3778.94,
+      "end": 3781.52,
+      "text": " the error actually goes down, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3781.6,
+      "end": 3782.64,
+      "text": " This is the test error."
+    },
+    {
+      "chunk": 6,
+      "start": 3785.95999,
+      "end": 3786.74,
+      "text": " Here's another,"
+    },
+    {
+      "chunk": 6,
+      "start": 3787.18,
+      "end": 3789.86,
+      "text": " that's with the number of predictors being 20."
+    },
+    {
+      "chunk": 6,
+      "start": 3790.74,
+      "end": 3793.26,
+      "text": " I don't know what these data sets are,"
+    },
+    {
+      "chunk": 6,
+      "start": 3793.4,
+      "end": 3794.94,
+      "text": " but here's another one where 50"
+    },
+    {
+      "chunk": 6,
+      "start": 3794.94,
+      "end": 3796.24,
+      "text": " and this situation is different"
+    },
+    {
+      "chunk": 6,
+      "start": 3796.24,
+      "end": 3799.06,
+      "text": " where the error does go down"
+    },
+    {
+      "chunk": 6,
+      "start": 3799.06,
+      "end": 3801.4,
+      "text": " when you have 28 parameters"
+    },
+    {
+      "chunk": 6,
+      "start": 3801.4,
+      "end": 3803.32,
+      "text": " or 28 degrees of freedom in your model."
+    },
+    {
+      "chunk": 6,
+      "start": 3803.32,
+      "end": 3809.95999,
+      "text": " but then when you include all of them it goes up again right so in this case you don't want to"
+    },
+    {
+      "chunk": 6,
+      "start": 3809.95999,
+      "end": 3815.01999,
+      "text": " include here you want to include everything here you don't and then in this one on the right it"
+    },
+    {
+      "chunk": 6,
+      "start": 3815.01999,
+      "end": 3822.14,
+      "text": " seems like all of it sucks right so you have a lot of parameters and it's hard to figure out which"
+    },
+    {
+      "chunk": 6,
+      "start": 3822.14,
+      "end": 3829.4,
+      "text": " ones to use and it's hard increasing the number you include in the model um it doesn't seem to"
+    },
+    {
+      "chunk": 6,
+      "start": 3829.4,
+      "end": 3836.01999,
+      "text": " help much on the test error. So I would say this is, can be common in test error situations,"
+    },
+    {
+      "chunk": 6,
+      "start": 3836.01999,
+      "end": 3843.01999,
+      "text": " in particular, if you do nothing, right? So I think these figures were made where there was"
+    },
+    {
+      "chunk": 6,
+      "start": 3843.01999,
+      "end": 3849.38,
+      "text": " zero regularization put in the model. This is just standard regression when you probably shouldn't"
+    },
+    {
+      "chunk": 6,
+      "start": 3849.38,
+      "end": 3856.16,
+      "text": " use regression, right? So you want to do something. Probably all of these would look better with some"
+    },
+    {
+      "chunk": 6,
+      "start": 3856.16,
+      "end": 3857.5,
+      "text": " regularization."
+    },
+    {
+      "chunk": 6,
+      "start": 3861.68,
+      "end": 3862.41998,
+      "text": " But yeah,"
+    },
+    {
+      "chunk": 6,
+      "start": 3862.84,
+      "end": 3864.88,
+      "text": " no matter what, your test error"
+    },
+    {
+      "chunk": 6,
+      "start": 3864.88,
+      "end": 3867.24,
+      "text": " will go up, it tends to go up"
+    },
+    {
+      "chunk": 6,
+      "start": 3867.24,
+      "end": 3868.96,
+      "text": " with the number of dimensionality"
+    },
+    {
+      "chunk": 6,
+      "start": 3868.96,
+      "end": 3871.06,
+      "text": " in the problem, and that's because"
+    },
+    {
+      "chunk": 6,
+      "start": 3871.06,
+      "end": 3873.02002,
+      "text": " you have this additional problem of"
+    },
+    {
+      "chunk": 6,
+      "start": 3873.02002,
+      "end": 3874.41998,
+      "text": " figuring out which parameters matter."
+    },
+    {
+      "chunk": 6,
+      "start": 3875.3,
+      "end": 3876.86,
+      "text": " Right? And so"
+    },
+    {
+      "chunk": 6,
+      "start": 3876.86,
+      "end": 3879.06,
+      "text": " you have a higher variance"
+    },
+    {
+      "chunk": 6,
+      "start": 3879.06,
+      "end": 3880.7799999999997,
+      "text": " across samples,"
+    },
+    {
+      "chunk": 6,
+      "start": 3880.7799999999997,
+      "end": 3882.91998,
+      "text": " and that contributes more to the"
+    },
+    {
+      "chunk": 6,
+      "start": 3882.91998,
+      "end": 3883.46002,
+      "text": " test error."
+    },
+    {
+      "chunk": 6,
+      "start": 3886.16,
+      "end": 3888.94,
+      "text": " So yeah, it's the danger of too many features."
+    },
+    {
+      "chunk": 6,
+      "start": 3890.7799999999997,
+      "end": 3893.7200000000003,
+      "text": " Adding more features can help."
+    },
+    {
+      "chunk": 6,
+      "start": 3894.16,
+      "end": 3905.24,
+      "text": " Smaller can help if you have the right ones But adding noise features that are not associated with the response increases test area"
+    },
+    {
+      "chunk": 6,
+      "start": 3905.34,
+      "end": 3906.48,
+      "text": " And that's kind of obvious, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3906.84,
+      "end": 3910.42,
+      "text": " You add more things and it's just noise to the model,"
+    },
+    {
+      "chunk": 6,
+      "start": 3910.42,
+      "end": 3914.36,
+      "text": " then it's going to make things worse, typically, not always."
+    },
+    {
+      "chunk": 6,
+      "start": 3916.12,
+      "end": 3918.7799999999997,
+      "text": " Noise features exasperates the risk of overfitting"
+    },
+    {
+      "chunk": 6,
+      "start": 3918.7799999999997,
+      "end": 3920.68,
+      "text": " because you start fitting to the noise"
+    },
+    {
+      "chunk": 6,
+      "start": 3920.68,
+      "end": 3923.04,
+      "text": " instead of the variables that matter."
+    },
+    {
+      "chunk": 6,
+      "start": 3923.04,
+      "end": 3926.16,
+      "text": " And remember, noise, it could be actual noise."
+    },
+    {
+      "chunk": 6,
+      "start": 3926.6,
+      "end": 3930.2,
+      "text": " It could just be things that are real but don't matter, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3930.2799999999997,
+      "end": 3935.06,
+      "text": " So if you're doing a regression on, you know, something that's happening in the classroom"
+    },
+    {
+      "chunk": 6,
+      "start": 3935.06,
+      "end": 3943.2200000000003,
+      "text": " and then you include details about what's happening at the same time in Japan, that's not noise."
+    },
+    {
+      "chunk": 6,
+      "start": 3943.66,
+      "end": 3947.5,
+      "text": " It's just completely irrelevant to the current data set."
+    },
+    {
+      "chunk": 6,
+      "start": 3947.5,
+      "end": 3950.98,
+      "text": " So noise can be actual noise or just noise that it just,"
+    },
+    {
+      "chunk": 6,
+      "start": 3951.32,
+      "end": 3953.5,
+      "text": " because they're completely unrelated things."
+    },
+    {
+      "chunk": 6,
+      "start": 3956.7200000000003,
+      "end": 3958.58002,
+      "text": " Yeah, regularization does not entirely,"
+    },
+    {
+      "chunk": 6,
+      "start": 3959.0,
+      "end": 3961.41998,
+      "text": " entirely,"
+    },
+    {
+      "chunk": 6,
+      "start": 3961.9,
+      "end": 3968.2,
+      "text": " does not entirely eliminate the problem."
+    },
+    {
+      "chunk": 6,
+      "start": 3968.38,
+      "end": 3969.2799999999997,
+      "text": " It certainly helps."
+    },
+    {
+      "chunk": 6,
+      "start": 3970.4,
+      "end": 3975.44,
+      "text": " And these things are actually ongoing and improving over the years."
+    },
+    {
+      "chunk": 6,
+      "start": 3975.44,
+      "end": 3985.2799999999997,
+      "text": " I would say this aspect of what we talk about in this course is developing continuously."
+    },
+    {
+      "chunk": 6,
+      "start": 3986.46,
+      "end": 3992.16,
+      "text": " And largely because the models we care about, a lot of people care about, have way too many parameters."
+    },
+    {
+      "chunk": 6,
+      "start": 3992.84,
+      "end": 3994.34,
+      "text": " It's just the setting is more."
+    },
+    {
+      "chunk": 6,
+      "start": 3996.44,
+      "end": 4001.34,
+      "text": " And yeah, the reason this, like I said, the setting is just more common,"
+    },
+    {
+      "chunk": 6,
+      "start": 4001.34,
+      "end": 4003.7200000000003,
+      "text": " both because of the explosion of machine learning models,"
+    },
+    {
+      "chunk": 6,
+      "start": 4003.86,
+      "end": 4008.4,
+      "text": " but also because of the new technologies that allow us to record so much more data."
+    },
+    {
+      "chunk": 6,
+      "start": 4009.5,
+      "end": 4014.24,
+      "text": " In my field, when I started in it, they were getting like eight neurons,"
+    },
+    {
+      "chunk": 6,
+      "start": 4014.4,
+      "end": 4017.06,
+      "text": " 10 neurons, 15 neurons at a time and recording for those."
+    },
+    {
+      "chunk": 6,
+      "start": 4017.2799999999997,
+      "end": 4020.06,
+      "text": " And now we're doing like 6,000, 7,000."
+    },
+    {
+      "chunk": 6,
+      "start": 4021.0,
+      "end": 4023.86,
+      "text": " So it's a couple orders of magnitude more."
+    },
+    {
+      "chunk": 6,
+      "start": 4023.86,
+      "end": 4029.34,
+      "text": " And also we went from just tracking the animal in XY position in a box"
+    },
+    {
+      "chunk": 6,
+      "start": 4029.86,
+      "end": 4031.91998,
+      "text": " So now we have eye cameras and face cameras."
+    },
+    {
+      "chunk": 6,
+      "start": 4032.1,
+      "end": 4034.6,
+      "text": " We're getting whisker angles of multiple whiskers."
+    },
+    {
+      "chunk": 6,
+      "start": 4034.76,
+      "end": 4037.62,
+      "text": " We're getting the eye pupil diameter and the rotation."
+    },
+    {
+      "chunk": 6,
+      "start": 4037.82,
+      "end": 4041.18,
+      "text": " We're getting their head tilt, their body posture, their limb movements."
+    },
+    {
+      "chunk": 6,
+      "start": 4041.58002,
+      "end": 4043.2,
+      "text": " We're getting behavioral decomposition."
+    },
+    {
+      "chunk": 6,
+      "start": 4043.56,
+      "end": 4055.86,
+      "text": " So the number of variables we have to explain the neurons is exploding and the number of neurons are exploding And so then it really has become quite difficult to figure out what is our best"
+    },
+    {
+      "chunk": 6,
+      "start": 4058.08,
+      "end": 4065.2,
+      "text": " what's the best relationship between X and Y in this data set when you're asking that question."
+    },
+    {
+      "chunk": 6,
+      "start": 4066.52,
+      "end": 4073.76,
+      "text": " I suppose one aspect that I do want to mention that is often not said well often enough is that,"
+    },
+    {
+      "chunk": 6,
+      "start": 4073.76,
+      "end": 4078.2200000000003,
+      "text": " Remember, right now I'm saying you're trying to explore for relationships in your data."
+    },
+    {
+      "chunk": 6,
+      "start": 4078.98,
+      "end": 4081.62,
+      "text": " That's not often what we want to do scientifically."
+    },
+    {
+      "chunk": 6,
+      "start": 4081.9,
+      "end": 4083.54,
+      "text": " Often we want to test relationships."
+    },
+    {
+      "chunk": 6,
+      "start": 4084.64,
+      "end": 4091.08002,
+      "text": " So this would be more in the exploratory phase of trying to understand what relationships are there."
+    },
+    {
+      "chunk": 6,
+      "start": 4091.94,
+      "end": 4094.38,
+      "text": " That's not really typically how you want to do science."
+    },
+    {
+      "chunk": 6,
+      "start": 4094.52,
+      "end": 4100.08002,
+      "text": " You want to do science in such a way that you make a hypothesis about what there is,"
+    },
+    {
+      "chunk": 6,
+      "start": 4100.08002,
+      "end": 4102.82,
+      "text": " and then you formulate as a null hypothesis, and then you get the data,"
+    },
+    {
+      "chunk": 6,
+      "start": 4102.82,
+      "end": 4105.0,
+      "text": " and then you test that one thing, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 4105.3,
+      "end": 4107.4,
+      "text": " Here, we're not testing things, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 4107.41998,
+      "end": 4109.94,
+      "text": " We're just seeing what relationships are the strongest."
+    },
+    {
+      "chunk": 6,
+      "start": 4110.6,
+      "end": 4112.9,
+      "text": " So it's still called statistics,"
+    },
+    {
+      "chunk": 6,
+      "start": 4113.24,
+      "end": 4116.14,
+      "text": " but we're not doing hypothesis testing."
+    },
+    {
+      "chunk": 6,
+      "start": 4116.42,
+      "end": 4120.36,
+      "text": " We're not doing like good science in a way."
+    },
+    {
+      "chunk": 6,
+      "start": 4120.74,
+      "end": 4124.2,
+      "text": " We're just kind of fishing around in this sense."
+    },
+    {
+      "chunk": 6,
+      "start": 4124.5599999999995,
+      "end": 4126.52,
+      "text": " It would be like a first step, like here you fish"
+    },
+    {
+      "chunk": 6,
+      "start": 4126.52,
+      "end": 4128.96,
+      "text": " and then maybe you have another set of data"
+    },
+    {
+      "chunk": 6,
+      "start": 4128.96,
+      "end": 4130.0599999999995,
+      "text": " where you would test something,"
+    },
+    {
+      "chunk": 6,
+      "start": 4130.86,
+      "end": 4132.48,
+      "text": " some kind of non-trivial relationship"
+    },
+    {
+      "chunk": 6,
+      "start": 4132.48,
+      "end": 4134.6,
+      "text": " that you found or understood."
+    },
+    {
+      "chunk": 6,
+      "start": 4136.26,
+      "end": 4137.92,
+      "text": " Yeah, that's a bit of an aside,"
+    },
+    {
+      "chunk": 6,
+      "start": 4138.0599999999995,
+      "end": 4141.04,
+      "text": " but I think it's relevant to remind everyone"
+    },
+    {
+      "chunk": 6,
+      "start": 4141.04,
+      "end": 4145.0599999999995,
+      "text": " of this difference between when you explore data"
+    },
+    {
+      "chunk": 6,
+      "start": 4145.0599999999995,
+      "end": 4146.4400000000005,
+      "text": " and when you actually test something."
+    },
+    {
+      "chunk": 6,
+      "start": 4148.96,
+      "end": 4151.02,
+      "text": " So, yeah, more data."
+    },
+    {
+      "chunk": 6,
+      "start": 4152.32,
+      "end": 4155.7,
+      "text": " And interpreting results in high dimensions is tricky."
+    },
+    {
+      "chunk": 6,
+      "start": 4157.0599999999995,
+      "end": 4158.18,
+      "text": " I thought it was funny."
+    },
+    {
+      "chunk": 6,
+      "start": 4158.8,
+      "end": 4161.58,
+      "text": " Whoever, this guy wrote it,"
+    },
+    {
+      "chunk": 6,
+      "start": 4161.58,
+      "end": 4163.58,
+      "text": " I would not say things so extreme."
+    },
+    {
+      "chunk": 6,
+      "start": 4164.4400000000005,
+      "end": 4166.72,
+      "text": " He's Brazilian, so of course he's going to exaggerate everything."
+    },
+    {
+      "chunk": 6,
+      "start": 4166.9,
+      "end": 4169.9400000000005,
+      "text": " I say this with endearment because I like Portuguese a lot."
+    },
+    {
+      "chunk": 6,
+      "start": 4170.3,
+      "end": 4172.26,
+      "text": " My favorite language, Brazilian Portuguese, by the way."
+    },
+    {
+      "chunk": 6,
+      "start": 4172.9400000000005,
+      "end": 4173.68,
+      "text": " I think it's amazing."
+    },
+    {
+      "chunk": 6,
+      "start": 4174.16003,
+      "end": 4175.36,
+      "text": " I don't speak it, but I love it."
+    },
+    {
+      "chunk": 6,
+      "start": 4176.78,
+      "end": 4181.83997,
+      "text": " So anyways, it's very exaggerated, but in the high-dimensional setting,"
+    },
+    {
+      "chunk": 6,
+      "start": 4182.32,
+      "end": 4184.12,
+      "text": " the multi-colonarity problem is extreme."
+    },
+    {
+      "chunk": 6,
+      "start": 4184.3,
+      "end": 4187.66003,
+      "text": " That's the one where your X's are correlated,"
+    },
+    {
+      "chunk": 6,
+      "start": 4187.96,
+      "end": 4189.36,
+      "text": " and therefore it screws up your model."
+    },
+    {
+      "chunk": 6,
+      "start": 4189.78,
+      "end": 4190.7,
+      "text": " That's collinearity."
+    },
+    {
+      "chunk": 6,
+      "start": 4191.58,
+      "end": 4193.96,
+      "text": " It's like a linear correlation between the variables."
+    },
+    {
+      "chunk": 6,
+      "start": 4195.02,
+      "end": 4197.12,
+      "text": " But in this high-dimensional setting, typically,"
+    },
+    {
+      "chunk": 6,
+      "start": 4199.52,
+      "end": 4199.82,
+      "text": " typically,"
+    },
+    {
+      "chunk": 7,
+      "start": 4200.0,
+      "end": 4203.4,
+      "text": " the multi-colinear problem is extreme."
+    },
+    {
+      "chunk": 7,
+      "start": 4205.1,
+      "end": 4207.62,
+      "text": " So what this means, essentially,"
+    },
+    {
+      "chunk": 7,
+      "start": 4208.22,
+      "end": 4212.34,
+      "text": " is we can never know exactly which variables, if any,"
+    },
+    {
+      "chunk": 7,
+      "start": 4212.86,
+      "end": 4214.18,
+      "text": " truly are predictive of the outcome."
+    },
+    {
+      "chunk": 7,
+      "start": 4214.3,
+      "end": 4217.02,
+      "text": " We can never identify the best coefficients"
+    },
+    {
+      "chunk": 7,
+      "start": 4217.02,
+      "end": 4217.98,
+      "text": " for use in the regression."
+    },
+    {
+      "chunk": 7,
+      "start": 4217.98,
+      "end": 4221.44,
+      "text": " At most, we can hope to assign the large regression coefficients"
+    },
+    {
+      "chunk": 7,
+      "start": 4221.44,
+      "end": 4223.08,
+      "text": " to variables that are correlated with the variables"
+    },
+    {
+      "chunk": 7,
+      "start": 4223.08,
+      "end": 4228.28,
+      "text": " that truly are predictive of the outcome."
+    },
+    {
+      "chunk": 7,
+      "start": 4228.28,
+      "end": 4233.62,
+      "text": " we will find one of possibly many suitable predictive models."
+    },
+    {
+      "chunk": 7,
+      "start": 4233.78,
+      "end": 4235.12,
+      "text": " I mean, I see his point."
+    },
+    {
+      "chunk": 7,
+      "start": 4235.28,
+      "end": 4235.78,
+      "text": " It's true."
+    },
+    {
+      "chunk": 7,
+      "start": 4236.08,
+      "end": 4236.9,
+      "text": " You have too many parameters."
+    },
+    {
+      "chunk": 7,
+      "start": 4237.04,
+      "end": 4237.82,
+      "text": " You don't have enough data."
+    },
+    {
+      "chunk": 7,
+      "start": 4238.7,
+      "end": 4240.2,
+      "text": " You're doing the best you can."
+    },
+    {
+      "chunk": 7,
+      "start": 4240.4,
+      "end": 4244.56,
+      "text": " You can't really, you typically can never say, ah, it's only this one thing."
+    },
+    {
+      "chunk": 7,
+      "start": 4244.62,
+      "end": 4245.62,
+      "text": " It's only this two things."
+    },
+    {
+      "chunk": 7,
+      "start": 4245.86,
+      "end": 4250.68,
+      "text": " It's typically kind of a mush, especially if you're in the world of like genetics and"
+    },
+    {
+      "chunk": 7,
+      "start": 4250.68,
+      "end": 4252.56,
+      "text": " that kind of messy stuff."
+    },
+    {
+      "chunk": 7,
+      "start": 4253.2,
+      "end": 4255.06,
+      "text": " Sometimes it works."
+    },
+    {
+      "chunk": 7,
+      "start": 4255.06,
+      "end": 4257.38,
+      "text": " sometimes you can"
+    },
+    {
+      "chunk": 7,
+      "start": 4257.38,
+      "end": 4259.46,
+      "text": " say oh actually"
+    },
+    {
+      "chunk": 7,
+      "start": 4259.46,
+      "end": 4261.4,
+      "text": " everything can be reduced onto this one variable"
+    },
+    {
+      "chunk": 7,
+      "start": 4261.4,
+      "end": 4262.78,
+      "text": " and it's super clear"
+    },
+    {
+      "chunk": 7,
+      "start": 4262.78,
+      "end": 4265.56,
+      "text": " I mean I agree that's not the typical"
+    },
+    {
+      "chunk": 7,
+      "start": 4265.56,
+      "end": 4267.02,
+      "text": " setting the typical setting is"
+    },
+    {
+      "chunk": 7,
+      "start": 4267.02,
+      "end": 4269.62,
+      "text": " it's just a big"
+    },
+    {
+      "chunk": 7,
+      "start": 4269.62,
+      "end": 4271.76,
+      "text": " mess but sometimes it works"
+    },
+    {
+      "chunk": 7,
+      "start": 4271.76,
+      "end": 4280.50972,
+      "text": " I think he just saying it always a big mess that way when he gets a big mess in his data he can blame the high problem"
+    },
+    {
+      "chunk": 7,
+      "start": 4284.609726,
+      "end": 4286.12972,
+      "text": " It is particularly..."
+    },
+    {
+      "chunk": 7,
+      "start": 4286.12972,
+      "end": 4288.54972,
+      "text": " I would add to this,"
+    },
+    {
+      "chunk": 7,
+      "start": 4288.64972,
+      "end": 4290.92972,
+      "text": " one of the key problems with high-dimensional stuff"
+    },
+    {
+      "chunk": 7,
+      "start": 4290.92972,
+      "end": 4294.98972,
+      "text": " is that distances between points become less variable."
+    },
+    {
+      "chunk": 7,
+      "start": 4296.08972,
+      "end": 4297.42972,
+      "text": " So when you have a lot of dimensions,"
+    },
+    {
+      "chunk": 7,
+      "start": 4298.709724,
+      "end": 4300.54972,
+      "text": " you have this curse of dimensionality."
+    },
+    {
+      "chunk": 7,
+      "start": 4300.54972,
+      "end": 4303.529724,
+      "text": " so then it's harder to distinguish between things."
+    },
+    {
+      "chunk": 7,
+      "start": 4303.569725,
+      "end": 4304.72972,
+      "text": " That is very true."
+    },
+    {
+      "chunk": 7,
+      "start": 4306.08972,
+      "end": 4308.80972,
+      "text": " It's related to all of this,"
+    },
+    {
+      "chunk": 7,
+      "start": 4309.00972,
+      "end": 4311.14972,
+      "text": " but if you haven't thought about it,"
+    },
+    {
+      "chunk": 7,
+      "start": 4311.18973,
+      "end": 4312.12972,
+      "text": " it's worth thinking about."
+    },
+    {
+      "chunk": 7,
+      "start": 4314.609726,
+      "end": 4318.109726,
+      "text": " Okay, so that will end there."
+    },
+    {
+      "chunk": 7,
+      "start": 4318.36972,
+      "end": 4321.04972,
+      "text": " Thank you for showing up, as he says."
+    },
+    {
+      "chunk": 7,
+      "start": 4322.00972,
+      "end": 4324.18973,
+      "text": " These are the only slides from this guy."
+    },
+    {
+      "chunk": 7,
+      "start": 4324.32973,
+      "end": 4324.889725,
+      "text": " He's wonderful,"
+    },
+    {
+      "chunk": 7,
+      "start": 4324.889725,
+      "end": 4329.68973,
+      "text": " but we'll get back to the Swiss slides next week."
+    },
+    {
+      "chunk": 7,
+      "start": 4329.68973,
+      "end": 4331.14972,
+      "text": " which will be fun"
+    },
+    {
+      "chunk": 7,
+      "start": 4331.14972,
+      "end": 4332.98972,
+      "text": " and we'll talk about"
+    },
+    {
+      "chunk": 7,
+      "start": 4332.98972,
+      "end": 4335.90973,
+      "text": " a nice topic about how"
+    },
+    {
+      "chunk": 7,
+      "start": 4335.90973,
+      "end": 4337.10973,
+      "text": " to deal with"
+    },
+    {
+      "chunk": 7,
+      "start": 4337.10973,
+      "end": 4339.70972,
+      "text": " you know"
+    },
+    {
+      "chunk": 7,
+      "start": 4339.70972,
+      "end": 4342.12973,
+      "text": " some simple nonlinear stuff"
+    },
+    {
+      "chunk": 7,
+      "start": 4342.12973,
+      "end": 4344.16972,
+      "text": " and particular splines"
+    },
+    {
+      "chunk": 7,
+      "start": 4344.16972,
+      "end": 4346.14972,
+      "text": " which are a very nice"
+    },
+    {
+      "chunk": 7,
+      "start": 4346.14972,
+      "end": 4348.08972,
+      "text": " trick so we'll talk about that"
+    },
+    {
+      "chunk": 7,
+      "start": 4348.08972,
+      "end": 4348.64972,
+      "text": " next time"
+    }
+  ]
+}

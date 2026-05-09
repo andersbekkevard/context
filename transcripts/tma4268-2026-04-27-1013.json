@@ -1,0 +1,13 @@
+{
+  "model": "whisper-large-v3-turbo",
+  "text": "Thank you.",
+  "duration": 19.388688,
+  "segments": [
+    {
+      "chunk": 0,
+      "start": 0.0,
+      "end": 19.4,
+      "text": " Thank you."
+    }
+  ]
+}

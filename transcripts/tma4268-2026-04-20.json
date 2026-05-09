@@ -1,0 +1,4279 @@
+{
+  "model": "whisper-large-v3-turbo",
+  "text": "Okay. Okay. So we're back. It's Monday morning again. I hate Monday morning. It's like, why do we do this so early? It's too early. Do you guys normally wake up this early, or is this just for today? You guys, you're only three years, so. Is this like the time you wake up? No, me neither. It blows. It should not be a thing. What the hell's with this thing? You're on the wrong side. Go on. Starting to make noise, right? Yeah, there we go. Hold on. Too early. so as this one's loading up today we're going to talk about feed forward networks neural networks which are really fun which should have been like the bulk of the course honestly i didn't design the course uh and this first time i'm teaching it so i kind of stuck to the plan but it's yeah but i i think the pca part was boring as was the clustering totally irrelevant i mean it's not relevant but like yeah i think it'd be way more interesting to talk more about neural networks and like kind of the interesting tricks that they figured out and kind of a statistical perspective on those i mean we'll get through some of it but i mean And now it's at the end of the course, so we're just going to packet it in. But anyways today we going to talk about feedforward networks and some other things like activation functions and regularization and loss functions Yeah, kind of the interesting tricks that they figured out along the way. It's kind of funny because there's been such a buildup over the years. The people in neural networks, no one really believed them for so long. They just kept trying stuff. And they're like, but this is how the brain works. And this is how it should work. And this is going to be an emergent system. And it's just like, it's going to be amazing. And no one believed them, right? It took forever. You couldn't even get papers published with this stuff in it. And now everyone believes it. But, yeah. It was funny. even when I was in industry what was it 15 years ago that does sound like a long time ago that was a long time ago but I was like I want to study neural networks and everyone's like why they're dumb they don't do anything I mean I wanted to specifically look at it from the perspective of fluid dynamics it's like a fluid network because everyone models still everyone models fluids as a continuum and just sort of that doesn't matter But I wanted to model it like a neural network because then you can get things like turbulence and you get very complex phenomena. And everyone's like, too hard. They're right. It's hard, but, you know, useful. So anyways, feed-forward networks, you could think of them as having these components. And feed-forward networks really are kind of the workhorse of a lot of machine learning. It's not everything, but it's everywhere. They're used a lot. And you think it has these components, some input, an output, layer, and then a hidden layer or layers often. So these are the inputs, like the data input. These are also like the output, typically also known. And then you have to learn the parameters, which are represented by weights, as well as these bias terms Yeah these arrows are weights and then you also have to find the state of these hidden units And so, yeah, you just train input, input, output, learn, learn, learn. It's that easy. It is actually that easy. And then, like I said, they figured out a lot of tricks along the way to make this much better than what they originally started with. So just in terms of writing it out, right? So we have this function. Here's X. Here's Y. Here's Z, the hidden nodes. Alphas are the first set of parameters. Betas are the second set of parameters. So we can write this as an equation, right? Where here's the equation for the hidden nodes. z is equal to some activation function, which will denote g, so it's just some function. Here's the alpha bias term. Here's the alphas that are the weights from the input layer. So boom, right? This is not yet connected to the output layer. We need another one, which will denote y, right? y is equal to f, which is some other function, or it could be the same. and here's the input bias to that layer, to the output layer. Here's the bias to the output layer. Here are the weights, those connections from the hidden layer. And you can see there's the equation for that one. You stick it all together and you get a big nested equation. And the nice thing about these feed-forward networks is they're all directed. They're all going in one direction, right? If, for example, you had connections you know like this oh not to the bias term that doesn't make any sense if you had a connection like this or if you had a connection like this you would have a cycle and then it would be harder such things exist but they are much more difficult to deal with and so it was convenient for everybody to not have any cycles and just write it as a feedforward. So feedforward networks don't have these cycles. They don't have connections between them. You can make networks that way but then they not feed forward So we can create these And then, you know, then there's some obvious things, right? What is P? What is M? What is C? So we can look at the equation. M is here. All right. P is here. Whereas C is here. Right. Right. So we have P inputs right? Inputs, layer. M is the number of hidden nodes, right? And then C is the number of outputs. so the number of inputs of course is going to be dictated by the problem at least largely you can often write the same set of inputs ten different infinite number of ways but essentially they're one input could be regardless the inputs are determined by your data, right? So if they're images, it would be pixels, or it could be sounds or something. It could be words, right? It could be tokens for tokenized language. Then the outputs are often determined also, right? So for example, we're going to look at a bunch of images of the numbers, of numbers 0 through 9. And then the input is obviously the image, and the y in that case would be the actual number. And then you want to train a function that learns to predict the right number. So P and C are largely determined by the problem, and then M is largely determined through work, through effort, through figuring it's a hyperparameter. You have to pick it or determine it. So how many parameters? Well, we have the betas will be, matrix, right, of the number of alphas. Alphas are from the input, so that's going to be number of inputs plus 1 for the bias times m and then the betas would also be m times number of outputs times I guess m plus 1 right should be because then we have the the bias term in there as well so that should be the number of parameters. What determines P and C? Well, P, yeah, we already said that. P and C are the input and the output. M is something you have to figure out, right? So, yeah, there's a lot of engineering that goes into machine learning, into these networks, right? Because there's no theoretical reason necessarily for like the number M. I mean, obviously it can't be too small, but yeah, how big should it be? Who knows? All right, so one special case that some people like, people actually do study linear feed-forward networks. is this case when the F is I wonder why here it says F and there it says G But either way, when the activation function is linear, then what do we have? Well, we have basically just linear regression. Just with a lot of parameters. I mean, if it's a if there's no non-linearity, then it's just linear regression. There are ways to make this more interesting. You can regularize it, and then you can stack them, and you can actually get more interesting behavior and still have a lot of the properties of the linear system. But in general, this is just linear regression, especially with just this simple layer. Oh, yeah. So here they just assume G. So. Yeah. Yeah. So certainly F could be something else, but at least it's linear related to X. So, OK. now I'm starting to doubt maybe they had some other thing in mind here because certainly if F was also linear then this is definitely linear regression with F being anything it can be then it could be you could think of it more like a GLM sort of but yeah if you make things linear then it all kind of collapses to boring one of the key things in this field is that you have these non-linearities that lead to complex learning so one of the big things and this was actually one of the solutions solutions to, like I said last time, there were a few quote-unquote AI winters. So these were like times when machine learning kind of fell on its ass and no one believed it would work. One of the reasons that it did is that someone showed with I forget his name Mintz or something showed that if you only have one hidden layer then you can learn XOR You can't learn this kind of simple function. Yeah. And so going to a deeper network, more layers, what if he proved it? But anyways, that was one of the deaths of it. And the interesting thing was, you know, adding layers really made it much more expressive, which, again, I don't think this was obvious to anyone. I mean, maybe it looks obvious to us because, you know, we have the we can look through the lens of like, oh, of course, because we're so used to hearing about like 10 trillion parameter networks with like 50,000 layers or some shit. but for them to think of adding more layers I don't know how obvious it was but going to multi-layered neural networks was very good it was very helpful and of course the idea there is just the same you just have, again, these are inputs and this is specifically a feed-forward because again if you went like this you'd have a loop that's hard so you have these V4 networks and they're multi-layer and they behave the same as just a single layer only now you just repeat the same thing in terms of the outcome you can have them be continuous so like real valued or they can be binary another one is categories using one hot encoding so you know it can be basically if you want to have if you want to have three outcomes right right so this would be three outcomes And this is All right. These could be classes. Or whatever things. All right. So you want to have it like that. And there's this nice trick where instead of having to actually model a binary variable directly, you can use, we'll get to it in a second, something called a softmax, which is a function. So another set of tricks that another thing that machine learning has been really good at is finding funny-looking functions that behave really well. So we'll get to one for the category stuff. Now, one of the data sets that have been particularly useful in this world of machine learning, or it's been used a lot, it's still being used. We have a paper that's hopefully coming out with this data also in it. It's the MNIST data. And all it is is handwritten numbers, 0 through 9. These are the famous. I'm sure these are going to be in museums if they're not already there but they're just a bunch of numbers and you'd be amazed how long machine learning was stuck on just trying to find these numbers it was probably like 10 years of just trying to get these numbers better so you know and it used to be like you could just do a little bit better and get a publication hey we got 98% of MNIST instead of 94 look at us, we win I'm trying to do it with a slightly different architecture and look at the size too imagine if the only image models you could use had 28 by 28 pixels tiny as shit, right? just so small it's amazing and this was the whole field forever now it's all the size of the images, the size of the networks, videos, just amazing. But this is a very classic data set. Historical very relevant at least. And so we have these important parts, the output layer activation function, the hidden layer activation function, what's the architecture of the network, what's our loss function, meaning what do you optimize, and also how do you optimize. All of these things are important. And here I'm also not mentioning other things that have also been very important, like, for example, being able to use a GPU, having enough data, also how do you optimize? Well, I guess that would be fit in the optimizer because they do this kind of cool differentiation. All right. So we have these activation functions, right? A linear activation function is simply just nothing. It's just X, right? So it's not doing anything interesting. The sigmoid activation function, this is, right, 0 goes to 1. and here's some here's some function and actually this was for the longest time like the activation function this was like the hidden node activation function everyone thought many people thought this was the way to go and I think the reason for their thinking was I guess it's twofold one was neurons in the brain. You can think of them as being on or off. So those were inspiration for a lot of neural networks. So people thought, well, if the brain does it, then why not? Arguably, the brain also can do can have rates, but that's a different discussion. I think the other aspect was actually due to statistical mechanics and statistical physics. I mentioned Hotfield. A lot of these physicists have been permeating into machine learning from the beginning, mainly because they probably couldn't get a job in statistical physics, so they went into playing with AI. I don't know. I don want to criticize them They do say anyways um in that world the neural networks actually came about as a spin system like magnetic spins and there you think about spin up and spin down so binary zero one or negative one one actually and so for them the very natural thing was just to think of it as binary units so i think many people are just kind of stuck on that idea But one of the big changes was actually to move away from binary units to something called a RELU, which is rectified linear unit. Right, so basically if the input is above a certain number, a threshold, then it behaves linearly and before that it's just zero. you can also think of it as a heavy side function we'll get to that in a second but yeah so the activation function can be linear can be sigmoid can be relu it can also be softmax oh this is in the output layer by the way sorry i didn't differentiate it can also be the softmax function and this is related to the classification i mentioned earlier right that you want to have these kind of 0, 1, 1. And here, if you look at it, what it is is you take for a given output, it uses the function exp of the input divided by the sum over all the, of exp of all the things. So what you're doing is you're basically setting all of these, because this is the sum of all of the different units within that group of, within that classification. So when you're dividing by the sum of them, right, then you're normalizing it so their sum is equal to one, right? yeah so you're normalizing it so sum of them equals one and you doing the exp of the thing so it will kind of push things up or down and so if you look at it you can think of it as giving you a probability So it pushes things towards a probability And actually what often people use is a version of Softmax which actually introduces an exponent inside that makes it even more extreme. And so you can push it so that it really makes it so that one of them is going to be a winner and push the other others down. So then it's kind of a very natural way of turning a set of outputs, let's say you're like five outputs, tying them together and making it so that they become almost 1, 0, 0, 0, 0, 1, but all coupled together, right? So that the winner is the winner and that gets the most probability. This is a clever trick. Again, machine learning is a series of very clever tricks that, yeah, they all make sense. They're not all, but they mostly make sense. So this is on the output. You can have things like this. Here is the hidden layer. I would say the sigmoid function is not so common anymore, but it was very common in its day. What's very common is the ReLU, which is this. Another one that's very common now. I don't know if it was when they wrote the book. Another one is called the Jilu. And basically, I'll write it as purple. Jilu. And Jilu kind of looks like this. Nope, doesn't look like that. I'll just draw next to it. So it goes here, and then it kind of dips down a little bit, and then comes up. I'll just... I don't want to Google anything. But the idea was, you still have a non-linearity. Or sorry. This is still straight here. So it still gets a linear increase as it gets bigger But you remove this hard edge right You move this thing there So that thing it funny because it both important that you have an it a nonlinear function right but actually the the the corner there is um can be kind of bad for gradients so it's nice to have a smooth function at the same time so i think this glu is actually one of the more common ones now yeah as i was trying to say earlier a lot of what we think are critical important things um like i think a lot of people would have assumed that this is the more important thing but i think one of the important things with relu was that it was non-linear and had an you know a more expressive wasn't just binary it can be kind of continuously valued and then moving to glu meant you got rid of this kind of nasty thing. And so this GILU is, I think it's typically written mathematically with an error function, but then when it's implemented, they use some numerical approximation with lots of decimal points. So I won't ask you about that specifically, but, but yeah, it's, it's interesting. Okay. So, Yeah, ReLU slash GLU are the popular ones nowadays. Yeah, it's piecewise linear, both of them are, but it is non-linear. If it was linear, then the whole thing would just decay to boring. Not really, but... Yeah. and yeah there's been a lot of things that people have attributed the success of neural networks to and one of them was just replacing the sigmoid with relu yeah it's funny like a lot of the advances were kind of seemingly trivial but not so trivial and then um yeah started as a trick and then it's like hey that really worked well so sadly I don't remember who did it But someone figured out that we can do that instead of Sigmoid, and that was a good idea. So one of the important things that was figured out is that feedforward networks. Because I think, I mean, a little background was, I think people were wondering why feed forward. I mean, certainly the brain is not just feed forward. The brain has connections everywhere. They make loops. And other systems like spin systems, like magnetic systems, or liquid, right, as a liquid network. Most networks have loops. It's not very common in nature to see a network that's fully feed forward, right? But why would we do that? Why are those kind of the workhorse of machine learning? Well, it turns out that feedforward network can approximate basically any function, right? So it's the universal approximation property. And, yeah, I won't, to actually understand this, you have to go into measure theory and all sorts of hard math that we don't talk about in this class. But it has been proven that if you have a linear output layer and at least one hidden layer with some kind of squashing activation function, like a ReLU or a Sigmoid or anything, like a non-linearity, and enough hidden units. So this was originally shown with basically ridiculously wide hidden units, but you can often compensate for depth with width in some confusing way. But if you have a large enough network, then you can approximate any Borel measurable function from one finite dimensional space to another with any desired non-zero amount of error. Right? So that a bit it a lot of words but the surprising thing was you can do this with a feed network That you do need a non that was important And you need enough, you need a big enough network, but that you can do it. You don't need loops, you don't necessarily need anything else, you don't even need that many hidden layers. it needs to be big enough and you can approximate any of these types of functions so that was a big deal okay so we have three components width, depth, connections and in the course we're going to only talk about feedforward CNNs, which are convolutional neural networks, and some RNNs, which are recursive neural networks. Yeah. So these are architectures, and one important part of the architecture is what is our loss function. So very related, of course, to the output layer function, function, because that would kind of determine how you relate the output to the output layer to the output itself. So you can do a mean squared error loss function. So just this typical y minus the input f of, what do we call them, z. squared. Oh, yeah. We write the equations in the next lines. But anyways, we can do a mean squared error, which is like a regression thing. We can do a classification as a binary function, or we can use the categorical version, like the softmax, like we showed earlier. So these are different loss functions. So here's the regression one, or the mean squared error term. Here the cross entropy one Here the binary cross And these are just new names for old ideas right So this is like the same as when we looked at logistic regression. Right? Like if this is the regression one, the linear regression one, right? This one is like linear regression, and then this other one is like logistic regression. Only now your inputs are not the covariates, but rather they're hidden shit, right? So it can do much more than logistic regression because it has the full flexibility of the network. Yeah, I would say the very confusing thing with neural networks is that you don't just learn, you learn parameters, right? You have to learn the parameters of the network, but you're also inferring states, hidden states, and a lot of hidden states. So this model has an ability to express and approximate functions that you just don't have at all with just simple regression, which is very interesting and cool. So determining what your output cost function is is important. The other thing that's important is choosing your optimization strategy. so one would just be normal gradient descent so just follow the gradient another one which I use a lot is mini batch stochastic gradient descent which we'll get to in a second that's basically the same idea we'll get to in a second it's cool and the gradient is calculated through what's called backprop or backpropagation which was another big deal because it created an objective function that you could use easily. And it was one of the reasons we got out of one of the winters. So I think that was I don know 2002 or something Or oh it was earlier The 90s I don know It was in the slides earlier like from last week But it was one of the things that got machine learning exciting again, is that you could do backprop. Which we'll explain in a minute. So we have gradient descent. and that is the same gradient descent that we've talked about since progression in the sense that you have some function and you want to go and find a minimum and a minimum and you might get stuck in a local minimum, but ideally you get into a global minimum. What is really kind of cool about gradient descent in machine learning models is that as you learn the parameters and the states, you're changing the shape of the function. So if, for example, you're just doing linear regression and you don't have that many parameters, so let's say you have just three variables that your inputs and you have a bunch of samples, then the shape of the cost function is very determined just by the data. It's not a very flexible model. But if you take that same data and then you add a whole bunch of hidden layers and hidden nodes and a bunch of architecture in between, then suddenly you have a very flexible model. And as you learn some of the states, as you learn some of the parameters, and then estimate some of the states, you're actually changing the landscape. So it's actually kind of interesting because in machine learning, often you can kind of dig into one and then end up here. It's very funny because the lost landscape will change as you move through it. You still have this notion that there's local minima, global minima, but you have more ways of escaping local minima. Yeah. there's that a really nice video on this escaping local minima is on that YouTube video. What's it called? Like three brown and one blue or three blue, one brown, three dogs. No, it's blue. You guys know what I'm saying, right? Yeah, they have really nice videos and they have a really nice video on just visualizing the lost landscape as you dig into the parameters in the States and how it will actually escape local minima just by keep going down, which is amazing. All right. So gradient descent works this way where you, you, yeah, you have initial values and then you go and you calculate your predictions, right? So these are the predictions for the output states, but also the input ones, or sorry, and then the hidden ones. And then you calculate a loss. And then what you do is you go and you find updates to the weights according to a derivative, right? So very much the same idea as we did for linear regression. We had a function, you know, the sum of square difference, and then to find the parameters, we just took the derivative and then we move in the direction of the derivative. only now we have like a whole bunch of layers so it takes a bit more work but it's still the same idea that you take the gradient of the function and then once you have the gradient you take the parameter and then you update it according to some movement in the direction of the gradient it's very much the same idea and so right here we're just showing it with respect to a single function and not defining how we get the gradient but the idea is simply you take the gradient and then you update your parameter moving in the direction of the gradient and then you just keep doing that until the network stops changing so t here is your is the number of iterations you do or epochs And you just keep going until you converged Yeah. And so you can either do it full, meaning you to use all of the data, and you update according to your best estimate of the gradient, or what you can do is stochastic gradient descent, which is an average over many individual gradients, right? Where you're basically getting noisy estimates of your gradient, stochastic noisy ones, and then you average over them. So what's not obvious here, what's not obvious from this is that actually this is a good idea to have noisy estimates of your gradients. And one particular way of getting these noisy stochastic gradients is using minibatch. So I don't actually know the history of this because it could have been two ways. It could have been someone's like, ooh, we need to have really good stochastic gradient descent because that has all these nice properties. Because one of the nice properties about stochastic gradient descent is that it has an implicit regularization. We talked about regularization in terms of actually penalizing parameters. So we talked about the L1 and L2 regularization, where you penalize the absolute value or the squared value of the parameters. and mini-batch stochastic gradient descent actually gives you an implicit L2 regularization, which is super weird, right? Like, why would it do that? So whenever you have a, when you use this and you're in a problem setting where there's an infinite number of parameters, or, sorry, when there's an infinite number of exact solutions, it will find the solution where the L2 norm is minimized, which is super weird, right? That's this regularization effect that's written in red here. But the reality is you could also have come up with it simply because it seemed like a good idea. You have so many data points You don want to compute your gradient from all of them because it would take forever So instead you just take some of them You take a random subset or you partition the data into 10 random subset or some number of random subsets. And then you just compute your gradient on a part of the data and then use that to update your parameters. so it's yeah so it was a clever idea because it's a way of adding a regularization that is very nice but it can also make things fast because you're just computing in parallel a whole bunch of little small batches and you typically do things in the power of two because that's what you always do in machine learning because you try to make everything as hardware efficient as possible. And most hardware things happen in powers of two, right? So 32, 256, 512, 1024. There's a lot of numbers that are power of two. And those are the ones that you typically use. True stochastic gradient descent involves just one sample, but you can, yeah, You can do all sorts of things between one sample per iteration and full gradient descent. I don't think anyone just does one sample because it would just take forever. But, yeah, but you compromise. And like I said, most of this stuff is done kind of like, here's the problem. I know I want something like this, so I try, you know, 512, 1024, 256. And then you're like, oh, this one works well. You go with that. But yeah, the mini batch is kind of a clever idea because it speeds things up and it gives a really nice regularization effect. Yeah, so like I said, this is the website or the YouTuber that does really nice videos on this thing. So you can watch this if you want. But let's take a short break and we'll come back to this in 15 minutes. So at 9.18, we'll come back and continue with this topic. Okie dokie. Okie dokie Thank you Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. All right. So we're going to stop here and then pick it up tomorrow. And then finish up this. We'll probably finish this tomorrow and then have the review next week. Or maybe we'll spill into next week, but it'll be fine. All right. Cool. So we'll stop here.",
+  "duration": 3077.735375,
+  "segments": [
+    {
+      "chunk": 0,
+      "start": 0.0,
+      "end": 24.0,
+      "text": " Okay."
+    },
+    {
+      "chunk": 0,
+      "start": 24.0,
+      "end": 24.8,
+      "text": " Okay."
+    },
+    {
+      "chunk": 0,
+      "start": 25.1,
+      "end": 27.66,
+      "text": " So we're back."
+    },
+    {
+      "chunk": 0,
+      "start": 30.0,
+      "end": 33.78,
+      "text": " It's Monday morning again."
+    },
+    {
+      "chunk": 0,
+      "start": 34.46,
+      "end": 35.36,
+      "text": " I hate Monday morning."
+    },
+    {
+      "chunk": 0,
+      "start": 35.98,
+      "end": 38.4,
+      "text": " It's like, why do we do this so early?"
+    },
+    {
+      "chunk": 0,
+      "start": 41.28,
+      "end": 42.14,
+      "text": " It's too early."
+    },
+    {
+      "chunk": 0,
+      "start": 42.32,
+      "end": 44.66,
+      "text": " Do you guys normally wake up this early, or is this just for today?"
+    },
+    {
+      "chunk": 0,
+      "start": 47.58,
+      "end": 49.66,
+      "text": " You guys, you're only three years, so."
+    },
+    {
+      "chunk": 0,
+      "start": 50.54,
+      "end": 52.06,
+      "text": " Is this like the time you wake up?"
+    },
+    {
+      "chunk": 0,
+      "start": 52.96,
+      "end": 53.82,
+      "text": " No, me neither."
+    },
+    {
+      "chunk": 0,
+      "start": 54.48,
+      "end": 55.08,
+      "text": " It blows."
+    },
+    {
+      "chunk": 0,
+      "start": 55.34,
+      "end": 56.36,
+      "text": " It should not be a thing."
+    },
+    {
+      "chunk": 0,
+      "start": 57.5,
+      "end": 58.5,
+      "text": " What the hell's with this thing?"
+    },
+    {
+      "chunk": 0,
+      "start": 60.0,
+      "end": 63.38,
+      "text": " You're on the wrong side."
+    },
+    {
+      "chunk": 0,
+      "start": 63.38,
+      "end": 64.24,
+      "text": " Go on."
+    },
+    {
+      "chunk": 0,
+      "start": 81.04,
+      "end": 82.64,
+      "text": " Starting to make noise, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 83.52,
+      "end": 84.22,
+      "text": " Yeah, there we go."
+    },
+    {
+      "chunk": 0,
+      "start": 85.64,
+      "end": 86.68,
+      "text": " Hold on."
+    },
+    {
+      "chunk": 0,
+      "start": 88.52,
+      "end": 89.84,
+      "text": " Too early."
+    },
+    {
+      "chunk": 0,
+      "start": 90.0,
+      "end": 102.02,
+      "text": " so as this one's loading up today we're going to talk about feed forward networks neural networks"
+    },
+    {
+      "chunk": 0,
+      "start": 102.02,
+      "end": 106.26,
+      "text": " which are really fun which should have been like the bulk of the course honestly"
+    },
+    {
+      "chunk": 0,
+      "start": 106.26,
+      "end": 113.86,
+      "text": " i didn't design the course uh and this first time i'm teaching it so i kind of stuck to the plan"
+    },
+    {
+      "chunk": 0,
+      "start": 113.86,
+      "end": 123.26,
+      "text": " but it's yeah but i i think the pca part was boring as was the clustering totally irrelevant"
+    },
+    {
+      "chunk": 0,
+      "start": 123.26,
+      "end": 129.66,
+      "text": " i mean it's not relevant but like yeah i think it'd be way more interesting to talk more about"
+    },
+    {
+      "chunk": 0,
+      "start": 129.66,
+      "end": 133.46,
+      "text": " neural networks and like kind of the interesting tricks that they figured out and kind of a"
+    },
+    {
+      "chunk": 0,
+      "start": 133.46,
+      "end": 139.28,
+      "text": " statistical perspective on those i mean we'll get through some of it but i mean"
+    },
+    {
+      "chunk": 0,
+      "start": 139.28,
+      "end": 141.92,
+      "text": " And now it's at the end of the course, so we're just going to packet it in."
+    },
+    {
+      "chunk": 0,
+      "start": 143.12,
+      "end": 155.64,
+      "text": " But anyways today we going to talk about feedforward networks and some other things like activation functions and regularization and loss functions"
+    },
+    {
+      "chunk": 0,
+      "start": 157.22,
+      "end": 160.92,
+      "text": " Yeah, kind of the interesting tricks that they figured out along the way."
+    },
+    {
+      "chunk": 0,
+      "start": 163.3,
+      "end": 166.64,
+      "text": " It's kind of funny because there's been such a buildup over the years."
+    },
+    {
+      "chunk": 0,
+      "start": 167.38,
+      "end": 174.92,
+      "text": " The people in neural networks, no one really believed them for so long."
+    },
+    {
+      "chunk": 0,
+      "start": 175.0,
+      "end": 177.22,
+      "text": " They just kept trying stuff."
+    },
+    {
+      "chunk": 0,
+      "start": 177.78,
+      "end": 180.02,
+      "text": " And they're like, but this is how the brain works."
+    },
+    {
+      "chunk": 0,
+      "start": 180.02,
+      "end": 181.54001,
+      "text": " And this is how it should work."
+    },
+    {
+      "chunk": 0,
+      "start": 181.6,
+      "end": 183.34,
+      "text": " And this is going to be an emergent system."
+    },
+    {
+      "chunk": 0,
+      "start": 183.52,
+      "end": 187.16,
+      "text": " And it's just like, it's going to be amazing."
+    },
+    {
+      "chunk": 0,
+      "start": 187.32,
+      "end": 188.54001,
+      "text": " And no one believed them, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 188.74,
+      "end": 189.76,
+      "text": " It took forever."
+    },
+    {
+      "chunk": 0,
+      "start": 190.34,
+      "end": 193.1,
+      "text": " You couldn't even get papers published with this stuff in it."
+    },
+    {
+      "chunk": 0,
+      "start": 195.54001,
+      "end": 198.2,
+      "text": " And now everyone believes it."
+    },
+    {
+      "chunk": 0,
+      "start": 200.28,
+      "end": 202.7,
+      "text": " But, yeah."
+    },
+    {
+      "chunk": 0,
+      "start": 203.3,
+      "end": 203.78,
+      "text": " It was funny."
+    },
+    {
+      "chunk": 0,
+      "start": 203.78,
+      "end": 205.86,
+      "text": " even when I was in industry"
+    },
+    {
+      "chunk": 0,
+      "start": 205.86,
+      "end": 208.18,
+      "text": " what was it 15 years ago"
+    },
+    {
+      "chunk": 0,
+      "start": 208.18,
+      "end": 211.18,
+      "text": " that does sound like a long time ago"
+    },
+    {
+      "chunk": 0,
+      "start": 211.18,
+      "end": 212.34,
+      "text": " that was a long time ago"
+    },
+    {
+      "chunk": 0,
+      "start": 212.34,
+      "end": 215.48001,
+      "text": " but I was like I want to study neural networks"
+    },
+    {
+      "chunk": 0,
+      "start": 215.48001,
+      "end": 216.3,
+      "text": " and everyone's like why"
+    },
+    {
+      "chunk": 0,
+      "start": 216.3,
+      "end": 217.68,
+      "text": " they're dumb"
+    },
+    {
+      "chunk": 0,
+      "start": 217.68,
+      "end": 219.1,
+      "text": " they don't do anything"
+    },
+    {
+      "chunk": 0,
+      "start": 219.1,
+      "end": 221.92,
+      "text": " I mean I wanted to specifically look at it"
+    },
+    {
+      "chunk": 0,
+      "start": 221.92,
+      "end": 224.23999,
+      "text": " from the perspective of fluid dynamics"
+    },
+    {
+      "chunk": 0,
+      "start": 224.23999,
+      "end": 225.73999,
+      "text": " it's like a fluid network"
+    },
+    {
+      "chunk": 0,
+      "start": 225.73999,
+      "end": 227.51999,
+      "text": " because everyone models"
+    },
+    {
+      "chunk": 0,
+      "start": 227.51999,
+      "end": 230.44,
+      "text": " still everyone models fluids as a continuum"
+    },
+    {
+      "chunk": 0,
+      "start": 230.44,
+      "end": 231.78,
+      "text": " and just sort of"
+    },
+    {
+      "chunk": 0,
+      "start": 231.78,
+      "end": 233.01999,
+      "text": " that doesn't matter"
+    },
+    {
+      "chunk": 0,
+      "start": 233.01999,
+      "end": 239.45999,
+      "text": " But I wanted to model it like a neural network because then you can get things like turbulence and you get very complex phenomena."
+    },
+    {
+      "chunk": 0,
+      "start": 240.94,
+      "end": 242.6,
+      "text": " And everyone's like, too hard."
+    },
+    {
+      "chunk": 0,
+      "start": 243.82,
+      "end": 244.23999,
+      "text": " They're right."
+    },
+    {
+      "chunk": 0,
+      "start": 244.3,
+      "end": 246.4,
+      "text": " It's hard, but, you know, useful."
+    },
+    {
+      "chunk": 0,
+      "start": 247.45999,
+      "end": 254.5,
+      "text": " So anyways, feed-forward networks, you could think of them as having these components."
+    },
+    {
+      "chunk": 0,
+      "start": 256.02,
+      "end": 260.8,
+      "text": " And feed-forward networks really are kind of the workhorse of a lot of machine learning."
+    },
+    {
+      "chunk": 0,
+      "start": 260.8,
+      "end": 264.32,
+      "text": " It's not everything, but it's everywhere."
+    },
+    {
+      "chunk": 0,
+      "start": 264.96,
+      "end": 266.04,
+      "text": " They're used a lot."
+    },
+    {
+      "chunk": 0,
+      "start": 266.7,
+      "end": 271.2,
+      "text": " And you think it has these components, some input, an output, layer,"
+    },
+    {
+      "chunk": 0,
+      "start": 271.91998,
+      "end": 274.46002,
+      "text": " and then a hidden layer or layers often."
+    },
+    {
+      "chunk": 0,
+      "start": 275.62,
+      "end": 277.8,
+      "text": " So these are the inputs, like the data input."
+    },
+    {
+      "chunk": 0,
+      "start": 278.52002,
+      "end": 281.56,
+      "text": " These are also like the output, typically also known."
+    },
+    {
+      "chunk": 0,
+      "start": 282.53998,
+      "end": 293.97998,
+      "text": " And then you have to learn the parameters, which are represented by weights, as well"
+    },
+    {
+      "chunk": 0,
+      "start": 293.97998,
+      "end": 306.42,
+      "text": " as these bias terms Yeah these arrows are weights and then you also have to find the state of these hidden units"
+    },
+    {
+      "chunk": 0,
+      "start": 309.22,
+      "end": 317.26,
+      "text": " And so, yeah, you just train input, input, output, learn, learn, learn."
+    },
+    {
+      "chunk": 0,
+      "start": 318.08,
+      "end": 319.1,
+      "text": " It's that easy."
+    },
+    {
+      "chunk": 0,
+      "start": 320.42,
+      "end": 321.62,
+      "text": " It is actually that easy."
+    },
+    {
+      "chunk": 0,
+      "start": 322.26,
+      "end": 329.52,
+      "text": " And then, like I said, they figured out a lot of tricks along the way to make this much better than what they originally started with."
+    },
+    {
+      "chunk": 0,
+      "start": 331.22,
+      "end": 334.28,
+      "text": " So just in terms of writing it out, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 334.34,
+      "end": 335.54,
+      "text": " So we have this function."
+    },
+    {
+      "chunk": 0,
+      "start": 335.8,
+      "end": 336.48,
+      "text": " Here's X."
+    },
+    {
+      "chunk": 0,
+      "start": 336.86,
+      "end": 337.48,
+      "text": " Here's Y."
+    },
+    {
+      "chunk": 0,
+      "start": 337.96,
+      "end": 340.0,
+      "text": " Here's Z, the hidden nodes."
+    },
+    {
+      "chunk": 0,
+      "start": 340.8,
+      "end": 342.68,
+      "text": " Alphas are the first set of parameters."
+    },
+    {
+      "chunk": 0,
+      "start": 343.24,
+      "end": 344.84,
+      "text": " Betas are the second set of parameters."
+    },
+    {
+      "chunk": 0,
+      "start": 345.5,
+      "end": 347.98,
+      "text": " So we can write this as an equation, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 348.08002,
+      "end": 350.32,
+      "text": " Where here's the equation for the hidden nodes."
+    },
+    {
+      "chunk": 0,
+      "start": 350.32,
+      "end": 355.62,
+      "text": " z is equal to some activation function, which will denote g, so it's just some function."
+    },
+    {
+      "chunk": 0,
+      "start": 356.38,
+      "end": 362.88,
+      "text": " Here's the alpha bias term. Here's the alphas that are the weights from the input layer."
+    },
+    {
+      "chunk": 0,
+      "start": 363.7,
+      "end": 368.36,
+      "text": " So boom, right? This is not yet connected to the output layer. We need another one,"
+    },
+    {
+      "chunk": 0,
+      "start": 368.48,
+      "end": 375.32,
+      "text": " which will denote y, right? y is equal to f, which is some other function, or it could be the same."
+    },
+    {
+      "chunk": 0,
+      "start": 375.32,
+      "end": 380.88,
+      "text": " and here's the input bias to that layer, to the output layer."
+    },
+    {
+      "chunk": 0,
+      "start": 381.41998,
+      "end": 382.78,
+      "text": " Here's the bias to the output layer."
+    },
+    {
+      "chunk": 0,
+      "start": 383.32,
+      "end": 386.04,
+      "text": " Here are the weights, those connections from the hidden layer."
+    },
+    {
+      "chunk": 0,
+      "start": 386.9,
+      "end": 389.72,
+      "text": " And you can see there's the equation for that one."
+    },
+    {
+      "chunk": 0,
+      "start": 389.8,
+      "end": 393.28,
+      "text": " You stick it all together and you get a big nested equation."
+    },
+    {
+      "chunk": 0,
+      "start": 393.66,
+      "end": 396.04,
+      "text": " And the nice thing about these feed-forward networks"
+    },
+    {
+      "chunk": 0,
+      "start": 396.04,
+      "end": 398.18,
+      "text": " is they're all directed."
+    },
+    {
+      "chunk": 0,
+      "start": 398.18,
+      "end": 400.48,
+      "text": " They're all going in one direction, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 400.78,
+      "end": 403.12,
+      "text": " If, for example, you had connections"
+    },
+    {
+      "chunk": 0,
+      "start": 403.12,
+      "end": 407.06,
+      "text": " you know like this"
+    },
+    {
+      "chunk": 0,
+      "start": 407.06,
+      "end": 410.04,
+      "text": " oh not to the bias term that doesn't make any sense"
+    },
+    {
+      "chunk": 0,
+      "start": 410.04,
+      "end": 415.08002,
+      "text": " if you had a connection like this or if you had a connection like this"
+    },
+    {
+      "chunk": 0,
+      "start": 415.08002,
+      "end": 417.38,
+      "text": " you would have a cycle"
+    },
+    {
+      "chunk": 0,
+      "start": 417.38,
+      "end": 420.32,
+      "text": " and then it would be harder"
+    },
+    {
+      "chunk": 0,
+      "start": 420.32,
+      "end": 426.46002,
+      "text": " such things exist but they are much more difficult to deal with"
+    },
+    {
+      "chunk": 0,
+      "start": 426.46002,
+      "end": 430.44,
+      "text": " and so it was convenient for everybody"
+    },
+    {
+      "chunk": 0,
+      "start": 430.44,
+      "end": 432.6,
+      "text": " to not have any cycles"
+    },
+    {
+      "chunk": 0,
+      "start": 432.6,
+      "end": 435.24,
+      "text": " and just write it as a feedforward."
+    },
+    {
+      "chunk": 0,
+      "start": 436.62,
+      "end": 439.66,
+      "text": " So feedforward networks don't have these cycles."
+    },
+    {
+      "chunk": 0,
+      "start": 440.18,
+      "end": 441.62,
+      "text": " They don't have connections between them."
+    },
+    {
+      "chunk": 0,
+      "start": 444.26,
+      "end": 454.24,
+      "text": " You can make networks that way but then they not feed forward So we can create these"
+    },
+    {
+      "chunk": 0,
+      "start": 455.52,
+      "end": 460.1,
+      "text": " And then, you know, then there's some obvious things, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 460.14,
+      "end": 460.92,
+      "text": " What is P?"
+    },
+    {
+      "chunk": 0,
+      "start": 461.1,
+      "end": 461.82,
+      "text": " What is M?"
+    },
+    {
+      "chunk": 0,
+      "start": 461.88,
+      "end": 462.38,
+      "text": " What is C?"
+    },
+    {
+      "chunk": 0,
+      "start": 464.66,
+      "end": 466.26,
+      "text": " So we can look at the equation."
+    },
+    {
+      "chunk": 0,
+      "start": 467.26,
+      "end": 470.86,
+      "text": " M is here."
+    },
+    {
+      "chunk": 0,
+      "start": 472.8,
+      "end": 473.36,
+      "text": " All right."
+    },
+    {
+      "chunk": 0,
+      "start": 473.36,
+      "end": 476.52,
+      "text": " P is here."
+    },
+    {
+      "chunk": 0,
+      "start": 478.46,
+      "end": 479.56,
+      "text": " Whereas"
+    },
+    {
+      "chunk": 0,
+      "start": 479.56,
+      "end": 483.6,
+      "text": " C is"
+    },
+    {
+      "chunk": 0,
+      "start": 483.6,
+      "end": 487.26,
+      "text": " here."
+    },
+    {
+      "chunk": 0,
+      "start": 487.26,
+      "end": 487.94,
+      "text": " Right."
+    },
+    {
+      "chunk": 0,
+      "start": 494.6,
+      "end": 496.16,
+      "text": " Right."
+    },
+    {
+      "chunk": 0,
+      "start": 496.68,
+      "end": 497.12,
+      "text": " So"
+    },
+    {
+      "chunk": 0,
+      "start": 497.12,
+      "end": 501.84,
+      "text": " we have P inputs"
+    },
+    {
+      "chunk": 0,
+      "start": 501.84,
+      "end": 506.1,
+      "text": " right? Inputs, layer."
+    },
+    {
+      "chunk": 0,
+      "start": 508.8,
+      "end": 510.56,
+      "text": " M is the"
+    },
+    {
+      "chunk": 0,
+      "start": 510.56,
+      "end": 513.6,
+      "text": " number of hidden nodes, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 520.32,
+      "end": 521.83997,
+      "text": " And then C"
+    },
+    {
+      "chunk": 0,
+      "start": 521.83997,
+      "end": 525.38,
+      "text": " is the number of"
+    },
+    {
+      "chunk": 0,
+      "start": 525.38,
+      "end": 526.88,
+      "text": " outputs."
+    },
+    {
+      "chunk": 0,
+      "start": 526.88,
+      "end": 534.28,
+      "text": " so the number of inputs of course is going to be dictated by the problem"
+    },
+    {
+      "chunk": 0,
+      "start": 534.28,
+      "end": 535.8,
+      "text": " at least largely"
+    },
+    {
+      "chunk": 0,
+      "start": 535.8,
+      "end": 541.8,
+      "text": " you can often write the same set of inputs"
+    },
+    {
+      "chunk": 0,
+      "start": 541.8,
+      "end": 543.94,
+      "text": " ten different infinite number of ways"
+    },
+    {
+      "chunk": 0,
+      "start": 543.94,
+      "end": 545.58,
+      "text": " but essentially they're"
+    },
+    {
+      "chunk": 0,
+      "start": 545.58,
+      "end": 550.56,
+      "text": " one input could be"
+    },
+    {
+      "chunk": 0,
+      "start": 550.56,
+      "end": 556.1,
+      "text": " regardless the inputs are determined"
+    },
+    {
+      "chunk": 0,
+      "start": 556.1,
+      "end": 560.08,
+      "text": " by your data, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 560.28,
+      "end": 562.4,
+      "text": " So if they're images, it would be pixels,"
+    },
+    {
+      "chunk": 0,
+      "start": 563.22,
+      "end": 567.92,
+      "text": " or it could be sounds or something."
+    },
+    {
+      "chunk": 0,
+      "start": 568.4,
+      "end": 570.83997,
+      "text": " It could be words, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 570.86,
+      "end": 576.0,
+      "text": " It could be tokens for tokenized language."
+    },
+    {
+      "chunk": 0,
+      "start": 577.28,
+      "end": 581.4,
+      "text": " Then the outputs are often determined also, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 581.4,
+      "end": 585.36,
+      "text": " So for example, we're going to look at a bunch of images"
+    },
+    {
+      "chunk": 0,
+      "start": 585.36,
+      "end": 588.14,
+      "text": " of the numbers, of numbers 0 through 9."
+    },
+    {
+      "chunk": 0,
+      "start": 588.7,
+      "end": 591.1,
+      "text": " And then the input is obviously the image,"
+    },
+    {
+      "chunk": 0,
+      "start": 591.22,
+      "end": 594.1,
+      "text": " and the y in that case would be the actual number."
+    },
+    {
+      "chunk": 0,
+      "start": 594.92,
+      "end": 597.48,
+      "text": " And then you want to train a function that learns"
+    },
+    {
+      "chunk": 0,
+      "start": 597.48,
+      "end": 598.9,
+      "text": " to predict the right number."
+    },
+    {
+      "chunk": 1,
+      "start": 600.0,
+      "end": 603.94,
+      "text": " So P and C are largely determined by the problem,"
+    },
+    {
+      "chunk": 1,
+      "start": 603.94,
+      "end": 608.82,
+      "text": " and then M is largely determined through work, through effort,"
+    },
+    {
+      "chunk": 1,
+      "start": 609.78,
+      "end": 611.34,
+      "text": " through figuring it's a hyperparameter."
+    },
+    {
+      "chunk": 1,
+      "start": 611.52,
+      "end": 615.14,
+      "text": " You have to pick it or determine it."
+    },
+    {
+      "chunk": 1,
+      "start": 616.5,
+      "end": 619.22,
+      "text": " So how many parameters?"
+    },
+    {
+      "chunk": 1,
+      "start": 620.08,
+      "end": 628.14,
+      "text": " Well, we have the betas will be,"
+    },
+    {
+      "chunk": 1,
+      "start": 628.14,
+      "end": 630.96,
+      "text": " matrix, right, of"
+    },
+    {
+      "chunk": 1,
+      "start": 630.96,
+      "end": 637.54,
+      "text": " the number of"
+    },
+    {
+      "chunk": 1,
+      "start": 637.54,
+      "end": 643.1,
+      "text": " alphas. Alphas are from the input, so that's going to be"
+    },
+    {
+      "chunk": 1,
+      "start": 643.1,
+      "end": 647.22,
+      "text": " number of inputs"
+    },
+    {
+      "chunk": 1,
+      "start": 647.22,
+      "end": 653.36,
+      "text": " plus 1 for the bias"
+    },
+    {
+      "chunk": 1,
+      "start": 653.36,
+      "end": 655.4,
+      "text": " times m"
+    },
+    {
+      "chunk": 1,
+      "start": 655.4,
+      "end": 661.4,
+      "text": " and then the betas would also be"
+    },
+    {
+      "chunk": 1,
+      "start": 661.4,
+      "end": 667.12,
+      "text": " m times number of"
+    },
+    {
+      "chunk": 1,
+      "start": 667.12,
+      "end": 670.42,
+      "text": " outputs"
+    },
+    {
+      "chunk": 1,
+      "start": 670.42,
+      "end": 676.76,
+      "text": " times I guess m plus 1 right"
+    },
+    {
+      "chunk": 1,
+      "start": 676.76,
+      "end": 680.62,
+      "text": " should be because then we have the"
+    },
+    {
+      "chunk": 1,
+      "start": 680.62,
+      "end": 682.88,
+      "text": " the bias term in there as well"
+    },
+    {
+      "chunk": 1,
+      "start": 685.4,
+      "end": 688.72,
+      "text": " so that should be the number of parameters."
+    },
+    {
+      "chunk": 1,
+      "start": 689.1800000000001,
+      "end": 690.86,
+      "text": " What determines P and C?"
+    },
+    {
+      "chunk": 1,
+      "start": 691.4,
+      "end": 694.8199999999999,
+      "text": " Well, P, yeah, we already said that."
+    },
+    {
+      "chunk": 1,
+      "start": 696.4,
+      "end": 698.9,
+      "text": " P and C are the input and the output."
+    },
+    {
+      "chunk": 1,
+      "start": 699.22,
+      "end": 701.92,
+      "text": " M is something you have to figure out, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 701.92,
+      "end": 710.46,
+      "text": " So, yeah, there's a lot of engineering"
+    },
+    {
+      "chunk": 1,
+      "start": 710.46,
+      "end": 714.42,
+      "text": " that goes into machine learning,"
+    },
+    {
+      "chunk": 1,
+      "start": 714.42,
+      "end": 716.3,
+      "text": " into these networks, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 716.3199999999999,
+      "end": 720.5,
+      "text": " Because there's no theoretical reason necessarily"
+    },
+    {
+      "chunk": 1,
+      "start": 720.5,
+      "end": 721.96,
+      "text": " for like the number M."
+    },
+    {
+      "chunk": 1,
+      "start": 724.3,
+      "end": 726.24,
+      "text": " I mean, obviously it can't be too small,"
+    },
+    {
+      "chunk": 1,
+      "start": 726.24,
+      "end": 729.22,
+      "text": " but yeah, how big should it be?"
+    },
+    {
+      "chunk": 1,
+      "start": 730.04,
+      "end": 730.6,
+      "text": " Who knows?"
+    },
+    {
+      "chunk": 1,
+      "start": 733.92,
+      "end": 737.44,
+      "text": " All right, so one special case"
+    },
+    {
+      "chunk": 1,
+      "start": 737.44,
+      "end": 739.86,
+      "text": " that some people like,"
+    },
+    {
+      "chunk": 1,
+      "start": 740.0,
+      "end": 743.72,
+      "text": " people actually do study linear feed-forward networks."
+    },
+    {
+      "chunk": 1,
+      "start": 744.42,
+      "end": 755.78,
+      "text": " is this case when the F is I wonder why here it says F and there it says G"
+    },
+    {
+      "chunk": 1,
+      "start": 757.52,
+      "end": 759.86,
+      "text": " But either way, when the activation function"
+    },
+    {
+      "chunk": 1,
+      "start": 759.86,
+      "end": 763.24,
+      "text": " is linear, then what do we have?"
+    },
+    {
+      "chunk": 1,
+      "start": 763.7,
+      "end": 766.0,
+      "text": " Well, we have basically just linear regression."
+    },
+    {
+      "chunk": 1,
+      "start": 767.76,
+      "end": 769.56,
+      "text": " Just with a lot of parameters."
+    },
+    {
+      "chunk": 1,
+      "start": 770.12,
+      "end": 771.4599900000001,
+      "text": " I mean, if it's a"
+    },
+    {
+      "chunk": 1,
+      "start": 771.4599900000001,
+      "end": 777.94,
+      "text": " if there's no non-linearity, then it's just linear regression."
+    },
+    {
+      "chunk": 1,
+      "start": 777.94,
+      "end": 781.22,
+      "text": " There are ways to make this more interesting."
+    },
+    {
+      "chunk": 1,
+      "start": 781.48,
+      "end": 786.1,
+      "text": " You can regularize it, and then you can stack them,"
+    },
+    {
+      "chunk": 1,
+      "start": 786.16,
+      "end": 788.14,
+      "text": " and you can actually get more interesting behavior"
+    },
+    {
+      "chunk": 1,
+      "start": 788.14,
+      "end": 791.42,
+      "text": " and still have a lot of the properties of the linear system."
+    },
+    {
+      "chunk": 1,
+      "start": 792.48,
+      "end": 796.12,
+      "text": " But in general, this is just linear regression,"
+    },
+    {
+      "chunk": 1,
+      "start": 796.42,
+      "end": 799.6,
+      "text": " especially with just this simple layer."
+    },
+    {
+      "chunk": 1,
+      "start": 801.4599900000001,
+      "end": 804.1800000000001,
+      "text": " Oh, yeah. So here they just assume G."
+    },
+    {
+      "chunk": 1,
+      "start": 808.6800000000001,
+      "end": 809.44,
+      "text": " So."
+    },
+    {
+      "chunk": 1,
+      "start": 811.58,
+      "end": 812.3,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 1,
+      "start": 815.01999,
+      "end": 821.8199999999999,
+      "text": " Yeah. So certainly F could be something else, but at least it's linear related to X."
+    },
+    {
+      "chunk": 1,
+      "start": 823.94,
+      "end": 825.6,
+      "text": " So, OK."
+    },
+    {
+      "chunk": 1,
+      "start": 825.6,
+      "end": 831.98001,
+      "text": " now I'm starting to doubt"
+    },
+    {
+      "chunk": 1,
+      "start": 831.98001,
+      "end": 834.23999,
+      "text": " maybe they had some other thing in mind here"
+    },
+    {
+      "chunk": 1,
+      "start": 834.23999,
+      "end": 838.44,
+      "text": " because certainly if F was"
+    },
+    {
+      "chunk": 1,
+      "start": 838.44,
+      "end": 840.7,
+      "text": " also linear then this is definitely"
+    },
+    {
+      "chunk": 1,
+      "start": 840.7,
+      "end": 842.6800000000001,
+      "text": " linear regression with F being"
+    },
+    {
+      "chunk": 1,
+      "start": 842.6800000000001,
+      "end": 844.4599900000001,
+      "text": " anything it can be then it could be"
+    },
+    {
+      "chunk": 1,
+      "start": 844.4599900000001,
+      "end": 847.0,
+      "text": " you could think of it more like a GLM"
+    },
+    {
+      "chunk": 1,
+      "start": 847.0,
+      "end": 849.98001,
+      "text": " sort of"
+    },
+    {
+      "chunk": 1,
+      "start": 849.98001,
+      "end": 853.8199999999999,
+      "text": " but yeah"
+    },
+    {
+      "chunk": 1,
+      "start": 853.8199999999999,
+      "end": 858.54,
+      "text": " if you make things linear"
+    },
+    {
+      "chunk": 1,
+      "start": 858.54,
+      "end": 860.1,
+      "text": " then it all kind of collapses to boring"
+    },
+    {
+      "chunk": 1,
+      "start": 860.1,
+      "end": 864.41998,
+      "text": " one of the key things in this field"
+    },
+    {
+      "chunk": 1,
+      "start": 864.41998,
+      "end": 866.62,
+      "text": " is that you have these non-linearities"
+    },
+    {
+      "chunk": 1,
+      "start": 866.62,
+      "end": 869.04,
+      "text": " that lead to complex learning"
+    },
+    {
+      "chunk": 1,
+      "start": 869.04,
+      "end": 872.6800000000001,
+      "text": " so one of the big things"
+    },
+    {
+      "chunk": 1,
+      "start": 872.6800000000001,
+      "end": 874.06,
+      "text": " and this was actually"
+    },
+    {
+      "chunk": 1,
+      "start": 874.06,
+      "end": 880.53998,
+      "text": " one of the solutions"
+    },
+    {
+      "chunk": 1,
+      "start": 880.53998,
+      "end": 887.64,
+      "text": " solutions to, like I said last time, there were a few quote-unquote AI winters."
+    },
+    {
+      "chunk": 1,
+      "start": 887.8199999999999,
+      "end": 892.62,
+      "text": " So these were like times when machine learning kind of fell on its ass and no one believed"
+    },
+    {
+      "chunk": 1,
+      "start": 892.62,
+      "end": 893.2,
+      "text": " it would work."
+    },
+    {
+      "chunk": 1,
+      "start": 893.78,
+      "end": 904.8,
+      "text": " One of the reasons that it did is that someone showed with I forget his name Mintz or something showed that if you only have one hidden layer then you can learn XOR"
+    },
+    {
+      "chunk": 1,
+      "start": 905.4,
+      "end": 907.64,
+      "text": " You can't learn this kind of simple function."
+    },
+    {
+      "chunk": 1,
+      "start": 912.36,
+      "end": 912.88,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 1,
+      "start": 913.12,
+      "end": 917.8199999999999,
+      "text": " And so going to a deeper network,"
+    },
+    {
+      "chunk": 1,
+      "start": 918.1800000000001,
+      "end": 918.78,
+      "text": " more layers,"
+    },
+    {
+      "chunk": 1,
+      "start": 920.06,
+      "end": 921.1,
+      "text": " what if he proved it?"
+    },
+    {
+      "chunk": 1,
+      "start": 921.4200000000001,
+      "end": 921.9200000000001,
+      "text": " But anyways,"
+    },
+    {
+      "chunk": 1,
+      "start": 922.1,
+      "end": 924.0799999999999,
+      "text": " that was one of the deaths of it."
+    },
+    {
+      "chunk": 1,
+      "start": 924.0799999999999,
+      "end": 936.6800000000001,
+      "text": " And the interesting thing was, you know, adding layers really made it much more expressive, which, again, I don't think this was obvious to anyone."
+    },
+    {
+      "chunk": 1,
+      "start": 936.8199999999999,
+      "end": 949.94,
+      "text": " I mean, maybe it looks obvious to us because, you know, we have the we can look through the lens of like, oh, of course, because we're so used to hearing about like 10 trillion parameter networks with like 50,000 layers or some shit."
+    },
+    {
+      "chunk": 1,
+      "start": 949.94,
+      "end": 954.91998,
+      "text": " but for them to think of adding more layers"
+    },
+    {
+      "chunk": 1,
+      "start": 954.91998,
+      "end": 957.7,
+      "text": " I don't know how obvious it was"
+    },
+    {
+      "chunk": 1,
+      "start": 957.7,
+      "end": 962.04,
+      "text": " but going to multi-layered neural networks"
+    },
+    {
+      "chunk": 1,
+      "start": 962.04,
+      "end": 963.2,
+      "text": " was very good"
+    },
+    {
+      "chunk": 1,
+      "start": 963.2,
+      "end": 966.08002,
+      "text": " it was very helpful"
+    },
+    {
+      "chunk": 1,
+      "start": 966.08002,
+      "end": 971.48,
+      "text": " and of course the idea there is just the same"
+    },
+    {
+      "chunk": 1,
+      "start": 971.48,
+      "end": 973.88,
+      "text": " you just have, again, these are inputs"
+    },
+    {
+      "chunk": 1,
+      "start": 973.88,
+      "end": 978.3,
+      "text": " and this is specifically a feed-forward"
+    },
+    {
+      "chunk": 1,
+      "start": 978.3,
+      "end": 984.02,
+      "text": " because again"
+    },
+    {
+      "chunk": 1,
+      "start": 984.02,
+      "end": 986.14,
+      "text": " if you went like this"
+    },
+    {
+      "chunk": 1,
+      "start": 986.14,
+      "end": 988.1800000000001,
+      "text": " you'd have a loop"
+    },
+    {
+      "chunk": 1,
+      "start": 988.1800000000001,
+      "end": 989.8,
+      "text": " that's hard"
+    },
+    {
+      "chunk": 1,
+      "start": 989.8,
+      "end": 993.06,
+      "text": " so"
+    },
+    {
+      "chunk": 1,
+      "start": 993.06,
+      "end": 996.88,
+      "text": " you have these V4 networks"
+    },
+    {
+      "chunk": 1,
+      "start": 996.88,
+      "end": 998.98,
+      "text": " and they're multi-layer"
+    },
+    {
+      "chunk": 1,
+      "start": 998.98,
+      "end": 1001.6800000000001,
+      "text": " and they behave"
+    },
+    {
+      "chunk": 1,
+      "start": 1001.6800000000001,
+      "end": 1004.0,
+      "text": " the same as just a single layer"
+    },
+    {
+      "chunk": 1,
+      "start": 1004.0,
+      "end": 1004.96,
+      "text": " only now"
+    },
+    {
+      "chunk": 1,
+      "start": 1004.96,
+      "end": 1008.14,
+      "text": " you just repeat the same thing"
+    },
+    {
+      "chunk": 1,
+      "start": 1008.14,
+      "end": 1014.94,
+      "text": " in terms of the"
+    },
+    {
+      "chunk": 1,
+      "start": 1014.94,
+      "end": 1016.02,
+      "text": " outcome"
+    },
+    {
+      "chunk": 1,
+      "start": 1016.02,
+      "end": 1017.52,
+      "text": " you can have"
+    },
+    {
+      "chunk": 1,
+      "start": 1017.52,
+      "end": 1019.8,
+      "text": " them be continuous"
+    },
+    {
+      "chunk": 1,
+      "start": 1019.8,
+      "end": 1023.12,
+      "text": " so like real valued"
+    },
+    {
+      "chunk": 1,
+      "start": 1023.12,
+      "end": 1024.5800199999999,
+      "text": " or they can be binary"
+    },
+    {
+      "chunk": 1,
+      "start": 1024.5800199999999,
+      "end": 1026.9199800000001,
+      "text": " another one is"
+    },
+    {
+      "chunk": 1,
+      "start": 1026.9199800000001,
+      "end": 1029.18,
+      "text": " categories using"
+    },
+    {
+      "chunk": 1,
+      "start": 1029.18,
+      "end": 1030.26,
+      "text": " one hot encoding"
+    },
+    {
+      "chunk": 1,
+      "start": 1030.26,
+      "end": 1031.47998,
+      "text": " so"
+    },
+    {
+      "chunk": 1,
+      "start": 1031.47998,
+      "end": 1035.32,
+      "text": " you know it can be"
+    },
+    {
+      "chunk": 1,
+      "start": 1035.32,
+      "end": 1038.1,
+      "text": " basically"
+    },
+    {
+      "chunk": 1,
+      "start": 1038.1,
+      "end": 1039.24,
+      "text": " if you want to have"
+    },
+    {
+      "chunk": 1,
+      "start": 1039.24,
+      "end": 1042.32,
+      "text": " if you want to have"
+    },
+    {
+      "chunk": 1,
+      "start": 1042.32,
+      "end": 1044.0,
+      "text": " three outcomes"
+    },
+    {
+      "chunk": 1,
+      "start": 1044.0,
+      "end": 1055.08,
+      "text": " right right so this would be three outcomes And this is"
+    },
+    {
+      "chunk": 1,
+      "start": 1060.76,
+      "end": 1061.52,
+      "text": " All right."
+    },
+    {
+      "chunk": 1,
+      "start": 1061.6399999999999,
+      "end": 1062.82,
+      "text": " These could be classes."
+    },
+    {
+      "chunk": 1,
+      "start": 1065.6399999999999,
+      "end": 1068.0,
+      "text": " Or whatever things."
+    },
+    {
+      "chunk": 1,
+      "start": 1068.3600000000001,
+      "end": 1068.56,
+      "text": " All right."
+    },
+    {
+      "chunk": 1,
+      "start": 1068.56,
+      "end": 1069.8600000000001,
+      "text": " So you want to have it like that."
+    },
+    {
+      "chunk": 1,
+      "start": 1069.8600000000001,
+      "end": 1076.88,
+      "text": " And there's this nice trick where instead of having to actually model a binary variable directly,"
+    },
+    {
+      "chunk": 1,
+      "start": 1077.4199800000001,
+      "end": 1083.22,
+      "text": " you can use, we'll get to it in a second, something called a softmax, which is a function."
+    },
+    {
+      "chunk": 1,
+      "start": 1083.82,
+      "end": 1089.7,
+      "text": " So another set of tricks that another thing that machine learning has been really good at"
+    },
+    {
+      "chunk": 1,
+      "start": 1089.7,
+      "end": 1093.24,
+      "text": " is finding funny-looking functions that behave really well."
+    },
+    {
+      "chunk": 1,
+      "start": 1094.5,
+      "end": 1097.54,
+      "text": " So we'll get to one for the category stuff."
+    },
+    {
+      "chunk": 1,
+      "start": 1099.8600000000001,
+      "end": 1108.6399999999999,
+      "text": " Now, one of the data sets that have been particularly useful in this world of machine learning, or it's been used a lot, it's still being used."
+    },
+    {
+      "chunk": 1,
+      "start": 1109.72,
+      "end": 1115.83997,
+      "text": " We have a paper that's hopefully coming out with this data also in it."
+    },
+    {
+      "chunk": 1,
+      "start": 1116.78,
+      "end": 1118.3200000000002,
+      "text": " It's the MNIST data."
+    },
+    {
+      "chunk": 1,
+      "start": 1119.44,
+      "end": 1123.4,
+      "text": " And all it is is handwritten numbers, 0 through 9."
+    },
+    {
+      "chunk": 1,
+      "start": 1126.04,
+      "end": 1127.54,
+      "text": " These are the famous."
+    },
+    {
+      "chunk": 1,
+      "start": 1127.54,
+      "end": 1130.08,
+      "text": " I'm sure these are going to be in museums"
+    },
+    {
+      "chunk": 1,
+      "start": 1130.08,
+      "end": 1131.28,
+      "text": " if they're not already there"
+    },
+    {
+      "chunk": 1,
+      "start": 1131.28,
+      "end": 1133.8600000000001,
+      "text": " but they're just a bunch of numbers"
+    },
+    {
+      "chunk": 1,
+      "start": 1133.8600000000001,
+      "end": 1136.06,
+      "text": " and you'd be amazed how long"
+    },
+    {
+      "chunk": 1,
+      "start": 1136.06,
+      "end": 1138.12,
+      "text": " machine learning was stuck"
+    },
+    {
+      "chunk": 1,
+      "start": 1138.12,
+      "end": 1139.6,
+      "text": " on just trying to find these numbers"
+    },
+    {
+      "chunk": 1,
+      "start": 1139.6,
+      "end": 1144.3,
+      "text": " it was probably like 10 years"
+    },
+    {
+      "chunk": 1,
+      "start": 1144.3,
+      "end": 1145.96,
+      "text": " of just trying to get these numbers better"
+    },
+    {
+      "chunk": 1,
+      "start": 1145.96,
+      "end": 1149.52,
+      "text": " so"
+    },
+    {
+      "chunk": 1,
+      "start": 1149.52,
+      "end": 1151.92,
+      "text": " you know and it used to be like"
+    },
+    {
+      "chunk": 1,
+      "start": 1151.92,
+      "end": 1154.38,
+      "text": " you could just do a little bit"
+    },
+    {
+      "chunk": 1,
+      "start": 1154.38,
+      "end": 1156.06,
+      "text": " better and get a publication"
+    },
+    {
+      "chunk": 1,
+      "start": 1156.06,
+      "end": 1159.02,
+      "text": " hey we got 98% of MNIST instead of 94"
+    },
+    {
+      "chunk": 1,
+      "start": 1159.02,
+      "end": 1160.48,
+      "text": " look at us, we win"
+    },
+    {
+      "chunk": 1,
+      "start": 1160.48,
+      "end": 1164.92,
+      "text": " I'm trying to do it with a slightly different architecture"
+    },
+    {
+      "chunk": 1,
+      "start": 1164.92,
+      "end": 1166.38,
+      "text": " and look at the size too"
+    },
+    {
+      "chunk": 1,
+      "start": 1166.38,
+      "end": 1171.38,
+      "text": " imagine if the only image models you could use"
+    },
+    {
+      "chunk": 1,
+      "start": 1171.38,
+      "end": 1173.56,
+      "text": " had 28 by 28 pixels"
+    },
+    {
+      "chunk": 1,
+      "start": 1173.56,
+      "end": 1175.54,
+      "text": " tiny as shit, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 1175.54,
+      "end": 1176.66003,
+      "text": " just so small"
+    },
+    {
+      "chunk": 1,
+      "start": 1176.66003,
+      "end": 1178.66003,
+      "text": " it's amazing"
+    },
+    {
+      "chunk": 1,
+      "start": 1178.66003,
+      "end": 1182.3,
+      "text": " and this was the whole field forever"
+    },
+    {
+      "chunk": 1,
+      "start": 1182.3,
+      "end": 1184.66003,
+      "text": " now it's"
+    },
+    {
+      "chunk": 1,
+      "start": 1184.66003,
+      "end": 1187.16003,
+      "text": " all"
+    },
+    {
+      "chunk": 1,
+      "start": 1187.16003,
+      "end": 1191.58,
+      "text": " the size of the images, the size of the networks,"
+    },
+    {
+      "chunk": 1,
+      "start": 1191.74,
+      "end": 1193.56,
+      "text": " videos, just amazing."
+    },
+    {
+      "chunk": 1,
+      "start": 1195.04,
+      "end": 1197.4,
+      "text": " But this is a very classic data set."
+    },
+    {
+      "chunk": 1,
+      "start": 1199.1799999999998,
+      "end": 1199.8200000000002,
+      "text": " Historical"
+    },
+    {
+      "chunk": 2,
+      "start": 1200.0,
+      "end": 1201.28,
+      "text": " very relevant at least."
+    },
+    {
+      "chunk": 2,
+      "start": 1203.28,
+      "end": 1206.52,
+      "text": " And so we have these important parts,"
+    },
+    {
+      "chunk": 2,
+      "start": 1207.0,
+      "end": 1208.88,
+      "text": " the output layer activation function,"
+    },
+    {
+      "chunk": 2,
+      "start": 1209.8,
+      "end": 1211.58,
+      "text": " the hidden layer activation function,"
+    },
+    {
+      "chunk": 2,
+      "start": 1211.72,
+      "end": 1213.46,
+      "text": " what's the architecture of the network,"
+    },
+    {
+      "chunk": 2,
+      "start": 1214.16,
+      "end": 1217.16,
+      "text": " what's our loss function, meaning what do you optimize,"
+    },
+    {
+      "chunk": 2,
+      "start": 1218.52,
+      "end": 1220.14,
+      "text": " and also how do you optimize."
+    },
+    {
+      "chunk": 2,
+      "start": 1220.84,
+      "end": 1225.72,
+      "text": " All of these things are important."
+    },
+    {
+      "chunk": 2,
+      "start": 1226.5,
+      "end": 1228.74,
+      "text": " And here I'm also not mentioning other things"
+    },
+    {
+      "chunk": 2,
+      "start": 1228.74,
+      "end": 1233.38,
+      "text": " that have also been very important, like, for example, being able to use a GPU,"
+    },
+    {
+      "chunk": 2,
+      "start": 1233.38,
+      "end": 1244.32,
+      "text": " having enough data, also how do you optimize?"
+    },
+    {
+      "chunk": 2,
+      "start": 1244.62,
+      "end": 1249.34,
+      "text": " Well, I guess that would be fit in the optimizer because they do this kind of"
+    },
+    {
+      "chunk": 2,
+      "start": 1249.34,
+      "end": 1250.34,
+      "text": " cool differentiation."
+    },
+    {
+      "chunk": 2,
+      "start": 1252.46,
+      "end": 1252.8,
+      "text": " All right."
+    },
+    {
+      "chunk": 2,
+      "start": 1252.8,
+      "end": 1258.76,
+      "text": " So we have these activation functions, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1258.9,
+      "end": 1263.0,
+      "text": " A linear activation function is simply just nothing."
+    },
+    {
+      "chunk": 2,
+      "start": 1263.16,
+      "end": 1265.04,
+      "text": " It's just X, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1265.06,
+      "end": 1267.34,
+      "text": " So it's not doing anything interesting."
+    },
+    {
+      "chunk": 2,
+      "start": 1268.3,
+      "end": 1276.88,
+      "text": " The sigmoid activation function, this is, right, 0 goes to 1."
+    },
+    {
+      "chunk": 2,
+      "start": 1276.88,
+      "end": 1278.66,
+      "text": " and here's some"
+    },
+    {
+      "chunk": 2,
+      "start": 1278.66,
+      "end": 1282.22,
+      "text": " here's some function"
+    },
+    {
+      "chunk": 2,
+      "start": 1282.22,
+      "end": 1283.3,
+      "text": " and actually"
+    },
+    {
+      "chunk": 2,
+      "start": 1283.3,
+      "end": 1288.46,
+      "text": " this was for the longest time"
+    },
+    {
+      "chunk": 2,
+      "start": 1288.46,
+      "end": 1290.22,
+      "text": " like the activation function"
+    },
+    {
+      "chunk": 2,
+      "start": 1290.22,
+      "end": 1292.56,
+      "text": " this was like the hidden node activation function"
+    },
+    {
+      "chunk": 2,
+      "start": 1292.56,
+      "end": 1293.4,
+      "text": " everyone thought"
+    },
+    {
+      "chunk": 2,
+      "start": 1293.4,
+      "end": 1296.92,
+      "text": " many people thought this was the way to go"
+    },
+    {
+      "chunk": 2,
+      "start": 1296.92,
+      "end": 1298.82,
+      "text": " and I think the reason"
+    },
+    {
+      "chunk": 2,
+      "start": 1298.82,
+      "end": 1300.12,
+      "text": " for their thinking was"
+    },
+    {
+      "chunk": 2,
+      "start": 1300.12,
+      "end": 1302.96,
+      "text": " I guess it's twofold"
+    },
+    {
+      "chunk": 2,
+      "start": 1302.96,
+      "end": 1304.54,
+      "text": " one was"
+    },
+    {
+      "chunk": 2,
+      "start": 1304.54,
+      "end": 1307.2,
+      "text": " neurons in the brain."
+    },
+    {
+      "chunk": 2,
+      "start": 1307.9,
+      "end": 1310.14,
+      "text": " You can think of them as being on or off."
+    },
+    {
+      "chunk": 2,
+      "start": 1311.44,
+      "end": 1312.54,
+      "text": " So those were"
+    },
+    {
+      "chunk": 2,
+      "start": 1312.54,
+      "end": 1316.48,
+      "text": " inspiration for a lot of neural networks."
+    },
+    {
+      "chunk": 2,
+      "start": 1316.6,
+      "end": 1318.94,
+      "text": " So people thought, well, if the brain does it, then why not?"
+    },
+    {
+      "chunk": 2,
+      "start": 1319.84,
+      "end": 1321.62,
+      "text": " Arguably, the brain also can do"
+    },
+    {
+      "chunk": 2,
+      "start": 1321.62,
+      "end": 1326.12,
+      "text": " can have rates, but that's a different discussion."
+    },
+    {
+      "chunk": 2,
+      "start": 1327.44,
+      "end": 1329.8,
+      "text": " I think the other aspect was actually"
+    },
+    {
+      "chunk": 2,
+      "start": 1329.8,
+      "end": 1332.6399999999999,
+      "text": " due to statistical mechanics and statistical physics."
+    },
+    {
+      "chunk": 2,
+      "start": 1332.6399999999999,
+      "end": 1333.56,
+      "text": " I mentioned Hotfield."
+    },
+    {
+      "chunk": 2,
+      "start": 1334.1,
+      "end": 1338.4,
+      "text": " A lot of these physicists have been permeating into machine learning from the beginning,"
+    },
+    {
+      "chunk": 2,
+      "start": 1338.88,
+      "end": 1341.96,
+      "text": " mainly because they probably couldn't get a job in statistical physics,"
+    },
+    {
+      "chunk": 2,
+      "start": 1341.96,
+      "end": 1344.2,
+      "text": " so they went into playing with AI."
+    },
+    {
+      "chunk": 2,
+      "start": 1344.52,
+      "end": 1344.9,
+      "text": " I don't know."
+    },
+    {
+      "chunk": 2,
+      "start": 1345.02,
+      "end": 1361.3600000000001,
+      "text": " I don want to criticize them They do say anyways um in that world the neural networks actually came about as a spin system like magnetic spins and there you think about spin up and spin"
+    },
+    {
+      "chunk": 2,
+      "start": 1361.3600000000001,
+      "end": 1368.04001,
+      "text": " down so binary zero one or negative one one actually and so for them the very natural thing"
+    },
+    {
+      "chunk": 2,
+      "start": 1368.04001,
+      "end": 1373.45999,
+      "text": " was just to think of it as binary units so i think many people are just kind of stuck on that idea"
+    },
+    {
+      "chunk": 2,
+      "start": 1373.45999,
+      "end": 1386.44,
+      "text": " But one of the big changes was actually to move away from binary units to something called a RELU, which is rectified linear unit."
+    },
+    {
+      "chunk": 2,
+      "start": 1389.6399999999999,
+      "end": 1398.95999,
+      "text": " Right, so basically if the input is above a certain number, a threshold, then it behaves linearly and before that it's just zero."
+    },
+    {
+      "chunk": 2,
+      "start": 1398.95999,
+      "end": 1406.3600000000001,
+      "text": " you can also think of it as a heavy side function we'll get to that in a second but yeah so the"
+    },
+    {
+      "chunk": 2,
+      "start": 1406.3600000000001,
+      "end": 1413.48001,
+      "text": " activation function can be linear can be sigmoid can be relu it can also be softmax oh this is in"
+    },
+    {
+      "chunk": 2,
+      "start": 1413.48001,
+      "end": 1419.73999,
+      "text": " the output layer by the way sorry i didn't differentiate it can also be the softmax"
+    },
+    {
+      "chunk": 2,
+      "start": 1419.73999,
+      "end": 1425.78,
+      "text": " function and this is related to the classification i mentioned earlier right that you want to have"
+    },
+    {
+      "chunk": 2,
+      "start": 1425.78,
+      "end": 1427.76001,
+      "text": " these kind of 0, 1, 1."
+    },
+    {
+      "chunk": 2,
+      "start": 1428.8,
+      "end": 1430.1,
+      "text": " And here, if you look at it,"
+    },
+    {
+      "chunk": 2,
+      "start": 1430.45999,
+      "end": 1432.28,
+      "text": " what it is is you take"
+    },
+    {
+      "chunk": 2,
+      "start": 1432.28,
+      "end": 1435.45999,
+      "text": " for a given output,"
+    },
+    {
+      "chunk": 2,
+      "start": 1436.45999,
+      "end": 1440.48001,
+      "text": " it uses the function exp of the input"
+    },
+    {
+      "chunk": 2,
+      "start": 1440.48001,
+      "end": 1444.8,
+      "text": " divided by the sum over all the,"
+    },
+    {
+      "chunk": 2,
+      "start": 1445.1399999999999,
+      "end": 1447.32,
+      "text": " of exp of all the things."
+    },
+    {
+      "chunk": 2,
+      "start": 1448.62,
+      "end": 1452.84,
+      "text": " So what you're doing"
+    },
+    {
+      "chunk": 2,
+      "start": 1452.84,
+      "end": 1455.26001,
+      "text": " is you're basically setting all of these,"
+    },
+    {
+      "chunk": 2,
+      "start": 1455.26001,
+      "end": 1461.06,
+      "text": " because this is the sum of all of the different units"
+    },
+    {
+      "chunk": 2,
+      "start": 1461.06,
+      "end": 1464.28,
+      "text": " within that group of, within that classification."
+    },
+    {
+      "chunk": 2,
+      "start": 1465.6,
+      "end": 1469.9199800000001,
+      "text": " So when you're dividing by the sum of them, right,"
+    },
+    {
+      "chunk": 2,
+      "start": 1470.34,
+      "end": 1476.78,
+      "text": " then you're normalizing it so their sum is equal to one, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1476.78,
+      "end": 1487.9,
+      "text": " yeah so you're normalizing it so sum of them equals one"
+    },
+    {
+      "chunk": 2,
+      "start": 1487.9,
+      "end": 1508.0,
+      "text": " and you doing the exp of the thing so it will kind of push things up or down and so if you look at it you can think of it as giving you a probability So it pushes things towards a probability And actually what often people use is a version of Softmax"
+    },
+    {
+      "chunk": 2,
+      "start": 1508.28,
+      "end": 1515.28,
+      "text": " which actually introduces an exponent inside that makes it even more extreme. And so you can push it"
+    },
+    {
+      "chunk": 2,
+      "start": 1515.28,
+      "end": 1522.62,
+      "text": " so that it really makes it so that one of them is going to be a winner and push the other others"
+    },
+    {
+      "chunk": 2,
+      "start": 1522.62,
+      "end": 1526.56,
+      "text": " down. So then it's kind of a very natural way of"
+    },
+    {
+      "chunk": 2,
+      "start": 1526.56,
+      "end": 1530.32,
+      "text": " turning a set of outputs, let's say you're like five outputs,"
+    },
+    {
+      "chunk": 2,
+      "start": 1530.48,
+      "end": 1534.68,
+      "text": " tying them together and making it so that they become almost"
+    },
+    {
+      "chunk": 2,
+      "start": 1534.68,
+      "end": 1538.6,
+      "text": " 1, 0, 0, 0, 0, 1, but all coupled together,"
+    },
+    {
+      "chunk": 2,
+      "start": 1538.66,
+      "end": 1542.6,
+      "text": " right? So that the winner is the winner"
+    },
+    {
+      "chunk": 2,
+      "start": 1542.6,
+      "end": 1546.74,
+      "text": " and that gets the most probability. This is a clever"
+    },
+    {
+      "chunk": 2,
+      "start": 1546.74,
+      "end": 1550.74,
+      "text": " trick. Again, machine learning"
+    },
+    {
+      "chunk": 2,
+      "start": 1550.74,
+      "end": 1557.28,
+      "text": " is a series of very clever tricks that, yeah, they all make sense."
+    },
+    {
+      "chunk": 2,
+      "start": 1557.7,
+      "end": 1559.8600000000001,
+      "text": " They're not all, but they mostly make sense."
+    },
+    {
+      "chunk": 2,
+      "start": 1562.24,
+      "end": 1564.18,
+      "text": " So this is on the output."
+    },
+    {
+      "chunk": 2,
+      "start": 1565.34,
+      "end": 1566.78,
+      "text": " You can have things like this."
+    },
+    {
+      "chunk": 2,
+      "start": 1567.6,
+      "end": 1570.02,
+      "text": " Here is the hidden layer."
+    },
+    {
+      "chunk": 2,
+      "start": 1572.76,
+      "end": 1576.48,
+      "text": " I would say the sigmoid function is not so common anymore,"
+    },
+    {
+      "chunk": 2,
+      "start": 1576.88,
+      "end": 1578.96,
+      "text": " but it was very common in its day."
+    },
+    {
+      "chunk": 2,
+      "start": 1580.74,
+      "end": 1584.62,
+      "text": " What's very common is the ReLU, which is this."
+    },
+    {
+      "chunk": 2,
+      "start": 1585.6399999999999,
+      "end": 1587.88,
+      "text": " Another one that's very common now."
+    },
+    {
+      "chunk": 2,
+      "start": 1588.5,
+      "end": 1590.24,
+      "text": " I don't know if it was when they wrote the book."
+    },
+    {
+      "chunk": 2,
+      "start": 1591.4199800000001,
+      "end": 1593.34,
+      "text": " Another one is called the Jilu."
+    },
+    {
+      "chunk": 2,
+      "start": 1596.84,
+      "end": 1602.66,
+      "text": " And basically, I'll write it as purple."
+    },
+    {
+      "chunk": 2,
+      "start": 1603.06,
+      "end": 1603.48,
+      "text": " Jilu."
+    },
+    {
+      "chunk": 2,
+      "start": 1605.62,
+      "end": 1607.9,
+      "text": " And Jilu kind of looks like this."
+    },
+    {
+      "chunk": 2,
+      "start": 1610.74,
+      "end": 1614.04,
+      "text": " Nope, doesn't look like that."
+    },
+    {
+      "chunk": 2,
+      "start": 1617.06,
+      "end": 1618.44,
+      "text": " I'll just draw next to it."
+    },
+    {
+      "chunk": 2,
+      "start": 1618.56,
+      "end": 1621.8600000000001,
+      "text": " So it goes here, and then it kind of dips down a little bit,"
+    },
+    {
+      "chunk": 2,
+      "start": 1621.9,
+      "end": 1622.7,
+      "text": " and then comes up."
+    },
+    {
+      "chunk": 2,
+      "start": 1628.5800199999999,
+      "end": 1630.3,
+      "text": " I'll just..."
+    },
+    {
+      "chunk": 2,
+      "start": 1630.3,
+      "end": 1632.68,
+      "text": " I don't want to Google anything."
+    },
+    {
+      "chunk": 2,
+      "start": 1633.94,
+      "end": 1635.46002,
+      "text": " But the idea was,"
+    },
+    {
+      "chunk": 2,
+      "start": 1636.28,
+      "end": 1638.78,
+      "text": " you still have a non-linearity."
+    },
+    {
+      "chunk": 2,
+      "start": 1639.68,
+      "end": 1640.0800199999999,
+      "text": " Or sorry."
+    },
+    {
+      "chunk": 2,
+      "start": 1640.44,
+      "end": 1641.97998,
+      "text": " This is still straight here."
+    },
+    {
+      "chunk": 2,
+      "start": 1642.47998,
+      "end": 1661.18,
+      "text": " So it still gets a linear increase as it gets bigger But you remove this hard edge right You move this thing there So that thing it funny because it both important that you have an it a nonlinear function"
+    },
+    {
+      "chunk": 2,
+      "start": 1661.18,
+      "end": 1671.92,
+      "text": " right but actually the the the corner there is um can be kind of bad for gradients"
+    },
+    {
+      "chunk": 2,
+      "start": 1671.92,
+      "end": 1677.72,
+      "text": " so it's nice to have a smooth function at the same time"
+    },
+    {
+      "chunk": 2,
+      "start": 1677.72,
+      "end": 1683.74,
+      "text": " so i think this glu is actually one of the more common ones now"
+    },
+    {
+      "chunk": 2,
+      "start": 1683.74,
+      "end": 1692.54,
+      "text": " yeah as i was trying to say earlier a lot of what we think are critical important things"
+    },
+    {
+      "chunk": 2,
+      "start": 1692.54,
+      "end": 1697.5,
+      "text": " um like i think a lot of people would have assumed that this is the more important thing but i think"
+    },
+    {
+      "chunk": 2,
+      "start": 1697.5,
+      "end": 1702.66,
+      "text": " one of the important things with relu was that it was non-linear and had an you know a more"
+    },
+    {
+      "chunk": 2,
+      "start": 1702.66,
+      "end": 1709.8,
+      "text": " expressive wasn't just binary it can be kind of continuously valued and then moving to glu meant"
+    },
+    {
+      "chunk": 2,
+      "start": 1709.8,
+      "end": 1713.46,
+      "text": " you got rid of this kind of nasty thing."
+    },
+    {
+      "chunk": 2,
+      "start": 1715.72,
+      "end": 1717.42,
+      "text": " And so this GILU is,"
+    },
+    {
+      "chunk": 2,
+      "start": 1717.6399999999999,
+      "end": 1721.83997,
+      "text": " I think it's typically written mathematically with an error function,"
+    },
+    {
+      "chunk": 2,
+      "start": 1721.98,
+      "end": 1723.0,
+      "text": " but then when it's implemented,"
+    },
+    {
+      "chunk": 2,
+      "start": 1723.16003,
+      "end": 1725.94,
+      "text": " they use some numerical approximation with lots of decimal points."
+    },
+    {
+      "chunk": 2,
+      "start": 1726.83997,
+      "end": 1729.22,
+      "text": " So I won't ask you about that specifically,"
+    },
+    {
+      "chunk": 2,
+      "start": 1729.22,
+      "end": 1729.9,
+      "text": " but,"
+    },
+    {
+      "chunk": 2,
+      "start": 1729.9,
+      "end": 1734.6,
+      "text": " but yeah, it's, it's interesting."
+    },
+    {
+      "chunk": 2,
+      "start": 1737.16003,
+      "end": 1737.83997,
+      "text": " Okay."
+    },
+    {
+      "chunk": 2,
+      "start": 1738.58,
+      "end": 1739.26,
+      "text": " So,"
+    },
+    {
+      "chunk": 2,
+      "start": 1739.8,
+      "end": 1743.4,
+      "text": " Yeah, ReLU slash GLU"
+    },
+    {
+      "chunk": 2,
+      "start": 1743.4,
+      "end": 1750.48,
+      "text": " are the popular ones nowadays."
+    },
+    {
+      "chunk": 2,
+      "start": 1751.78,
+      "end": 1754.2,
+      "text": " Yeah, it's piecewise linear, both of them are,"
+    },
+    {
+      "chunk": 2,
+      "start": 1755.12,
+      "end": 1756.62,
+      "text": " but it is non-linear."
+    },
+    {
+      "chunk": 2,
+      "start": 1757.3600000000001,
+      "end": 1760.3600000000001,
+      "text": " If it was linear, then the whole thing would just decay to boring."
+    },
+    {
+      "chunk": 2,
+      "start": 1761.26,
+      "end": 1763.16003,
+      "text": " Not really, but..."
+    },
+    {
+      "chunk": 2,
+      "start": 1763.16003,
+      "end": 1763.74,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 2,
+      "start": 1763.74,
+      "end": 1772.1,
+      "text": " and yeah there's been a lot of things that people have attributed the success of neural networks"
+    },
+    {
+      "chunk": 2,
+      "start": 1772.1,
+      "end": 1776.9,
+      "text": " to and one of them was just replacing the sigmoid with relu"
+    },
+    {
+      "chunk": 2,
+      "start": 1776.9,
+      "end": 1785.54,
+      "text": " yeah it's funny like a lot of the advances were kind of seemingly trivial but not so trivial and"
+    },
+    {
+      "chunk": 2,
+      "start": 1785.54,
+      "end": 1792.58,
+      "text": " then um yeah started as a trick and then it's like hey that really worked well"
+    },
+    {
+      "chunk": 2,
+      "start": 1792.58,
+      "end": 1796.24,
+      "text": " so sadly I don't remember"
+    },
+    {
+      "chunk": 2,
+      "start": 1796.24,
+      "end": 1799.8,
+      "text": " who did it"
+    },
+    {
+      "chunk": 3,
+      "start": 1800.0,
+      "end": 1806.2,
+      "text": " But someone figured out that we can do that instead of Sigmoid,"
+    },
+    {
+      "chunk": 3,
+      "start": 1806.76,
+      "end": 1808.46,
+      "text": " and that was a good idea."
+    },
+    {
+      "chunk": 3,
+      "start": 1813.46,
+      "end": 1820.26,
+      "text": " So one of the important things that was figured out"
+    },
+    {
+      "chunk": 3,
+      "start": 1820.26,
+      "end": 1822.06,
+      "text": " is that feedforward networks."
+    },
+    {
+      "chunk": 3,
+      "start": 1824.7,
+      "end": 1827.12,
+      "text": " Because I think, I mean, a little background was,"
+    },
+    {
+      "chunk": 3,
+      "start": 1827.12,
+      "end": 1831.16,
+      "text": " I think people were wondering why feed forward."
+    },
+    {
+      "chunk": 3,
+      "start": 1831.32,
+      "end": 1833.68,
+      "text": " I mean, certainly the brain is not just feed forward."
+    },
+    {
+      "chunk": 3,
+      "start": 1833.8,
+      "end": 1835.22,
+      "text": " The brain has connections everywhere."
+    },
+    {
+      "chunk": 3,
+      "start": 1835.22,
+      "end": 1836.64,
+      "text": " They make loops."
+    },
+    {
+      "chunk": 3,
+      "start": 1837.36,
+      "end": 1844.84,
+      "text": " And other systems like spin systems, like magnetic systems, or liquid, right, as a liquid network."
+    },
+    {
+      "chunk": 3,
+      "start": 1845.36,
+      "end": 1846.74,
+      "text": " Most networks have loops."
+    },
+    {
+      "chunk": 3,
+      "start": 1847.24,
+      "end": 1853.42,
+      "text": " It's not very common in nature to see a network that's fully feed forward, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 1853.52,
+      "end": 1855.24,
+      "text": " But why would we do that?"
+    },
+    {
+      "chunk": 3,
+      "start": 1855.24,
+      "end": 1857.62,
+      "text": " Why are those kind of the workhorse of machine learning?"
+    },
+    {
+      "chunk": 3,
+      "start": 1858.48,
+      "end": 1866.14,
+      "text": " Well, it turns out that feedforward network can approximate basically any function, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 1866.2,
+      "end": 1870.2,
+      "text": " So it's the universal approximation property."
+    },
+    {
+      "chunk": 3,
+      "start": 1873.1,
+      "end": 1884.78,
+      "text": " And, yeah, I won't, to actually understand this, you have to go into measure theory and all sorts of hard math that we don't talk about in this class."
+    },
+    {
+      "chunk": 3,
+      "start": 1885.24,
+      "end": 1905.58,
+      "text": " But it has been proven that if you have a linear output layer and at least one hidden layer with some kind of squashing activation function, like a ReLU or a Sigmoid or anything, like a non-linearity, and enough hidden units."
+    },
+    {
+      "chunk": 3,
+      "start": 1905.58,
+      "end": 1911.3,
+      "text": " So this was originally shown with basically ridiculously wide hidden units,"
+    },
+    {
+      "chunk": 3,
+      "start": 1911.54,
+      "end": 1921.34,
+      "text": " but you can often compensate for depth with width in some confusing way."
+    },
+    {
+      "chunk": 3,
+      "start": 1922.5,
+      "end": 1925.72,
+      "text": " But if you have a large enough network,"
+    },
+    {
+      "chunk": 3,
+      "start": 1925.72,
+      "end": 1932.16,
+      "text": " then you can approximate any Borel measurable function"
+    },
+    {
+      "chunk": 3,
+      "start": 1932.16,
+      "end": 1941.48,
+      "text": " from one finite dimensional space to another with any desired non-zero amount of error."
+    },
+    {
+      "chunk": 3,
+      "start": 1943.0,
+      "end": 1943.18,
+      "text": " Right?"
+    },
+    {
+      "chunk": 3,
+      "start": 1943.44,
+      "end": 1956.56,
+      "text": " So that a bit it a lot of words but the surprising thing was you can do this with a feed network That you do need a non that was important"
+    },
+    {
+      "chunk": 3,
+      "start": 1957.56,
+      "end": 1962.0,
+      "text": " And you need enough, you need a big enough network, but that you can do it."
+    },
+    {
+      "chunk": 3,
+      "start": 1962.0,
+      "end": 1969.0,
+      "text": " You don't need loops, you don't necessarily need anything else, you don't even need that many hidden layers."
+    },
+    {
+      "chunk": 3,
+      "start": 1969.0,
+      "end": 1970.98,
+      "text": " it needs to be big enough"
+    },
+    {
+      "chunk": 3,
+      "start": 1970.98,
+      "end": 1975.52,
+      "text": " and you can approximate"
+    },
+    {
+      "chunk": 3,
+      "start": 1975.52,
+      "end": 1977.92,
+      "text": " any of these types of functions"
+    },
+    {
+      "chunk": 3,
+      "start": 1977.92,
+      "end": 1980.6399999999999,
+      "text": " so that was a big deal"
+    },
+    {
+      "chunk": 3,
+      "start": 1980.6399999999999,
+      "end": 1984.8600000000001,
+      "text": " okay"
+    },
+    {
+      "chunk": 3,
+      "start": 1984.8600000000001,
+      "end": 1987.2,
+      "text": " so we have three components"
+    },
+    {
+      "chunk": 3,
+      "start": 1987.2,
+      "end": 1989.1399999999999,
+      "text": " width, depth, connections"
+    },
+    {
+      "chunk": 3,
+      "start": 1989.1399999999999,
+      "end": 1994.68,
+      "text": " and in the course"
+    },
+    {
+      "chunk": 3,
+      "start": 1994.68,
+      "end": 1996.72,
+      "text": " we're going to only talk about feedforward"
+    },
+    {
+      "chunk": 3,
+      "start": 1996.72,
+      "end": 1999.9,
+      "text": " CNNs, which are convolutional neural networks,"
+    },
+    {
+      "chunk": 3,
+      "start": 1999.9,
+      "end": 2004.88,
+      "text": " and some RNNs, which are recursive neural networks."
+    },
+    {
+      "chunk": 3,
+      "start": 2009.98001,
+      "end": 2010.66,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 3,
+      "start": 2011.16,
+      "end": 2014.7,
+      "text": " So these are architectures,"
+    },
+    {
+      "chunk": 3,
+      "start": 2015.16,
+      "end": 2017.6399999999999,
+      "text": " and one important part of the architecture"
+    },
+    {
+      "chunk": 3,
+      "start": 2017.6399999999999,
+      "end": 2019.7,
+      "text": " is what is our loss function."
+    },
+    {
+      "chunk": 3,
+      "start": 2021.76001,
+      "end": 2024.9,
+      "text": " So very related, of course, to the output layer function,"
+    },
+    {
+      "chunk": 3,
+      "start": 2024.9,
+      "end": 2027.66,
+      "text": " function, because that would kind of determine"
+    },
+    {
+      "chunk": 3,
+      "start": 2027.66,
+      "end": 2032.72,
+      "text": " how you relate the output"
+    },
+    {
+      "chunk": 3,
+      "start": 2032.72,
+      "end": 2037.0,
+      "text": " to the output layer to the output itself."
+    },
+    {
+      "chunk": 3,
+      "start": 2037.98001,
+      "end": 2040.9,
+      "text": " So you can do a mean squared error loss"
+    },
+    {
+      "chunk": 3,
+      "start": 2040.9,
+      "end": 2042.98001,
+      "text": " function. So just"
+    },
+    {
+      "chunk": 3,
+      "start": 2042.98001,
+      "end": 2045.66,
+      "text": " this typical"
+    },
+    {
+      "chunk": 3,
+      "start": 2045.66,
+      "end": 2050.56,
+      "text": " y minus the input"
+    },
+    {
+      "chunk": 3,
+      "start": 2050.56,
+      "end": 2054.23999,
+      "text": " f of, what do we call them, z."
+    },
+    {
+      "chunk": 3,
+      "start": 2054.9,
+      "end": 2056.5,
+      "text": " squared."
+    },
+    {
+      "chunk": 3,
+      "start": 2058.84,
+      "end": 2060.16,
+      "text": " Oh, yeah."
+    },
+    {
+      "chunk": 3,
+      "start": 2060.66,
+      "end": 2062.66,
+      "text": " We write the equations in the next lines."
+    },
+    {
+      "chunk": 3,
+      "start": 2062.8,
+      "end": 2064.86,
+      "text": " But anyways, we can do a mean squared error,"
+    },
+    {
+      "chunk": 3,
+      "start": 2064.94,
+      "end": 2066.08002,
+      "text": " which is like a regression thing."
+    },
+    {
+      "chunk": 3,
+      "start": 2066.52,
+      "end": 2068.32,
+      "text": " We can do a classification"
+    },
+    {
+      "chunk": 3,
+      "start": 2068.32,
+      "end": 2074.44,
+      "text": " as a binary function,"
+    },
+    {
+      "chunk": 3,
+      "start": 2074.44,
+      "end": 2078.58002,
+      "text": " or we can use the categorical version,"
+    },
+    {
+      "chunk": 3,
+      "start": 2078.76,
+      "end": 2081.38,
+      "text": " like the softmax, like we showed earlier."
+    },
+    {
+      "chunk": 3,
+      "start": 2082.41998,
+      "end": 2084.5,
+      "text": " So these are different loss functions."
+    },
+    {
+      "chunk": 3,
+      "start": 2084.9,
+      "end": 2086.82,
+      "text": " So here's the"
+    },
+    {
+      "chunk": 3,
+      "start": 2086.82,
+      "end": 2092.2,
+      "text": " regression one, or the mean squared error term."
+    },
+    {
+      "chunk": 3,
+      "start": 2094.53998,
+      "end": 2107.74,
+      "text": " Here the cross entropy one Here the binary cross And these are just new names for old ideas right"
+    },
+    {
+      "chunk": 3,
+      "start": 2107.82,
+      "end": 2112.96,
+      "text": " So this is like the same as when we looked at logistic regression."
+    },
+    {
+      "chunk": 3,
+      "start": 2119.68,
+      "end": 2120.36,
+      "text": " Right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2120.36,
+      "end": 2131.66,
+      "text": " Like if this is the regression one, the linear regression one, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2131.74,
+      "end": 2135.16,
+      "text": " This one is like linear regression, and then this other one is like logistic regression."
+    },
+    {
+      "chunk": 3,
+      "start": 2136.06,
+      "end": 2145.82,
+      "text": " Only now your inputs are not the covariates, but rather they're hidden shit, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2145.82,
+      "end": 2151.82,
+      "text": " So it can do much more than logistic regression because it has the full flexibility of the network."
+    },
+    {
+      "chunk": 3,
+      "start": 2155.76,
+      "end": 2165.46,
+      "text": " Yeah, I would say the very confusing thing with neural networks is that you don't just learn, you learn parameters, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2165.5,
+      "end": 2171.9,
+      "text": " You have to learn the parameters of the network, but you're also inferring states, hidden states, and a lot of hidden states."
+    },
+    {
+      "chunk": 3,
+      "start": 2171.9,
+      "end": 2187.26,
+      "text": " So this model has an ability to express and approximate functions that you just don't have at all with just simple regression, which is very interesting and cool."
+    },
+    {
+      "chunk": 3,
+      "start": 2189.46,
+      "end": 2193.94,
+      "text": " So determining what your output cost function is is important."
+    },
+    {
+      "chunk": 3,
+      "start": 2194.86,
+      "end": 2199.94,
+      "text": " The other thing that's important is choosing your optimization strategy."
+    },
+    {
+      "chunk": 3,
+      "start": 2199.94,
+      "end": 2202.54,
+      "text": " so one would just be"
+    },
+    {
+      "chunk": 3,
+      "start": 2202.54,
+      "end": 2204.6,
+      "text": " normal gradient descent"
+    },
+    {
+      "chunk": 3,
+      "start": 2204.6,
+      "end": 2206.06,
+      "text": " so just follow the gradient"
+    },
+    {
+      "chunk": 3,
+      "start": 2206.06,
+      "end": 2208.7,
+      "text": " another one which I use a lot is"
+    },
+    {
+      "chunk": 3,
+      "start": 2208.7,
+      "end": 2210.88,
+      "text": " mini batch stochastic gradient descent"
+    },
+    {
+      "chunk": 3,
+      "start": 2210.88,
+      "end": 2213.68,
+      "text": " which we'll get to in a second"
+    },
+    {
+      "chunk": 3,
+      "start": 2213.68,
+      "end": 2214.74,
+      "text": " that's basically"
+    },
+    {
+      "chunk": 3,
+      "start": 2214.74,
+      "end": 2216.5,
+      "text": " the same idea"
+    },
+    {
+      "chunk": 3,
+      "start": 2216.5,
+      "end": 2219.24,
+      "text": " we'll get to in a second"
+    },
+    {
+      "chunk": 3,
+      "start": 2219.24,
+      "end": 2219.88,
+      "text": " it's cool"
+    },
+    {
+      "chunk": 3,
+      "start": 2219.88,
+      "end": 2223.34,
+      "text": " and the gradient"
+    },
+    {
+      "chunk": 3,
+      "start": 2223.34,
+      "end": 2224.76,
+      "text": " is calculated through"
+    },
+    {
+      "chunk": 3,
+      "start": 2224.76,
+      "end": 2226.41998,
+      "text": " what's called backprop"
+    },
+    {
+      "chunk": 3,
+      "start": 2226.41998,
+      "end": 2228.62,
+      "text": " or backpropagation which was another"
+    },
+    {
+      "chunk": 3,
+      "start": 2228.62,
+      "end": 2230.12,
+      "text": " big deal"
+    },
+    {
+      "chunk": 3,
+      "start": 2230.12,
+      "end": 2233.32,
+      "text": " because it created"
+    },
+    {
+      "chunk": 3,
+      "start": 2233.32,
+      "end": 2235.36,
+      "text": " an objective function that you could"
+    },
+    {
+      "chunk": 3,
+      "start": 2235.36,
+      "end": 2237.41998,
+      "text": " use easily."
+    },
+    {
+      "chunk": 3,
+      "start": 2239.44,
+      "end": 2241.02002,
+      "text": " And it was one of the reasons"
+    },
+    {
+      "chunk": 3,
+      "start": 2241.02002,
+      "end": 2242.7200000000003,
+      "text": " we got out of one of the winters."
+    },
+    {
+      "chunk": 3,
+      "start": 2243.26,
+      "end": 2244.14,
+      "text": " So I think that was"
+    },
+    {
+      "chunk": 3,
+      "start": 2244.14,
+      "end": 2256.0,
+      "text": " I don know 2002 or something Or oh it was earlier The 90s I don know It was in the slides earlier like from last week"
+    },
+    {
+      "chunk": 3,
+      "start": 2257.14,
+      "end": 2262.64,
+      "text": " But it was one of the things that got machine learning exciting again,"
+    },
+    {
+      "chunk": 3,
+      "start": 2262.74,
+      "end": 2264.2,
+      "text": " is that you could do backprop."
+    },
+    {
+      "chunk": 3,
+      "start": 2265.24,
+      "end": 2266.5,
+      "text": " Which we'll explain in a minute."
+    },
+    {
+      "chunk": 3,
+      "start": 2268.5,
+      "end": 2271.24,
+      "text": " So we have gradient descent."
+    },
+    {
+      "chunk": 3,
+      "start": 2271.24,
+      "end": 2277.2,
+      "text": " and that is the same gradient descent that we've talked about since progression"
+    },
+    {
+      "chunk": 3,
+      "start": 2277.2,
+      "end": 2283.6,
+      "text": " in the sense that you have some function and you want to go and find a minimum"
+    },
+    {
+      "chunk": 3,
+      "start": 2283.6,
+      "end": 2287.86,
+      "text": " and a minimum and you might get stuck in a local minimum,"
+    },
+    {
+      "chunk": 3,
+      "start": 2288.2,
+      "end": 2290.0,
+      "text": " but ideally you get into a global minimum."
+    },
+    {
+      "chunk": 3,
+      "start": 2290.0,
+      "end": 2299.96,
+      "text": " What is really kind of cool about gradient descent in machine learning models"
+    },
+    {
+      "chunk": 3,
+      "start": 2299.96,
+      "end": 2307.26,
+      "text": " is that as you learn the parameters and the states,"
+    },
+    {
+      "chunk": 3,
+      "start": 2307.41998,
+      "end": 2311.12,
+      "text": " you're changing the shape of the function."
+    },
+    {
+      "chunk": 3,
+      "start": 2312.12,
+      "end": 2316.16003,
+      "text": " So if, for example, you're just doing linear regression"
+    },
+    {
+      "chunk": 3,
+      "start": 2316.16003,
+      "end": 2319.2200000000003,
+      "text": " and you don't have that many parameters,"
+    },
+    {
+      "chunk": 3,
+      "start": 2319.2200000000003,
+      "end": 2326.24,
+      "text": " so let's say you have just three variables that your inputs"
+    },
+    {
+      "chunk": 3,
+      "start": 2326.24,
+      "end": 2328.1,
+      "text": " and you have a bunch of samples,"
+    },
+    {
+      "chunk": 3,
+      "start": 2328.1,
+      "end": 2334.3,
+      "text": " then the shape of the cost function is very determined just by the data."
+    },
+    {
+      "chunk": 3,
+      "start": 2334.88,
+      "end": 2337.2799999999997,
+      "text": " It's not a very flexible model."
+    },
+    {
+      "chunk": 3,
+      "start": 2338.16003,
+      "end": 2341.98,
+      "text": " But if you take that same data and then you add a whole bunch of hidden layers"
+    },
+    {
+      "chunk": 3,
+      "start": 2341.98,
+      "end": 2344.7,
+      "text": " and hidden nodes and a bunch of architecture in between,"
+    },
+    {
+      "chunk": 3,
+      "start": 2345.46,
+      "end": 2350.24,
+      "text": " then suddenly you have a very flexible model."
+    },
+    {
+      "chunk": 3,
+      "start": 2352.04,
+      "end": 2357.9,
+      "text": " And as you learn some of the states, as you learn some of the parameters,"
+    },
+    {
+      "chunk": 3,
+      "start": 2358.1,
+      "end": 2359.42,
+      "text": " and then estimate some of the states,"
+    },
+    {
+      "chunk": 3,
+      "start": 2359.46,
+      "end": 2360.96,
+      "text": " you're actually changing the landscape."
+    },
+    {
+      "chunk": 3,
+      "start": 2361.9,
+      "end": 2363.7,
+      "text": " So it's actually kind of interesting"
+    },
+    {
+      "chunk": 3,
+      "start": 2363.7,
+      "end": 2365.76,
+      "text": " because in machine learning,"
+    },
+    {
+      "chunk": 3,
+      "start": 2366.24,
+      "end": 2368.2799999999997,
+      "text": " often you can kind of dig into one"
+    },
+    {
+      "chunk": 3,
+      "start": 2368.2799999999997,
+      "end": 2370.12,
+      "text": " and then end up here."
+    },
+    {
+      "chunk": 3,
+      "start": 2370.7799999999997,
+      "end": 2371.9,
+      "text": " It's very funny"
+    },
+    {
+      "chunk": 3,
+      "start": 2371.9,
+      "end": 2374.64,
+      "text": " because the lost landscape will change"
+    },
+    {
+      "chunk": 3,
+      "start": 2374.64,
+      "end": 2376.46,
+      "text": " as you move through it."
+    },
+    {
+      "chunk": 3,
+      "start": 2379.24,
+      "end": 2380.76,
+      "text": " You still have this notion"
+    },
+    {
+      "chunk": 3,
+      "start": 2380.76,
+      "end": 2382.88,
+      "text": " that there's local minima, global minima,"
+    },
+    {
+      "chunk": 3,
+      "start": 2383.18,
+      "end": 2386.6,
+      "text": " but you have more ways of escaping local minima."
+    },
+    {
+      "chunk": 3,
+      "start": 2387.2799999999997,
+      "end": 2387.44,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 3,
+      "start": 2388.1,
+      "end": 2393.94,
+      "text": " there's that"
+    },
+    {
+      "chunk": 3,
+      "start": 2393.94,
+      "end": 2396.6,
+      "text": " a really nice video"
+    },
+    {
+      "chunk": 3,
+      "start": 2396.6,
+      "end": 2397.48,
+      "text": " on this"
+    },
+    {
+      "chunk": 3,
+      "start": 2397.48,
+      "end": 2399.82,
+      "text": " escaping local minima"
+    },
+    {
+      "chunk": 4,
+      "start": 2400.0,
+      "end": 2403.32,
+      "text": " is on that YouTube video."
+    },
+    {
+      "chunk": 4,
+      "start": 2404.42,
+      "end": 2405.16,
+      "text": " What's it called?"
+    },
+    {
+      "chunk": 4,
+      "start": 2405.28,
+      "end": 2406.7,
+      "text": " Like three brown and one blue"
+    },
+    {
+      "chunk": 4,
+      "start": 2406.7,
+      "end": 2410.22,
+      "text": " or three blue, one brown, three dogs."
+    },
+    {
+      "chunk": 4,
+      "start": 2410.44,
+      "end": 2411.32,
+      "text": " No, it's blue."
+    },
+    {
+      "chunk": 4,
+      "start": 2411.52,
+      "end": 2412.54,
+      "text": " You guys know what I'm saying, right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2413.88,
+      "end": 2415.88,
+      "text": " Yeah, they have really nice videos"
+    },
+    {
+      "chunk": 4,
+      "start": 2415.88,
+      "end": 2417.7,
+      "text": " and they have a really nice video"
+    },
+    {
+      "chunk": 4,
+      "start": 2417.7,
+      "end": 2420.16,
+      "text": " on just visualizing the lost landscape"
+    },
+    {
+      "chunk": 4,
+      "start": 2420.16,
+      "end": 2423.76,
+      "text": " as you dig into the parameters in the States"
+    },
+    {
+      "chunk": 4,
+      "start": 2423.76,
+      "end": 2428.16,
+      "text": " and how it will actually escape local minima"
+    },
+    {
+      "chunk": 4,
+      "start": 2428.16,
+      "end": 2430.88,
+      "text": " just by keep going down, which is amazing."
+    },
+    {
+      "chunk": 4,
+      "start": 2433.38,
+      "end": 2434.18,
+      "text": " All right."
+    },
+    {
+      "chunk": 4,
+      "start": 2434.32,
+      "end": 2439.16,
+      "text": " So gradient descent works this way where you,"
+    },
+    {
+      "chunk": 4,
+      "start": 2439.16,
+      "end": 2445.64,
+      "text": " you, yeah, you have initial values and then you go"
+    },
+    {
+      "chunk": 4,
+      "start": 2445.64,
+      "end": 2449.68,
+      "text": " and you calculate your predictions, right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2449.76,
+      "end": 2455.66,
+      "text": " So these are the predictions for the output states,"
+    },
+    {
+      "chunk": 4,
+      "start": 2455.78,
+      "end": 2457.94,
+      "text": " but also the input ones, or sorry,"
+    },
+    {
+      "chunk": 4,
+      "start": 2457.94,
+      "end": 2459.02,
+      "text": " and then the hidden ones."
+    },
+    {
+      "chunk": 4,
+      "start": 2459.7,
+      "end": 2461.8,
+      "text": " And then you calculate a loss."
+    },
+    {
+      "chunk": 4,
+      "start": 2462.3,
+      "end": 2469.12,
+      "text": " And then what you do is you go and you find updates to the weights"
+    },
+    {
+      "chunk": 4,
+      "start": 2469.12,
+      "end": 2472.36,
+      "text": " according to a derivative, right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2472.48,
+      "end": 2475.78,
+      "text": " So very much the same idea as we did for linear regression."
+    },
+    {
+      "chunk": 4,
+      "start": 2476.2,
+      "end": 2480.0,
+      "text": " We had a function, you know, the sum of square difference,"
+    },
+    {
+      "chunk": 4,
+      "start": 2480.0,
+      "end": 2484.1,
+      "text": " and then to find the parameters, we just took the derivative"
+    },
+    {
+      "chunk": 4,
+      "start": 2484.1,
+      "end": 2486.0,
+      "text": " and then we move in the direction of the derivative."
+    },
+    {
+      "chunk": 4,
+      "start": 2486.0,
+      "end": 2488.98,
+      "text": " only now we have like a whole bunch of layers"
+    },
+    {
+      "chunk": 4,
+      "start": 2488.98,
+      "end": 2490.84,
+      "text": " so it takes a bit more work"
+    },
+    {
+      "chunk": 4,
+      "start": 2490.84,
+      "end": 2493.68,
+      "text": " but it's still the same idea"
+    },
+    {
+      "chunk": 4,
+      "start": 2493.68,
+      "end": 2494.7,
+      "text": " that you take the gradient"
+    },
+    {
+      "chunk": 4,
+      "start": 2494.7,
+      "end": 2496.6,
+      "text": " of the function"
+    },
+    {
+      "chunk": 4,
+      "start": 2496.6,
+      "end": 2501.42,
+      "text": " and then once you have the gradient"
+    },
+    {
+      "chunk": 4,
+      "start": 2501.42,
+      "end": 2503.72,
+      "text": " you take the parameter"
+    },
+    {
+      "chunk": 4,
+      "start": 2503.72,
+      "end": 2506.08,
+      "text": " and then you update it"
+    },
+    {
+      "chunk": 4,
+      "start": 2506.08,
+      "end": 2508.38,
+      "text": " according to some movement"
+    },
+    {
+      "chunk": 4,
+      "start": 2508.38,
+      "end": 2509.74,
+      "text": " in the direction of the gradient"
+    },
+    {
+      "chunk": 4,
+      "start": 2509.74,
+      "end": 2513.66,
+      "text": " it's very much the same idea"
+    },
+    {
+      "chunk": 4,
+      "start": 2513.66,
+      "end": 2520.16,
+      "text": " and so right here we're just showing it with respect to a single function"
+    },
+    {
+      "chunk": 4,
+      "start": 2520.16,
+      "end": 2522.68,
+      "text": " and not defining how we get the gradient"
+    },
+    {
+      "chunk": 4,
+      "start": 2522.68,
+      "end": 2528.18,
+      "text": " but the idea is simply you take the gradient and then you update"
+    },
+    {
+      "chunk": 4,
+      "start": 2528.18,
+      "end": 2532.28,
+      "text": " your parameter moving in the direction of the gradient"
+    },
+    {
+      "chunk": 4,
+      "start": 2532.28,
+      "end": 2536.18,
+      "text": " and then you just keep doing that"
+    },
+    {
+      "chunk": 4,
+      "start": 2536.18,
+      "end": 2538.26,
+      "text": " until the network stops changing"
+    },
+    {
+      "chunk": 4,
+      "start": 2538.26,
+      "end": 2543.12,
+      "text": " so t here is your"
+    },
+    {
+      "chunk": 4,
+      "start": 2543.12,
+      "end": 2552.64,
+      "text": " is the number of iterations you do or epochs And you just keep going until you converged"
+    },
+    {
+      "chunk": 4,
+      "start": 2558.04,
+      "end": 2558.6,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 4,
+      "start": 2559.7,
+      "end": 2564.36,
+      "text": " And so you can either do it full, meaning you to use all of the data,"
+    },
+    {
+      "chunk": 4,
+      "start": 2565.16,
+      "end": 2571.45999,
+      "text": " and you update according to your best estimate of the gradient,"
+    },
+    {
+      "chunk": 4,
+      "start": 2571.45999,
+      "end": 2576.88,
+      "text": " or what you can do is stochastic gradient descent,"
+    },
+    {
+      "chunk": 4,
+      "start": 2577.62,
+      "end": 2583.26,
+      "text": " which is an average over many individual gradients, right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2583.98,
+      "end": 2590.48,
+      "text": " Where you're basically getting noisy estimates of your gradient,"
+    },
+    {
+      "chunk": 4,
+      "start": 2590.94,
+      "end": 2594.92,
+      "text": " stochastic noisy ones, and then you average over them."
+    },
+    {
+      "chunk": 4,
+      "start": 2596.48,
+      "end": 2600.82,
+      "text": " So what's not obvious here, what's not obvious from this"
+    },
+    {
+      "chunk": 4,
+      "start": 2600.82,
+      "end": 2602.78,
+      "text": " is that actually this is a good idea"
+    },
+    {
+      "chunk": 4,
+      "start": 2602.78,
+      "end": 2608.14,
+      "text": " to have noisy estimates of your gradients."
+    },
+    {
+      "chunk": 4,
+      "start": 2611.48001,
+      "end": 2617.12,
+      "text": " And one particular way of getting these noisy stochastic gradients"
+    },
+    {
+      "chunk": 4,
+      "start": 2617.12,
+      "end": 2618.4,
+      "text": " is using minibatch."
+    },
+    {
+      "chunk": 4,
+      "start": 2619.58,
+      "end": 2622.26001,
+      "text": " So I don't actually know the history of this"
+    },
+    {
+      "chunk": 4,
+      "start": 2622.26001,
+      "end": 2624.95999,
+      "text": " because it could have been two ways."
+    },
+    {
+      "chunk": 4,
+      "start": 2625.04001,
+      "end": 2625.94,
+      "text": " It could have been someone's like,"
+    },
+    {
+      "chunk": 4,
+      "start": 2625.94,
+      "end": 2630.51999,
+      "text": " ooh, we need to have really good stochastic gradient descent"
+    },
+    {
+      "chunk": 4,
+      "start": 2630.51999,
+      "end": 2632.54001,
+      "text": " because that has all these nice properties."
+    },
+    {
+      "chunk": 4,
+      "start": 2632.8,
+      "end": 2635.22,
+      "text": " Because one of the nice properties about stochastic gradient descent"
+    },
+    {
+      "chunk": 4,
+      "start": 2635.22,
+      "end": 2638.51999,
+      "text": " is that it has an implicit regularization."
+    },
+    {
+      "chunk": 4,
+      "start": 2639.4,
+      "end": 2644.2,
+      "text": " We talked about regularization in terms of actually penalizing parameters."
+    },
+    {
+      "chunk": 4,
+      "start": 2645.12,
+      "end": 2648.08,
+      "text": " So we talked about the L1 and L2 regularization,"
+    },
+    {
+      "chunk": 4,
+      "start": 2648.08,
+      "end": 2652.64,
+      "text": " where you penalize the absolute value or the squared value of the parameters."
+    },
+    {
+      "chunk": 4,
+      "start": 2652.64,
+      "end": 2657.8,
+      "text": " and mini-batch stochastic gradient descent"
+    },
+    {
+      "chunk": 4,
+      "start": 2657.8,
+      "end": 2662.18,
+      "text": " actually gives you an implicit L2 regularization,"
+    },
+    {
+      "chunk": 4,
+      "start": 2662.9,
+      "end": 2665.1,
+      "text": " which is super weird, right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2665.16,
+      "end": 2666.36,
+      "text": " Like, why would it do that?"
+    },
+    {
+      "chunk": 4,
+      "start": 2666.74,
+      "end": 2668.96,
+      "text": " So whenever you have a, when you use this"
+    },
+    {
+      "chunk": 4,
+      "start": 2668.96,
+      "end": 2670.68,
+      "text": " and you're in a problem setting"
+    },
+    {
+      "chunk": 4,
+      "start": 2670.68,
+      "end": 2672.18,
+      "text": " where there's an infinite number of parameters,"
+    },
+    {
+      "chunk": 4,
+      "start": 2673.4,
+      "end": 2676.36,
+      "text": " or, sorry, when there's an infinite number of exact solutions,"
+    },
+    {
+      "chunk": 4,
+      "start": 2676.46002,
+      "end": 2680.6,
+      "text": " it will find the solution where the L2 norm is minimized,"
+    },
+    {
+      "chunk": 4,
+      "start": 2680.76,
+      "end": 2682.38,
+      "text": " which is super weird, right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2682.38,
+      "end": 2684.96002,
+      "text": " That's this regularization effect that's written in red here."
+    },
+    {
+      "chunk": 4,
+      "start": 2688.14,
+      "end": 2693.44,
+      "text": " But the reality is you could also have come up with it simply because it seemed like a good idea."
+    },
+    {
+      "chunk": 4,
+      "start": 2693.64,
+      "end": 2708.7,
+      "text": " You have so many data points You don want to compute your gradient from all of them because it would take forever So instead you just take some of them You take a random subset or you partition the data into 10 random subset or some number"
+    },
+    {
+      "chunk": 4,
+      "start": 2708.7,
+      "end": 2709.6,
+      "text": " of random subsets."
+    },
+    {
+      "chunk": 4,
+      "start": 2709.6,
+      "end": 2717.4,
+      "text": " And then you just compute your gradient on a part of the data and then use that to update"
+    },
+    {
+      "chunk": 4,
+      "start": 2717.4,
+      "end": 2718.06,
+      "text": " your parameters."
+    },
+    {
+      "chunk": 4,
+      "start": 2718.06,
+      "end": 2720.5,
+      "text": " so it's"
+    },
+    {
+      "chunk": 4,
+      "start": 2720.5,
+      "end": 2724.7799999999997,
+      "text": " yeah so it was a clever idea"
+    },
+    {
+      "chunk": 4,
+      "start": 2724.7799999999997,
+      "end": 2726.96,
+      "text": " because it's a way of"
+    },
+    {
+      "chunk": 4,
+      "start": 2726.96,
+      "end": 2728.16,
+      "text": " adding a regularization"
+    },
+    {
+      "chunk": 4,
+      "start": 2728.16,
+      "end": 2730.96,
+      "text": " that is very"
+    },
+    {
+      "chunk": 4,
+      "start": 2730.96,
+      "end": 2731.36,
+      "text": " nice"
+    },
+    {
+      "chunk": 4,
+      "start": 2731.36,
+      "end": 2734.98,
+      "text": " but it can also make"
+    },
+    {
+      "chunk": 4,
+      "start": 2734.98,
+      "end": 2736.86,
+      "text": " things fast because"
+    },
+    {
+      "chunk": 4,
+      "start": 2736.86,
+      "end": 2739.06,
+      "text": " you're just computing in parallel"
+    },
+    {
+      "chunk": 4,
+      "start": 2739.06,
+      "end": 2741.2799999999997,
+      "text": " a whole bunch of little small batches"
+    },
+    {
+      "chunk": 4,
+      "start": 2741.2799999999997,
+      "end": 2742.84,
+      "text": " and you typically"
+    },
+    {
+      "chunk": 4,
+      "start": 2742.84,
+      "end": 2744.94,
+      "text": " do things in the power of two because that's"
+    },
+    {
+      "chunk": 4,
+      "start": 2744.94,
+      "end": 2746.82,
+      "text": " what you always do in machine"
+    },
+    {
+      "chunk": 4,
+      "start": 2746.82,
+      "end": 2752.0,
+      "text": " learning because you try to make everything as hardware efficient as possible."
+    },
+    {
+      "chunk": 4,
+      "start": 2752.0,
+      "end": 2755.8,
+      "text": " And most hardware things happen in powers of two, right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2755.9,
+      "end": 2759.5,
+      "text": " So 32, 256, 512, 1024."
+    },
+    {
+      "chunk": 4,
+      "start": 2759.88,
+      "end": 2761.62,
+      "text": " There's a lot of numbers that are power of two."
+    },
+    {
+      "chunk": 4,
+      "start": 2762.2799999999997,
+      "end": 2764.4,
+      "text": " And those are the ones that you typically use."
+    },
+    {
+      "chunk": 4,
+      "start": 2767.32,
+      "end": 2773.74,
+      "text": " True stochastic gradient descent involves just one sample, but you can, yeah,"
+    },
+    {
+      "chunk": 4,
+      "start": 2773.74,
+      "end": 2779.04,
+      "text": " You can do all sorts of things between one sample per iteration and full gradient descent."
+    },
+    {
+      "chunk": 4,
+      "start": 2779.64,
+      "end": 2782.2200000000003,
+      "text": " I don't think anyone just does one sample because it would just take forever."
+    },
+    {
+      "chunk": 4,
+      "start": 2783.52,
+      "end": 2785.46,
+      "text": " But, yeah, but you compromise."
+    },
+    {
+      "chunk": 4,
+      "start": 2786.74,
+      "end": 2790.7,
+      "text": " And like I said, most of this stuff is done kind of like, here's the problem."
+    },
+    {
+      "chunk": 4,
+      "start": 2791.5,
+      "end": 2796.82,
+      "text": " I know I want something like this, so I try, you know, 512, 1024, 256."
+    },
+    {
+      "chunk": 4,
+      "start": 2797.34,
+      "end": 2798.8,
+      "text": " And then you're like, oh, this one works well."
+    },
+    {
+      "chunk": 4,
+      "start": 2799.56,
+      "end": 2800.32,
+      "text": " You go with that."
+    },
+    {
+      "chunk": 4,
+      "start": 2800.32,
+      "end": 2804.24,
+      "text": " But yeah, the mini batch is kind of a clever idea"
+    },
+    {
+      "chunk": 4,
+      "start": 2804.24,
+      "end": 2805.9,
+      "text": " because it speeds things up"
+    },
+    {
+      "chunk": 4,
+      "start": 2805.9,
+      "end": 2809.18,
+      "text": " and it gives a really nice regularization effect."
+    },
+    {
+      "chunk": 4,
+      "start": 2813.76,
+      "end": 2816.91998,
+      "text": " Yeah, so like I said, this is the website"
+    },
+    {
+      "chunk": 4,
+      "start": 2816.91998,
+      "end": 2821.46,
+      "text": " or the YouTuber that does really nice videos on this thing."
+    },
+    {
+      "chunk": 4,
+      "start": 2821.98,
+      "end": 2823.7,
+      "text": " So you can watch this if you want."
+    },
+    {
+      "chunk": 4,
+      "start": 2826.36,
+      "end": 2828.5,
+      "text": " But let's take a short break"
+    },
+    {
+      "chunk": 4,
+      "start": 2828.5,
+      "end": 2831.7,
+      "text": " and we'll come back to this in 15 minutes."
+    },
+    {
+      "chunk": 4,
+      "start": 2831.86,
+      "end": 2839.12,
+      "text": " So at 9.18, we'll come back and continue with this topic."
+    },
+    {
+      "chunk": 4,
+      "start": 2840.7799999999997,
+      "end": 2841.84,
+      "text": " Okie dokie."
+    },
+    {
+      "chunk": 4,
+      "start": 2841.84,
+      "end": 2860.52,
+      "text": " Okie dokie Thank you"
+    },
+    {
+      "chunk": 4,
+      "start": 2875.0,
+      "end": 2904.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2905.0,
+      "end": 2934.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2935.0,
+      "end": 2964.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2965.0,
+      "end": 2994.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2995.0,
+      "end": 3024.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3000.0,
+      "end": 3029.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3030.0,
+      "end": 3057.32,
+      "text": " All right."
+    },
+    {
+      "chunk": 5,
+      "start": 3057.32,
+      "end": 3060.6,
+      "text": " So we're going to stop here and then pick it up tomorrow."
+    },
+    {
+      "chunk": 5,
+      "start": 3061.84,
+      "end": 3063.7,
+      "text": " And then finish up this."
+    },
+    {
+      "chunk": 5,
+      "start": 3063.82,
+      "end": 3068.78,
+      "text": " We'll probably finish this tomorrow and then have the review next week."
+    },
+    {
+      "chunk": 5,
+      "start": 3069.84,
+      "end": 3072.18,
+      "text": " Or maybe we'll spill into next week, but it'll be fine."
+    },
+    {
+      "chunk": 5,
+      "start": 3072.8,
+      "end": 3073.1,
+      "text": " All right."
+    },
+    {
+      "chunk": 5,
+      "start": 3073.22,
+      "end": 3073.44,
+      "text": " Cool."
+    },
+    {
+      "chunk": 5,
+      "start": 3073.62,
+      "end": 3074.42,
+      "text": " So we'll stop here."
+    }
+  ]
+}

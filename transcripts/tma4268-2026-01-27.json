@@ -1,0 +1,4333 @@
+{
+  "model": "whisper-large-v3",
+  "text": "So, maybe it's really dumb. Okay, Steam decided to cooperate. No, Steam decided to cooperate after crashing like five times. So, now it works. Okay, is everyone here? Well, it's quarter past. Ben is in Oslo, as he probably said yesterday. So, I'm here instead. I'm a PhD student in his group working on neural data. So, you can ask him about that if you want to. I'll try to speak without the microphone. but tell me if it's too late, then I'll switch. We'll talk about classification today, which is very similar to the linear regression stuff you talked about yesterday, other than, I guess, the main difference now being that the response variable can be categorical, meaning the Y is not continuous. And I got the slides as a PDF, so I'm scrolling through them. There's a book. This is mostly in chapter four, but also a small part in chapter 2, which is about k-nearest neighbors. So we'll talk about classification and a couple different methods for doing this. And we'll probably get to like here-ish today. And then, yeah, Ben will talk about linear discrimination and quadratic discrimination next time. So as I said, classification is now the y, the response variable, can be categorical, meaning discrete. It's not continuous anymore. It can either be binary or it can have several classes. It can have three or four, whatever, or however many classes we want. Typically, or in many cases, we're interested in the binary case because that's easier. And logistic regression is very nice to that. If not, we need to do this more complicated dummy variable coding, which you'll probably also talk about next time. So we assume, again, that we have good training data. We have samples, meaning we have both the covariates and whatever class they actually belong to. We have some ground truth data, so we know the number of classes that exist. And we then want to build some kind of function that can classify new data into these existing classes that we've learned based on some sort of training data that we have. And the way we want to do that is that we want to build probabilities of a new sample belonging to each of these different classes so this book comes with a bunch of different data sets This data set describes the probability of defaulting on a credit card or not being able to pay. And in this plot, we see two variables, income and balance, and we can see how the two classes in this data set sort of distribute across these two variables. So blue means you weren't able to pay, and whatever this red-orange thing means that you could pay. So just by i, we can see that balance seems to be very important because you can sort of draw a line here, and that would discriminate the more classified and pretty well, but income seems less important. So we should be able to see that in the numbers later when we try to fit something. Okay, so again, the general setup is that we have some observations. they can be both continuous or discrete or whatever else which is both these X's and these Y's here and those are categorical or discrete and again we want to build this classifier and we want to then assess how well this classifier performs and the most popular way of doing that is to test how well it performs on some test data meaning we see on how many of the new samples in the test data set is it getting correct and then we can measure that as a proportion. And then in many, I guess, medical sciences, we're also interested in balancing out the false positive versus false negative rate, but that's not something we want to talk about here. That's just if we really, really don't want to misdiagnose someone or don't want to falsely say that they don't have a disease, then we can sort of tune those thresholds, but I don't think the book talks much about that. so the three methods that we're going to talk about is logistic regression for the binary case meaning the response variable has two classes k nearest neighbors which can have any number of classes but it's unparametric, often a bit more difficult to interpret and we'll hopefully maybe get through those today and then linear and quadratic discriminant analysis next time these slides are a bit repetitive but first we can try to just apply linear regression as we've learned it naively and see what happens because that's kind of fun and maybe it works so just let assume that our response variable now instead of being continuous has a dummy encoding It discrete so it zero if whatever variable we have is no meaning maybe you didn't pay the loan or whatever, if that's still the example we're working with, and one if, yes, you did pay the credit card loan or whatever. Then we can fit a linear regression, and we can get a number out for every sample, every sample, meaning every pile of x's, depending on how many covariates we have. Then we get a number out. Hopefully that number is between 0 and 1, but there's nothing in the linear regression enforcing that. But if we train it properly or fit it properly, then in most cases it should be. Then we can try to just add a threshold, maybe 0.5 here in the binary case would be natural, and then say if the linear regression gives us a number above 0.5, then yes, we predict that you did pay the loan. And if not, then you didn't. But what might happen if we do that is that if we have many, many cases where in here maybe you didn't default or you didn't pay, if we have many, many more cases, then the linear regression line that we fit will try to fit those samples and it might not even ever pass the 0.5 threshold, meaning that regardless of whatever new data we get in here, will predict that, will predict no, will predict zero. Unless, of course, we have a new test sample that has a balance that's like way to the right here, maybe like 4,000 or something. Then if we start extending this line, then maybe we can get past this point from a threshold. But that's a problem, both practically and also just, yeah, it's not super nice that it's not bounded between zero and one, as probability should be. So what we want to try instead is we want to try to fit a line that looks something more like this. Line, curve. And that's, of course, bounded between 0 and 1. And then the idea being that we can tune both how sharply it switches, and we can shift it back and forth. So those are sort of the parameters we're working with here, at least when we have only a single X, a single covariate or input variable. And we'll often work with those examples because they're easier to plot and visualize. If not, we need to have three-dimensional plots here or four-dimensional plots, and that's annoying. So of course we could also have an outcome variable with more than two states that not binary maybe different types of diseases or bad things that can happen to you then linear regression certainly doesn't really work because we can of course because we can assign a number to each of these different conditions but that like imposes an artificial ordering on the things it's not like if you have two times the amount of stroke you suddenly get a drug overdose. So, yeah, the ordering here is very artificial. So we need to stick to these binary dummy variables. Yeah, and we could, of course, do that by assigning then a dummy variable to each of them. But then we have an extra degree of freedoms and we need to remove one. I think Ben talked about that last time. But still. And then we get into multi-class logistic regression, which we're not going to talk about. Mostly because discriminant analysis and K-nearest neighbors can deal with this case. as well. Okay. So, naively linear regression probably isn't great. We need to do something, even though it can work under certain conditions, but it's not, again, so satisfying that it's not bounded between 0 and 1. It's a bit unsettling. So, we're going to start talking about logistic regression. The idea here being that we want to have a model or assume some distribution over the y-variables here, the outcome binary variables, and then the natural choice is, of course, a Bernoulli distribution, where we have some probability of it being 1, and 1 minus that probability of it being 0. And again, as for linear regression, we can have however many x's we want, and they can be linear or continuous or discrete or whatever. and then we want to estimate this probability here the probability of y being in now class 1 which is then like chosen as the reference class we could have just as well chosen y equals 0 to be the reference class and just remember that later when we get when we get the coefficients out okay so then we need some kind of nice way to link our covariates to this probability here to this pi and yeah the way we do that is we still make this linear this linear term here that we did in the normal linear regression but instead of using that directly we put it into some kind of linked function, which if you've had the GeoLine calls, you know what that means. If not, it's just some other function of this linear term that can change how our model works. And for the logistic regression case, that looks like this, this linked function. And that will naturally then bound the probabilities between zero and one and make that pay nicely. And yeah, as a comment, this, we still call it a linear model in the, you know, generalized linear models, because this term here that actually includes all the parameters we fit, that is still linear, even though this is not, which is why I still call it a linear model. Okay, so we can rearrange that equation, and yeah, we can solve for p, and then, yeah, we have the expression. So yeah, we get p, which is very nice. And again, it lies between 0 and 1 and it forms this s-shaped curve that we saw before all the way up here. So that should be able to solve these problems here. Okay and yeah R can do it very easily or Python can do it very easily which I'm more used to. So yeah so then we can get these numbers out we can get an intercept also as in linear regression And we can get this coefficient, this beta. Of course, now this beta is a bit more tricky to interpret, which we'll get into, compared to linear regression, because it's being processed through this link function. But we'll get into that very soon. And we get the normal p-values, the normal standard arrows, and the set values, meaning how many standard deviations were away from whatever the null would be. So we can plot this fitted line, and we can see that it fits kind of well, even though it maybe would have been nice to have a histogram here or something, just to see how well it actually fits. But we can see that this indeed fits the data. And the way we want to estimate these parameters in practice, these betas, is with normal maximum likelihood. So then, again, we take the likelihood of these betas here. and get these products. And we put in the assumed model here which is the Bernoulli distribution of our Ys And then we substitute in for our PIs here And then we can do the algebra and solve this thing if we want to And then we yeah, and then of course we're still working with log likelihoods instead of likelihoods, because that makes the products into sums, which is a lot nicer to deal with. so then we can get these estimates for our parameters beta but unfortunately they're a bit difficult to solve analytically in practice so that's often done with different algorithms like Newton's method or as you'll probably get to at the end of this course different neural networks we get some set of equations with again p plus 1 because we have an intercept we have the bias term. Yeah. And we solve those using, for example, Newton's method. Does that make sense? Good, good, good. Okay. So now let's see if we can try to interpret what these coefficients actually mean, because it's not like, you know, in the linear regression case, we had a parameter like in front of the X variable, meaning if we raise whatever X variable we have by one, then the output will change this much. That interpretation doesn't really hold anymore because we have this link function. But yeah, did you have a question? Is it the link function? Like mathematically it seems convenient because it just allows you to reach all values with p ranging from zero to one. But is there some... Is it just convenient and then it turns out it works? Or is there something like... I couldn't use other link functions while still restricting me to an interval of 0 to 1, for example? Yeah. Well, in general, there's a ton of different link functions, but there are two different distributions. So I believe that you can prove that this link function is optimal for the Bernoulli distribution, though I haven't looked too carefully into that. But I think there's a specific link function associated with the different distributions. Okay. Yeah. That's a quick Wikipedia as actually. That's probably outside the scope of this course. Yeah, because it's like, here we're talking about logistic regression, which is, yeah, one of many choices here. If you took the GLM course then you probably see many many many different subtleties of link functions And every time we use the logistic regression that the log of first Yeah, exactly. So where are you related to GLMZ? Okay. So to start to interpret these coefficients here, maybe we're not doing that immediately. First, we're just noticing that this p-value is super tiny. and that there is indeed an effect of balance on your ability to predict whether you default or not, as you remember from the plot earlier, that we can draw this vertical line and it splits the classes nicely. So first we're noticing that this is tiny. Now, I want to see if we can interpret this. And the way we eventually want to do that is we want to try to see what happens if we increase balance in this case, or x by 1, how much does the output change? How much does y change? And the way we want to do that is we want to define this thing we call odds. Yeah, which is, again, then the probability of one outcome happening divided by the probability of the other outcome. As, you know, odds is used in betting or horse races or whatever. That's typically, yeah. Yeah, there's some questions, but we didn't set up Dementi, so we'll skip those. But yeah, both point being they represent chances. So like there's a five and one chance that something happens. Then, you know, there's a five over six chance that this thing happens because it happens in five out of six cases. So that's like the notation there. And it's just a it's just a fraction. but the odds is fun because then we can have these multiplicative terms in the betas or this multiplicative model and then we can put in here what happens if we say the probability of y being in class 1 and probability of y being in class one on both denominator and denominator. But above, we have the probability of y being in class one if one of the x variables is x plus one and compared to just x And then we can write that out using all of these terms here And if you do that you see that almost all of them cancel out except for the one term associated with this plus one here So the point being that if we increase x by one or balance by one, then y should increase by the exponent of whatever beta we fit there. So by increasing the career rate by one unit, we change the odds for y to be in class 1 by a factor of the exponent of beta. So that's the what those numbers mean more qualitatively. So then here we can use those examples. What happens if we odds to default, the odds to not pay. If your income is increased by $10,000, then we can see that the, well, first of all, income is not really significant, so maybe we shouldn't look too carefully at that. But secondly, we can take this and we can multiply it by $10,000 and we can see that the probability doesn't really change that much at all. Instead, if the balance is increased by only $100, balance that's up here, if you multiply this by 100, then the probability changes a lot more. So that's, or the probability of the odds changes a lot more. So that's how you would interpret that. Good? Okay. Yeah, and we're doing this, again, because we wanted to build a model of the probability of Y of being in the different classes given the different Xs. So yeah, and again, to do that, we estimate these different betas here, and then we wanna use that to predict what would happen to a new sample that was not in the data that we fitted it on or tested it on or trained it on. Yeah. So then, yeah, again, we can use that to predict whether this new sample should belong to class one or not. Yeah. And we typically do that with this dummy variable encoding in the binary case, which, but then of course we need to choose the reference, but yeah, which is again, good to remember when we interpret these numbers, because if we chose the other one to be the reference, meaning we chose the reference, we would have to use the reference. because here I believe we chose one as the reference, meaning two default. So then if we increase this, then there's a higher chance two default. If we chose zero or not to default as the reference, then that would change, right? That's just how we assign these zeros and ones in the classes, what we name the classes, the labels we give them. Okay. so now we suddenly have the ability to try to predict whether someone would default on their pedicard uh loan thing um yeah so then if we know that we have a student um which can be added as a binary variable in this case with a balance of 2000 and an income of 40 000 then we can plug these into the um yeah into the reordered uh logistic link function um and get a number out R can also do this very easily or we can do it by hand because it's really not that complicated to write down by hand, writing it down in code and then so we get a number out and that's very nice and then if we decide that the threshold is 0.5 which is very natural then of course we would say that we believe that this student here would default okay, we have another dataset which is about heart disease in South Africa. Lots of very heartwarming data sets there. They're all so positive and nice. But okay. So we have 160 cases and 302 controls who did not have any kind of diseases. And then we have a bunch of information about each of these individuals, like if they had this coronary heart disease, their blood pressure, how much tobacco they've smoked, presumably. lipoprotein and cholesterol, family history of heart disease, which is a binary variable, and obesity and alcohol and then we want to see if we can predict this binary response variable from all these other variables here and of course R makes it super easy, it's just a couple of lines, though this is just some descriptions of the different samples here, so So when one of the samples here we see that he did have or presumably he did have autopsies age 52 this much out So just the descriptives um we can also look at the data a bit if we want to um so yeah so yeah tobacco versus whatever this is i don't remember that um shortening but but i guess the point with this is that first we look at the data and secondly there's not like super obvious lines we can draw through only a single variable to really predict this nicely because we've colored the different classes here so we probably need some combination of these variables to really disentangle those two classes guess that's because yeah you can try to draw lines here maybe here and that tells us something and maybe there's something here so you can imagine that if you do all those together in some high dimensional space that this will work out and we can separate the classes okay but yeah r uses one line to fit this which is very convenient um and then we get these numbers out can you see them properly should we zoom in more it became very tiny um gives us very nice significance stars we can see that age seems to be important family history seems to be important i don't remember what this stands for. I think it was blood cholesterol or something. Yeah. And tobacco, and of course the intercept is significant. And we can see that obesity, which is, yeah. Interestingly, all of these seems to increase the probability of heart disease, which is fun. That's maybe why they recorded those variables. Yeah. Okay. Then there's a couple of questions about this that are not in Menti, but we can look at them. uh yeah so for which predictors do we have evidence that's yeah we can almost just look at yeah both of course the p values and the like effect size the beta because if the beta is super duper tiny then it's maybe not so much point in considering it too much um but of course we also need to consider the units of these different variables because the units are not the same right so again if yeah if the units is in both ages and minutes then of course this variable here or this coefficient will be super tiny. If it's in years or decades, it will be larger. So that's also something to keep in mind when we interpret this. Yeah, and of course, the number of samples affects the p as you know So if we get enough samples we can always get it to be significant Almost always Yeah And how would you calculate the probability that someone will develop coronary heart disease? Well, we plop it into the function like we did before, just now with the betas that we have from R, or we can type predict in R or in Python. predict response, new data, and GLM heart. But for now, we've mostly focused on making this distribution of probability of Y given X's. We haven't really said too much about how we actually want to use this for classification, other than saying that 0.5 is probably a decent cutoff. But yeah, the base classifier tries to, or makes that precise, by saying that by assigning the observation to the most likely class given its predicted values, so it just takes the class that is most likely that this new sample will be in and assigns the new sample to that class, which is the natural thing to do. But yeah, now we've said explicitly that that is what we want to do. Yeah, so again, in the binary case, the cutoff would be 0.5. And the nice things about doing it this way is that first it has the smallest test error rate, because we typically have both test and training data sets. And the boundaries we get, meaning 0.5, is typically called the base decision boundary. And we can also calculate this base error rate, which is analogous to the irreducible error that you probably talked about in linear regression, meaning the best case performance. like if we have the ground truth probability distribution here not the fitted one then and we assign um and we take this ground truth probability and we then assign every sample to the class with the highest probability in it then we might still get some error just because of noise in the data or maybe because the variables recorded are irrelevant um so then this is the best case or the lowest amount of error we can possibly get with this data set. Again, directly analogous to irreducible error. But of course we don't really have this ground truth distribution. We estimate that based on this Bernoulli distribution and this model we assume for y Okay So we can have which is the independent, hopefully. Yeah, we assume they are. The independent observations, some x's and y's that we fit the model on. And we have some test data set, which is again other independent observations that we evaluate So typically when we have some data set, we take maybe 80, 30, no, 80, 70 percent and make that test training data, sorry, and take the remaining and make test data. And that's because it's important to test the model on data that it was not trained on so that we ensure that we don't overfit the model too much. Again, this bias variance tradeoff that you've heard about. in machine learning you might also sometimes also make a subset of the data a validation data set which is then used to find hyperparameters if you have a more complicated model of course that's not super relevant for logistic regression but good to know in general that if for example if you have fancy neural networks and you might want to know the number of layers or the number of nodes in each layer or the learning rate or whatever so then you have a validation data set where you try to find these first. Okay. And we have a last function, which is something that tells us how good the model is doing. So here is just the misclassification rate, meaning the number of samples we get correct in the test or training data set. So we can compute a training error, meaning the proportion of samples we get in this case wrong because that's how the indicator function is defined for some reason. So we have an indicator function that tells us if that gives us a 1 if the class is different from the true class if the predicted class is different from the true class, meaning the a hat being the predicted one, and it gives us 0 in other cases. But again, we're just counting. And when you do the exact same thing for the test dataset, really no difference here at all. And a good classifier is again the classifier that has a low error, low test error, because then we don't overfit. there is this vice variance trade-off. Okay. That was a very quick walkthrough of logistic regression. I think I'm talking faster than Ben or telling less stories. Do you have any questions before we move on? Yeah. Talk about how you do like interactions. Or is that the common part of it? No, you can definitely do interactions. Then, yeah, you have interaction times. If you have two variables, then you can also include their product. and it's really exactly the same as a linear regression as in you still want to if you have an interaction between x1 and x2 then you include x1 and x2 by themselves and you include x1 times x2 and all of those as predictor variables so just add that if you have an intuition about this might be important or if you again basically all of the same fitting tricks as for tricks for that you use for linear regression can be used here so that you can fit the variables in different blocks and you can try to figure out like the multi-collinearity or the collinearity issues here if you fit these variables first and these or if you change the ordering then maybe we can see that both x1 and x5 can get us can reduce the the test error by a lot but not together if you add them together it doesn't they don't do anything extra meaning they're probably very correlated. So all of these things you can do here as well. You can fit stuff in blocks and you can add interactions and you can do whatever. Okay. Was there another hand in that area? Okay. So yeah. Logistic regression is very similar to linear. It's just that we have this link function. Okay. But we can classify in a bunch of other ways as well. one of those is k nearest neighbors and again this is classification so we do have data where we have both x's and y's so it's not still supervised we do know how many classes we have so it's not it's not k-means k-means is clustering where we don't have a y in case there was any confusion about that so yeah so this is just a short basically an algorithm for how we want to assign new samples to one of these existing classes in the training data And it does that unparametrically meaning it doesn fit any kind of distributions Yeah, it just uses the base classifier. So we can simulate some data here, which is just two Gaussian clouds in 2D with different means, different means, but the same standard deviation. and they're not related in any way, as you can see in the diagonal set. So we then want to try to see if we can find some kind of rule that can separate out these two colors. And of course we can see by eye that if we wanted to make a line it should probably be hereish. So the k-nearest neighbors, it has one parameter, even though it's unparametric in the sense that that we don't fit anything. It's a hyperparameter we set. Yeah, called K, as you can probably guess. So given some new observation, we search for the K points in our training data, the training cloud here. And then we write down the K closest points, the K neighbors, and we call them neighbors. And this is typically done in Euclidean distance, but there's nothing stopping you from using any other notion of distance if you feel like it. Okay. So these points here, the k closest points, they make up the neighborhood of this new sample. And then we classify this new sample based on a majority vote in its neighborhood, meaning, yeah. In your neighborhood, what is the most common class? That's basically the question then. Yeah. x1 is classified to the most occurring class among its neighbors. So that's the very, very simple algorithm here. And of course, there's some dependency on the k we choose, which we can see here, that if we choose k to be 1, we just pick whatever closest sample we can find, and then we say that this new sample belongs here. And these new samples here, now we've imagined that we make a grid of new samples, so all of these dots here is a test sample and a new sample that we want to evaluate using this cloud of training samples the training dataset here So yeah so for this point the closest point would be on here so this gets assigned to the blue color Okay So now we can see that there's some hint of a line, but there's some islands of red in here and some islands of blue in here because of how noisy these two clouds are. But as you start to increase k, these islands start to disappear. And if k becomes super large, this line becomes super straight. And here k is 150, which is maybe quite large compared to the number of samples. How many samples do we have, does it say? 200 total, yeah. So we include almost the entire dataset. So every point here looks at almost the entire dataset to decide where it belongs, which is maybe too much. But, yeah. Okay. So when we choose K, it's still important to have this bias-rearings trade-off in mind here. because, yeah, so the way we can do that is we can do this cross-validated thing here where we look at how the test error decreases or changes when we increase K on a fixed set of training points. Yeah, remember here, the training data set is completely fixed. That's just this static cloud that we compare the new samples to. And then you see that the test error sort of saturates after K is 15, 20-ish. So maybe that's a reasonable value. Because if we start to increase k too much, like in the extreme case, if k includes the entire data set, then the classifier is kind of useless. Then it just picks the most likely, the class that has the most samples in the training data, right? So we probably want k to be not too different from the number of samples in a typical class. Right. Does that make sense? But of course, then there's like some assumptions in that there's a similar-ish number of samples in every class for this K to work properly. So that's maybe one weakness of this method. Yeah. And this can work quite well if we don't have too many predictors. If we start to have a lot of predictors, we are measuring these Euclidean distances. Euclidean distances that we measured to make the neighbors of the new sample. These then are measured in very high-dimensional spaces if we have many x and then they become very large So this doesn work too well if we have many many x many many covariates Then we could of course consider using different distances like cosine distances and it might work better. So that's, yeah, something you could play with that might be fun. But maybe the bigger issue with this is that it's a bit difficult to interpret what each covariate is doing, because we're just measuring Euclidean distances in this space of covariates. So we can't really assign a covariate, a coefficient, or say that this is important to classify this class or something like that. Then you need to do more work. Then you need to do some extra steps on top of this classification. Another comment is that it's probably also good here if the units of your different x's, your different covariates, is similar or the same. at least if you're doing euclidean distances because you can imagine if one of your units has a unit of minutes and another has a unit of years then your euclidean distances will be really funny so that's also another assumption in here but it's a very different way of classifying from the like super statistical logistic regression way of doing it okay yeah guess we can take a break then come back in 15-ish minutes. you you you you you you you you you you you you you you you you you you you you you you you you you you you you you you you you you you you you you you Okay. So we actually talked through most of the important stuff last time. Or last, yeah, before the break. So now there's only a very tiny bit left unless you don't have any important questions. If not, we can maybe, yeah. If we want to, we can look at some stuff in more detail. If not, yeah, we'll at least cover this last bit. Because, again, our goal in classification is to assign new samples to these different classes that we already have observed in the training data set. And there's kind of two ways of doing that. For now, we've only talked about the way we're trying to estimate this probability directly, as in, again, the probability of Y being in class K, given all the covariates and what we know about them. This, at least the book has called, the diagnostic paradigm in both logistic regression and the k-nearest neighbors classification, they do this. Another way of doing it would be to instead try to estimate the probabilities over the covariates or the x given the classes or the y Then yeah this is often called trying to yeah the generative model or generative models because we make assumptions and we make a model of what generated the data as in the Xs. And that's sometimes convenient if we want to make our statistical assumptions on the Xs instead of the Ys, or at least to a larger extent on the Xs. and the way we connect this back to this probability of y equals k given x is through base theory. So we of course need both this distribution over the x's and this prior distribution over the y's and we often estimate that as just the number of test samples in each class, in each group but of course yeah the prior distribution of y's um and then plopping those into bay's equation we have the uh yeah the um probabilities of the axis times the prior distribution divided by this god this selection tool doesn't really yeah divided by this normalizing factor as in yeah the partition function if you're from physics. And that also gives us then the probability of y equals k given some x's. So that's another way we can do things. And yeah, both linear and quadratic discriminant analysis is doing that, which we'll talk about with Ben next time. But yeah. So unless you have any super important questions or want to go through logistic regression more carefully, then I think those were the slides. No reactions. Okay. Well, let's stop early then. How do I turn this off?",
+  "duration": 3515.82625,
+  "segments": [
+    {
+      "chunk": 0,
+      "start": 0.0,
+      "end": 2.42,
+      "text": " So, maybe it's really dumb."
+    },
+    {
+      "chunk": 0,
+      "start": 3.02,
+      "end": 4.86,
+      "text": " Okay, Steam decided to cooperate."
+    },
+    {
+      "chunk": 0,
+      "start": 6.94,
+      "end": 10.4,
+      "text": " No, Steam decided to cooperate after crashing like five times."
+    },
+    {
+      "chunk": 0,
+      "start": 10.56,
+      "end": 11.22,
+      "text": " So, now it works."
+    },
+    {
+      "chunk": 0,
+      "start": 13.32,
+      "end": 14.66,
+      "text": " Okay, is everyone here?"
+    },
+    {
+      "chunk": 0,
+      "start": 15.5,
+      "end": 16.9,
+      "text": " Well, it's quarter past."
+    },
+    {
+      "chunk": 0,
+      "start": 17.82,
+      "end": 19.96,
+      "text": " Ben is in Oslo, as he probably said yesterday."
+    },
+    {
+      "chunk": 0,
+      "start": 20.12,
+      "end": 21.12,
+      "text": " So, I'm here instead."
+    },
+    {
+      "chunk": 0,
+      "start": 21.38,
+      "end": 24.4,
+      "text": " I'm a PhD student in his group working on neural data."
+    },
+    {
+      "chunk": 0,
+      "start": 24.58,
+      "end": 25.96,
+      "text": " So, you can ask him about that if you want to."
+    },
+    {
+      "chunk": 0,
+      "start": 26.86,
+      "end": 29.0,
+      "text": " I'll try to speak without the microphone."
+    },
+    {
+      "chunk": 0,
+      "start": 29.0,
+      "end": 32.52,
+      "text": " but tell me if it's too late, then I'll switch."
+    },
+    {
+      "chunk": 0,
+      "start": 34.66,
+      "end": 36.4,
+      "text": " We'll talk about classification today,"
+    },
+    {
+      "chunk": 0,
+      "start": 36.52,
+      "end": 39.84,
+      "text": " which is very similar to the linear regression stuff"
+    },
+    {
+      "chunk": 0,
+      "start": 39.84,
+      "end": 40.66,
+      "text": " you talked about yesterday,"
+    },
+    {
+      "chunk": 0,
+      "start": 40.9,
+      "end": 43.28,
+      "text": " other than, I guess, the main difference now"
+    },
+    {
+      "chunk": 0,
+      "start": 43.28,
+      "end": 45.46,
+      "text": " being that the response variable can be categorical,"
+    },
+    {
+      "chunk": 0,
+      "start": 45.58,
+      "end": 47.12,
+      "text": " meaning the Y is not continuous."
+    },
+    {
+      "chunk": 0,
+      "start": 49.26,
+      "end": 51.3,
+      "text": " And I got the slides as a PDF,"
+    },
+    {
+      "chunk": 0,
+      "start": 51.48,
+      "end": 52.48,
+      "text": " so I'm scrolling through them."
+    },
+    {
+      "chunk": 0,
+      "start": 55.42,
+      "end": 56.18,
+      "text": " There's a book."
+    },
+    {
+      "chunk": 0,
+      "start": 56.64,
+      "end": 57.94,
+      "text": " This is mostly in chapter four,"
+    },
+    {
+      "chunk": 0,
+      "start": 57.94,
+      "end": 62.18,
+      "text": " but also a small part in chapter 2, which is about k-nearest neighbors."
+    },
+    {
+      "chunk": 0,
+      "start": 63.92,
+      "end": 68.52,
+      "text": " So we'll talk about classification and a couple different methods for doing this."
+    },
+    {
+      "chunk": 0,
+      "start": 68.74,
+      "end": 71.42,
+      "text": " And we'll probably get to like here-ish today."
+    },
+    {
+      "chunk": 0,
+      "start": 71.92,
+      "end": 76.68,
+      "text": " And then, yeah, Ben will talk about linear discrimination and quadratic discrimination next time."
+    },
+    {
+      "chunk": 0,
+      "start": 80.28,
+      "end": 87.78,
+      "text": " So as I said, classification is now the y, the response variable, can be categorical, meaning discrete."
+    },
+    {
+      "chunk": 0,
+      "start": 87.78,
+      "end": 91.62,
+      "text": " It's not continuous anymore. It can either be binary or it can have several classes."
+    },
+    {
+      "chunk": 0,
+      "start": 92.2,
+      "end": 95.06,
+      "text": " It can have three or four, whatever, or however many classes we want."
+    },
+    {
+      "chunk": 0,
+      "start": 95.5,
+      "end": 99.88,
+      "text": " Typically, or in many cases, we're interested in the binary case because that's easier."
+    },
+    {
+      "chunk": 0,
+      "start": 100.16,
+      "end": 102.24,
+      "text": " And logistic regression is very nice to that."
+    },
+    {
+      "chunk": 0,
+      "start": 102.24,
+      "end": 109.14,
+      "text": " If not, we need to do this more complicated dummy variable coding, which you'll probably also talk about next time."
+    },
+    {
+      "chunk": 0,
+      "start": 111.84,
+      "end": 116.44,
+      "text": " So we assume, again, that we have good training data."
+    },
+    {
+      "chunk": 0,
+      "start": 116.44,
+      "end": 124.0,
+      "text": " We have samples, meaning we have both the covariates and whatever class they actually belong to."
+    },
+    {
+      "chunk": 0,
+      "start": 124.08,
+      "end": 127.14,
+      "text": " We have some ground truth data, so we know the number of classes that exist."
+    },
+    {
+      "chunk": 0,
+      "start": 129.54,
+      "end": 138.66,
+      "text": " And we then want to build some kind of function that can classify new data into these existing classes that we've learned based on some sort of training data that we have."
+    },
+    {
+      "chunk": 0,
+      "start": 139.66,
+      "end": 156.76,
+      "text": " And the way we want to do that is that we want to build probabilities of a new sample belonging to each of these different classes so this book comes with a bunch of different data sets This data set describes the probability of defaulting on a credit card"
+    },
+    {
+      "chunk": 0,
+      "start": 156.76,
+      "end": 158.04,
+      "text": " or not being able to pay."
+    },
+    {
+      "chunk": 0,
+      "start": 159.48,
+      "end": 166.18,
+      "text": " And in this plot, we see two variables, income and balance,"
+    },
+    {
+      "chunk": 0,
+      "start": 166.18,
+      "end": 168.78,
+      "text": " and we can see how the two classes in this data set"
+    },
+    {
+      "chunk": 0,
+      "start": 168.78,
+      "end": 170.64,
+      "text": " sort of distribute across these two variables."
+    },
+    {
+      "chunk": 0,
+      "start": 170.82,
+      "end": 172.84,
+      "text": " So blue means you weren't able to pay,"
+    },
+    {
+      "chunk": 0,
+      "start": 172.84,
+      "end": 175.7,
+      "text": " and whatever this red-orange thing means that you could pay."
+    },
+    {
+      "chunk": 0,
+      "start": 176.74,
+      "end": 180.06,
+      "text": " So just by i, we can see that balance seems to be very important"
+    },
+    {
+      "chunk": 0,
+      "start": 180.06,
+      "end": 182.72,
+      "text": " because you can sort of draw a line here,"
+    },
+    {
+      "chunk": 0,
+      "start": 183.28,
+      "end": 186.24,
+      "text": " and that would discriminate the more classified and pretty well,"
+    },
+    {
+      "chunk": 0,
+      "start": 186.56,
+      "end": 188.1,
+      "text": " but income seems less important."
+    },
+    {
+      "chunk": 0,
+      "start": 188.7,
+      "end": 191.58,
+      "text": " So we should be able to see that in the numbers later"
+    },
+    {
+      "chunk": 0,
+      "start": 191.58,
+      "end": 192.7,
+      "text": " when we try to fit something."
+    },
+    {
+      "chunk": 0,
+      "start": 195.3,
+      "end": 200.36,
+      "text": " Okay, so again, the general setup is that we have some observations."
+    },
+    {
+      "chunk": 0,
+      "start": 200.36,
+      "end": 203.8,
+      "text": " they can be both continuous or discrete or whatever else"
+    },
+    {
+      "chunk": 0,
+      "start": 203.8,
+      "end": 209.01999,
+      "text": " which is both these X's and these Y's here"
+    },
+    {
+      "chunk": 0,
+      "start": 209.01999,
+      "end": 211.9,
+      "text": " and those are categorical or discrete"
+    },
+    {
+      "chunk": 0,
+      "start": 211.9,
+      "end": 214.8,
+      "text": " and again we want to build this classifier"
+    },
+    {
+      "chunk": 0,
+      "start": 214.8,
+      "end": 220.9,
+      "text": " and we want to then assess how well this classifier performs and the most popular"
+    },
+    {
+      "chunk": 0,
+      "start": 220.9,
+      "end": 224.86,
+      "text": " way of doing that is to test how well it performs on some test data meaning we see"
+    },
+    {
+      "chunk": 0,
+      "start": 224.86,
+      "end": 229.22,
+      "text": " on how many of the new samples in the test data set is it getting correct"
+    },
+    {
+      "chunk": 0,
+      "start": 229.22,
+      "end": 232.12,
+      "text": " and then we can measure that as a proportion."
+    },
+    {
+      "chunk": 0,
+      "start": 232.32,
+      "end": 234.66,
+      "text": " And then in many, I guess, medical sciences,"
+    },
+    {
+      "chunk": 0,
+      "start": 234.78,
+      "end": 238.0,
+      "text": " we're also interested in balancing out the false positive"
+    },
+    {
+      "chunk": 0,
+      "start": 238.0,
+      "end": 239.08,
+      "text": " versus false negative rate,"
+    },
+    {
+      "chunk": 0,
+      "start": 239.14,
+      "end": 241.16,
+      "text": " but that's not something we want to talk about here."
+    },
+    {
+      "chunk": 0,
+      "start": 241.6,
+      "end": 246.04001,
+      "text": " That's just if we really, really don't want to misdiagnose someone"
+    },
+    {
+      "chunk": 0,
+      "start": 246.04001,
+      "end": 249.88,
+      "text": " or don't want to falsely say that they don't have a disease,"
+    },
+    {
+      "chunk": 0,
+      "start": 249.88,
+      "end": 252.78,
+      "text": " then we can sort of tune those thresholds,"
+    },
+    {
+      "chunk": 0,
+      "start": 252.86,
+      "end": 256.06,
+      "text": " but I don't think the book talks much about that."
+    },
+    {
+      "chunk": 0,
+      "start": 256.06,
+      "end": 260.7,
+      "text": " so the three methods that we're going to talk about"
+    },
+    {
+      "chunk": 0,
+      "start": 260.7,
+      "end": 263.16,
+      "text": " is logistic regression for the binary case"
+    },
+    {
+      "chunk": 0,
+      "start": 263.16,
+      "end": 265.72,
+      "text": " meaning the response variable has two classes"
+    },
+    {
+      "chunk": 0,
+      "start": 265.72,
+      "end": 269.41998,
+      "text": " k nearest neighbors which can have any number of classes"
+    },
+    {
+      "chunk": 0,
+      "start": 269.41998,
+      "end": 272.66,
+      "text": " but it's unparametric, often a bit more difficult to interpret"
+    },
+    {
+      "chunk": 0,
+      "start": 272.66,
+      "end": 276.53998,
+      "text": " and we'll hopefully maybe get through those today"
+    },
+    {
+      "chunk": 0,
+      "start": 276.53998,
+      "end": 280.3,
+      "text": " and then linear and quadratic discriminant analysis next time"
+    },
+    {
+      "chunk": 0,
+      "start": 280.3,
+      "end": 282.9,
+      "text": " these slides are a bit repetitive"
+    },
+    {
+      "chunk": 0,
+      "start": 282.9,
+      "end": 288.78,
+      "text": " but first we can try to just apply"
+    },
+    {
+      "chunk": 0,
+      "start": 288.78,
+      "end": 293.4,
+      "text": " linear regression as we've learned it naively and see what happens because that's kind of fun and maybe it works"
+    },
+    {
+      "chunk": 0,
+      "start": 293.4,
+      "end": 306.92,
+      "text": " so just let assume that our response variable now instead of being continuous has a dummy encoding It discrete so it zero if whatever variable we have is no"
+    },
+    {
+      "chunk": 0,
+      "start": 307.04,
+      "end": 311.32,
+      "text": " meaning maybe you didn't pay the loan or whatever, if that's still the example we're working with,"
+    },
+    {
+      "chunk": 0,
+      "start": 311.6,
+      "end": 314.7,
+      "text": " and one if, yes, you did pay the credit card loan or whatever."
+    },
+    {
+      "chunk": 0,
+      "start": 315.04,
+      "end": 320.0,
+      "text": " Then we can fit a linear regression, and we can get a number out for every sample,"
+    },
+    {
+      "chunk": 0,
+      "start": 320.0,
+      "end": 324.42,
+      "text": " every sample, meaning every pile of x's,"
+    },
+    {
+      "chunk": 0,
+      "start": 324.94,
+      "end": 327.82,
+      "text": " depending on how many covariates we have."
+    },
+    {
+      "chunk": 0,
+      "start": 328.08002,
+      "end": 329.08002,
+      "text": " Then we get a number out."
+    },
+    {
+      "chunk": 0,
+      "start": 329.18,
+      "end": 331.0,
+      "text": " Hopefully that number is between 0 and 1,"
+    },
+    {
+      "chunk": 0,
+      "start": 331.08002,
+      "end": 333.68,
+      "text": " but there's nothing in the linear regression enforcing that."
+    },
+    {
+      "chunk": 0,
+      "start": 334.02,
+      "end": 336.38,
+      "text": " But if we train it properly or fit it properly,"
+    },
+    {
+      "chunk": 0,
+      "start": 336.5,
+      "end": 338.16,
+      "text": " then in most cases it should be."
+    },
+    {
+      "chunk": 0,
+      "start": 338.98,
+      "end": 341.28,
+      "text": " Then we can try to just add a threshold,"
+    },
+    {
+      "chunk": 0,
+      "start": 341.46,
+      "end": 343.72,
+      "text": " maybe 0.5 here in the binary case would be natural,"
+    },
+    {
+      "chunk": 0,
+      "start": 343.9,
+      "end": 347.36,
+      "text": " and then say if the linear regression gives us a number above 0.5,"
+    },
+    {
+      "chunk": 0,
+      "start": 347.36,
+      "end": 351.06,
+      "text": " then yes, we predict that you did pay the loan."
+    },
+    {
+      "chunk": 0,
+      "start": 351.44,
+      "end": 352.82,
+      "text": " And if not, then you didn't."
+    },
+    {
+      "chunk": 0,
+      "start": 354.6,
+      "end": 356.34,
+      "text": " But what might happen if we do that"
+    },
+    {
+      "chunk": 0,
+      "start": 356.34,
+      "end": 358.91998,
+      "text": " is that if we have many, many cases"
+    },
+    {
+      "chunk": 0,
+      "start": 358.91998,
+      "end": 361.36,
+      "text": " where in here maybe you didn't default"
+    },
+    {
+      "chunk": 0,
+      "start": 361.36,
+      "end": 361.96,
+      "text": " or you didn't pay,"
+    },
+    {
+      "chunk": 0,
+      "start": 362.96,
+      "end": 365.1,
+      "text": " if we have many, many more cases,"
+    },
+    {
+      "chunk": 0,
+      "start": 365.24,
+      "end": 367.1,
+      "text": " then the linear regression line that we fit"
+    },
+    {
+      "chunk": 0,
+      "start": 367.1,
+      "end": 369.64,
+      "text": " will try to fit those samples"
+    },
+    {
+      "chunk": 0,
+      "start": 369.64,
+      "end": 372.76,
+      "text": " and it might not even ever pass the 0.5 threshold,"
+    },
+    {
+      "chunk": 0,
+      "start": 373.3,
+      "end": 377.34,
+      "text": " meaning that regardless of whatever new data we get in here,"
+    },
+    {
+      "chunk": 0,
+      "start": 377.36,
+      "end": 380.8,
+      "text": " will predict that, will predict no, will predict zero."
+    },
+    {
+      "chunk": 0,
+      "start": 381.16,
+      "end": 385.02,
+      "text": " Unless, of course, we have a new test sample"
+    },
+    {
+      "chunk": 0,
+      "start": 385.02,
+      "end": 387.86,
+      "text": " that has a balance that's like way to the right here,"
+    },
+    {
+      "chunk": 0,
+      "start": 387.88,
+      "end": 389.14,
+      "text": " maybe like 4,000 or something."
+    },
+    {
+      "chunk": 0,
+      "start": 389.38,
+      "end": 392.88,
+      "text": " Then if we start extending this line,"
+    },
+    {
+      "chunk": 0,
+      "start": 392.96,
+      "end": 394.54,
+      "text": " then maybe we can get past this point from a threshold."
+    },
+    {
+      "chunk": 0,
+      "start": 395.08002,
+      "end": 398.44,
+      "text": " But that's a problem, both practically and also just,"
+    },
+    {
+      "chunk": 0,
+      "start": 399.44,
+      "end": 402.0,
+      "text": " yeah, it's not super nice that it's not bounded"
+    },
+    {
+      "chunk": 0,
+      "start": 402.0,
+      "end": 404.4,
+      "text": " between zero and one, as probability should be."
+    },
+    {
+      "chunk": 0,
+      "start": 405.04,
+      "end": 406.84,
+      "text": " So what we want to try instead"
+    },
+    {
+      "chunk": 0,
+      "start": 406.84,
+      "end": 409.91998,
+      "text": " is we want to try to fit a line that looks something more like this."
+    },
+    {
+      "chunk": 0,
+      "start": 411.68,
+      "end": 412.64,
+      "text": " Line, curve."
+    },
+    {
+      "chunk": 0,
+      "start": 413.9,
+      "end": 416.06,
+      "text": " And that's, of course, bounded between 0 and 1."
+    },
+    {
+      "chunk": 0,
+      "start": 416.2,
+      "end": 420.54,
+      "text": " And then the idea being that we can tune both how sharply it switches,"
+    },
+    {
+      "chunk": 0,
+      "start": 420.98,
+      "end": 422.38,
+      "text": " and we can shift it back and forth."
+    },
+    {
+      "chunk": 0,
+      "start": 424.02002,
+      "end": 426.56,
+      "text": " So those are sort of the parameters we're working with here,"
+    },
+    {
+      "chunk": 0,
+      "start": 426.7,
+      "end": 432.0,
+      "text": " at least when we have only a single X, a single covariate or input variable."
+    },
+    {
+      "chunk": 0,
+      "start": 433.24,
+      "end": 435.16,
+      "text": " And we'll often work with those examples"
+    },
+    {
+      "chunk": 0,
+      "start": 435.16,
+      "end": 437.08002,
+      "text": " because they're easier to plot and visualize."
+    },
+    {
+      "chunk": 0,
+      "start": 438.78,
+      "end": 441.06,
+      "text": " If not, we need to have three-dimensional plots here"
+    },
+    {
+      "chunk": 0,
+      "start": 441.06,
+      "end": 442.44,
+      "text": " or four-dimensional plots, and that's annoying."
+    },
+    {
+      "chunk": 0,
+      "start": 444.6,
+      "end": 456.38,
+      "text": " So of course we could also have an outcome variable with more than two states that not binary maybe different types of diseases or bad things that can happen to you"
+    },
+    {
+      "chunk": 0,
+      "start": 456.38,
+      "end": 457.78,
+      "text": " then"
+    },
+    {
+      "chunk": 0,
+      "start": 457.78,
+      "end": 460.72,
+      "text": " linear regression certainly doesn't"
+    },
+    {
+      "chunk": 0,
+      "start": 460.72,
+      "end": 462.76,
+      "text": " really work because we can of course"
+    },
+    {
+      "chunk": 0,
+      "start": 462.76,
+      "end": 464.52,
+      "text": " because we can"
+    },
+    {
+      "chunk": 0,
+      "start": 464.52,
+      "end": 466.78,
+      "text": " assign a number to each"
+    },
+    {
+      "chunk": 0,
+      "start": 466.78,
+      "end": 468.82,
+      "text": " of these different conditions but that like imposes"
+    },
+    {
+      "chunk": 0,
+      "start": 468.82,
+      "end": 470.78,
+      "text": " an artificial ordering on the things"
+    },
+    {
+      "chunk": 0,
+      "start": 470.78,
+      "end": 471.92,
+      "text": " it's not like if you have"
+    },
+    {
+      "chunk": 0,
+      "start": 471.92,
+      "end": 474.36,
+      "text": " two times the amount of stroke"
+    },
+    {
+      "chunk": 0,
+      "start": 474.36,
+      "end": 476.46,
+      "text": " you suddenly get a drug overdose."
+    },
+    {
+      "chunk": 0,
+      "start": 477.22,
+      "end": 479.91998,
+      "text": " So, yeah, the ordering here is very artificial."
+    },
+    {
+      "chunk": 0,
+      "start": 480.22,
+      "end": 482.62,
+      "text": " So we need to stick to these binary dummy variables."
+    },
+    {
+      "chunk": 0,
+      "start": 484.82,
+      "end": 488.88,
+      "text": " Yeah, and we could, of course, do that by assigning then a dummy variable to each of them."
+    },
+    {
+      "chunk": 0,
+      "start": 488.96,
+      "end": 491.76,
+      "text": " But then we have an extra degree of freedoms and we need to remove one."
+    },
+    {
+      "chunk": 0,
+      "start": 491.86,
+      "end": 493.08002,
+      "text": " I think Ben talked about that last time."
+    },
+    {
+      "chunk": 0,
+      "start": 493.62,
+      "end": 494.06,
+      "text": " But still."
+    },
+    {
+      "chunk": 0,
+      "start": 494.74,
+      "end": 498.98,
+      "text": " And then we get into multi-class logistic regression, which we're not going to talk about."
+    },
+    {
+      "chunk": 0,
+      "start": 499.9,
+      "end": 504.16,
+      "text": " Mostly because discriminant analysis and K-nearest neighbors can deal with this case."
+    },
+    {
+      "chunk": 0,
+      "start": 504.36,
+      "end": 505.74,
+      "text": " as well."
+    },
+    {
+      "chunk": 0,
+      "start": 507.41998,
+      "end": 507.94,
+      "text": " Okay."
+    },
+    {
+      "chunk": 0,
+      "start": 508.48,
+      "end": 510.68,
+      "text": " So, naively linear regression probably isn't great."
+    },
+    {
+      "chunk": 0,
+      "start": 510.94,
+      "end": 512.98,
+      "text": " We need to do something,"
+    },
+    {
+      "chunk": 0,
+      "start": 513.8,
+      "end": 516.58,
+      "text": " even though it can work under certain conditions,"
+    },
+    {
+      "chunk": 0,
+      "start": 516.74,
+      "end": 520.54,
+      "text": " but it's not, again, so satisfying"
+    },
+    {
+      "chunk": 0,
+      "start": 520.54,
+      "end": 522.16003,
+      "text": " that it's not bounded between 0 and 1."
+    },
+    {
+      "chunk": 0,
+      "start": 522.58,
+      "end": 523.3,
+      "text": " It's a bit unsettling."
+    },
+    {
+      "chunk": 0,
+      "start": 525.14,
+      "end": 530.33997,
+      "text": " So, we're going to start talking about logistic regression."
+    },
+    {
+      "chunk": 0,
+      "start": 530.83997,
+      "end": 533.3,
+      "text": " The idea here being that we want to"
+    },
+    {
+      "chunk": 0,
+      "start": 533.3,
+      "end": 538.2,
+      "text": " have a model or assume some distribution over the y-variables here,"
+    },
+    {
+      "chunk": 0,
+      "start": 538.28,
+      "end": 542.58,
+      "text": " the outcome binary variables, and then the natural choice is, of course, a Bernoulli distribution,"
+    },
+    {
+      "chunk": 0,
+      "start": 543.1,
+      "end": 546.12,
+      "text": " where we have some probability of it being 1,"
+    },
+    {
+      "chunk": 0,
+      "start": 546.2,
+      "end": 548.06,
+      "text": " and 1 minus that probability of it being 0."
+    },
+    {
+      "chunk": 0,
+      "start": 550.0,
+      "end": 554.16003,
+      "text": " And again, as for linear regression, we can have however many x's we want,"
+    },
+    {
+      "chunk": 0,
+      "start": 554.16003,
+      "end": 558.7,
+      "text": " and they can be linear or continuous or discrete or whatever."
+    },
+    {
+      "chunk": 0,
+      "start": 558.7,
+      "end": 563.86,
+      "text": " and then we want to estimate this probability here"
+    },
+    {
+      "chunk": 0,
+      "start": 563.86,
+      "end": 567.33997,
+      "text": " the probability of y being in now class 1"
+    },
+    {
+      "chunk": 0,
+      "start": 567.33997,
+      "end": 569.2,
+      "text": " which is then like chosen as the reference class"
+    },
+    {
+      "chunk": 0,
+      "start": 569.2,
+      "end": 572.98,
+      "text": " we could have just as well chosen y equals 0 to be the reference class"
+    },
+    {
+      "chunk": 0,
+      "start": 572.98,
+      "end": 575.16003,
+      "text": " and just remember that later when we get"
+    },
+    {
+      "chunk": 0,
+      "start": 575.16003,
+      "end": 577.54,
+      "text": " when we get the coefficients out"
+    },
+    {
+      "chunk": 0,
+      "start": 577.54,
+      "end": 580.22,
+      "text": " okay"
+    },
+    {
+      "chunk": 0,
+      "start": 580.22,
+      "end": 584.46,
+      "text": " so then we need some kind of nice way"
+    },
+    {
+      "chunk": 0,
+      "start": 584.46,
+      "end": 587.52,
+      "text": " to link our covariates to this probability here"
+    },
+    {
+      "chunk": 0,
+      "start": 587.52,
+      "end": 588.16003,
+      "text": " to this pi"
+    },
+    {
+      "chunk": 0,
+      "start": 588.16003,
+      "end": 595.16003,
+      "text": " and yeah the way we do that is we still make this linear this linear term here that we did"
+    },
+    {
+      "chunk": 0,
+      "start": 595.16003,
+      "end": 599.82,
+      "text": " in the normal linear regression but instead of using that directly we put it into"
+    },
+    {
+      "chunk": 1,
+      "start": 600.0,
+      "end": 603.36,
+      "text": " some kind of linked function, which if you've had the GeoLine calls, you know what that means."
+    },
+    {
+      "chunk": 1,
+      "start": 603.6999998,
+      "end": 609.9,
+      "text": " If not, it's just some other function of this linear term that can change how our model works."
+    },
+    {
+      "chunk": 1,
+      "start": 609.9,
+      "end": 614.9,
+      "text": " And for the logistic regression case, that looks like this, this linked function."
+    },
+    {
+      "chunk": 1,
+      "start": 615.599999,
+      "end": 620.06,
+      "text": " And that will naturally then bound the probabilities between zero and one and make"
+    },
+    {
+      "chunk": 1,
+      "start": 620.06,
+      "end": 627.58,
+      "text": " that pay nicely. And yeah, as a comment, this, we still call it a linear model in the, you know,"
+    },
+    {
+      "chunk": 1,
+      "start": 627.58,
+      "end": 635.0,
+      "text": " generalized linear models, because this term here that actually includes all the parameters we fit,"
+    },
+    {
+      "chunk": 1,
+      "start": 635.0,
+      "end": 640.56,
+      "text": " that is still linear, even though this is not, which is why I still call it a linear model."
+    },
+    {
+      "chunk": 1,
+      "start": 641.76,
+      "end": 647.48,
+      "text": " Okay, so we can rearrange that equation, and yeah, we can solve for p, and then,"
+    },
+    {
+      "chunk": 1,
+      "start": 648.52,
+      "end": 655.3,
+      "text": " yeah, we have the expression. So yeah, we get p, which is very nice. And again, it lies between"
+    },
+    {
+      "chunk": 1,
+      "start": 655.3,
+      "end": 660.26,
+      "text": " 0 and 1 and it forms this s-shaped curve that we saw before all the way up here."
+    },
+    {
+      "chunk": 1,
+      "start": 662.899998,
+      "end": 665.299995,
+      "text": " So that should be able to solve these problems here."
+    },
+    {
+      "chunk": 1,
+      "start": 670.1,
+      "end": 675.7,
+      "text": " Okay and yeah R can do it very easily or Python can do it very easily which I'm more used to."
+    },
+    {
+      "chunk": 1,
+      "start": 677.46,
+      "end": 682.5,
+      "text": " So yeah so then we can get these numbers out we can get an intercept also as in linear regression"
+    },
+    {
+      "chunk": 1,
+      "start": 682.5,
+      "end": 685.9,
+      "text": " And we can get this coefficient, this beta."
+    },
+    {
+      "chunk": 1,
+      "start": 686.26,
+      "end": 688.7,
+      "text": " Of course, now this beta is a bit more tricky to interpret,"
+    },
+    {
+      "chunk": 1,
+      "start": 688.8199999999999,
+      "end": 690.94,
+      "text": " which we'll get into, compared to linear regression,"
+    },
+    {
+      "chunk": 1,
+      "start": 691.06,
+      "end": 695.72,
+      "text": " because it's being processed through this link function."
+    },
+    {
+      "chunk": 1,
+      "start": 696.52,
+      "end": 698.4,
+      "text": " But we'll get into that very soon."
+    },
+    {
+      "chunk": 1,
+      "start": 698.74,
+      "end": 701.84,
+      "text": " And we get the normal p-values, the normal standard arrows,"
+    },
+    {
+      "chunk": 1,
+      "start": 702.26,
+      "end": 705.14,
+      "text": " and the set values, meaning how many standard deviations"
+    },
+    {
+      "chunk": 1,
+      "start": 705.14,
+      "end": 707.2,
+      "text": " were away from whatever the null would be."
+    },
+    {
+      "chunk": 1,
+      "start": 709.14,
+      "end": 712.1,
+      "text": " So we can plot this fitted line, and we can see that it fits kind of well,"
+    },
+    {
+      "chunk": 1,
+      "start": 712.1,
+      "end": 714.92,
+      "text": " even though it maybe would have been nice to have a histogram here or something,"
+    },
+    {
+      "chunk": 1,
+      "start": 715.04,
+      "end": 719.0,
+      "text": " just to see how well it actually fits."
+    },
+    {
+      "chunk": 1,
+      "start": 720.14,
+      "end": 723.9,
+      "text": " But we can see that this indeed fits the data."
+    },
+    {
+      "chunk": 1,
+      "start": 726.08,
+      "end": 729.26,
+      "text": " And the way we want to estimate these parameters in practice,"
+    },
+    {
+      "chunk": 1,
+      "start": 729.38,
+      "end": 731.81999,
+      "text": " these betas, is with normal maximum likelihood."
+    },
+    {
+      "chunk": 1,
+      "start": 733.7,
+      "end": 738.92,
+      "text": " So then, again, we take the likelihood of these betas here."
+    },
+    {
+      "chunk": 1,
+      "start": 738.92,
+      "end": 743.24,
+      "text": " and get these products."
+    },
+    {
+      "chunk": 1,
+      "start": 743.24,
+      "end": 759.96,
+      "text": " And we put in the assumed model here which is the Bernoulli distribution of our Ys And then we substitute in for our PIs here And then we can do the algebra and solve this thing if we want to And then we"
+    },
+    {
+      "chunk": 1,
+      "start": 759.96,
+      "end": 763.48,
+      "text": " yeah, and then of course we're still working with log likelihoods instead of likelihoods,"
+    },
+    {
+      "chunk": 1,
+      "start": 763.48,
+      "end": 767.24,
+      "text": " because that makes the products into sums, which is a lot nicer to deal with."
+    },
+    {
+      "chunk": 1,
+      "start": 767.24,
+      "end": 772.44,
+      "text": " so then we can get these estimates"
+    },
+    {
+      "chunk": 1,
+      "start": 772.44,
+      "end": 774.3199999999999,
+      "text": " for our parameters beta"
+    },
+    {
+      "chunk": 1,
+      "start": 774.3199999999999,
+      "end": 779.72,
+      "text": " but unfortunately they're a bit difficult to solve"
+    },
+    {
+      "chunk": 1,
+      "start": 779.72,
+      "end": 784.52,
+      "text": " analytically in practice so that's often done with different algorithms"
+    },
+    {
+      "chunk": 1,
+      "start": 784.52,
+      "end": 788.7,
+      "text": " like Newton's method or as you'll probably get to at the end of this course"
+    },
+    {
+      "chunk": 1,
+      "start": 788.7,
+      "end": 789.6,
+      "text": " different neural networks"
+    },
+    {
+      "chunk": 1,
+      "start": 789.6,
+      "end": 796.66,
+      "text": " we get some set of equations with again p plus 1 because we have an intercept"
+    },
+    {
+      "chunk": 1,
+      "start": 796.66,
+      "end": 802.1800000000001,
+      "text": " we have the bias term. Yeah. And we solve those using, for example, Newton's method."
+    },
+    {
+      "chunk": 1,
+      "start": 804.02,
+      "end": 811.7,
+      "text": " Does that make sense? Good, good, good. Okay. So now let's see if we can try to interpret what"
+    },
+    {
+      "chunk": 1,
+      "start": 811.7,
+      "end": 816.0,
+      "text": " these coefficients actually mean, because it's not like, you know, in the linear regression case,"
+    },
+    {
+      "chunk": 1,
+      "start": 816.06,
+      "end": 824.7,
+      "text": " we had a parameter like in front of the X variable, meaning if we raise whatever X variable"
+    },
+    {
+      "chunk": 1,
+      "start": 824.7,
+      "end": 826.98001,
+      "text": " we have by one, then the output"
+    },
+    {
+      "chunk": 1,
+      "start": 826.98001,
+      "end": 828.84,
+      "text": " will change"
+    },
+    {
+      "chunk": 1,
+      "start": 828.84,
+      "end": 830.9599900000001,
+      "text": " this much. That interpretation"
+    },
+    {
+      "chunk": 1,
+      "start": 830.9599900000001,
+      "end": 832.8199999999999,
+      "text": " doesn't really hold anymore because we have this link"
+    },
+    {
+      "chunk": 1,
+      "start": 832.8199999999999,
+      "end": 834.4,
+      "text": " function. But yeah, did you have a question?"
+    },
+    {
+      "chunk": 1,
+      "start": 834.88,
+      "end": 836.51999,
+      "text": " Is it the link function?"
+    },
+    {
+      "chunk": 1,
+      "start": 837.14,
+      "end": 838.5400099999999,
+      "text": " Like mathematically it seems convenient"
+    },
+    {
+      "chunk": 1,
+      "start": 838.5400099999999,
+      "end": 840.76001,
+      "text": " because it just allows you to"
+    },
+    {
+      "chunk": 1,
+      "start": 840.76001,
+      "end": 842.36,
+      "text": " reach all values"
+    },
+    {
+      "chunk": 1,
+      "start": 842.36,
+      "end": 844.58,
+      "text": " with p ranging from zero to one."
+    },
+    {
+      "chunk": 1,
+      "start": 845.2,
+      "end": 846.44,
+      "text": " But is there some..."
+    },
+    {
+      "chunk": 1,
+      "start": 846.44,
+      "end": 848.64,
+      "text": " Is it just convenient and then it turns out it works?"
+    },
+    {
+      "chunk": 1,
+      "start": 848.88,
+      "end": 850.08,
+      "text": " Or is there something like..."
+    },
+    {
+      "chunk": 1,
+      "start": 850.08,
+      "end": 852.1800000000001,
+      "text": " I couldn't use other link functions"
+    },
+    {
+      "chunk": 1,
+      "start": 852.1800000000001,
+      "end": 853.84,
+      "text": " while still restricting me to"
+    },
+    {
+      "chunk": 1,
+      "start": 853.84,
+      "end": 855.9599900000001,
+      "text": " an interval of 0 to 1, for example?"
+    },
+    {
+      "chunk": 1,
+      "start": 856.3,
+      "end": 859.76,
+      "text": " Yeah. Well, in general, there's a ton of different link functions, but there are two"
+    },
+    {
+      "chunk": 1,
+      "start": 859.76,
+      "end": 864.1,
+      "text": " different distributions. So I believe that"
+    },
+    {
+      "chunk": 1,
+      "start": 864.1,
+      "end": 868.44,
+      "text": " you can prove that this link function is optimal for"
+    },
+    {
+      "chunk": 1,
+      "start": 868.44,
+      "end": 872.6,
+      "text": " the Bernoulli distribution, though I haven't looked too carefully into that."
+    },
+    {
+      "chunk": 1,
+      "start": 872.6800000000001,
+      "end": 876.41998,
+      "text": " But I think there's a specific link function associated with the different distributions."
+    },
+    {
+      "chunk": 1,
+      "start": 877.9799800000001,
+      "end": 880.76,
+      "text": " Okay. Yeah. That's a quick"
+    },
+    {
+      "chunk": 1,
+      "start": 880.76,
+      "end": 881.3399999999999,
+      "text": " Wikipedia as"
+    },
+    {
+      "chunk": 1,
+      "start": 881.3399999999999,
+      "end": 881.6,
+      "text": " actually."
+    },
+    {
+      "chunk": 1,
+      "start": 882.58002,
+      "end": 883.1800000000001,
+      "text": " That's probably"
+    },
+    {
+      "chunk": 1,
+      "start": 883.1800000000001,
+      "end": 883.78,
+      "text": " outside the"
+    },
+    {
+      "chunk": 1,
+      "start": 883.78,
+      "end": 884.0,
+      "text": " scope of"
+    },
+    {
+      "chunk": 1,
+      "start": 884.0,
+      "end": 884.3,
+      "text": " this course."
+    },
+    {
+      "chunk": 1,
+      "start": 885.08002,
+      "end": 885.94,
+      "text": " Yeah, because"
+    },
+    {
+      "chunk": 1,
+      "start": 885.94,
+      "end": 887.6600000000001,
+      "text": " it's like, here"
+    },
+    {
+      "chunk": 1,
+      "start": 887.6600000000001,
+      "end": 888.1600000000001,
+      "text": " we're talking"
+    },
+    {
+      "chunk": 1,
+      "start": 888.1600000000001,
+      "end": 888.72,
+      "text": " about logistic"
+    },
+    {
+      "chunk": 1,
+      "start": 888.72,
+      "end": 889.46002,
+      "text": " regression, which"
+    },
+    {
+      "chunk": 1,
+      "start": 889.46002,
+      "end": 890.91998,
+      "text": " is, yeah, one"
+    },
+    {
+      "chunk": 1,
+      "start": 890.91998,
+      "end": 891.41998,
+      "text": " of many"
+    },
+    {
+      "chunk": 1,
+      "start": 891.41998,
+      "end": 893.41998,
+      "text": " choices here."
+    },
+    {
+      "chunk": 1,
+      "start": 893.6,
+      "end": 894.28,
+      "text": " If you took"
+    },
+    {
+      "chunk": 1,
+      "start": 894.28,
+      "end": 905.0,
+      "text": " the GLM course then you probably see many many many different subtleties of link functions And every time we use the logistic regression that the log of first"
+    },
+    {
+      "chunk": 1,
+      "start": 905.12,
+      "end": 906.74,
+      "text": " Yeah, exactly."
+    },
+    {
+      "chunk": 1,
+      "start": 907.96,
+      "end": 909.04,
+      "text": " So where are you"
+    },
+    {
+      "chunk": 1,
+      "start": 909.04,
+      "end": 910.22,
+      "text": " related to GLMZ?"
+    },
+    {
+      "chunk": 1,
+      "start": 913.46,
+      "end": 913.98,
+      "text": " Okay."
+    },
+    {
+      "chunk": 1,
+      "start": 915.64,
+      "end": 917.02,
+      "text": " So to start to interpret"
+    },
+    {
+      "chunk": 1,
+      "start": 917.02,
+      "end": 918.06,
+      "text": " these coefficients here,"
+    },
+    {
+      "chunk": 1,
+      "start": 918.3199999999999,
+      "end": 920.76,
+      "text": " maybe we're not doing that immediately."
+    },
+    {
+      "chunk": 1,
+      "start": 921.14,
+      "end": 923.2,
+      "text": " First, we're just noticing that this p-value"
+    },
+    {
+      "chunk": 1,
+      "start": 923.2,
+      "end": 923.76,
+      "text": " is super tiny."
+    },
+    {
+      "chunk": 1,
+      "start": 923.76,
+      "end": 928.06,
+      "text": " and that there is indeed an effect of balance"
+    },
+    {
+      "chunk": 1,
+      "start": 928.06,
+      "end": 932.06,
+      "text": " on your ability to predict whether you default or not,"
+    },
+    {
+      "chunk": 1,
+      "start": 932.1,
+      "end": 933.62,
+      "text": " as you remember from the plot earlier,"
+    },
+    {
+      "chunk": 1,
+      "start": 933.74,
+      "end": 935.7,
+      "text": " that we can draw this vertical line"
+    },
+    {
+      "chunk": 1,
+      "start": 935.7,
+      "end": 937.64,
+      "text": " and it splits the classes nicely."
+    },
+    {
+      "chunk": 1,
+      "start": 940.1800000000001,
+      "end": 942.4,
+      "text": " So first we're noticing that this is tiny."
+    },
+    {
+      "chunk": 1,
+      "start": 945.04,
+      "end": 948.62,
+      "text": " Now, I want to see if we can interpret this."
+    },
+    {
+      "chunk": 1,
+      "start": 948.7,
+      "end": 950.12,
+      "text": " And the way we eventually want to do that"
+    },
+    {
+      "chunk": 1,
+      "start": 950.12,
+      "end": 951.8199999999999,
+      "text": " is we want to try to see what happens"
+    },
+    {
+      "chunk": 1,
+      "start": 951.8199999999999,
+      "end": 956.28,
+      "text": " if we increase balance in this case, or x by 1,"
+    },
+    {
+      "chunk": 1,
+      "start": 956.44,
+      "end": 958.28,
+      "text": " how much does the output change?"
+    },
+    {
+      "chunk": 1,
+      "start": 958.6800000000001,
+      "end": 959.4799800000001,
+      "text": " How much does y change?"
+    },
+    {
+      "chunk": 1,
+      "start": 961.08002,
+      "end": 964.4,
+      "text": " And the way we want to do that is we want to define this thing we call odds."
+    },
+    {
+      "chunk": 1,
+      "start": 967.54,
+      "end": 971.6600000000001,
+      "text": " Yeah, which is, again, then the probability of one outcome happening"
+    },
+    {
+      "chunk": 1,
+      "start": 971.6600000000001,
+      "end": 973.52,
+      "text": " divided by the probability of the other outcome."
+    },
+    {
+      "chunk": 1,
+      "start": 974.76,
+      "end": 978.62,
+      "text": " As, you know, odds is used in betting or horse races or whatever."
+    },
+    {
+      "chunk": 1,
+      "start": 978.62,
+      "end": 979.91998,
+      "text": " That's typically, yeah."
+    },
+    {
+      "chunk": 1,
+      "start": 981.8199999999999,
+      "end": 986.1600000000001,
+      "text": " Yeah, there's some questions, but we didn't set up Dementi, so we'll skip those."
+    },
+    {
+      "chunk": 1,
+      "start": 987.98,
+      "end": 990.6800000000001,
+      "text": " But yeah, both point being they represent chances."
+    },
+    {
+      "chunk": 1,
+      "start": 990.86,
+      "end": 993.44,
+      "text": " So like there's a five and one chance that something happens."
+    },
+    {
+      "chunk": 1,
+      "start": 993.58002,
+      "end": 999.6800000000001,
+      "text": " Then, you know, there's a five over six chance that this thing happens because it happens in five out of six cases."
+    },
+    {
+      "chunk": 1,
+      "start": 1000.22,
+      "end": 1002.04,
+      "text": " So that's like the notation there."
+    },
+    {
+      "chunk": 1,
+      "start": 1002.08002,
+      "end": 1003.64,
+      "text": " And it's just a it's just a fraction."
+    },
+    {
+      "chunk": 1,
+      "start": 1003.64,
+      "end": 1009.06,
+      "text": " but the odds is fun because"
+    },
+    {
+      "chunk": 1,
+      "start": 1009.06,
+      "end": 1013.2,
+      "text": " then we can have these multiplicative"
+    },
+    {
+      "chunk": 1,
+      "start": 1013.2,
+      "end": 1015.64,
+      "text": " terms in the betas"
+    },
+    {
+      "chunk": 1,
+      "start": 1015.64,
+      "end": 1018.64,
+      "text": " or this multiplicative model"
+    },
+    {
+      "chunk": 1,
+      "start": 1018.64,
+      "end": 1024.3,
+      "text": " and then we can"
+    },
+    {
+      "chunk": 1,
+      "start": 1024.3,
+      "end": 1029.2,
+      "text": " put in here what happens if we say the probability"
+    },
+    {
+      "chunk": 1,
+      "start": 1029.2,
+      "end": 1030.8,
+      "text": " of y being in class 1"
+    },
+    {
+      "chunk": 1,
+      "start": 1030.8,
+      "end": 1036.4199800000001,
+      "text": " and probability of y being in class one on both denominator and denominator."
+    },
+    {
+      "chunk": 1,
+      "start": 1036.68,
+      "end": 1043.5,
+      "text": " But above, we have the probability of y being in class one if one of the x variables is x plus one"
+    },
+    {
+      "chunk": 1,
+      "start": 1043.5,
+      "end": 1056.1,
+      "text": " and compared to just x And then we can write that out using all of these terms here And if you do that you see that almost all of them cancel out except for the one term associated with this plus one here"
+    },
+    {
+      "chunk": 1,
+      "start": 1057.68,
+      "end": 1067.5,
+      "text": " So the point being that if we increase x by one or balance by one, then y should increase by"
+    },
+    {
+      "chunk": 1,
+      "start": 1067.5,
+      "end": 1069.38,
+      "text": " the exponent of whatever"
+    },
+    {
+      "chunk": 1,
+      "start": 1069.38,
+      "end": 1072.38,
+      "text": " beta we fit there."
+    },
+    {
+      "chunk": 1,
+      "start": 1073.26,
+      "end": 1077.4199800000001,
+      "text": " So by increasing the career rate by one unit, we change the odds for y"
+    },
+    {
+      "chunk": 1,
+      "start": 1077.4199800000001,
+      "end": 1081.34,
+      "text": " to be in class 1 by a factor of the exponent of beta."
+    },
+    {
+      "chunk": 1,
+      "start": 1083.5800199999999,
+      "end": 1084.4199800000001,
+      "text": " So that's the"
+    },
+    {
+      "chunk": 1,
+      "start": 1084.4199800000001,
+      "end": 1087.68,
+      "text": " what those numbers mean more qualitatively."
+    },
+    {
+      "chunk": 1,
+      "start": 1091.4,
+      "end": 1093.28,
+      "text": " So then here we can"
+    },
+    {
+      "chunk": 1,
+      "start": 1093.28,
+      "end": 1096.04,
+      "text": " use those examples. What happens if we"
+    },
+    {
+      "chunk": 1,
+      "start": 1096.04,
+      "end": 1101.0800199999999,
+      "text": " odds to default, the odds to not pay."
+    },
+    {
+      "chunk": 1,
+      "start": 1101.34,
+      "end": 1104.5,
+      "text": " If your income is increased by $10,000,"
+    },
+    {
+      "chunk": 1,
+      "start": 1105.02,
+      "end": 1109.02,
+      "text": " then we can see that the, well, first of all, income is not really"
+    },
+    {
+      "chunk": 1,
+      "start": 1109.02,
+      "end": 1112.44,
+      "text": " significant, so maybe we shouldn't look too carefully at that. But secondly,"
+    },
+    {
+      "chunk": 1,
+      "start": 1112.96,
+      "end": 1117.02,
+      "text": " we can take this and we can multiply it by $10,000 and we can see that"
+    },
+    {
+      "chunk": 1,
+      "start": 1117.02,
+      "end": 1119.44,
+      "text": " the probability doesn't really change that much at all."
+    },
+    {
+      "chunk": 1,
+      "start": 1121.48,
+      "end": 1124.58,
+      "text": " Instead, if the balance is increased by only $100,"
+    },
+    {
+      "chunk": 1,
+      "start": 1124.58,
+      "end": 1129.3600000000001,
+      "text": " balance that's up here, if you multiply this by 100, then"
+    },
+    {
+      "chunk": 1,
+      "start": 1129.3600000000001,
+      "end": 1131.96,
+      "text": " the probability changes a lot more."
+    },
+    {
+      "chunk": 1,
+      "start": 1133.44,
+      "end": 1136.66003,
+      "text": " So that's, or the probability of the odds changes a lot more."
+    },
+    {
+      "chunk": 1,
+      "start": 1137.24,
+      "end": 1138.44,
+      "text": " So that's how you would interpret that."
+    },
+    {
+      "chunk": 1,
+      "start": 1141.08,
+      "end": 1141.6,
+      "text": " Good?"
+    },
+    {
+      "chunk": 1,
+      "start": 1143.96,
+      "end": 1144.44,
+      "text": " Okay."
+    },
+    {
+      "chunk": 1,
+      "start": 1146.24,
+      "end": 1149.3,
+      "text": " Yeah, and we're doing this, again, because we wanted to"
+    },
+    {
+      "chunk": 1,
+      "start": 1149.3,
+      "end": 1153.6,
+      "text": " build a model of the probability of Y of being in"
+    },
+    {
+      "chunk": 1,
+      "start": 1153.6,
+      "end": 1155.94,
+      "text": " the different classes given the different Xs."
+    },
+    {
+      "chunk": 1,
+      "start": 1155.94,
+      "end": 1158.56,
+      "text": " So yeah, and again, to do that,"
+    },
+    {
+      "chunk": 1,
+      "start": 1158.56,
+      "end": 1161.04,
+      "text": " we estimate these different betas here,"
+    },
+    {
+      "chunk": 1,
+      "start": 1161.04,
+      "end": 1166.04,
+      "text": " and then we wanna use that to predict"
+    },
+    {
+      "chunk": 1,
+      "start": 1166.3200000000002,
+      "end": 1167.6,
+      "text": " what would happen to a new sample"
+    },
+    {
+      "chunk": 1,
+      "start": 1167.6,
+      "end": 1170.1399999999999,
+      "text": " that was not in the data that we fitted it on"
+    },
+    {
+      "chunk": 1,
+      "start": 1170.1399999999999,
+      "end": 1172.0,
+      "text": " or tested it on or trained it on."
+    },
+    {
+      "chunk": 1,
+      "start": 1173.8,
+      "end": 1175.1399999999999,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 1,
+      "start": 1175.1399999999999,
+      "end": 1177.74,
+      "text": " So then, yeah, again, we can use that to predict"
+    },
+    {
+      "chunk": 1,
+      "start": 1177.74,
+      "end": 1181.04,
+      "text": " whether this new sample should belong to class one or not."
+    },
+    {
+      "chunk": 1,
+      "start": 1182.8,
+      "end": 1183.56,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 1,
+      "start": 1183.6,
+      "end": 1189.52,
+      "text": " And we typically do that with this dummy variable encoding in the binary case, which, but then"
+    },
+    {
+      "chunk": 1,
+      "start": 1189.52,
+      "end": 1195.06,
+      "text": " of course we need to choose the reference, but yeah, which is again, good to remember"
+    },
+    {
+      "chunk": 1,
+      "start": 1195.06,
+      "end": 1199.3200000000002,
+      "text": " when we interpret these numbers, because if we chose the other one to be the reference,"
+    },
+    {
+      "chunk": 1,
+      "start": 1199.42,
+      "end": 1199.8200000000002,
+      "text": " meaning we chose the reference, we would have to use the reference."
+    },
+    {
+      "chunk": 2,
+      "start": 1200.0,
+      "end": 1204.2,
+      "text": " because here I believe we chose one as the reference, meaning two default."
+    },
+    {
+      "chunk": 2,
+      "start": 1204.68,
+      "end": 1210.74,
+      "text": " So then if we increase this, then there's a higher chance two default."
+    },
+    {
+      "chunk": 2,
+      "start": 1210.88,
+      "end": 1216.86,
+      "text": " If we chose zero or not to default as the reference, then that would change, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1218.72,
+      "end": 1221.78,
+      "text": " That's just how we assign these zeros and ones in the classes,"
+    },
+    {
+      "chunk": 2,
+      "start": 1221.92,
+      "end": 1223.9,
+      "text": " what we name the classes, the labels we give them."
+    },
+    {
+      "chunk": 2,
+      "start": 1225.66,
+      "end": 1226.14,
+      "text": " Okay."
+    },
+    {
+      "chunk": 2,
+      "start": 1226.14,
+      "end": 1232.68,
+      "text": " so now we suddenly have the ability to try to predict whether someone would default on their"
+    },
+    {
+      "chunk": 2,
+      "start": 1232.68,
+      "end": 1241.22,
+      "text": " pedicard uh loan thing um yeah so then if we know that we have a student um which can be added as a"
+    },
+    {
+      "chunk": 2,
+      "start": 1241.22,
+      "end": 1246.56,
+      "text": " binary variable in this case with a balance of 2000 and an income of 40 000 then we can plug these"
+    },
+    {
+      "chunk": 2,
+      "start": 1246.56,
+      "end": 1254.68,
+      "text": " into the um yeah into the reordered uh logistic link function um and get a number out"
+    },
+    {
+      "chunk": 2,
+      "start": 1254.68,
+      "end": 1257.96,
+      "text": " R can also do this very easily"
+    },
+    {
+      "chunk": 2,
+      "start": 1257.96,
+      "end": 1259.96,
+      "text": " or we can do it by hand because it's really not that"
+    },
+    {
+      "chunk": 2,
+      "start": 1259.96,
+      "end": 1261.46,
+      "text": " complicated to write down"
+    },
+    {
+      "chunk": 2,
+      "start": 1261.46,
+      "end": 1263.92,
+      "text": " by hand, writing it"
+    },
+    {
+      "chunk": 2,
+      "start": 1263.92,
+      "end": 1264.56,
+      "text": " down in code"
+    },
+    {
+      "chunk": 2,
+      "start": 1264.56,
+      "end": 1266.88,
+      "text": " and then"
+    },
+    {
+      "chunk": 2,
+      "start": 1266.88,
+      "end": 1269.92,
+      "text": " so we get a number out and that's very nice"
+    },
+    {
+      "chunk": 2,
+      "start": 1269.92,
+      "end": 1271.76,
+      "text": " and then if we decide that"
+    },
+    {
+      "chunk": 2,
+      "start": 1271.76,
+      "end": 1274.02,
+      "text": " the threshold"
+    },
+    {
+      "chunk": 2,
+      "start": 1274.02,
+      "end": 1275.52,
+      "text": " is 0.5 which is very natural"
+    },
+    {
+      "chunk": 2,
+      "start": 1275.52,
+      "end": 1277.18,
+      "text": " then of course we would say that"
+    },
+    {
+      "chunk": 2,
+      "start": 1277.18,
+      "end": 1279.62,
+      "text": " we believe that this student here would default"
+    },
+    {
+      "chunk": 2,
+      "start": 1279.62,
+      "end": 1283.54,
+      "text": " okay, we have another dataset"
+    },
+    {
+      "chunk": 2,
+      "start": 1283.54,
+      "end": 1287.1,
+      "text": " which is about heart disease in South Africa."
+    },
+    {
+      "chunk": 2,
+      "start": 1288.18,
+      "end": 1291.26,
+      "text": " Lots of very heartwarming data sets there."
+    },
+    {
+      "chunk": 2,
+      "start": 1291.34,
+      "end": 1292.48,
+      "text": " They're all so positive and nice."
+    },
+    {
+      "chunk": 2,
+      "start": 1293.5,
+      "end": 1293.84,
+      "text": " But okay."
+    },
+    {
+      "chunk": 2,
+      "start": 1295.18,
+      "end": 1299.5,
+      "text": " So we have 160 cases and 302 controls"
+    },
+    {
+      "chunk": 2,
+      "start": 1299.5,
+      "end": 1301.36,
+      "text": " who did not have any kind of diseases."
+    },
+    {
+      "chunk": 2,
+      "start": 1301.82,
+      "end": 1303.26,
+      "text": " And then we have a bunch of information"
+    },
+    {
+      "chunk": 2,
+      "start": 1303.26,
+      "end": 1304.68,
+      "text": " about each of these individuals,"
+    },
+    {
+      "chunk": 2,
+      "start": 1304.68,
+      "end": 1308.5,
+      "text": " like if they had this coronary heart disease,"
+    },
+    {
+      "chunk": 2,
+      "start": 1308.94,
+      "end": 1310.14,
+      "text": " their blood pressure,"
+    },
+    {
+      "chunk": 2,
+      "start": 1310.34,
+      "end": 1312.78,
+      "text": " how much tobacco they've smoked, presumably."
+    },
+    {
+      "chunk": 2,
+      "start": 1313.54,
+      "end": 1317.36,
+      "text": " lipoprotein and cholesterol, family history of heart disease, which is a binary"
+    },
+    {
+      "chunk": 2,
+      "start": 1317.36,
+      "end": 1322.08,
+      "text": " variable, and obesity and alcohol"
+    },
+    {
+      "chunk": 2,
+      "start": 1322.08,
+      "end": 1326.12,
+      "text": " and then we want to see if we can"
+    },
+    {
+      "chunk": 2,
+      "start": 1326.12,
+      "end": 1329.56,
+      "text": " predict this binary response variable"
+    },
+    {
+      "chunk": 2,
+      "start": 1329.56,
+      "end": 1331.96,
+      "text": " from all these other variables here"
+    },
+    {
+      "chunk": 2,
+      "start": 1331.96,
+      "end": 1338.0,
+      "text": " and of course R makes it super easy, it's just a couple of lines, though this is just"
+    },
+    {
+      "chunk": 2,
+      "start": 1338.0,
+      "end": 1341.74,
+      "text": " some descriptions of the different samples here, so"
+    },
+    {
+      "chunk": 2,
+      "start": 1341.74,
+      "end": 1361.16,
+      "text": " So when one of the samples here we see that he did have or presumably he did have autopsies age 52 this much out So just the descriptives um we can also look at the data a bit if we want to um so yeah so yeah tobacco versus"
+    },
+    {
+      "chunk": 2,
+      "start": 1361.16,
+      "end": 1367.62,
+      "text": " whatever this is i don't remember that um shortening but but i guess the point with"
+    },
+    {
+      "chunk": 2,
+      "start": 1367.62,
+      "end": 1372.28,
+      "text": " this is that first we look at the data and secondly there's not like super obvious lines"
+    },
+    {
+      "chunk": 2,
+      "start": 1372.28,
+      "end": 1376.78,
+      "text": " we can draw through only a single variable to really predict this nicely because we've colored"
+    },
+    {
+      "chunk": 2,
+      "start": 1376.78,
+      "end": 1381.28,
+      "text": " the different classes here so we probably need some combination of these variables to really"
+    },
+    {
+      "chunk": 2,
+      "start": 1381.28,
+      "end": 1387.8600000000001,
+      "text": " disentangle those two classes guess that's because yeah you can try to draw lines here maybe here and"
+    },
+    {
+      "chunk": 2,
+      "start": 1387.8600000000001,
+      "end": 1391.62,
+      "text": " that tells us something and maybe there's something here so you can imagine that if you do all those"
+    },
+    {
+      "chunk": 2,
+      "start": 1391.62,
+      "end": 1396.08,
+      "text": " together in some high dimensional space that this will work out and we can separate the classes"
+    },
+    {
+      "chunk": 2,
+      "start": 1396.08,
+      "end": 1404.24,
+      "text": " okay but yeah r uses one line to fit this which is very convenient"
+    },
+    {
+      "chunk": 2,
+      "start": 1404.24,
+      "end": 1410.32,
+      "text": " um and then we get these numbers out can you see them properly should we zoom in more"
+    },
+    {
+      "chunk": 2,
+      "start": 1410.32,
+      "end": 1417.8,
+      "text": " it became very tiny um gives us very nice significance stars we can see that age seems"
+    },
+    {
+      "chunk": 2,
+      "start": 1417.8,
+      "end": 1422.38,
+      "text": " to be important family history seems to be important i don't remember what this stands"
+    },
+    {
+      "chunk": 2,
+      "start": 1422.38,
+      "end": 1424.51999,
+      "text": " for. I think it was blood cholesterol or something."
+    },
+    {
+      "chunk": 2,
+      "start": 1426.38,
+      "end": 1426.51999,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 2,
+      "start": 1426.7,
+      "end": 1428.28,
+      "text": " And tobacco, and of course the intercept is"
+    },
+    {
+      "chunk": 2,
+      "start": 1428.28,
+      "end": 1428.6399999999999,
+      "text": " significant."
+    },
+    {
+      "chunk": 2,
+      "start": 1430.32,
+      "end": 1432.48001,
+      "text": " And we can see that obesity,"
+    },
+    {
+      "chunk": 2,
+      "start": 1432.8,
+      "end": 1434.32,
+      "text": " which is, yeah. Interestingly,"
+    },
+    {
+      "chunk": 2,
+      "start": 1434.51999,
+      "end": 1436.18,
+      "text": " all of these seems to increase"
+    },
+    {
+      "chunk": 2,
+      "start": 1436.18,
+      "end": 1438.56,
+      "text": " the probability of heart disease,"
+    },
+    {
+      "chunk": 2,
+      "start": 1438.72,
+      "end": 1440.28,
+      "text": " which is fun. That's maybe"
+    },
+    {
+      "chunk": 2,
+      "start": 1440.28,
+      "end": 1441.73999,
+      "text": " why they recorded those variables."
+    },
+    {
+      "chunk": 2,
+      "start": 1442.51999,
+      "end": 1442.66,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 2,
+      "start": 1445.08,
+      "end": 1445.51999,
+      "text": " Okay."
+    },
+    {
+      "chunk": 2,
+      "start": 1446.38,
+      "end": 1447.58,
+      "text": " Then there's a couple of questions"
+    },
+    {
+      "chunk": 2,
+      "start": 1447.58,
+      "end": 1449.6,
+      "text": " about this that are not"
+    },
+    {
+      "chunk": 2,
+      "start": 1449.6,
+      "end": 1451.2,
+      "text": " in Menti, but we can look at them."
+    },
+    {
+      "chunk": 2,
+      "start": 1451.2,
+      "end": 1457.9,
+      "text": " uh yeah so for which predictors do we have evidence that's yeah we can almost just look at"
+    },
+    {
+      "chunk": 2,
+      "start": 1457.9,
+      "end": 1463.0800199999999,
+      "text": " yeah both of course the p values and the like effect size the beta because if the beta is super"
+    },
+    {
+      "chunk": 2,
+      "start": 1463.0800199999999,
+      "end": 1469.6,
+      "text": " duper tiny then it's maybe not so much point in considering it too much um but of course we also"
+    },
+    {
+      "chunk": 2,
+      "start": 1469.6,
+      "end": 1472.9199800000001,
+      "text": " need to consider the units of these different variables because the units are not the same"
+    },
+    {
+      "chunk": 2,
+      "start": 1472.9199800000001,
+      "end": 1480.68,
+      "text": " right so again if yeah if the units is in both ages and minutes then of course this variable here"
+    },
+    {
+      "chunk": 2,
+      "start": 1480.68,
+      "end": 1482.84,
+      "text": " or this coefficient will be super tiny."
+    },
+    {
+      "chunk": 2,
+      "start": 1483.12,
+      "end": 1485.16,
+      "text": " If it's in years or decades, it will be larger."
+    },
+    {
+      "chunk": 2,
+      "start": 1485.6399999999999,
+      "end": 1489.24,
+      "text": " So that's also something to keep in mind"
+    },
+    {
+      "chunk": 2,
+      "start": 1489.24,
+      "end": 1490.26,
+      "text": " when we interpret this."
+    },
+    {
+      "chunk": 2,
+      "start": 1492.3600000000001,
+      "end": 1493.6,
+      "text": " Yeah, and of course, the number of samples"
+    },
+    {
+      "chunk": 2,
+      "start": 1493.6,
+      "end": 1506.04,
+      "text": " affects the p as you know So if we get enough samples we can always get it to be significant Almost always Yeah And how would you calculate the probability that someone will develop"
+    },
+    {
+      "chunk": 2,
+      "start": 1506.04,
+      "end": 1510.52,
+      "text": " coronary heart disease? Well, we plop it into the function like we did before,"
+    },
+    {
+      "chunk": 2,
+      "start": 1510.52,
+      "end": 1518.2,
+      "text": " just now with the betas that we have from R, or we can type predict in R or in Python."
+    },
+    {
+      "chunk": 2,
+      "start": 1518.2,
+      "end": 1523.06,
+      "text": " predict"
+    },
+    {
+      "chunk": 2,
+      "start": 1523.06,
+      "end": 1526.6,
+      "text": " response, new data, and GLM heart."
+    },
+    {
+      "chunk": 2,
+      "start": 1528.6,
+      "end": 1531.8,
+      "text": " But for now, we've mostly focused on making this"
+    },
+    {
+      "chunk": 2,
+      "start": 1531.8,
+      "end": 1536.38,
+      "text": " distribution of probability of Y given X's. We haven't really"
+    },
+    {
+      "chunk": 2,
+      "start": 1536.38,
+      "end": 1540.4,
+      "text": " said too much about how we actually want to use this for classification, other than"
+    },
+    {
+      "chunk": 2,
+      "start": 1540.4,
+      "end": 1543.18,
+      "text": " saying that 0.5 is probably a decent cutoff."
+    },
+    {
+      "chunk": 2,
+      "start": 1544.8,
+      "end": 1548.02,
+      "text": " But yeah, the base classifier tries to, or makes that precise,"
+    },
+    {
+      "chunk": 2,
+      "start": 1548.02,
+      "end": 1552.46,
+      "text": " by saying that by assigning the observation"
+    },
+    {
+      "chunk": 2,
+      "start": 1552.46,
+      "end": 1555.38,
+      "text": " to the most likely class given its predicted values,"
+    },
+    {
+      "chunk": 2,
+      "start": 1555.54,
+      "end": 1559.68,
+      "text": " so it just takes the class that is most likely"
+    },
+    {
+      "chunk": 2,
+      "start": 1559.68,
+      "end": 1560.98,
+      "text": " that this new sample will be in"
+    },
+    {
+      "chunk": 2,
+      "start": 1560.98,
+      "end": 1562.7,
+      "text": " and assigns the new sample to that class,"
+    },
+    {
+      "chunk": 2,
+      "start": 1563.18,
+      "end": 1564.94,
+      "text": " which is the natural thing to do."
+    },
+    {
+      "chunk": 2,
+      "start": 1565.4199800000001,
+      "end": 1568.54,
+      "text": " But yeah, now we've said explicitly"
+    },
+    {
+      "chunk": 2,
+      "start": 1568.54,
+      "end": 1569.6399999999999,
+      "text": " that that is what we want to do."
+    },
+    {
+      "chunk": 2,
+      "start": 1571.32,
+      "end": 1573.66,
+      "text": " Yeah, so again, in the binary case,"
+    },
+    {
+      "chunk": 2,
+      "start": 1574.52,
+      "end": 1575.7,
+      "text": " the cutoff would be 0.5."
+    },
+    {
+      "chunk": 2,
+      "start": 1578.02,
+      "end": 1585.48,
+      "text": " And the nice things about doing it this way is that first it has the smallest test error rate, because we typically have both test and training data sets."
+    },
+    {
+      "chunk": 2,
+      "start": 1587.1399999999999,
+      "end": 1593.34,
+      "text": " And the boundaries we get, meaning 0.5, is typically called the base decision boundary."
+    },
+    {
+      "chunk": 2,
+      "start": 1593.9199800000001,
+      "end": 1604.32,
+      "text": " And we can also calculate this base error rate, which is analogous to the irreducible error that you probably talked about in linear regression, meaning the best case performance."
+    },
+    {
+      "chunk": 2,
+      "start": 1604.32,
+      "end": 1610.4199800000001,
+      "text": " like if we have the ground truth probability distribution here not the fitted one then and"
+    },
+    {
+      "chunk": 2,
+      "start": 1610.4199800000001,
+      "end": 1616.8600000000001,
+      "text": " we assign um and we take this ground truth probability and we then assign every sample"
+    },
+    {
+      "chunk": 2,
+      "start": 1616.8600000000001,
+      "end": 1622.04,
+      "text": " to the class with the highest probability in it then we might still get some error just because"
+    },
+    {
+      "chunk": 2,
+      "start": 1622.04,
+      "end": 1627.96002,
+      "text": " of noise in the data or maybe because the variables recorded are irrelevant um so then"
+    },
+    {
+      "chunk": 2,
+      "start": 1627.96002,
+      "end": 1630.4199800000001,
+      "text": " this is the best case"
+    },
+    {
+      "chunk": 2,
+      "start": 1630.4199800000001,
+      "end": 1632.32,
+      "text": " or the lowest amount of error"
+    },
+    {
+      "chunk": 2,
+      "start": 1632.32,
+      "end": 1634.47998,
+      "text": " we can possibly get with this data set."
+    },
+    {
+      "chunk": 2,
+      "start": 1635.6399999999999,
+      "end": 1636.2,
+      "text": " Again,"
+    },
+    {
+      "chunk": 2,
+      "start": 1636.53998,
+      "end": 1638.26,
+      "text": " directly analogous to"
+    },
+    {
+      "chunk": 2,
+      "start": 1638.26,
+      "end": 1639.3600000000001,
+      "text": " irreducible error."
+    },
+    {
+      "chunk": 2,
+      "start": 1641.6,
+      "end": 1642.52002,
+      "text": " But of course"
+    },
+    {
+      "chunk": 2,
+      "start": 1642.52002,
+      "end": 1644.38,
+      "text": " we don't really have this ground truth distribution."
+    },
+    {
+      "chunk": 2,
+      "start": 1644.53998,
+      "end": 1656.46,
+      "text": " We estimate that based on this Bernoulli distribution and this model we assume for y Okay So we can have"
+    },
+    {
+      "chunk": 2,
+      "start": 1656.46,
+      "end": 1660.5,
+      "text": " which is the independent, hopefully."
+    },
+    {
+      "chunk": 2,
+      "start": 1661.56,
+      "end": 1664.74,
+      "text": " Yeah, we assume they are. The independent observations,"
+    },
+    {
+      "chunk": 2,
+      "start": 1664.98,
+      "end": 1668.5,
+      "text": " some x's and y's that we fit the model on. And"
+    },
+    {
+      "chunk": 2,
+      "start": 1668.5,
+      "end": 1672.92,
+      "text": " we have some test data set, which is again other independent observations that we evaluate"
+    },
+    {
+      "chunk": 2,
+      "start": 1672.92,
+      "end": 1683.12,
+      "text": " So typically when we have some data set, we take maybe 80, 30, no, 80, 70 percent and make that test training data, sorry, and take the remaining and make test data."
+    },
+    {
+      "chunk": 2,
+      "start": 1684.66,
+      "end": 1694.5,
+      "text": " And that's because it's important to test the model on data that it was not trained on so that we ensure that we don't overfit the model too much."
+    },
+    {
+      "chunk": 2,
+      "start": 1694.98,
+      "end": 1698.66,
+      "text": " Again, this bias variance tradeoff that you've heard about."
+    },
+    {
+      "chunk": 2,
+      "start": 1698.66,
+      "end": 1701.02,
+      "text": " in machine learning you might also"
+    },
+    {
+      "chunk": 2,
+      "start": 1701.02,
+      "end": 1703.1399999999999,
+      "text": " sometimes also make a"
+    },
+    {
+      "chunk": 2,
+      "start": 1703.1399999999999,
+      "end": 1705.52,
+      "text": " subset of the data a validation data set"
+    },
+    {
+      "chunk": 2,
+      "start": 1705.52,
+      "end": 1707.2,
+      "text": " which is then used to"
+    },
+    {
+      "chunk": 2,
+      "start": 1707.2,
+      "end": 1709.34,
+      "text": " find hyperparameters"
+    },
+    {
+      "chunk": 2,
+      "start": 1709.34,
+      "end": 1710.0,
+      "text": " if you"
+    },
+    {
+      "chunk": 2,
+      "start": 1710.0,
+      "end": 1713.54,
+      "text": " have a more complicated model of course that's not"
+    },
+    {
+      "chunk": 2,
+      "start": 1713.54,
+      "end": 1715.33997,
+      "text": " super relevant for logistic regression but"
+    },
+    {
+      "chunk": 2,
+      "start": 1715.33997,
+      "end": 1717.16003,
+      "text": " good to know in general that if"
+    },
+    {
+      "chunk": 2,
+      "start": 1717.16003,
+      "end": 1719.5,
+      "text": " for example if you have fancy neural networks"
+    },
+    {
+      "chunk": 2,
+      "start": 1719.5,
+      "end": 1721.5,
+      "text": " and you might want to know the number of"
+    },
+    {
+      "chunk": 2,
+      "start": 1721.5,
+      "end": 1723.42,
+      "text": " layers or the number of nodes in each layer"
+    },
+    {
+      "chunk": 2,
+      "start": 1723.42,
+      "end": 1725.48,
+      "text": " or the learning rate or whatever so then"
+    },
+    {
+      "chunk": 2,
+      "start": 1725.48,
+      "end": 1727.52,
+      "text": " you have a validation data set where you"
+    },
+    {
+      "chunk": 2,
+      "start": 1727.52,
+      "end": 1730.08,
+      "text": " try to find these first."
+    },
+    {
+      "chunk": 2,
+      "start": 1732.98,
+      "end": 1735.66003,
+      "text": " Okay. And we have a last function, which is"
+    },
+    {
+      "chunk": 2,
+      "start": 1735.66003,
+      "end": 1740.42,
+      "text": " something that tells us how good the model is doing. So here is just the misclassification rate,"
+    },
+    {
+      "chunk": 2,
+      "start": 1740.52,
+      "end": 1743.72,
+      "text": " meaning the number of"
+    },
+    {
+      "chunk": 2,
+      "start": 1743.72,
+      "end": 1747.56,
+      "text": " samples we get correct in the test or training data set."
+    },
+    {
+      "chunk": 2,
+      "start": 1749.42,
+      "end": 1751.8200000000002,
+      "text": " So we can compute a training error,"
+    },
+    {
+      "chunk": 2,
+      "start": 1752.6,
+      "end": 1755.78,
+      "text": " meaning the proportion of samples we get"
+    },
+    {
+      "chunk": 2,
+      "start": 1755.78,
+      "end": 1758.6,
+      "text": " in this case wrong"
+    },
+    {
+      "chunk": 2,
+      "start": 1758.6,
+      "end": 1763.3600000000001,
+      "text": " because that's how the indicator function is defined for some reason."
+    },
+    {
+      "chunk": 2,
+      "start": 1764.62,
+      "end": 1767.06,
+      "text": " So we have an indicator function that tells us if"
+    },
+    {
+      "chunk": 2,
+      "start": 1767.06,
+      "end": 1771.3200000000002,
+      "text": " that gives us a 1 if the class is different from the true class"
+    },
+    {
+      "chunk": 2,
+      "start": 1771.3200000000002,
+      "end": 1775.3200000000002,
+      "text": " if the predicted class is different from the true class, meaning the a hat being the"
+    },
+    {
+      "chunk": 2,
+      "start": 1775.3200000000002,
+      "end": 1778.38,
+      "text": " predicted one, and it gives us 0 in other cases."
+    },
+    {
+      "chunk": 2,
+      "start": 1779.62,
+      "end": 1781.6,
+      "text": " But again, we're just counting."
+    },
+    {
+      "chunk": 2,
+      "start": 1781.6,
+      "end": 1789.04,
+      "text": " And when you do the exact same thing for the test dataset, really no difference here at all."
+    },
+    {
+      "chunk": 2,
+      "start": 1789.04,
+      "end": 1799.8200000000002,
+      "text": " And a good classifier is again the classifier that has a low error, low test error, because then we don't overfit."
+    },
+    {
+      "chunk": 3,
+      "start": 1800.0,
+      "end": 1801.92,
+      "text": " there is this vice variance trade-off."
+    },
+    {
+      "chunk": 3,
+      "start": 1803.12,
+      "end": 1803.46,
+      "text": " Okay."
+    },
+    {
+      "chunk": 3,
+      "start": 1803.84,
+      "end": 1806.5,
+      "text": " That was a very quick walkthrough of logistic regression."
+    },
+    {
+      "chunk": 3,
+      "start": 1806.64,
+      "end": 1809.42,
+      "text": " I think I'm talking faster than Ben or telling less stories."
+    },
+    {
+      "chunk": 3,
+      "start": 1810.559999,
+      "end": 1814.48,
+      "text": " Do you have any questions before we move on?"
+    },
+    {
+      "chunk": 3,
+      "start": 1815.799999,
+      "end": 1815.92,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 3,
+      "start": 1816.16,
+      "end": 1818.56,
+      "text": " Talk about how you do like interactions."
+    },
+    {
+      "chunk": 3,
+      "start": 1819.26,
+      "end": 1820.56,
+      "text": " Or is that the common part of it?"
+    },
+    {
+      "chunk": 3,
+      "start": 1820.9,
+      "end": 1822.42,
+      "text": " No, you can definitely do interactions."
+    },
+    {
+      "chunk": 3,
+      "start": 1822.42,
+      "end": 1824.5,
+      "text": " Then, yeah, you have interaction times."
+    },
+    {
+      "chunk": 3,
+      "start": 1824.74,
+      "end": 1827.42,
+      "text": " If you have two variables, then you can also include their product."
+    },
+    {
+      "chunk": 3,
+      "start": 1827.42,
+      "end": 1830.7,
+      "text": " and it's really exactly the same as a linear regression"
+    },
+    {
+      "chunk": 3,
+      "start": 1830.7,
+      "end": 1832.48,
+      "text": " as in you still want to"
+    },
+    {
+      "chunk": 3,
+      "start": 1832.48,
+      "end": 1834.54,
+      "text": " if you have an interaction between x1"
+    },
+    {
+      "chunk": 3,
+      "start": 1834.54,
+      "end": 1836.6,
+      "text": " and x2 then you include x1 and x2"
+    },
+    {
+      "chunk": 3,
+      "start": 1836.6,
+      "end": 1838.54,
+      "text": " by themselves and you include"
+    },
+    {
+      "chunk": 3,
+      "start": 1838.54,
+      "end": 1840.46,
+      "text": " x1 times x2 and all of those as"
+    },
+    {
+      "chunk": 3,
+      "start": 1840.46,
+      "end": 1841.44,
+      "text": " predictor variables"
+    },
+    {
+      "chunk": 3,
+      "start": 1841.44,
+      "end": 1844.239998,
+      "text": " so just add that"
+    },
+    {
+      "chunk": 3,
+      "start": 1844.239998,
+      "end": 1846.5,
+      "text": " if you have an intuition about this might be"
+    },
+    {
+      "chunk": 3,
+      "start": 1846.5,
+      "end": 1846.82,
+      "text": " important"
+    },
+    {
+      "chunk": 3,
+      "start": 1846.82,
+      "end": 1848.64,
+      "text": " or if you again"
+    },
+    {
+      "chunk": 3,
+      "start": 1848.64,
+      "end": 1851.94,
+      "text": " basically all of the same"
+    },
+    {
+      "chunk": 3,
+      "start": 1851.94,
+      "end": 1853.899998,
+      "text": " fitting tricks as for"
+    },
+    {
+      "chunk": 3,
+      "start": 1853.899998,
+      "end": 1856.5,
+      "text": " tricks for"
+    },
+    {
+      "chunk": 3,
+      "start": 1856.5,
+      "end": 1860.78,
+      "text": " that you use for linear regression can be used here so that you can fit the variables in different"
+    },
+    {
+      "chunk": 3,
+      "start": 1860.78,
+      "end": 1865.9,
+      "text": " blocks and you can try to figure out like the multi-collinearity or the collinearity issues"
+    },
+    {
+      "chunk": 3,
+      "start": 1865.9,
+      "end": 1870.7,
+      "text": " here if you fit these variables first and these or if you change the ordering then maybe we can"
+    },
+    {
+      "chunk": 3,
+      "start": 1870.7,
+      "end": 1879.76,
+      "text": " see that both x1 and x5 can get us can reduce the the test error by a lot but not together"
+    },
+    {
+      "chunk": 3,
+      "start": 1879.76,
+      "end": 1885.38,
+      "text": " if you add them together it doesn't they don't do anything extra meaning they're probably very"
+    },
+    {
+      "chunk": 3,
+      "start": 1885.38,
+      "end": 1887.5,
+      "text": " correlated. So all of these things"
+    },
+    {
+      "chunk": 3,
+      "start": 1887.5,
+      "end": 1888.68,
+      "text": " you can do here as well."
+    },
+    {
+      "chunk": 3,
+      "start": 1889.74,
+      "end": 1891.399994,
+      "text": " You can fit stuff in blocks and you can"
+    },
+    {
+      "chunk": 3,
+      "start": 1891.399994,
+      "end": 1892.939995,
+      "text": " add interactions and you can do whatever."
+    },
+    {
+      "chunk": 3,
+      "start": 1894.71999,
+      "end": 1895.7,
+      "text": " Okay. Was there another"
+    },
+    {
+      "chunk": 3,
+      "start": 1895.7,
+      "end": 1898.6,
+      "text": " hand in that area?"
+    },
+    {
+      "chunk": 3,
+      "start": 1900.479996,
+      "end": 1900.88,
+      "text": " Okay."
+    },
+    {
+      "chunk": 3,
+      "start": 1902.82,
+      "end": 1903.53999,
+      "text": " So yeah."
+    },
+    {
+      "chunk": 3,
+      "start": 1903.7,
+      "end": 1905.619995,
+      "text": " Logistic regression is very similar"
+    },
+    {
+      "chunk": 3,
+      "start": 1905.619995,
+      "end": 1907.28,
+      "text": " to linear. It's just that we have this"
+    },
+    {
+      "chunk": 3,
+      "start": 1907.28,
+      "end": 1908.78,
+      "text": " link function."
+    },
+    {
+      "chunk": 3,
+      "start": 1910.32,
+      "end": 1911.42,
+      "text": " Okay. But we can classify"
+    },
+    {
+      "chunk": 3,
+      "start": 1911.42,
+      "end": 1912.53999,
+      "text": " in a bunch of other ways as well."
+    },
+    {
+      "chunk": 3,
+      "start": 1912.54,
+      "end": 1916.38,
+      "text": " one of those is k nearest neighbors"
+    },
+    {
+      "chunk": 3,
+      "start": 1916.38,
+      "end": 1917.36,
+      "text": " and again this is"
+    },
+    {
+      "chunk": 3,
+      "start": 1917.36,
+      "end": 1920.6,
+      "text": " classification so we do have data where we have"
+    },
+    {
+      "chunk": 3,
+      "start": 1920.6,
+      "end": 1922.54,
+      "text": " both x's"
+    },
+    {
+      "chunk": 3,
+      "start": 1922.54,
+      "end": 1923.72,
+      "text": " and y's so it's not"
+    },
+    {
+      "chunk": 3,
+      "start": 1923.72,
+      "end": 1926.62,
+      "text": " still supervised we do know how many classes we have"
+    },
+    {
+      "chunk": 3,
+      "start": 1926.62,
+      "end": 1927.82,
+      "text": " so it's not"
+    },
+    {
+      "chunk": 3,
+      "start": 1927.82,
+      "end": 1930.5,
+      "text": " it's not k-means"
+    },
+    {
+      "chunk": 3,
+      "start": 1930.5,
+      "end": 1931.9,
+      "text": " k-means is clustering"
+    },
+    {
+      "chunk": 3,
+      "start": 1931.9,
+      "end": 1934.0,
+      "text": " where we don't have a y"
+    },
+    {
+      "chunk": 3,
+      "start": 1934.0,
+      "end": 1936.48,
+      "text": " in case there was any confusion about that"
+    },
+    {
+      "chunk": 3,
+      "start": 1936.48,
+      "end": 1939.34,
+      "text": " so yeah"
+    },
+    {
+      "chunk": 3,
+      "start": 1939.34,
+      "end": 1941.2,
+      "text": " so this is just a short"
+    },
+    {
+      "chunk": 3,
+      "start": 1941.2,
+      "end": 1953.6399999999999,
+      "text": " basically an algorithm for how we want to assign new samples to one of these existing classes in the training data And it does that unparametrically meaning it doesn fit any kind of distributions"
+    },
+    {
+      "chunk": 3,
+      "start": 1955.44,
+      "end": 1959.96,
+      "text": " Yeah, it just uses the base classifier."
+    },
+    {
+      "chunk": 3,
+      "start": 1961.0,
+      "end": 1966.1,
+      "text": " So we can simulate some data here, which is just two Gaussian clouds in 2D"
+    },
+    {
+      "chunk": 3,
+      "start": 1966.1,
+      "end": 1972.08,
+      "text": " with different means, different means, but the same standard deviation."
+    },
+    {
+      "chunk": 3,
+      "start": 1972.08,
+      "end": 1975.2,
+      "text": " and they're not related in any way, as you can see in the diagonal set."
+    },
+    {
+      "chunk": 3,
+      "start": 1976.16,
+      "end": 1983.04001,
+      "text": " So we then want to try to see if we can find some kind of rule that can separate out these two colors."
+    },
+    {
+      "chunk": 3,
+      "start": 1984.48,
+      "end": 1988.24,
+      "text": " And of course we can see by eye that if we wanted to make a line it should probably be hereish."
+    },
+    {
+      "chunk": 3,
+      "start": 1991.04001,
+      "end": 1996.56,
+      "text": " So the k-nearest neighbors, it has one parameter, even though it's unparametric in the sense that"
+    },
+    {
+      "chunk": 3,
+      "start": 1996.56,
+      "end": 1998.8,
+      "text": " that we don't fit anything."
+    },
+    {
+      "chunk": 3,
+      "start": 1998.94,
+      "end": 2000.12,
+      "text": " It's a hyperparameter we set."
+    },
+    {
+      "chunk": 3,
+      "start": 2001.94,
+      "end": 2003.84,
+      "text": " Yeah, called K, as you can probably guess."
+    },
+    {
+      "chunk": 3,
+      "start": 2005.26,
+      "end": 2007.1399999999999,
+      "text": " So given some new observation,"
+    },
+    {
+      "chunk": 3,
+      "start": 2007.68,
+      "end": 2011.3600000000001,
+      "text": " we search for the K points in our training data,"
+    },
+    {
+      "chunk": 3,
+      "start": 2012.04001,
+      "end": 2013.32,
+      "text": " the training cloud here."
+    },
+    {
+      "chunk": 3,
+      "start": 2014.7,
+      "end": 2020.0,
+      "text": " And then we write down the K closest points,"
+    },
+    {
+      "chunk": 3,
+      "start": 2020.6,
+      "end": 2022.42,
+      "text": " the K neighbors, and we call them neighbors."
+    },
+    {
+      "chunk": 3,
+      "start": 2022.88,
+      "end": 2025.12,
+      "text": " And this is typically done in Euclidean distance,"
+    },
+    {
+      "chunk": 3,
+      "start": 2025.12,
+      "end": 2028.8600000000001,
+      "text": " but there's nothing stopping you from using any other notion of distance"
+    },
+    {
+      "chunk": 3,
+      "start": 2028.8600000000001,
+      "end": 2029.68,
+      "text": " if you feel like it."
+    },
+    {
+      "chunk": 3,
+      "start": 2032.4,
+      "end": 2032.92,
+      "text": " Okay."
+    },
+    {
+      "chunk": 3,
+      "start": 2033.18,
+      "end": 2035.68,
+      "text": " So these points here, the k closest points,"
+    },
+    {
+      "chunk": 3,
+      "start": 2036.1,
+      "end": 2038.2,
+      "text": " they make up the neighborhood of this new sample."
+    },
+    {
+      "chunk": 3,
+      "start": 2039.68,
+      "end": 2043.98001,
+      "text": " And then we classify this new sample based on a majority vote"
+    },
+    {
+      "chunk": 3,
+      "start": 2043.98001,
+      "end": 2046.5,
+      "text": " in its neighborhood, meaning, yeah."
+    },
+    {
+      "chunk": 3,
+      "start": 2047.18,
+      "end": 2050.82,
+      "text": " In your neighborhood, what is the most common class?"
+    },
+    {
+      "chunk": 3,
+      "start": 2051.34,
+      "end": 2052.78,
+      "text": " That's basically the question then."
+    },
+    {
+      "chunk": 3,
+      "start": 2053.38,
+      "end": 2053.8,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 3,
+      "start": 2053.8,
+      "end": 2057.38,
+      "text": " x1 is classified to the most occurring class among its neighbors."
+    },
+    {
+      "chunk": 3,
+      "start": 2058.04,
+      "end": 2060.18,
+      "text": " So that's the very, very simple algorithm here."
+    },
+    {
+      "chunk": 3,
+      "start": 2060.66,
+      "end": 2063.54,
+      "text": " And of course, there's some dependency on the k we choose,"
+    },
+    {
+      "chunk": 3,
+      "start": 2063.76,
+      "end": 2066.38,
+      "text": " which we can see here, that if we choose k to be 1,"
+    },
+    {
+      "chunk": 3,
+      "start": 2066.38,
+      "end": 2070.4,
+      "text": " we just pick whatever closest sample we can find,"
+    },
+    {
+      "chunk": 3,
+      "start": 2070.68,
+      "end": 2073.1,
+      "text": " and then we say that this new sample belongs here."
+    },
+    {
+      "chunk": 3,
+      "start": 2074.24,
+      "end": 2079.4,
+      "text": " And these new samples here, now we've imagined that we make a grid of new samples,"
+    },
+    {
+      "chunk": 3,
+      "start": 2079.4,
+      "end": 2087.4,
+      "text": " so all of these dots here is a test sample and a new sample that we want to evaluate using"
+    },
+    {
+      "chunk": 3,
+      "start": 2088.03998,
+      "end": 2105.02,
+      "text": " this cloud of training samples the training dataset here So yeah so for this point the closest point would be on here so this gets assigned to the blue color Okay So now we can"
+    },
+    {
+      "chunk": 3,
+      "start": 2105.02,
+      "end": 2106.7,
+      "text": " see that there's some"
+    },
+    {
+      "chunk": 3,
+      "start": 2106.7,
+      "end": 2109.06,
+      "text": " hint of a line, but there's some islands of red"
+    },
+    {
+      "chunk": 3,
+      "start": 2109.06,
+      "end": 2110.96,
+      "text": " in here and some islands of blue in here because of"
+    },
+    {
+      "chunk": 3,
+      "start": 2110.96,
+      "end": 2113.1,
+      "text": " how noisy these two clouds are."
+    },
+    {
+      "chunk": 3,
+      "start": 2113.32,
+      "end": 2114.8,
+      "text": " But as you start to increase k,"
+    },
+    {
+      "chunk": 3,
+      "start": 2115.24,
+      "end": 2116.84,
+      "text": " these islands start to"
+    },
+    {
+      "chunk": 3,
+      "start": 2116.84,
+      "end": 2117.24,
+      "text": " disappear."
+    },
+    {
+      "chunk": 3,
+      "start": 2118.82,
+      "end": 2121.18,
+      "text": " And if k becomes super large, this"
+    },
+    {
+      "chunk": 3,
+      "start": 2121.18,
+      "end": 2122.44,
+      "text": " line becomes super straight."
+    },
+    {
+      "chunk": 3,
+      "start": 2123.24,
+      "end": 2124.42,
+      "text": " And here k is"
+    },
+    {
+      "chunk": 3,
+      "start": 2124.42,
+      "end": 2128.8,
+      "text": " 150, which is maybe quite large compared to the number of samples. How many samples do we have,"
+    },
+    {
+      "chunk": 3,
+      "start": 2128.86,
+      "end": 2132.54,
+      "text": " does it say? 200 total, yeah. So we include almost the entire dataset."
+    },
+    {
+      "chunk": 3,
+      "start": 2133.38,
+      "end": 2136.2799999999997,
+      "text": " So every point here looks at almost the entire dataset"
+    },
+    {
+      "chunk": 3,
+      "start": 2136.2799999999997,
+      "end": 2139.86,
+      "text": " to decide where it belongs, which is maybe too much."
+    },
+    {
+      "chunk": 3,
+      "start": 2139.86,
+      "end": 2141.04,
+      "text": " But, yeah."
+    },
+    {
+      "chunk": 3,
+      "start": 2143.94,
+      "end": 2147.88,
+      "text": " Okay. So when we choose K, it's still important"
+    },
+    {
+      "chunk": 3,
+      "start": 2147.88,
+      "end": 2151.76,
+      "text": " to have this bias-rearings trade-off in mind here."
+    },
+    {
+      "chunk": 3,
+      "start": 2151.76,
+      "end": 2155.58002,
+      "text": " because, yeah, so the way we can do that"
+    },
+    {
+      "chunk": 3,
+      "start": 2155.58002,
+      "end": 2158.76,
+      "text": " is we can do this cross-validated thing here"
+    },
+    {
+      "chunk": 3,
+      "start": 2158.76,
+      "end": 2160.9,
+      "text": " where we look at how the test error decreases"
+    },
+    {
+      "chunk": 3,
+      "start": 2160.9,
+      "end": 2164.12,
+      "text": " or changes when we increase K"
+    },
+    {
+      "chunk": 3,
+      "start": 2164.12,
+      "end": 2166.94,
+      "text": " on a fixed set of training points."
+    },
+    {
+      "chunk": 3,
+      "start": 2167.84,
+      "end": 2168.41998,
+      "text": " Yeah, remember here,"
+    },
+    {
+      "chunk": 3,
+      "start": 2168.48,
+      "end": 2169.94,
+      "text": " the training data set is completely fixed."
+    },
+    {
+      "chunk": 3,
+      "start": 2170.02,
+      "end": 2171.41998,
+      "text": " That's just this static cloud"
+    },
+    {
+      "chunk": 3,
+      "start": 2171.41998,
+      "end": 2173.12,
+      "text": " that we compare the new samples to."
+    },
+    {
+      "chunk": 3,
+      "start": 2174.38,
+      "end": 2177.88,
+      "text": " And then you see that the test error"
+    },
+    {
+      "chunk": 3,
+      "start": 2177.88,
+      "end": 2181.56,
+      "text": " sort of saturates after K is 15, 20-ish."
+    },
+    {
+      "chunk": 3,
+      "start": 2181.76,
+      "end": 2183.4,
+      "text": " So maybe that's a reasonable value."
+    },
+    {
+      "chunk": 3,
+      "start": 2184.2200000000003,
+      "end": 2187.2799999999997,
+      "text": " Because if we start to increase k too much, like in the extreme case,"
+    },
+    {
+      "chunk": 3,
+      "start": 2187.34,
+      "end": 2190.6,
+      "text": " if k includes the entire data set, then the classifier is kind of useless."
+    },
+    {
+      "chunk": 3,
+      "start": 2191.18,
+      "end": 2193.18,
+      "text": " Then it just picks the most likely,"
+    },
+    {
+      "chunk": 3,
+      "start": 2193.58002,
+      "end": 2197.76,
+      "text": " the class that has the most samples in the training data, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2200.26,
+      "end": 2204.3,
+      "text": " So we probably want k to be not too different"
+    },
+    {
+      "chunk": 3,
+      "start": 2204.3,
+      "end": 2207.4,
+      "text": " from the number of samples in a typical class."
+    },
+    {
+      "chunk": 3,
+      "start": 2208.2200000000003,
+      "end": 2208.74,
+      "text": " Right."
+    },
+    {
+      "chunk": 3,
+      "start": 2209.54,
+      "end": 2210.62,
+      "text": " Does that make sense?"
+    },
+    {
+      "chunk": 3,
+      "start": 2211.76,
+      "end": 2219.96,
+      "text": " But of course, then there's like some assumptions in that there's a similar-ish number of samples in every class for this K to work properly."
+    },
+    {
+      "chunk": 3,
+      "start": 2220.64,
+      "end": 2223.47998,
+      "text": " So that's maybe one weakness of this method."
+    },
+    {
+      "chunk": 3,
+      "start": 2226.03998,
+      "end": 2226.56,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 3,
+      "start": 2226.94,
+      "end": 2230.6,
+      "text": " And this can work quite well if we don't have too many predictors."
+    },
+    {
+      "chunk": 3,
+      "start": 2230.6,
+      "end": 2235.0,
+      "text": " If we start to have a lot of predictors, we are measuring these Euclidean distances."
+    },
+    {
+      "chunk": 3,
+      "start": 2236.34,
+      "end": 2239.7799999999997,
+      "text": " Euclidean distances that we measured to make the neighbors of the new sample."
+    },
+    {
+      "chunk": 3,
+      "start": 2240.2799999999997,
+      "end": 2242.66,
+      "text": " These then are measured in very high-dimensional spaces"
+    },
+    {
+      "chunk": 3,
+      "start": 2242.66,
+      "end": 2255.86,
+      "text": " if we have many x and then they become very large So this doesn work too well if we have many many x many many covariates Then we could of course consider using different distances like cosine distances"
+    },
+    {
+      "chunk": 3,
+      "start": 2255.98,
+      "end": 2260.58,
+      "text": " and it might work better. So that's, yeah, something you could play with that might be fun."
+    },
+    {
+      "chunk": 3,
+      "start": 2261.82,
+      "end": 2267.36,
+      "text": " But maybe the bigger issue with this is that it's a bit difficult to interpret what each"
+    },
+    {
+      "chunk": 3,
+      "start": 2267.36,
+      "end": 2273.44,
+      "text": " covariate is doing, because we're just measuring Euclidean distances in this space of covariates."
+    },
+    {
+      "chunk": 3,
+      "start": 2273.44,
+      "end": 2280.74,
+      "text": " So we can't really assign a covariate, a coefficient, or say that this is important to classify this class or something like that."
+    },
+    {
+      "chunk": 3,
+      "start": 2280.82,
+      "end": 2282.14,
+      "text": " Then you need to do more work."
+    },
+    {
+      "chunk": 3,
+      "start": 2282.94,
+      "end": 2285.82,
+      "text": " Then you need to do some extra steps on top of this classification."
+    },
+    {
+      "chunk": 3,
+      "start": 2287.3,
+      "end": 2296.94,
+      "text": " Another comment is that it's probably also good here if the units of your different x's, your different covariates, is similar or the same."
+    },
+    {
+      "chunk": 3,
+      "start": 2296.94,
+      "end": 2299.2,
+      "text": " at least if you're doing euclidean distances"
+    },
+    {
+      "chunk": 3,
+      "start": 2299.2,
+      "end": 2301.12,
+      "text": " because you can imagine if one of your units"
+    },
+    {
+      "chunk": 3,
+      "start": 2301.12,
+      "end": 2303.16,
+      "text": " has a unit of minutes and another"
+    },
+    {
+      "chunk": 3,
+      "start": 2303.16,
+      "end": 2305.26,
+      "text": " has a unit of years then your euclidean"
+    },
+    {
+      "chunk": 3,
+      "start": 2305.26,
+      "end": 2306.7200000000003,
+      "text": " distances will be really funny"
+    },
+    {
+      "chunk": 3,
+      "start": 2306.7200000000003,
+      "end": 2308.48,
+      "text": " so"
+    },
+    {
+      "chunk": 3,
+      "start": 2308.48,
+      "end": 2311.12,
+      "text": " that's also another assumption"
+    },
+    {
+      "chunk": 3,
+      "start": 2311.12,
+      "end": 2313.2,
+      "text": " in here but it's a very different"
+    },
+    {
+      "chunk": 3,
+      "start": 2313.2,
+      "end": 2315.2799999999997,
+      "text": " way of classifying from the like super"
+    },
+    {
+      "chunk": 3,
+      "start": 2315.2799999999997,
+      "end": 2317.2799999999997,
+      "text": " statistical logistic regression"
+    },
+    {
+      "chunk": 3,
+      "start": 2317.2799999999997,
+      "end": 2318.06,
+      "text": " way of doing it"
+    },
+    {
+      "chunk": 3,
+      "start": 2318.06,
+      "end": 2320.44,
+      "text": " okay"
+    },
+    {
+      "chunk": 3,
+      "start": 2320.44,
+      "end": 2322.96,
+      "text": " yeah"
+    },
+    {
+      "chunk": 3,
+      "start": 2322.96,
+      "end": 2325.1,
+      "text": " guess we can take a break then"
+    },
+    {
+      "chunk": 3,
+      "start": 2325.1,
+      "end": 2326.92,
+      "text": " come back in 15-ish minutes."
+    },
+    {
+      "chunk": 3,
+      "start": 2355.1,
+      "end": 2355.7200000000003,
+      "text": " you"
+    },
+    {
+      "chunk": 3,
+      "start": 2385.1,
+      "end": 2385.7200000000003,
+      "text": " you"
+    },
+    {
+      "chunk": 4,
+      "start": 2400.0,
+      "end": 2400.62,
+      "text": " you"
+    },
+    {
+      "chunk": 4,
+      "start": 2430.0,
+      "end": 2430.62,
+      "text": " you"
+    },
+    {
+      "chunk": 4,
+      "start": 2460.0,
+      "end": 2460.62,
+      "text": " you"
+    },
+    {
+      "chunk": 4,
+      "start": 2490.0,
+      "end": 2490.62,
+      "text": " you"
+    },
+    {
+      "chunk": 4,
+      "start": 2520.0,
+      "end": 2520.62,
+      "text": " you"
+    },
+    {
+      "chunk": 4,
+      "start": 2550.0,
+      "end": 2545.62,
+      "text": " you you"
+    },
+    {
+      "chunk": 4,
+      "start": 2575.0,
+      "end": 2575.62,
+      "text": " you"
+    },
+    {
+      "chunk": 4,
+      "start": 2605.0,
+      "end": 2605.62,
+      "text": " you"
+    },
+    {
+      "chunk": 4,
+      "start": 2635.0,
+      "end": 2635.62,
+      "text": " you"
+    },
+    {
+      "chunk": 4,
+      "start": 2665.0,
+      "end": 2665.62,
+      "text": " you"
+    },
+    {
+      "chunk": 4,
+      "start": 2695.0,
+      "end": 2695.62,
+      "text": " you you"
+    },
+    {
+      "chunk": 4,
+      "start": 2725.0,
+      "end": 2725.62,
+      "text": " you"
+    },
+    {
+      "chunk": 4,
+      "start": 2755.0,
+      "end": 2755.62,
+      "text": " you"
+    },
+    {
+      "chunk": 4,
+      "start": 2785.0,
+      "end": 2785.62,
+      "text": " you"
+    },
+    {
+      "chunk": 4,
+      "start": 2815.0,
+      "end": 2815.62,
+      "text": " you"
+    },
+    {
+      "chunk": 4,
+      "start": 2845.0,
+      "end": 2845.62,
+      "text": " you you"
+    },
+    {
+      "chunk": 4,
+      "start": 2875.0,
+      "end": 2875.62,
+      "text": " you"
+    },
+    {
+      "chunk": 4,
+      "start": 2905.0,
+      "end": 2905.62,
+      "text": " you"
+    },
+    {
+      "chunk": 4,
+      "start": 2935.0,
+      "end": 2935.62,
+      "text": " you"
+    },
+    {
+      "chunk": 4,
+      "start": 2965.0,
+      "end": 2965.62,
+      "text": " you"
+    },
+    {
+      "chunk": 4,
+      "start": 2995.0,
+      "end": 2995.62,
+      "text": " you"
+    },
+    {
+      "chunk": 5,
+      "start": 3000.0,
+      "end": 3002.06,
+      "text": " you"
+    },
+    {
+      "chunk": 5,
+      "start": 3030.0,
+      "end": 3030.62,
+      "text": " you"
+    },
+    {
+      "chunk": 5,
+      "start": 3060.0,
+      "end": 3060.62,
+      "text": " you"
+    },
+    {
+      "chunk": 5,
+      "start": 3090.0,
+      "end": 3090.62,
+      "text": " you"
+    },
+    {
+      "chunk": 5,
+      "start": 3120.0,
+      "end": 3120.62,
+      "text": " you"
+    },
+    {
+      "chunk": 5,
+      "start": 3123.956566,
+      "end": 3124.57657,
+      "text": " you"
+    },
+    {
+      "chunk": 5,
+      "start": 3153.95657,
+      "end": 3156.01657,
+      "text": " you"
+    },
+    {
+      "chunk": 5,
+      "start": 3183.95657,
+      "end": 3186.01657,
+      "text": " you"
+    },
+    {
+      "chunk": 5,
+      "start": 3213.95657,
+      "end": 3214.57657,
+      "text": " you"
+    },
+    {
+      "chunk": 5,
+      "start": 3243.95657,
+      "end": 3244.57657,
+      "text": " you"
+    },
+    {
+      "chunk": 5,
+      "start": 3252.91313,
+      "end": 3253.53313,
+      "text": " you"
+    },
+    {
+      "chunk": 5,
+      "start": 3282.91315,
+      "end": 3283.53314,
+      "text": " you"
+    },
+    {
+      "chunk": 5,
+      "start": 3312.91315,
+      "end": 3316.99313,
+      "text": " Okay. So we actually talked through"
+    },
+    {
+      "chunk": 5,
+      "start": 3316.99313,
+      "end": 3320.57312,
+      "text": " most of the important stuff last time."
+    },
+    {
+      "chunk": 5,
+      "start": 3321.03314,
+      "end": 3325.0531300000002,
+      "text": " Or last, yeah, before the break. So now there's only a very tiny bit left"
+    },
+    {
+      "chunk": 5,
+      "start": 3325.0531300000002,
+      "end": 3327.57312,
+      "text": " unless you don't have any important questions."
+    },
+    {
+      "chunk": 5,
+      "start": 3329.91315,
+      "end": 3332.95312,
+      "text": " If not, we can maybe, yeah. If we want to,"
+    },
+    {
+      "chunk": 5,
+      "start": 3333.01312,
+      "end": 3337.03314,
+      "text": " we can look at some stuff in more detail. If not, yeah, we'll at least cover this"
+    },
+    {
+      "chunk": 5,
+      "start": 3337.03314,
+      "end": 3341.09314,
+      "text": " last bit. Because, again, our goal"
+    },
+    {
+      "chunk": 5,
+      "start": 3341.09314,
+      "end": 3345.07312,
+      "text": " in classification is to assign new samples"
+    },
+    {
+      "chunk": 5,
+      "start": 3345.07312,
+      "end": 3349.29312,
+      "text": " to these different classes that we already have observed in the training data set."
+    },
+    {
+      "chunk": 5,
+      "start": 3350.49313,
+      "end": 3353.07312,
+      "text": " And there's kind of two ways of doing that. For now, we've only"
+    },
+    {
+      "chunk": 5,
+      "start": 3353.07312,
+      "end": 3357.0531300000002,
+      "text": " talked about the way we're trying to estimate this probability directly,"
+    },
+    {
+      "chunk": 5,
+      "start": 3357.31314,
+      "end": 3361.31314,
+      "text": " as in, again, the probability of Y being in class K, given all the covariates"
+    },
+    {
+      "chunk": 5,
+      "start": 3361.31314,
+      "end": 3365.29312,
+      "text": " and what we know about them. This, at least"
+    },
+    {
+      "chunk": 5,
+      "start": 3365.29312,
+      "end": 3369.15314,
+      "text": " the book has called, the diagnostic paradigm in both logistic regression"
+    },
+    {
+      "chunk": 5,
+      "start": 3369.15314,
+      "end": 3374.73312,
+      "text": " and the k-nearest neighbors classification, they do this. Another way of doing it would be to"
+    },
+    {
+      "chunk": 5,
+      "start": 3374.73312,
+      "end": 3395.0897,
+      "text": " instead try to estimate the probabilities over the covariates or the x given the classes or the y Then yeah this is often called trying to yeah the generative model or generative models because we make assumptions and we make a model"
+    },
+    {
+      "chunk": 5,
+      "start": 3395.0897,
+      "end": 3397.9897,
+      "text": " of what generated the data as in the Xs."
+    },
+    {
+      "chunk": 5,
+      "start": 3399.4097,
+      "end": 3402.0097,
+      "text": " And that's sometimes convenient"
+    },
+    {
+      "chunk": 5,
+      "start": 3402.0097,
+      "end": 3404.0697,
+      "text": " if we want to make our statistical assumptions"
+    },
+    {
+      "chunk": 5,
+      "start": 3404.0697,
+      "end": 3406.6497,
+      "text": " on the Xs instead of the Ys,"
+    },
+    {
+      "chunk": 5,
+      "start": 3406.6497,
+      "end": 3409.0697,
+      "text": " or at least to a larger extent on the Xs."
+    },
+    {
+      "chunk": 5,
+      "start": 3409.0697,
+      "end": 3413.82968,
+      "text": " and the way we connect this back to"
+    },
+    {
+      "chunk": 5,
+      "start": 3413.82968,
+      "end": 3418.4097,
+      "text": " this probability of y equals k given x is through base"
+    },
+    {
+      "chunk": 5,
+      "start": 3418.4097,
+      "end": 3422.04968,
+      "text": " theory. So we of course"
+    },
+    {
+      "chunk": 5,
+      "start": 3422.04968,
+      "end": 3426.4297,
+      "text": " need both this distribution over the x's"
+    },
+    {
+      "chunk": 5,
+      "start": 3426.4297,
+      "end": 3430.3496999999998,
+      "text": " and this prior distribution over the y's"
+    },
+    {
+      "chunk": 5,
+      "start": 3430.3496999999998,
+      "end": 3434.4497,
+      "text": " and we often estimate that as just the number"
+    },
+    {
+      "chunk": 5,
+      "start": 3434.4497,
+      "end": 3438.0297,
+      "text": " of test samples in each class, in each group"
+    },
+    {
+      "chunk": 5,
+      "start": 3438.0297,
+      "end": 3447.5697,
+      "text": " but of course yeah the prior distribution of y's um and then plopping those into bay's equation we"
+    },
+    {
+      "chunk": 5,
+      "start": 3447.5697,
+      "end": 3455.60968,
+      "text": " have the uh yeah the um probabilities of the axis times the prior distribution divided by this"
+    },
+    {
+      "chunk": 5,
+      "start": 3455.60968,
+      "end": 3462.5697,
+      "text": " god this selection tool doesn't really yeah divided by this normalizing factor as in yeah"
+    },
+    {
+      "chunk": 5,
+      "start": 3462.5697,
+      "end": 3464.54968,
+      "text": " the partition function if you're from physics."
+    },
+    {
+      "chunk": 5,
+      "start": 3465.3097,
+      "end": 3468.8496999999998,
+      "text": " And that also gives us then the probability of y equals k"
+    },
+    {
+      "chunk": 5,
+      "start": 3468.8496999999998,
+      "end": 3469.7497,
+      "text": " given some x's."
+    },
+    {
+      "chunk": 5,
+      "start": 3470.9697,
+      "end": 3472.7497,
+      "text": " So that's another way we can do things."
+    },
+    {
+      "chunk": 5,
+      "start": 3473.16968,
+      "end": 3476.88968,
+      "text": " And yeah, both linear and quadratic discriminant analysis"
+    },
+    {
+      "chunk": 5,
+      "start": 3476.88968,
+      "end": 3479.9297,
+      "text": " is doing that, which we'll talk about with Ben next time."
+    },
+    {
+      "chunk": 5,
+      "start": 3482.04968,
+      "end": 3482.9297,
+      "text": " But yeah."
+    },
+    {
+      "chunk": 5,
+      "start": 3484.54968,
+      "end": 3487.88968,
+      "text": " So unless you have any super important questions"
+    },
+    {
+      "chunk": 5,
+      "start": 3487.88968,
+      "end": 3489.8097,
+      "text": " or want to go through logistic regression more carefully,"
+    },
+    {
+      "chunk": 5,
+      "start": 3489.8097,
+      "end": 3492.5897,
+      "text": " then I think those were the slides."
+    },
+    {
+      "chunk": 5,
+      "start": 3497.0097,
+      "end": 3498.1897,
+      "text": " No reactions."
+    },
+    {
+      "chunk": 5,
+      "start": 3500.4297,
+      "end": 3501.16968,
+      "text": " Okay."
+    },
+    {
+      "chunk": 5,
+      "start": 3502.5697,
+      "end": 3505.0097,
+      "text": " Well, let's stop early then."
+    },
+    {
+      "chunk": 5,
+      "start": 3507.4497,
+      "end": 3509.4497,
+      "text": " How do I turn this off?"
+    }
+  ]
+}

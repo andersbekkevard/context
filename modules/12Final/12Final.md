@@ -1,0 +1,534 @@
+# Module 12: Summing up and some cautionary notes
+
+TMA4268 Statistical Learning V2025 — Stefanie Muff, April 24, 2025
+
+# Overview
+
+* Some exam information
+
+* Overview of modules and core course topics
+
+* Some cautionary notes
+
+Some of the figures and slides in this presentation are taken (or are inspired) from @james.etal2 .
+
+# The exam
+
+* **School exam** May 19, 09-13h, plus 15min for file upload.
+
+Tentative plan:
+
+* Warm up section.
+* A conceptual/theoretical section testing your understanding.
+* Two examples with real data.
+* A section with single/multiple choice questions.
+
+Aids:
+
+![](exam_aids.jpg)
+
+* A hand-written A4 sheet.
+* The course book.
+
+**Check out the exam from 2024 and additional information on the course website:**
+
+https://wiki.math.ntnu.no/tma4268/2025v/subpage16
+
+# The course book
+
+Attention:
+
+* We have worked with the _second edition_ this year:
+https://www.statlearning.com/
+
+* This edition included a new chapter on Deep Learning, which we discussed in module 11.
+
+![](deep_learning.png){width=50%}
+
+# Core of the course
+
+Supervised and unsupervised learning:
+
+* _Supervised_: regression and classification
+    + examples of regression and classification type problems
+    + how complex a model to get the best fit?
+    $\rightarrow$ flexiblity/overfitting/underfitting.
+    + the bias-variance trade-off
+    + how to find a good fit - validation and cross-validation (or AIC-type solutions)
+    + how to compare different solutions
+    + how to evaluate the fit - on new unseen data
+
+* _Unsupervised_: how to find structure or groupings in data?
+
+and of course all **the methods** (with underlying models) to perform regression, classification and unsupervised learning.
+
+![](../../ISLR/Figures/Chapter2/2.7.png)
+Figure 2.7 from @ISL
+
+# The modules
+
+## 1. Introduction
+
+* Examples, the modules, required background in statistics
+* Introduction to R and RStudio via the online R-course
+
+## 2. Statistical learning
+
+* Model complexity
+    + Prediction vs. interpretation (inference).
+    + Parametric vs. nonparametric.
+    + Flexible vs. inflexible.
+    + Overfitting vs. underfitting
+* Supervised vs. unsupervised.
+* Regression and classification.
+* Loss functions: quadratic and 0/1 loss.
+* Bias-variance trade-off (polynomial example): mean squared error, training and test set.
+* Vectors and matrices, rules for mean and covariances, the multivariate normal distribution.
+
+## 3. Linear regression
+
+* The classical normal linear regression model on vector/matrix form.
+
+* Parameter estimators and distribution thereof. Model fit.
+
+* Confidence intervals, hypothesis tests, and interpreting R-output from regression.
+
+* Qualitative covariates, interactions.
+
+* This module is a stepping stone for all subsequent uses of regression in Modules 6, 7, 8, 9 and 11.
+
+## 4. Classification (Mainly two-class problems)
+
+* Bayes classifier: classify to the most probable class to minimize the expected 0/1 loss. We usually do not know the probability of each class for each input. The Bayes optimal boundary is the boundary for the Bayes classifier and the error rate (on a test set) for the Bayes classifier is the Bayes error rate.
+
+* Two paradigms (not in textbook):
+    * _Diagnostic_ (directly estimating the posterior distribution for the classes). Example: KNN classifier, logistic regression.
+    * _Sampling_ (estimating class prior probabilities and class conditional distribution and then putting together with Bayes rule). Examples: LDA, QDA with linear or quadratic class boundaries.
+
+* ROC curves, AUC, sensitivity and specificity of classification methods.
+
+```r
+library(class)
+library(dplyr)
+library(ggpubr)
+library(mvtnorm)
+set.seed(9)
+
+Sigma = matrix(c(2, 0, 0, 2), 2, 2)
+
+mu1 = c(1, 1)
+mu2 = c(3, 3)
+
+X1 = rmvnorm(100, mu1,  Sigma)
+X2 = rmvnorm(100, mu2,  Sigma)
+
+class = c(rep("A",100), rep("B", 100))
+class = as.factor(class)
+
+df = data.frame(rbind(X1, X2), class)
+
+test = expand.grid(x = seq(min(df[,1]-1), max(df[,1]+1), by=0.2), y=seq(min(df[,2]-1), max(df[,2]+1), by=0.2))
+
+
+## k = 1
+classif = knn(df[,1:2], test=test, cl=df[,3], k=1, prob=TRUE)
+prob = attr(classif, "prob")
+
+dataf = bind_rows(mutate(test, prob=prob, class="A", prob_cls=ifelse(classif==class, 1, 0)),
+                  mutate(test, prob=prob, class="B", prob_cls=ifelse(classif==class, 1, 0)))
+
+gg = ggplot(dataf)+geom_point(aes(x=x, y=y, colour=class), data=mutate(test, class=classif), size=0.01)
+gg = gg + geom_contour(aes(x=x, y=y, z=prob_cls, group=class, color=class), data=dataf, bins=2,size=0.5)
+gg = gg + geom_point(aes(x=x, y=y, col=class), size=2, data=data.frame(x=df[,1], y=df[,2], class=df[,3]))
+gg = gg + ggtitle("k = 1")+xlab("X1")+ylab("X2")
+
+# k = 3
+classif3 = knn(df[,1:2], test=test, cl=df[,3], k=3, prob=TRUE)
+prob3 = attr(classif3, "prob")
+
+dataf3 = bind_rows(mutate(test, prob=prob3, class="A", prob_cls=ifelse(classif3==class, 1, 0)),
+                    mutate(test, prob=prob3, class="B", prob_cls=ifelse(classif3==class, 1, 0)))
+
+gg3 = ggplot(dataf3)+geom_point(aes(x=x, y=y, colour=class), data=mutate(test, class=classif3), size=0.01)
+gg3 = gg3 + geom_contour(aes(x=x, y=y, z=prob_cls, group=class, color=class), data=dataf3, bins=2, size=0.5)
+gg3 = gg3 + geom_point(aes(x=x, y=y, col=class), size=2, data=data.frame(x=df[,1], y=df[,2], class=df[,3]))
+gg3 = gg3 + ggtitle("k = 3")+xlab("X1")+ylab("X2")
+
+## k = 10
+
+classif10 = knn(df[,1:2], test=test, cl=df[,3], k=10, prob=TRUE)
+prob10 = attr(classif10, "prob")
+
+dataf10 = bind_rows(mutate(test, prob=prob10, class="A", prob_cls=ifelse(classif10==class, 1, 0)),
+                  mutate(test, prob=prob10, class="B", prob_cls=ifelse(classif10==class, 1, 0)))
+
+gg10 = ggplot(dataf10)+geom_point(aes(x=x, y=y, colour=class), data=mutate(test, class=classif10), size=0.05)
+gg10 = gg10 + geom_contour(aes(x=x, y=y, z=prob_cls, group=class, color=class), data=dataf10, bins=2, size=0.5)
+gg10 = gg10 + geom_point(aes(x=x, y=y, col=class), size=2, data=data.frame(x=df[,1], y=df[,2], class=df[,3]))
+gg10 = gg10 + ggtitle("k = 10")+xlab("X1")+ylab("X2")
+
+## k = 150
+
+classif150 = knn(df[,1:2], test=test, cl=df[,3], k=150, prob=TRUE)
+prob150 = attr(classif150, "prob")
+
+dataf150 = bind_rows(mutate(test, prob=prob150, class="A", prob_cls=ifelse(classif150==class, 1, 0)),
+                  mutate(test, prob=prob150, class="B", prob_cls=ifelse(classif150==class, 1, 0)))
+
+gg150 = ggplot(dataf150)+geom_point(aes(x=x, y=y, colour=class), data=mutate(test, class=classif150), size=0.05)
+gg150 = gg150 + geom_contour(aes(x=x, y=y, z=prob_cls, group=class, color=class), data=dataf150, bins=2, size=0.5)
+gg150 = gg150 + geom_point(aes(x=x, y=y, col=class), size=2, data=data.frame(x=df[,1], y=df[,2], class=df[,3]))
+gg150 = gg150 + ggtitle("k = 150")+xlab("X1")+ylab("X2")
+
+ggarrange(gg,gg3,gg10,gg150)
+```
+
+Logistic regression gives a probability, given a certain value of the covariats $P(Y=1 \, | \, \boldsymbol{x})$.
+
+![](beetles.png){width=90%}
+
+```r
+attach(iris)
+library(class)
+library(MASS)
+library(dplyr)
+library(ggpubr)
+
+testgrid = expand.grid(Sepal.Length = seq(min(iris[,1]-0.2), max(iris[,1]+0.2),
+              by=0.05), Sepal.Width = seq(min(iris[,2]-0.2), max(iris[,2]+0.2),
+              by=0.05))
+iris_lda = lda(Species~Sepal.Length+Sepal.Width, data=iris, prior=c(1,1,1)/3)
+res = predict(object = iris_lda, newdata = testgrid)
+Species_lda = res$class
+postprobs=res$posterior
+iris_lda_df = bind_rows(mutate(testgrid, Species_lda))
+iris_lda_df$Species_lda = as.factor(iris_lda_df$Species_lda)
+iris0_plot = ggplot(iris, aes(x=Sepal.Width, y=Sepal.Length,
+                              color=Species))+geom_point(size=2.5)
+irislda_plot = iris0_plot + geom_point(aes(x = Sepal.Width, y=Sepal.Length,
+                            colour=Species_lda), data=iris_lda_df, size=0.8)
+iris_qda = qda(Species~Sepal.Length + Sepal.Width, data=iris, prior=c(1,1,1)/3)
+Species_qda = predict(object = iris_qda, newdata = testgrid)$class
+
+iris_qda_df = bind_rows(mutate(testgrid, Species_qda))
+iris_qda_df$Species_qda = as.factor(iris_qda_df$Species_qda)
+
+gridprobs=
+
+irisqda_plot = iris0_plot + geom_point(aes(x = Sepal.Width, y=Sepal.Length,
+                            colour=Species_qda), data=iris_qda_df, size=0.8)
+```
+
+```r
+ggarrange(irislda_plot,irisqda_plot)
+```
+
+## 5. Resampling methods
+
+**Cross-validation**
+
+* Data rich situation: Training, validation and test set.
+* Validation set approach.
+* Cross-validation for regression and for classification.
+* LOOCV, 5- and 10-fold CV.
+* Good and bad issues with validation set, LOOCV, 10-fold CV.
+* Bias and variance for $k$-fold cross-validation.
+* Selection bias -- the right and wrong way to do cross-validation.
+
+* Distinction between model selection and model assessment.
+
+**The Bootstrap**
+
+* Idea: Re-use the same data to estimate a statistic of interest by _sampling with replacement_.
+
+## 6. Linear model selection and regularization:
+
+Subset-selection. Discriminate:
+
+* _Model selection_: estimate performance of different models to choose the best one.
+* _Model assessment_: having chosen a final model, estimate its performance on new data.
+
+How?
+
+* Model selection by
+    * Subset selection (best subset selection or stepwise model selection)
+    * Penalizing the training error: AIC, BIC, $C_p$, Adjusted $R^2$.
+    * Cross-validation.
+
+* Model assessment by
+    * Cross-validation.
+
+### Model selection
+
+* Shrinkage methods
+    + ridge regression: quadratic L2 penalty added to RSS
+    + lasso regression: absolute L1 penalty added to RSS
+    + no penalty on intercept, not scale invariant: center and scale covariates
+
+* Dimension reduction methods:
+    + principal component analysis: eigenvectors, proportion of variance explained, scree plot
+    + principal component regression
+    + partial least squares
+
+* High dimensionality issues: multicollinearity, interpretation.
+
+![ISL 6.7](../../ISLR/Figures/Chapter6/6.7.png)
+
+![ISL 6.4](../../ISLR/Figures/Chapter6/6.4.png)
+
+![ISL 6.6](../../ISLR/Figures/Chapter6/6.6.png)
+
+## 7. Moving beyond linearity
+
+* Modifications to the multiple linear regression model - when a linear model is not the best choice. First look at one covariate, combine in "additive model".
+
+* Basis functions: fixed functions of the covariates.
+
+* Polynomial regression: multiple linear regression with polynomial components as basis functions.
+
+* Step functions - piecewise constants. Like our dummy variable coding of factors.
+
+* Regression splines: regional polynomials joined smoothly - neat use of basis functions. Cubic splines very popular.
+
+* Smoothing splines: smooth functions - minimizing the RSS with an additional penalty on the second derivative of the curve. Results in a natural cubic spline with knots in the unique values of the covariate.
+
+* Local regressions: smoothed $K$-nearest neighbour with local regression and weighting. In applied areas `loess` is very popular.
+
+* (Generalized) additive models (GAMs): combine the above. Sum of (possibly) non-linear instead of linear functions.
+
+![ISL 7.3](../../ISLR/Figures/Chapter7/7.3.png)
+
+## 8. Tree-based methods
+
+* Method applicable both to regression and classification ($K$ classes) and will give non-linear covariate effects and include interactions between covariates.
+
+* A tree can also be seen as a division of the covariate space into non-overlapping regions.
+
+* Binary splits using only at the current best split: _greedy strategy_.
+
+* Minimization criterion: residual sums of squares (RSS), Gini index or cross-entropy.
+
+* Stopping criterion: When to stop: decided stopping criterion - like minimal decrease in RSS or less than 10 observations in terminal node.
+
+* Prediction:
+    * Regression: Mean in box $R_j$
+    * Classification: Majority vote or cut-off on probabiity.
+
+* _Pruning_: Grow full tree, and then prune back using pruning strategy: cost complexity pruning.
+
+To improve prediction (but worse interpretation):
+
+* _Bagging_ (bootstrap aggregation): draw $B$ bootstrap samples and fit one full tree to each, used the average over all trees for prediction.
+
+* _Random forest_: as bagging but only $m$ (randomly) chosen covariates (out of the $p$) are available for selection at each possible split.
+
+* Out-of-bag estimation can be used for model selection - no need for cross-validation.
+
+* Variable importance plots.
+
+## 9. Boosting and additive trees
+
+* Boosting is another (tree) ensemble method.
+
+* Sequentially add new trees that are grown in the areas where the previous tree ensemble performs bad.
+
+* Most common boosting approach is  **gradient boosting**, where we fit a tree $T$ to the negative gradient of the loss function ($-g_{im}$) using least squares:
+
+**The central idea**: find a tree $T(x;\Theta_m)$ that is as close as possible to the negative gradient in each step $m$
+
+\begin{equation}
+\tilde{\Theta}_m= \arg \min_\Theta \sum_{i=1}^N (-g_{im} -T(x_i;\Theta))^2 \ .
+\end{equation}
+
+### Further methods and considerations
+
+**Extensions**:
+
+* Stochastic gradient boosting (SGB)
+
+* Extreme gradient boosting (XGBoost)
+
+* LightGBM, CatBoost,...
+
+**Caveats**:
+
+* Lots of parameters to tune! Parameter tuning becomes an art.
+
+* Loss of interpretability (but remember _variable importance_ and _partial dependence plots_)
+
+## 10. Unsupervised learning
+
+* Principal component analysis:
+     + Mathematical details (eigenvectors corresponding to covariance or correlation matrix) also in TMA4267.
+     + Understanding loadings, scores and the biplot, choosing the number of principal components from proportion of variance explained or scree-type plots (elbow).
+
+* Clustering:
+     + $k$-means: number of clusters given, iterative algorithm to classify to nearest centroid and recalculate centroid. Stochastic: depends on starting conditions.
+     + Hierarchical clustering: choice of distance measure (Euclidean, correlation,...), choice of linkage method (single, average, complete). Deterministic.
+
+```r
+# reading data on consumption of different beverages for countries
+drink <- read.csv("https://www.math.ntnu.no/emner/TMA4267/2017v/drikke.TXT",sep=",",header=TRUE)
+drink <- na.omit(drink)
+# looking at correlation between consumptions
+drinkcorr=cor(drink)
+pcaS <- prcomp(drink,scale=TRUE) # scale: variables are scaled
+biplot(pcaS,scale=0,cex=0.6) # scale=0: arrows scaled to represent the loadings
+```
+
+Hierarchical clustering for visualization
+
+![](../../2023/1Intro/heatmap.png){width=70%}
+
+## 11. Neural networks
+
+* Feedforward network architecture: mathematical formula - layers of multivariate transformed (`relu`, `linear`, `sigmoid`) inner products - sequentially connected.
+
+![](../11Nnet/fig10_4.png){width=70%}
+
+* Loss function to minimize (on output layer): regression (mean squared), classification binary (binary crossentropy), classification multiple classes (categorical crossentropy).
+
+* Remember the correct choice of output activiation function: mean squared loss goes with linear activation, binary crossentropy with sigmoid, categorical crossentropy with softmax.
+
+* Gradient based (chain rule) back-propagation.
+
+* Over-fitting $\rightarrow$ Regularization.
+
+* Convolutional neural networks (CNNs), recursive neural networks (RNNs) and transformers (Daesoo's lecture).
+
+* `keras` in R. Use of tensors: Piping sequential layers, piping to estimation and then to evaluation (metrics).
+
+# Mentimeter poll
+
+www.menti.com
+
+# Some cautionary words
+
+* In most of the problems we looked at we could (or had to) choose a set of variables to explain or predict an outcome ($y$).
+
+* Model selection was the topic of Module 6, but there is more to say about it, in particular in the regression context.
+
+* Importantly, the approach to find a model **heavily depends on the aim** for which the model is built.
+
+It is important to make the following distinction:
+
+* The aim is to _predict_ future values of $y$ from known regressors.
+* The aim is to _explain_ $y$ using known regressors. In this case, the ultimate aim is to find _causal relationships_.
+
+$\rightarrow$ Even among statisticians there is no real consensus about how, if, or when to select a model:
+
+![](graphics/brewer_title.png){width=90%}
+![](graphics/brewer.png){width=90%}
+
+Note: The first sentence of a paper in _Methods in Ecology and Evolution_ from 2016 is: "Model selection is difficult."
+
+## Why is finding a model so hard?
+
+A model is an approximation of the reality. The aim of statistics and data analysis is to find connections (explanations or predictions) thanks to simplifications of the real world.
+
+Box (1979): _"All models are wrong, but some are useful."_
+
+$\rightarrow$ There is often not a "right" or a "wrong" model -- but there are more and less useful ones.
+
+$\rightarrow$ Finding a model or the appropriate method with good properties is sometimes an art...
+
+## Predictive and explanatory models
+
+When choosing a method or a model, you need to be clear about the scope:
+
+* **Predictive models**: These are models that aim to predict the outcome of future subjects.
+**Example:** In the bodyfat example (module 3) the aim is to predict people's bodyfat from factors that are easy to measure (age, BMI, weight,..).
+
+* **Explanatory models**: These are models that aim at understanding the (causal) relationship between covariates and the response.
+**Example:** The South African heart disease data (module 4) aims to identify important risk factors for coronary heart disease.
+
+$\rightarrow$ **The model selection strategy depends on this distinction.**
+
+## Prediction vs explanation
+
+When the aim is **_prediction_**, the best model is the one that best predicts the fate of a future subject (smallest test error rate). This is a well defined task and "objective" variable selection strategies to find the model which is best in this sense are potentially useful.
+
+However, when used for **_explanation_** the best model will depend on the scientific question being asked, **and automatic variable selection strategies have no place**.
+
+Chapters 27.1 and 27.2 in @clayton.hills1993
+
+## Model selection with AIC, AIC$_c$, BIC, $C_p$, adjusted $R^2$
+
+Given $m$ potential variables to be included in a model. Remember from Module 6:
+
+* Subset selection using forward, backward or best subset selection method.
+
+* Use an "objective" criterion to find the "best" model.
+
+**Cautionary Note**:
+
+The coefficients of such an optimized "best" model should _not be interpreted_ in a causal sense! Why?
+
+* Subset selection may lead to **biased parameter estimates**, thus **do not draw (biological, medical,..) conclusions** from models that were optimized for prediction, for example by AIC/AICc/BIC minimization!
+See, e.g., @freedman1983, @copas1983.
+
+## Illustration: Model selection bias
+
+**Aim of the example:** To illustrate how model selection purely based on AIC can lead to biased parameters and overestimated effects.
+
+_Procedure:_
+
+1. Randomly generate 100 data points for 50 covariables $x^{(1)},\ldots, x^{(50)}$ and a response $y$:
+
+```r
+set.seed(123456)
+data_aic <- data.frame(matrix(rnorm(51*100),ncol=51))
+names(data_aic)[51] <- "Y"
+```
+
+`data` is a 100$\times$ 51 matrix, where the last column is the response. The **data were generated completely independently**, the covariates do not have any explanatory power for the response!
+
+2. Fit a linear regression model of $y$ against all the 50 variables
+\begin{equation*}
+y_i = \beta_0 + \beta_1 x_i^{(1)} + \ldots + \beta_{50}x_i^{(50)} + \epsilon_i \ .
+\end{equation*}
+
+```r
+r.lm.aic <- lm(Y~.,data_aic)
+```
+
+As expected, the distribution of the $p$-values is (more or less) uniform between 0 and 1, with none below 0.05:
+
+```r
+hist(summary(r.lm.aic)$coef[-1,4],freq=T,main="50 variables",xlab="p-values")
+```
+
+3. Then use AICc minimization to obtain the objectively "best" model:
+
+```r
+library(MASS)
+r.AICmin <- stepAIC(r.lm.aic, direction = c("both"), trace = FALSE,AICc=TRUE)
+```
+
+```r
+hist(summary(r.AICmin)$coef[-1,4],freq=T,main="18 variables of minimal AICc model",xlab="p-values")
+```
+
+The distribution of the $p$-values is now skewed: many of them reach rather small values. This happened _although none of the variables has any explanatory power!_
+
+## Summary: Main problem with model selection
+
+When model selection is carried out based on objective criteria, the effect sizes will to be too large and the uncertainty too small. So you end up being too sure about a too large effect.
+
+**Exception**: Shrinkage methods!
+
+Which methods are suitable for explanation (inference)?
+
+![](../../ISLR/Figures/Chapter2/2.7.png)
+
+### Bottomline
+
+* _Less flexible_ models tend to have _better interpretability_ and are therefore better suited _for explanation_ than more flexible models.
+
+* The _more flexible_ a model, the better it tends to perform _for prediction_.
+
+* Some models can be used for both, prediction and explanation, but then the approach how to build the model (e.g., how to select variables) should still depend on the aim.
+
+Thank you for attending this course - good luck for the exam!
+
+# References

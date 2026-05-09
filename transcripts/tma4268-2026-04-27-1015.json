@@ -1,0 +1,6547 @@
+{
+  "model": "whisper-large-v3-turbo",
+  "text": "Alright, so Good morning everybody It's Monday, again 8am, brutal I will Not that I ever have any choice in the matter But it would be so nice never to teach at 8am again On a Monday I mean 8am It's too early So here we are and and and we're going to wrap up the last module today and then tomorrow we'll have a review and that's it for the course so it seemed like the semester just kind of flew by, but here we are. So the, the rest of today, we're going to talk about, um, or today we're going to talk about recurrent neural networks and, uh, a bit about the, uh, this double descent stuff. So, um, yeah, in this, so far what we've talked about, about neural networks, which has not been, you know, the focus of the course, um, why? we started with just the normal feedforward stuff, right? Which is, you know, the workhorse of the machine learning world. It's everywhere. It's the basis. It's what they started with. It's, yeah, good reason to focus on that. And then we went to convolutional neural networks, which again was a great idea of how we can, you know, extend the capabilities of the model or of this paradigm of the speed forward network. And in particular, you just have to learn these patches, these weights on the patches. So in many ways, you could think of it as a simplification, but a very clever one. Now we're going to talk about another way of sort of extending the model beyond what you think its capabilities are. and in particular by this idea of using recurrence and it you know it a way so that you can have the model go beyond what you can do with just a feed-forward network, with just a simple network. All right, so let's see what we mean by that. In these recurrent neural networks, mainly the motivation has been sequential data. So time series. There's a temporal component. It's what comes next. Sequential data always has that notion of what's coming next. RNNs are often used in language modeling. Basic RNNs were the first models, as far as I know, in machine learning to be used in language modeling. I mean, there was lots of stuff before that, but, you know, this is like the precursor to the language model that we know now. And the whole question is, what's the next word or token? I'm sure you guys have heard the word token many times. And so then, you know, figuring out what word comes next and building a model for predicting the next word. I mean that really is kind of how all of these large language models or not all of them but how many of them were trained is for next word prediction not all, there's other ones that do every word but yeah largely this is the thing so other neural networks of course would be the length of the input if you have a fixed length and the sequentiality. Is that even a word? Yeah. Specifically, the motivation for current networks is to have a model that considers that things come sequentially. That's the idea here. So these RNNs are suitable for data with sequential characters like text, time series, as those things I've just said. yeah and more advanced versions like seek to seek and all the things that we have now like you know clod and chat jpt and all these large language models are you know built on on things that started here So how does this work Well we have X as our input and you have this is your output so that's your Y, essentially. And, you know, without this U thing, then this would just be a feed-forward network, right? You'd just be O is your output, A is the hidden stuff, and X is your input, and you would just train forward. But what we're going to do now is that we're going to carry A over sequentially. And the only reason this still makes sense is because there's a dimension that we care about, right? Like this is like the dimension of the sequence, the direction of the sequence, the time domain, whatever, whatever thing is, is, has created the sequence. That's why we can do this trick of moving a to a two to a three to a T E L minus one. Right. Because if there was no order to it, if these were just samples, right. Let's say we just had, you know, images that were disconnected in time. Just someone's random or a bunch of pictures from the Internet. One picture doesn't necessarily lead to the next. So there would be no obvious ordering of the pictures. So then it wouldn't make any sense to carry over any information about the previous picture because it has nothing to do with it. But in this case, there's a strong reason to believe that there is something to do with it. So then you carry it over. The interesting thing is that this just keeps going, right? If L is a billion, then essentially even the first thing in your sequence is affecting the billionth output because it's carried through the model. in theory the information will get lost because it just yeah a billion is pretty long but the idea is still nice so x is your input and then you have the output o and you have the sequence a right for the for text for example you want to just create some arbitrary things so this would be a one-hot encoding of text these are 20 words so this would be your encoding model this could be thought of as the tokens. Often you want to learn these things, but in this case you can just set them equal to some random number. That's fine. And then you can embed them so that it's fewer dimensions. No reason to have it so big. And there's a lot of tokenizers and things like that that will take words. And often you don't want to use just the, you don't want to use the word, but use a word part. Right? So there's a lot of ways of trying to take text and convert them into tokens. But the idea is that we want to for a given thing that we want to make a sequence of, we want to determine what is the unit of the sequence, in this case words. I think one of the more yeah, but it could be letters, it could be word parts, it could be a lot of things. and so you take those things you convert them to tokens you make a small embedding if you want and now that's your X and then we have the A's these are the A's here these are the hidden units so they're going to be determined by you know the weights a weighted sum of the inputs in an activation function. So here we have A's. These are the hidden units. And so what we have is some bias term. We have a weighted sum of the inputs to, you know, these X's are these tokens or the words or whatever the thing you're making a sequence of, plus a weighted sum of the previous hidden values of the previous hidden activations. Right? And that's how we're carrying the information across the sequence. And then we simply determine the output as this. So as, again, I have another bias term and then a weighted sum. In this case, in this particular one, we have no activation function. We're just assuming a linear output. but that would depend on what you would pick just like we talked about before with the feed forward network you could have a linear output you could have a soft max you could have lots of options so the activation function for the output would depend on what the goal is of the model but essentially you are just taking a weighted sum of this hidden layer. Just the previous one, just the one now. And that's what we can see here. That it comes here and the information is coming through in the hidden. So in terms of a graph, it kind of looks like a Markov chain, if you know what that is. okay so oh yeah and then the cool thing is is that if you look at this you'd think oh this probably has a shitload of parameters because you essentially are trying to keep track of stuff as it goes through over the sequence right but if you notice here we just say B and U and W every time it's because we don't have if it was like this that would be a very different model if the weights were changing every time but they don't in fact we assume the same weights B, U, and W every single time you learn them you still learn them through training but they don't change depending on where you are in the sequence So that a very different thing And that also why the gradients behave well why the training behaves well is because it not a model with so many parameters that it starts collapsing or getting weird. So you learn the B, the U, and the W for the whole thing. Yeah. So it's a form of weight sharing. Yeah, here, weight sharing. that we're using the same weights over the yeah, that these betas are always the same, so are the W's and the U's, there's the U so W and B W and U and beta, or B, are just shared and easy so just like with the other models we train them the same way we we define a loss function for example in this one that we just talked about here where the output is some linear thing that's of course the same as assuming that you have a least squares regression style output and so in that case we would be minimizing one like that if it was a different loss like a soft max or sigmoid then it would be that other loss functions those other loss functions like we talked about earlier and um and so we train it this way right and it looks like the only thing that's relevant is the is the last observation right because that really is the goal but remember the last observation is just the last observation in that part you still have to you still train it also on this right it still predicts that one also given the input before it But you would write it this way. Hold on one sec. Sorry. My phone away. All right, so... Yeah and Yeah and as we showed that all the observations do or all the x's do contribute to the last one because it's always pulled forward through the a's but we essentially are minimizing this function and all of these are vectors it's kind of obvious let's see so why are the outputs there at all I mean they are trained they are predicted and also yeah you're training each one it's kind of a weird question because this is the loss function, but you can see here how the model is constructed if I really wish I if all this was gone and this was the L for that moment, then you train just that. So you do train using every single output. It's just you write the equation this way. because you want it to where are we like I said Monday morning brutal so yeah they're there because they're also used in the training weird question they come for free yeah seems like a Does anyone see any deeper meaning in this question? I mean, for me, it's just... Okay. Because you see the point, right? That you're training. You do use all of them for the training. And you do sometimes just want to predict, based off of one input, what's the next one? Because the sequence length is just a decision. okay so here an example you can fit it to the uh new york stock exchange this is a very popular thing to do And yeah so the stocks and time series in general is kind of a tricky thing In particular, stocks and things on the market. Because often it's less about how the mean is changing and more about how the variance is changing. You have to consider both things. So the data can get quite nasty. And often how things are interacting and how they are working can be very complicated. So it's not crazy to want to go to a model that maybe we don't understand so well, like a machine learning model, to get a prediction, even if the, you know, because trying to do it with a model that you'd understand would probably, is quite difficult. And since the goal here really is just forecasting, I should say that too, that with trading, you just really want to know what's coming next, who can predict best. So the data has, you know, it's every day and you want to predict this. All of these time series have a high autocorrelation. That's why time series is such a pain. This is autocorrelation, which breaks up, which means that since everything is autocorrelated, that your samples, your time points are not independent. Right? So any model that you have is going to have to account for that dependency structure. And also your predictions and your confidence in your predictions have to know that these time points are correlated. So we're trying to predict the trading volume V from these three variables. All right. What were the variables again? It was trading volume and returns. Yeah, V is volume returns and V is, yeah, what's the other one? Z is then the volatility, I guess. we can think of volatility like the variance of the, of the thing, how much is changing each day. So we have that. All of these things are time series, high autocorrelation, and we want to predict V of T based off of these things, right? Based off of these inputs. so how do we do this well we construct x of one to be this right so we're just constructing x is the way um um you know working back in time so we determine a length that we want to consider as our as the as or you know it is very much like the the token length in a large language model. You want it to know about the previous L things for your prediction to work. In order for your prediction to... You want to have it consider these things when making a prediction to the next one. Alright, so you need that. And then you formulate the problem as we showed it earlier. All right, let's go back to figure 10.12. What's that? Yeah, so you formulate it like this again. Where are we? Yeah. Yeah, and of course, this is only a very simple version. There's ones where basically the output, what we have is O, or I think it's O. What we have is the output can go snake back into the A's and things like that. There's a lot of variants of these things. This is just the simplest one. I hate using slides but okay Where even is the end of this example See, this is the problem. I was ready last week, and now I'm all lost. But, because it's Monday. It's Monday morning. I tried to do this yesterday. I was sailing yesterday. So I'm very sore. yeah sorry you don't need to care about that okay so anyways we have this we have this model and then it's used a lot and where's the end there's no come on wow this just sort of ends so we can assume that this worked really well so I guess the point was not to actually show that how you can predict with it but rather that it's able to right and I guess to show that you can have three different inputs come in right so the variable can be an input for itself V, R, and Z all be inputs as part of the X. And then in this case, Y is also an output. Sorry, the V is also the output. Because that's the only thing we're predicting is V. We're not predicting R or Z. And so a while ago, in a time series course I was teaching, and there the point was not machine learning either there was just time series, just classical time series and every year there was a project as in most classes and so that year we said alright everyone's going to do the same project and it's going to be some Bitcoin or something, one of these terrible currencies and yeah the cryptocurrencies are a terrible thing to use for a project because they're impossible to predict they're so volatile, they're so crazy that they meaningless to predict so it wasn the best example project But we did compare RNNs to the standard time series models And unfortunately, they were equally bad. But I think that was really just the data problem because no one should be using Bitcoin. It is stupid. But either way, you can see why someone would want to develop a model like this. They don't really care how it works. They just want the most expressive model. And machine learning models are often very good at working well. Or they can often work very well. And so then you just want to predict. And here's a good example, right? You put in your variables and your other variables as inputs. And then you just train the model and then use it to predict. It's very simple. it's easier than trying to construct the time series model where you would actually go through, pick your parameters, determine what things should go in there. It's more delicate training. Yeah. But if you don't care how it works and you just want to get the results, these models are pretty good. Okay. So yeah, so we have up to a lag L. Right? I already said that. Formulate them on like that. And then we're done with that one. Yeah. Okay. So yeah so that's how a recurrent neural network works very superficially and so these are I would say a lot of these neural networks and the frameworks have been engineered some have been more mathematically determined but a lot have just been constructed for the different problems so we've learned about some of these fancy trends and these methods but is it worth using these methods right when to like yeah I think this is a very common discussion in this building It you know how often should we just be using regression and how often should we turn to more advanced methods like the forest or in particular machine learning models like the neural networks, models with a lot of parameters. When is that even a good idea? So a while ago One of the Least depressing Data sets that we looked at was salary Which I believe Isn't that exciting either But we looked at a prediction of salary Based on for baseball players Which of course you can all relate to deeply Right? You guys are all athletes Or love baseball Right? Who loves baseball? Anyone? Who's ever been to a baseball game? Who's ever seen baseball on TV? There we go. Four people. That's good. Did you like it? It's okay, right? No, it's super boring, though. If you ever go, the benches are uncomfortable, and then you just sit there, and then if you're lucky, someone gets naked and runs across the field. Otherwise, nothing really happens. It's like someone hits it with the ball with the stick and then the ball goes up and then maybe they catch it, maybe they don't. I'd rather watch a different sport. Hockey is more exciting. Then they beat the shit out of each other half the time. And you still might get someone naked running across the ice. And then it's cold. Very exciting. You get the point. So baseball is very exciting, of course, or not. And we tried to predict salaries, right? And you could do it with a linear model. which is nice and easy, right? We have 20 parameters, linear model, boom, we're good to go. Or you could use cross-validation, right? We talked about cross-validation as a way of picking your parameters, determining what your model is, your model selection. And when we did that, we had 12 parameters left. Oh, sorry, lasso with cross-validation. That's what I meant to say. Where Lasso was a regularization, right? That was... And regularization is a... is key, key, key to when these models. And we can also do a comparison with a neural network that has one hidden layer and 64 units. So this model has way more parameters. And as you know, a thousand parameters for a machine learning model, or I don't know if you know this, but machine learning models, a thousand parameters are nothing, right? We're talking trillions of parameters in current AI models for language. so anything this small is like peanuts so we have if we compare these three different models then we can see clearly that linear regression is probably not going to do that well because 20 parameters is a lot of parameters and so we get some kind of test error of 0.56 right doesn't say yeah so it's important to do the test error here's his mean absolute error I don't know let's see yeah so this is most likely the mean absolute error on test data because otherwise this would be lower than that one. All right, so it's going to be on test data, which is what you want to do. We talked about that, that if you add more parameters on your fit data, you're always going to do better, but not necessarily in your test data. So within your regression, let's say, well, this is, you do only so well. if you add a regularization term, then you do better, right? And we talked about that. We talked about the fact that when you regularize a model, what often you're doing is you're changing the trade-off between your bias and variance, right? And what you're getting is something with a lower variance, which means that you can now predict better. or what it means now is that you're less sensitive to the specifics of your data set, right? So if your data set has a bit of noise then you less sensitive to the specifics of the data set You should be able to generalize better across other data sets, specifically trying to minimize the variance. And a neural network with nothing on it, because that's what I'm assuming they've done. So here they have an ETERNY regularization, which generally you never want to do that. You don't want to train a model with a lot of parameters and no regularization. It's like a recipe for disaster, right? The whole point of regularization is to get you to generalize better. So the neural networks are trained with a lot of parameters so that they're extremely expressive, so they can basically represent everything, right? We talked about this idea of the universal approximation, that you can approximate any kind of model. but you need to pick the model. You need to be able to determine between the many, many possibilities of what you have. And so you want to predict the model. You want to construct the model that has the best variance. And the way you can push that is by adding regularization, right? So don't train them. Don't, yeah. I can't think of an example where you'd ever want to train a neural network without a regularization. And remember, regularization can be in many forms. It could be explicit like an L1 or an L2, or it can be this implicit regularization like the, we talked about it last time, the mini batch of the stochastic gradient descent, right? Or it can be dropout. We talked about that too, where you just remove some of the nodes during training. randomly. And then that forces the model to not rely on any specific part, right? Those regular, those forms of regularization, uh, encourage better solutions. But anyways, in this, you know, kind of contrived setting, I'm going to say contrived. I think other people teaching the same course would not call this contrived but call it real and i would say this is if you constructed your model this way you doing it wrong like you just it not a very big model your neural network model and then no regularization What going on here So anyways, in this case, you did worse with a neural network. Oh, no. Yeah, and here the claim is that neural networks are attractive when the size of the training set is extremely large, and when the model interpretability is not a priority. this first thing I would say that's not I mean that's true in the sense that the bigger your data set the better your model is going to be and the fact is if you have a very small data set there's not much you can do anyway so why bother right if you only have like this data set was probably short as shit right this is there's not that many baseball players in the world yeah 263 baseball players that's not much data I wouldn't have bothered with a neural network either just because what's the point you're not going to be able to identify very complicated functions because there is none you don't have enough data to do that so you do the neural networks are more attractive when the data set is bigger because then it can actually learn complicated stuff but more importantly I would completely agree with the second part when interpretability is not a priority. And I would say currently today, and I'm not saying this will hold in a year or two, if you fit your model, if you have a data set and you fit it with a complicated neural network, in the end, you don't know what you have. And it's the same thing was true with the forest stuff, right? When it was just a tree, which didn't work particularly well. You could interpret it just fine, but the last models that we were looking at that were so good, like the XGB boost, they get really weird because it's all on the residuals and the residuals of the residuals and you can't really interpret them that well. And it's the same thing with the neural networks. When you have 20 layers of stuff and you have a billion parameters and so many nodes, you don't really know how it works. now of course there's a lot of people working to fix that so for example in my research what we doing is we studying the the activation functions. So for the activations, so you can imagine here's the network, right? Here's the X, here's the Y we're studying like what patterns, what representations have been learned. right you could think of it like what are the functions that are being learned by the network and then later the idea the hope is that by studying the act what the what has been learned we can then find a better way of doing it right so um uh yeah and i think what could be a viable thing in the future. I mean, to some extent, this has already happened in other examples, but you can imagine you have this very big data set that's kind of complicated. You don't know what to do with it. You fit it with a big neural network that's very flexible. It learns strong representations. You're like, great. And then you can pick out... And then once you identify the representations in there, then you can train a much smaller model that still performs equally well, but now just to construct those representations. And that's how we can go and shrink the models into something interpretable and understandable. And yeah, so that's what a lot of people are trying to do. We're trying to do it. There's also Inga at ED. She cares a lot about these Shapley values and Shapley stuff. and that's moving in the same direction of trying to identify what is the network learned, what is it using, what information is it using, so that we have a more understandable, more reliable, more explainable model. That's the word. So explainability, interpretability are important. Currently, you don't have a lot of that. But what you can often, what is often quite nice is that if you were to take a neural network and actually, you know, play around with it, like maybe add more parameters, you know, engineer it and really try to predict as well as you can. then probably you can get this error down to we'll invent a new one so we'll say neural network star star like 1 billion parameters and this is bullshit right and then we'll say with regularization and lots of tricks and engineering and we spend a lot of time to make this work and then we get the error down to 2.521 and we get this down to 0.50 right? One nice thing is if we did that and if that's what it came out to we could say well as fun as that was and as great as it was it actually did not really improve over just the lasso with the 12 terms so then we have an idea as to what is the the um you know the best you can do so i don't know at this point i think i'm just rambling but the the point is is that you can use these in different ways to see what's the best kind how what's the upper bound in terms of model fit like how well you can really do um but the notes here are correct that if you really want interpretability at the moment, these models are often not very interpretable. As good as they are. So there's one more topic that we want to talk about. It's called double descent. It is very, very interesting. So let's take a 15 minute break and then we'll get back to that. Thank you. Thank you Thank you. Thank you. Thank you. Thank you. Thank you Thank you. Thank you. Thank you. Thank you. Thank you Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you Thank you Thank you. Thank you. Thank you. Thank you. Thank you Thank you. Thank you. Thank you. Thank you. Thank you Thank you. Thank you. Thank you. Thank you. Hmm. let's see where did the iPad go share iPad go iPad There we go. Okay, and the noise sound is back. And this thing. Do, do, do. so for me this is a the part of the course that i like the most i think the as i said i think the first day they're definitely going to be a question about bias variance in the test because i think that concept is the kind of the running theme through the course in all the models we looked at, we thought we talked about at least briefly or not. In what way is this affecting the trade-off between the bias and the variance? Why do we want to reduce the variance? Why is that such an important thing? Why is it such a critical thing? That's been a recurring theme. And now we're going to talk about this observation that was made I think the first paper was in the 70s. Yeah. At the Bell Labs, which was like this heavenly place for science. It was this amazing world where you just play around with stuff. And so many things were discovered. And I think it was because no one had to do paperwork. No one had any responsibilities. They were just, they were encouraged to play. Problem is it was a telephone Company that was supporting it and eventually They like well actually now we have all these Nobel Prizes but we don have any money So then they screwed it up But for at least 20 years, they came up, or I don't know how many years. But for many, many years, it was just discovery after discovery after discovery of just really fun stuff. And it was this hot spot of brilliance. Claude Shannon, lots of famous people. But anyways, double descent was one of the things that they at least discovered there, but it was popularized later, more recently in terms of machine learning, because it illustrates something that's really, I think, fundamental to how these big models are working so well. And so as we talked about very early on, we have this classical regime of model fitting. So this is what you would typically learn in a statistics class or even in many optimization classes, that you have a training set, you have a test set, then you have a model with some small number of parameters, right? And as you make your complexity, we'll keep it as complexity, that way it's not just parameters. That way as you go to a more complex model, you eventually start doing worse. Why? You start overfitting, right? Overfitting. right? You have some data. And at first, the model is too simple. That one sucks. And then you get a model that seems to do well. And then eventually you get a model that overfits, right? And that's generally where you say, oh, that's why you shouldn't use overly complicated models because you're just going to overfit your data. And overfitting, overfitting, overfitting, very big concern, blah, blah, blah, years and years of work. So for a very long time, we've tried to figure out where is this sweet spot? How do we get here? All right and I would say that what we discussed in the class a lot was well or two things one was regularization right and that often will just push us into the the sweet spot more stably but we also talked more specifically even when we do regularization about cross-validation that by picking our parameters across validation, we're essentially always going back to the test set to determine our model complexity. So in a way there, we determine where we are, where we want to be by just holding out. There are, of course, concerns that if you keep doing that, you actually end up overfitting your test set. And we talked about how you can try to overcome that or account for that. So that's the classic regime, right? That's what statisticians would typically teach you for many, many years. The crazy thing is, is that if you actually keep going, so here we've gone, you know, before we would stop here, and now we're going to keep going to even more complex models. So it seems crazy. it really does like people are like wow it for me it blew my mind that this would work when i learned about it that you can just keep going just make the model way more complex at one point you'd hit this thing and this is called um oh i hate doing stuff and this is called like the interpretability what is that word can anyone remember it's basically where the number of parameters it's often for many models it's where the number of parameters meets the number of samples you have it's where like the variance explodes actually I think it's in one of these slides the what that sounds right oh is it on was it on the slide and I didn't see it oh shit Yeah okay Yeah Thank you You can tell I made these slides. Sorry. But yeah, it's the interpolation point, right? And it's often around where the number of points are the number of samples. and that's just where the variance explodes. But the cool thing is, and this is crazy, is that as you get more and more complex models, your test error, so this isn't your training error, your training error always goes down. The training error always just keeps, I mean, inevitably as you add more and more parameters, no matter how many more parameters you add, this shit will always go down. but the weird thing is that your test error actually can go down a second time right so it seems like it completely contradicts it it doesn't if you compute all of the things from the bias and variance trade off it all always adds up that the bias and the variance are always trading off of each other right because you can always just go up in one or down in the other. And remember, the variance is variance squared. Anyways, but they can always turn off of each other. It's just the model at this complexity is where it blows up. But, you know, you just keep going. So how does that make any sense? Well, one example to illustrate it, they have an example that they've already made. so we can take as a generative model for our data. So this is the model we're using to construct data is just the sine function. And then we can add some noise to it, right? Where that noise is now some Gaussian. And then what we're going to do is we're going to use splines. Splines should be able to fit this pretty well. And we talked about splines in the class. So here we are with splines and we can use a degree eight and we see a certain fit, that looks pretty good, right? So that looks reasonable. If we use a degree 20, right, which is where shit starts blowing up, and that's classically where we would say overfit, this is a bad idea. Don't do it, blah, blah, blah. But if you keep going, here's 42, here's degree 80, you start seeing things that are weird, mainly that it actually does pretty well in these areas. In this case, since splines actually do a pretty good job at modeling cosine curves, the degree 8 is still the winner. But degree 80 actually looks way better than degree 20. So our error is going down again. And actually, you can contrive other situations where actually the error at a higher degree would be better than this degree 8. I'll show you an example of that in a second. And the whole point is that actually it has an increased flexibility. So you have this test error and the training error. and then it goes down again. Yeah, and one way of thinking about this is actually that it's still always trading off of two different models. For example, in here, yeah so imagine actually I'll give a different example and explain it there so here's another example of data so here the dotted line is the true function and you can see it's just a square pulse just one little square box just this where it's zero and then it's one and then it's zero again. So just the stupidest truth ever. And then it has some added noise which was, I think, Gaussian. I can't remember. I made it a while ago. But the idea was simply I wanted to have an example where actually the model class that I'm using to fit it with, I used the polynomial regression here using Legendre polynomial. So these are just you can think of it like a plus bx plus cx squared plus 3x plus 3 x cubed like it just it not that but it a it just polynomial regression which we talked about a long time ago we just finding the coefficients of the polynomials and um uh point is i wanted to make sure that the thing i gave it is not well approximated by a polynomial, right? Square functions are discontinuous, right? So here just jumps from zero to one. And then anyway, so it's clearly not in the model class. It's not going to ever really do that well. And what I wanted to show was that actually, if you do the classical model fitting, right? So here you have the same kind of training and test error stuff, right? So here we can see that the training error is always going down. Whereas the test error, it goes down until here and then it goes up again and then it goes down again. So we have this double descent. phenomenon. And what I wanted to show was actually you can get a second descent, which is, you know, also very good or even better than the original descent. And so if we look at the solutions that were found, I think the if you look at the best model under so with less than 100 so I trained with 100 data points and then this is where we have 100 and that's where the model tends to explode in that interpolation limit thing or interpolation point. And so before that, we get some minimum, like right there. That's D equals 24 in this one specific case. And there what we see is actually this blue model. You can see it doing okay right and that would be the best model where you before the interpolation limit So this is in the first descent Then the model explodes, and then it comes down again. And the interesting thing is that it is the solution that it learns. I think the interesting thing is the solution that it learns. So if you look at it, right, what it's learned is basically to put a spike at the actual points and then find the kind of the mean or the local mean around it. So it really just, and it makes sense if you think about how it's learned, right? We're trying to minimize the variance, meaning like the sensitivity to any one point. And so what it's going to try to do is always just go to something closer to the mean, right? kind of regression to the mean kind of thing where it's going to, it doesn't want to be sensitive to so sensitive to this point. So it's quickly going to shoot it back down to here. But what you see is that actually it's fitting all of the actual points in the data. So all of the training points are perfectly well fit by the model. And that's one of the main points is that in this second regime where we have this second descent, all of the models that we are considering there, all of the possible solutions all fit the training data perfectly. Whereas before we're trying to find the best fit to the training data with some penalty maybe. But now we have an infinite number of models that all fit the training data perfectly. And we're selecting from those models the one that gives us the best prediction out of sample. How do we do that? By minimizing the variance. Right. And so actually in this model, even though I trained all of them the same way, Essentially what we have is that in this first regime right in this first regime we have y minus I'll write it the, we have this loss function y minus sum over beta x squared, right? That's just your normal regression loss. plus the we'll do the yeah it was just an L2 regularization if I remember correctly plus the sum of beta squared that was the first regime and the second regime you're not really minimizing I mean you're still minimizing this loss but the reality is it actually is always perfectly minimized so in here. So actually in this regime, you're more doing this. You're more, yeah. Here we're trying to minimize everything. And here we're minimizing the sum of beta squared subject to y equals the sum, ugh, so in a way we've changed the optimization that we're doing we haven't really because we've still we're still constructing it the same way but since we have so many parameters that um since we have so many more parameters and we have data points the model is so flexible it has an infinite number of ways of fitting it and therefore it it doesn't have to pick just between the models that it doesn't have to pick a model that predicts it well, that fits the training data well, all of them do it's finding the one that has the best variance right so it's still making that thing and the reason this Yeah. And you get these double descent when you have a lot of parameters and when you regularize the model correctly. So you can have these. situations where it works and it's really cool. And I think this is one of the main points of, or one of the main reasons machine learning works. Yeah. So it doesn't contradict the bias variance trade-off. If you calculate the bias and the variance terms, like here I've done that and they always add up. So here's the bias term. Here's the variance term. and yeah and you can you can compute the actual error actual mean squared error and also what you you'd predict from summing the bias and the variance term plus the irreducible error which is the third term in that and then you see it lines in a line so you're able you can compute these things and see that it indeed never violates the trade off idea. It's just the thing where it's different is that it's not always a U-shape. It can be double the center. Yeah. And for me, the right way of looking at it is actually it's changing the optimization. Right? Because you in this regime where you can interpolate between all an infinite number of correct solutions So that part of the magic of the model So it doesn't contradict the vice-variance trade-off. Yeah, sometimes you can achieve good test error by doing this. yeah and I think this is likely that this is better done in low noise situations but I mean clearly it works in high noise too but it makes more sense with high signal the noise I don't know if this is true I sometimes doubt the claims but it says most of the statistical learning methods do not exhibit double descent I mean I would agree that most of the things we talked about in the class don't show this but in the world I don't know how many do or don't so I agree that though double descent sometimes occur We don want to rely on this maybe yeah again it depends on what you're trying to do so here's some articles that you can read for some more inspiration about how to use it in medicine, healthcare, and ecology if you're interested. That kind of ends this module on machine learning or on AI or on neural network models. Yeah. I think there's more that could be said, but that's okay. So at least I'm glad we ended with this double-ascent stuff because I don't know, I found this really fun to dig into, how the double descent phenomenon, mainly how it doesn't break the bias-variance trade-off and how essentially you can have an infant number of solutions and then pick between them by minimizing the variance I think it interesting So any questions or comments about this module? Concerns? Fears? Desires? I don't know. Anything? Good? Alright, so I guess we can end here for today and then tomorrow we're going to talk about the summary and just the test. Please come with questions if you have any. Yeah, otherwise I'm just going to kind of give a summary of everything and answer questions. Yeah. That's it. So, let me know if there's any issues and stuff. Okay. Alright, well. That's it for today. Okay.",
+  "duration": 5114.42725,
+  "segments": [
+    {
+      "chunk": 0,
+      "start": 0.0,
+      "end": 6.2,
+      "text": " Alright, so"
+    },
+    {
+      "chunk": 0,
+      "start": 6.2,
+      "end": 8.78,
+      "text": " Good morning everybody"
+    },
+    {
+      "chunk": 0,
+      "start": 8.78,
+      "end": 10.98,
+      "text": " It's Monday, again"
+    },
+    {
+      "chunk": 0,
+      "start": 10.98,
+      "end": 12.54,
+      "text": " 8am, brutal"
+    },
+    {
+      "chunk": 0,
+      "start": 12.54,
+      "end": 14.24,
+      "text": " I will"
+    },
+    {
+      "chunk": 0,
+      "start": 14.24,
+      "end": 17.1,
+      "text": " Not that I ever have any choice in the matter"
+    },
+    {
+      "chunk": 0,
+      "start": 17.1,
+      "end": 19.9,
+      "text": " But it would be so nice never to teach at 8am again"
+    },
+    {
+      "chunk": 0,
+      "start": 19.9,
+      "end": 21.28,
+      "text": " On a Monday"
+    },
+    {
+      "chunk": 0,
+      "start": 21.28,
+      "end": 22.74,
+      "text": " I mean"
+    },
+    {
+      "chunk": 0,
+      "start": 22.74,
+      "end": 24.28,
+      "text": " 8am"
+    },
+    {
+      "chunk": 0,
+      "start": 24.28,
+      "end": 27.62,
+      "text": " It's too early"
+    },
+    {
+      "chunk": 0,
+      "start": 27.62,
+      "end": 29.44,
+      "text": " So"
+    },
+    {
+      "chunk": 0,
+      "start": 29.44,
+      "end": 31.18,
+      "text": " here we are"
+    },
+    {
+      "chunk": 0,
+      "start": 31.18,
+      "end": 34.58,
+      "text": " and"
+    },
+    {
+      "chunk": 0,
+      "start": 34.58,
+      "end": 43.44,
+      "text": " and"
+    },
+    {
+      "chunk": 0,
+      "start": 43.44,
+      "end": 47.82,
+      "text": " and we're going to wrap up the last"
+    },
+    {
+      "chunk": 0,
+      "start": 47.82,
+      "end": 49.92,
+      "text": " module today and then tomorrow we'll have"
+    },
+    {
+      "chunk": 0,
+      "start": 49.92,
+      "end": 51.34,
+      "text": " a review"
+    },
+    {
+      "chunk": 0,
+      "start": 51.34,
+      "end": 54.08,
+      "text": " and that's it for the course"
+    },
+    {
+      "chunk": 0,
+      "start": 54.08,
+      "end": 55.7,
+      "text": " so"
+    },
+    {
+      "chunk": 0,
+      "start": 55.7,
+      "end": 57.86,
+      "text": " it seemed like"
+    },
+    {
+      "chunk": 0,
+      "start": 57.86,
+      "end": 64.16,
+      "text": " the semester just kind of flew by, but here we are. So the, the rest of today, we're going to"
+    },
+    {
+      "chunk": 0,
+      "start": 64.16,
+      "end": 70.68,
+      "text": " talk about, um, or today we're going to talk about recurrent neural networks and, uh, a bit about the,"
+    },
+    {
+      "chunk": 0,
+      "start": 70.76,
+      "end": 80.84,
+      "text": " uh, this double descent stuff. So, um, yeah, in this, so far what we've talked about,"
+    },
+    {
+      "chunk": 0,
+      "start": 80.84,
+      "end": 86.88,
+      "text": " about neural networks, which has not been, you know, the focus of the course, um, why?"
+    },
+    {
+      "chunk": 0,
+      "start": 87.86,
+      "end": 92.86,
+      "text": " we started with just the normal feedforward stuff, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 92.92,
+      "end": 96.26,
+      "text": " Which is, you know, the workhorse of the machine learning world."
+    },
+    {
+      "chunk": 0,
+      "start": 96.4,
+      "end": 97.18,
+      "text": " It's everywhere."
+    },
+    {
+      "chunk": 0,
+      "start": 98.14,
+      "end": 99.1,
+      "text": " It's the basis."
+    },
+    {
+      "chunk": 0,
+      "start": 99.36,
+      "end": 100.94,
+      "text": " It's what they started with."
+    },
+    {
+      "chunk": 0,
+      "start": 102.08,
+      "end": 106.0,
+      "text": " It's, yeah, good reason to focus on that."
+    },
+    {
+      "chunk": 0,
+      "start": 106.48,
+      "end": 108.76,
+      "text": " And then we went to convolutional neural networks,"
+    },
+    {
+      "chunk": 0,
+      "start": 108.76,
+      "end": 113.88,
+      "text": " which again was a great idea of how we can, you know,"
+    },
+    {
+      "chunk": 0,
+      "start": 114.74,
+      "end": 116.58,
+      "text": " extend the capabilities of the model"
+    },
+    {
+      "chunk": 0,
+      "start": 116.58,
+      "end": 120.96,
+      "text": " or of this paradigm of the speed forward network."
+    },
+    {
+      "chunk": 0,
+      "start": 121.74,
+      "end": 124.68,
+      "text": " And in particular, you just have to learn these patches,"
+    },
+    {
+      "chunk": 0,
+      "start": 124.9,
+      "end": 126.0,
+      "text": " these weights on the patches."
+    },
+    {
+      "chunk": 0,
+      "start": 126.16,
+      "end": 128.12,
+      "text": " So in many ways, you could think of it as a simplification,"
+    },
+    {
+      "chunk": 0,
+      "start": 129.16,
+      "end": 130.78,
+      "text": " but a very clever one."
+    },
+    {
+      "chunk": 0,
+      "start": 133.36,
+      "end": 135.26,
+      "text": " Now we're going to talk about another way"
+    },
+    {
+      "chunk": 0,
+      "start": 135.26,
+      "end": 139.46,
+      "text": " of sort of extending the model"
+    },
+    {
+      "chunk": 0,
+      "start": 139.46,
+      "end": 142.54,
+      "text": " beyond what you think its capabilities are."
+    },
+    {
+      "chunk": 0,
+      "start": 142.54,
+      "end": 160.68,
+      "text": " and in particular by this idea of using recurrence and it you know it a way so that you can have the model go beyond what you can do"
+    },
+    {
+      "chunk": 0,
+      "start": 160.68,
+      "end": 163.34,
+      "text": " with just a feed-forward network, with just a simple network."
+    },
+    {
+      "chunk": 0,
+      "start": 163.92,
+      "end": 165.92,
+      "text": " All right, so let's see what we mean by that."
+    },
+    {
+      "chunk": 0,
+      "start": 166.48,
+      "end": 172.32,
+      "text": " In these recurrent neural networks, mainly the motivation has been sequential data."
+    },
+    {
+      "chunk": 0,
+      "start": 173.1,
+      "end": 174.34,
+      "text": " So time series."
+    },
+    {
+      "chunk": 0,
+      "start": 174.34,
+      "end": 175.88,
+      "text": " There's a temporal component."
+    },
+    {
+      "chunk": 0,
+      "start": 176.5,
+      "end": 177.7,
+      "text": " It's what comes next."
+    },
+    {
+      "chunk": 0,
+      "start": 178.34,
+      "end": 181.16,
+      "text": " Sequential data always has that notion of what's coming next."
+    },
+    {
+      "chunk": 0,
+      "start": 182.7,
+      "end": 186.26,
+      "text": " RNNs are often used in language modeling."
+    },
+    {
+      "chunk": 0,
+      "start": 187.95999,
+      "end": 196.62,
+      "text": " Basic RNNs were the first models, as far as I know, in machine learning to be used in language modeling."
+    },
+    {
+      "chunk": 0,
+      "start": 196.62,
+      "end": 208.4,
+      "text": " I mean, there was lots of stuff before that, but, you know, this is like the precursor to the language model that we know now."
+    },
+    {
+      "chunk": 0,
+      "start": 209.28,
+      "end": 212.66,
+      "text": " And the whole question is, what's the next word or token?"
+    },
+    {
+      "chunk": 0,
+      "start": 213.88,
+      "end": 216.2,
+      "text": " I'm sure you guys have heard the word token many times."
+    },
+    {
+      "chunk": 0,
+      "start": 218.3,
+      "end": 224.44,
+      "text": " And so then, you know, figuring out what word comes next and building a model for predicting the next word."
+    },
+    {
+      "chunk": 0,
+      "start": 224.44,
+      "end": 228.23999,
+      "text": " I mean that really is kind of how all of these large language models"
+    },
+    {
+      "chunk": 0,
+      "start": 228.23999,
+      "end": 230.88,
+      "text": " or not all of them but how many of them were trained"
+    },
+    {
+      "chunk": 0,
+      "start": 230.88,
+      "end": 232.9,
+      "text": " is for next word prediction"
+    },
+    {
+      "chunk": 0,
+      "start": 232.9,
+      "end": 237.2,
+      "text": " not all, there's other ones that do every word"
+    },
+    {
+      "chunk": 0,
+      "start": 237.2,
+      "end": 237.98001,
+      "text": " but yeah"
+    },
+    {
+      "chunk": 0,
+      "start": 237.98001,
+      "end": 243.16,
+      "text": " largely this is the thing"
+    },
+    {
+      "chunk": 0,
+      "start": 243.16,
+      "end": 245.08,
+      "text": " so"
+    },
+    {
+      "chunk": 0,
+      "start": 245.08,
+      "end": 249.68,
+      "text": " other neural networks of course would be the length of the input"
+    },
+    {
+      "chunk": 0,
+      "start": 249.68,
+      "end": 252.22,
+      "text": " if you have a fixed length"
+    },
+    {
+      "chunk": 0,
+      "start": 252.22,
+      "end": 258.3,
+      "text": " and the sequentiality."
+    },
+    {
+      "chunk": 0,
+      "start": 258.58002,
+      "end": 259.46,
+      "text": " Is that even a word?"
+    },
+    {
+      "chunk": 0,
+      "start": 261.54,
+      "end": 261.76,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 0,
+      "start": 263.32,
+      "end": 265.72,
+      "text": " Specifically, the motivation for current networks"
+    },
+    {
+      "chunk": 0,
+      "start": 265.72,
+      "end": 267.8,
+      "text": " is to have a model that considers"
+    },
+    {
+      "chunk": 0,
+      "start": 267.8,
+      "end": 270.22,
+      "text": " that things come sequentially."
+    },
+    {
+      "chunk": 0,
+      "start": 270.88,
+      "end": 272.5,
+      "text": " That's the idea here."
+    },
+    {
+      "chunk": 0,
+      "start": 274.06,
+      "end": 276.14,
+      "text": " So these RNNs are suitable for data"
+    },
+    {
+      "chunk": 0,
+      "start": 276.14,
+      "end": 278.7,
+      "text": " with sequential characters like text, time series,"
+    },
+    {
+      "chunk": 0,
+      "start": 278.9,
+      "end": 280.18,
+      "text": " as those things I've just said."
+    },
+    {
+      "chunk": 0,
+      "start": 282.22,
+      "end": 289.56,
+      "text": " yeah and more advanced versions like seek to seek and all the things that we have now like"
+    },
+    {
+      "chunk": 0,
+      "start": 289.56,
+      "end": 309.2,
+      "text": " you know clod and chat jpt and all these large language models are you know built on on things that started here So how does this work Well we have X as our input and you have this is your output"
+    },
+    {
+      "chunk": 0,
+      "start": 309.32,
+      "end": 310.96,
+      "text": " so that's your Y, essentially."
+    },
+    {
+      "chunk": 0,
+      "start": 312.44,
+      "end": 319.7,
+      "text": " And, you know, without this U thing,"
+    },
+    {
+      "chunk": 0,
+      "start": 320.62,
+      "end": 323.52,
+      "text": " then this would just be a feed-forward network, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 323.52,
+      "end": 333.1,
+      "text": " You'd just be O is your output, A is the hidden stuff, and X is your input, and you would just train forward."
+    },
+    {
+      "chunk": 0,
+      "start": 333.68,
+      "end": 338.86,
+      "text": " But what we're going to do now is that we're going to carry A over sequentially."
+    },
+    {
+      "chunk": 0,
+      "start": 339.68,
+      "end": 345.6,
+      "text": " And the only reason this still makes sense is because there's a dimension that we care about, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 345.6,
+      "end": 357.22,
+      "text": " Like this is like the dimension of the sequence, the direction of the sequence, the time domain, whatever, whatever thing is, is, has created the sequence."
+    },
+    {
+      "chunk": 0,
+      "start": 357.94,
+      "end": 368.14,
+      "text": " That's why we can do this trick of moving a to a two to a three to a T E L minus one."
+    },
+    {
+      "chunk": 0,
+      "start": 368.32,
+      "end": 368.86,
+      "text": " Right."
+    },
+    {
+      "chunk": 0,
+      "start": 369.28,
+      "end": 372.68,
+      "text": " Because if there was no order to it, if these were just samples, right."
+    },
+    {
+      "chunk": 0,
+      "start": 372.68,
+      "end": 380.66,
+      "text": " Let's say we just had, you know, images that were disconnected in time."
+    },
+    {
+      "chunk": 0,
+      "start": 381.76,
+      "end": 386.02,
+      "text": " Just someone's random or a bunch of pictures from the Internet."
+    },
+    {
+      "chunk": 0,
+      "start": 387.26,
+      "end": 390.12,
+      "text": " One picture doesn't necessarily lead to the next."
+    },
+    {
+      "chunk": 0,
+      "start": 390.3,
+      "end": 392.91998,
+      "text": " So there would be no obvious ordering of the pictures."
+    },
+    {
+      "chunk": 0,
+      "start": 393.4,
+      "end": 400.86,
+      "text": " So then it wouldn't make any sense to carry over any information about the previous picture because it has nothing to do with it."
+    },
+    {
+      "chunk": 0,
+      "start": 400.86,
+      "end": 406.8,
+      "text": " But in this case, there's a strong reason to believe that there is something to do with it."
+    },
+    {
+      "chunk": 0,
+      "start": 407.38,
+      "end": 408.76,
+      "text": " So then you carry it over."
+    },
+    {
+      "chunk": 0,
+      "start": 409.48,
+      "end": 412.9,
+      "text": " The interesting thing is that this just keeps going, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 414.36,
+      "end": 423.56,
+      "text": " If L is a billion, then essentially even the first thing in your sequence is affecting the billionth output"
+    },
+    {
+      "chunk": 0,
+      "start": 423.56,
+      "end": 427.6,
+      "text": " because it's carried through the model."
+    },
+    {
+      "chunk": 0,
+      "start": 427.6,
+      "end": 431.1,
+      "text": " in theory"
+    },
+    {
+      "chunk": 0,
+      "start": 431.1,
+      "end": 433.16,
+      "text": " the information will get lost"
+    },
+    {
+      "chunk": 0,
+      "start": 433.16,
+      "end": 433.86,
+      "text": " because it just"
+    },
+    {
+      "chunk": 0,
+      "start": 433.86,
+      "end": 436.9,
+      "text": " yeah"
+    },
+    {
+      "chunk": 0,
+      "start": 436.9,
+      "end": 438.64,
+      "text": " a billion is pretty long"
+    },
+    {
+      "chunk": 0,
+      "start": 438.64,
+      "end": 441.68,
+      "text": " but"
+    },
+    {
+      "chunk": 0,
+      "start": 441.68,
+      "end": 444.36,
+      "text": " the idea is still nice"
+    },
+    {
+      "chunk": 0,
+      "start": 444.36,
+      "end": 463.9,
+      "text": " so x is your input and then you have the output o and you have the sequence a right for the for text for example you want to just create some arbitrary things so this would"
+    },
+    {
+      "chunk": 0,
+      "start": 463.9,
+      "end": 469.78,
+      "text": " be a one-hot encoding of text these are 20 words so this would be your encoding model this could be"
+    },
+    {
+      "chunk": 0,
+      "start": 469.78,
+      "end": 470.98,
+      "text": " thought of as the tokens."
+    },
+    {
+      "chunk": 0,
+      "start": 472.28,
+      "end": 473.88,
+      "text": " Often you want to learn these things,"
+    },
+    {
+      "chunk": 0,
+      "start": 474.02,
+      "end": 475.38,
+      "text": " but in this case you can just"
+    },
+    {
+      "chunk": 0,
+      "start": 475.38,
+      "end": 477.8,
+      "text": " set them equal to"
+    },
+    {
+      "chunk": 0,
+      "start": 477.8,
+      "end": 480.02,
+      "text": " some random number. That's fine."
+    },
+    {
+      "chunk": 0,
+      "start": 482.22,
+      "end": 483.9,
+      "text": " And then you can"
+    },
+    {
+      "chunk": 0,
+      "start": 483.9,
+      "end": 485.78,
+      "text": " embed them so that it's"
+    },
+    {
+      "chunk": 0,
+      "start": 485.78,
+      "end": 487.38,
+      "text": " fewer dimensions."
+    },
+    {
+      "chunk": 0,
+      "start": 487.96,
+      "end": 489.24,
+      "text": " No reason to have it so big."
+    },
+    {
+      "chunk": 0,
+      "start": 491.68,
+      "end": 493.86,
+      "text": " And there's a lot of tokenizers"
+    },
+    {
+      "chunk": 0,
+      "start": 493.86,
+      "end": 495.28,
+      "text": " and things like that that"
+    },
+    {
+      "chunk": 0,
+      "start": 495.28,
+      "end": 496.9,
+      "text": " will take"
+    },
+    {
+      "chunk": 0,
+      "start": 496.9,
+      "end": 499.74,
+      "text": " words. And often you don't want to"
+    },
+    {
+      "chunk": 0,
+      "start": 499.74,
+      "end": 502.8,
+      "text": " use just the, you don't want to use the word, but use a word part."
+    },
+    {
+      "chunk": 0,
+      "start": 504.32,
+      "end": 507.74,
+      "text": " Right? So there's a lot of ways of trying to take text and convert them"
+    },
+    {
+      "chunk": 0,
+      "start": 507.74,
+      "end": 511.78,
+      "text": " into tokens. But the idea is that we want to"
+    },
+    {
+      "chunk": 0,
+      "start": 511.78,
+      "end": 515.08,
+      "text": " for a given thing that we want to make a sequence of,"
+    },
+    {
+      "chunk": 0,
+      "start": 515.56,
+      "end": 518.92,
+      "text": " we want to determine what is the unit of the sequence, in this case"
+    },
+    {
+      "chunk": 0,
+      "start": 518.92,
+      "end": 523.76,
+      "text": " words. I think one of the more"
+    },
+    {
+      "chunk": 0,
+      "start": 523.76,
+      "end": 527.9,
+      "text": " yeah, but it could be letters, it could be word parts, it could be a lot of things."
+    },
+    {
+      "chunk": 0,
+      "start": 527.9,
+      "end": 531.14,
+      "text": " and so you take those things"
+    },
+    {
+      "chunk": 0,
+      "start": 531.14,
+      "end": 532.33997,
+      "text": " you convert them to tokens"
+    },
+    {
+      "chunk": 0,
+      "start": 532.33997,
+      "end": 534.5,
+      "text": " you make a small embedding"
+    },
+    {
+      "chunk": 0,
+      "start": 534.5,
+      "end": 535.78,
+      "text": " if you want"
+    },
+    {
+      "chunk": 0,
+      "start": 535.78,
+      "end": 538.12,
+      "text": " and now that's your X"
+    },
+    {
+      "chunk": 0,
+      "start": 538.12,
+      "end": 540.96,
+      "text": " and then"
+    },
+    {
+      "chunk": 0,
+      "start": 540.96,
+      "end": 542.76,
+      "text": " we have the A's"
+    },
+    {
+      "chunk": 0,
+      "start": 542.76,
+      "end": 545.82,
+      "text": " these are the A's here"
+    },
+    {
+      "chunk": 0,
+      "start": 545.82,
+      "end": 550.2,
+      "text": " these are the hidden units"
+    },
+    {
+      "chunk": 0,
+      "start": 550.2,
+      "end": 553.54,
+      "text": " so they're going to be determined by"
+    },
+    {
+      "chunk": 0,
+      "start": 553.54,
+      "end": 554.83997,
+      "text": " you know"
+    },
+    {
+      "chunk": 0,
+      "start": 554.83997,
+      "end": 555.82,
+      "text": " the weights"
+    },
+    {
+      "chunk": 0,
+      "start": 555.82,
+      "end": 560.78,
+      "text": " a weighted sum of the inputs"
+    },
+    {
+      "chunk": 0,
+      "start": 560.78,
+      "end": 564.38,
+      "text": " in an activation function."
+    },
+    {
+      "chunk": 0,
+      "start": 564.56,
+      "end": 567.83997,
+      "text": " So here we have A's."
+    },
+    {
+      "chunk": 0,
+      "start": 568.1,
+      "end": 569.18,
+      "text": " These are the hidden units."
+    },
+    {
+      "chunk": 0,
+      "start": 571.26,
+      "end": 574.24,
+      "text": " And so what we have is some bias term."
+    },
+    {
+      "chunk": 0,
+      "start": 575.14,
+      "end": 578.16003,
+      "text": " We have a weighted sum of the inputs to,"
+    },
+    {
+      "chunk": 0,
+      "start": 578.83997,
+      "end": 580.9,
+      "text": " you know, these X's are these tokens"
+    },
+    {
+      "chunk": 0,
+      "start": 580.9,
+      "end": 584.6,
+      "text": " or the words or whatever the thing"
+    },
+    {
+      "chunk": 0,
+      "start": 584.6,
+      "end": 586.18,
+      "text": " you're making a sequence of,"
+    },
+    {
+      "chunk": 0,
+      "start": 587.1,
+      "end": 590.74,
+      "text": " plus a weighted sum of the previous"
+    },
+    {
+      "chunk": 0,
+      "start": 590.74,
+      "end": 599.02,
+      "text": " hidden values of the previous hidden activations."
+    },
+    {
+      "chunk": 1,
+      "start": 600.0,
+      "end": 606.14,
+      "text": " Right? And that's how we're carrying the information across the sequence."
+    },
+    {
+      "chunk": 1,
+      "start": 609.04,
+      "end": 613.54,
+      "text": " And then we simply determine the output as this."
+    },
+    {
+      "chunk": 1,
+      "start": 613.98,
+      "end": 618.66,
+      "text": " So as, again, I have another bias term and then a weighted sum."
+    },
+    {
+      "chunk": 1,
+      "start": 620.32,
+      "end": 624.32,
+      "text": " In this case, in this particular one, we have no activation function."
+    },
+    {
+      "chunk": 1,
+      "start": 624.32,
+      "end": 625.76,
+      "text": " We're just assuming a linear output."
+    },
+    {
+      "chunk": 1,
+      "start": 625.76,
+      "end": 628.8,
+      "text": " but that would depend on what"
+    },
+    {
+      "chunk": 1,
+      "start": 628.8,
+      "end": 630.72,
+      "text": " you would pick"
+    },
+    {
+      "chunk": 1,
+      "start": 630.72,
+      "end": 632.06,
+      "text": " just like we talked about before"
+    },
+    {
+      "chunk": 1,
+      "start": 632.06,
+      "end": 634.64,
+      "text": " with the feed forward network"
+    },
+    {
+      "chunk": 1,
+      "start": 634.64,
+      "end": 636.46,
+      "text": " you could have a linear output"
+    },
+    {
+      "chunk": 1,
+      "start": 636.46,
+      "end": 637.92,
+      "text": " you could have a soft max"
+    },
+    {
+      "chunk": 1,
+      "start": 637.92,
+      "end": 640.48,
+      "text": " you could have lots of options"
+    },
+    {
+      "chunk": 1,
+      "start": 640.48,
+      "end": 641.14,
+      "text": " so"
+    },
+    {
+      "chunk": 1,
+      "start": 641.14,
+      "end": 645.58,
+      "text": " the activation function"
+    },
+    {
+      "chunk": 1,
+      "start": 645.58,
+      "end": 646.72,
+      "text": " for the output would depend on"
+    },
+    {
+      "chunk": 1,
+      "start": 646.72,
+      "end": 648.14,
+      "text": " what the goal is of the model"
+    },
+    {
+      "chunk": 1,
+      "start": 648.14,
+      "end": 649.7,
+      "text": " but essentially"
+    },
+    {
+      "chunk": 1,
+      "start": 649.7,
+      "end": 652.62,
+      "text": " you are just taking"
+    },
+    {
+      "chunk": 1,
+      "start": 652.62,
+      "end": 654.9,
+      "text": " a weighted sum"
+    },
+    {
+      "chunk": 1,
+      "start": 654.9,
+      "end": 658.34,
+      "text": " of this hidden layer."
+    },
+    {
+      "chunk": 1,
+      "start": 658.96,
+      "end": 662.84,
+      "text": " Just the previous one, just the one now. And that's what we"
+    },
+    {
+      "chunk": 1,
+      "start": 662.84,
+      "end": 663.84,
+      "text": " can see here."
+    },
+    {
+      "chunk": 1,
+      "start": 666.84,
+      "end": 669.16,
+      "text": " That it comes here and the"
+    },
+    {
+      "chunk": 1,
+      "start": 669.16,
+      "end": 673.64,
+      "text": " information is coming through in the hidden."
+    },
+    {
+      "chunk": 1,
+      "start": 675.14,
+      "end": 678.52,
+      "text": " So in terms of a graph, it kind of looks like"
+    },
+    {
+      "chunk": 1,
+      "start": 678.52,
+      "end": 683.12,
+      "text": " a Markov chain, if you know what that is."
+    },
+    {
+      "chunk": 1,
+      "start": 684.9,
+      "end": 688.06,
+      "text": " okay"
+    },
+    {
+      "chunk": 1,
+      "start": 688.06,
+      "end": 690.98,
+      "text": " so"
+    },
+    {
+      "chunk": 1,
+      "start": 690.98,
+      "end": 693.4,
+      "text": " oh yeah and then the cool thing is"
+    },
+    {
+      "chunk": 1,
+      "start": 693.4,
+      "end": 694.08,
+      "text": " is that"
+    },
+    {
+      "chunk": 1,
+      "start": 694.08,
+      "end": 699.64,
+      "text": " if you look at this you'd think"
+    },
+    {
+      "chunk": 1,
+      "start": 699.64,
+      "end": 700.02,
+      "text": " oh"
+    },
+    {
+      "chunk": 1,
+      "start": 700.02,
+      "end": 703.3,
+      "text": " this probably has a shitload of parameters"
+    },
+    {
+      "chunk": 1,
+      "start": 703.3,
+      "end": 705.74,
+      "text": " because you essentially are trying to keep track of stuff"
+    },
+    {
+      "chunk": 1,
+      "start": 705.74,
+      "end": 708.16,
+      "text": " as it goes through over the sequence"
+    },
+    {
+      "chunk": 1,
+      "start": 708.16,
+      "end": 709.16,
+      "text": " right"
+    },
+    {
+      "chunk": 1,
+      "start": 709.16,
+      "end": 711.36,
+      "text": " but if you notice here we just say"
+    },
+    {
+      "chunk": 1,
+      "start": 711.36,
+      "end": 713.58,
+      "text": " B and U and W every time"
+    },
+    {
+      "chunk": 1,
+      "start": 713.58,
+      "end": 715.9,
+      "text": " it's because we don't have"
+    },
+    {
+      "chunk": 1,
+      "start": 715.9,
+      "end": 717.6800000000001,
+      "text": " if it was like this"
+    },
+    {
+      "chunk": 1,
+      "start": 717.6800000000001,
+      "end": 722.36,
+      "text": " that would be a very different model"
+    },
+    {
+      "chunk": 1,
+      "start": 722.36,
+      "end": 724.4,
+      "text": " if the weights were changing"
+    },
+    {
+      "chunk": 1,
+      "start": 724.4,
+      "end": 726.28,
+      "text": " every time but they don't"
+    },
+    {
+      "chunk": 1,
+      "start": 726.28,
+      "end": 728.42,
+      "text": " in fact"
+    },
+    {
+      "chunk": 1,
+      "start": 728.42,
+      "end": 730.3,
+      "text": " we assume the same weights"
+    },
+    {
+      "chunk": 1,
+      "start": 730.3,
+      "end": 732.48,
+      "text": " B, U, and W"
+    },
+    {
+      "chunk": 1,
+      "start": 732.48,
+      "end": 733.86,
+      "text": " every single time"
+    },
+    {
+      "chunk": 1,
+      "start": 733.86,
+      "end": 737.54,
+      "text": " you learn them"
+    },
+    {
+      "chunk": 1,
+      "start": 737.54,
+      "end": 739.06,
+      "text": " you still learn them through training"
+    },
+    {
+      "chunk": 1,
+      "start": 739.06,
+      "end": 742.22,
+      "text": " but they don't change depending on where you are"
+    },
+    {
+      "chunk": 1,
+      "start": 742.22,
+      "end": 742.92,
+      "text": " in the sequence"
+    },
+    {
+      "chunk": 1,
+      "start": 742.92,
+      "end": 755.06,
+      "text": " So that a very different thing And that also why the gradients behave well why the training behaves well is because it not a model with so many parameters"
+    },
+    {
+      "chunk": 1,
+      "start": 755.06,
+      "end": 757.78,
+      "text": " that it starts collapsing or getting weird."
+    },
+    {
+      "chunk": 1,
+      "start": 759.1,
+      "end": 763.9,
+      "text": " So you learn the B, the U, and the W for the whole thing."
+    },
+    {
+      "chunk": 1,
+      "start": 766.2,
+      "end": 766.8,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 1,
+      "start": 767.1800000000001,
+      "end": 769.3,
+      "text": " So it's a form of weight sharing."
+    },
+    {
+      "chunk": 1,
+      "start": 769.7,
+      "end": 771.2,
+      "text": " Yeah, here, weight sharing."
+    },
+    {
+      "chunk": 1,
+      "start": 771.2,
+      "end": 775.28,
+      "text": " that we're using the same weights over the"
+    },
+    {
+      "chunk": 1,
+      "start": 775.28,
+      "end": 779.9,
+      "text": " yeah, that these betas"
+    },
+    {
+      "chunk": 1,
+      "start": 779.9,
+      "end": 783.8,
+      "text": " are always the same, so are the W's"
+    },
+    {
+      "chunk": 1,
+      "start": 783.8,
+      "end": 786.98,
+      "text": " and the U's, there's the U"
+    },
+    {
+      "chunk": 1,
+      "start": 786.98,
+      "end": 789.44,
+      "text": " so W and B"
+    },
+    {
+      "chunk": 1,
+      "start": 789.44,
+      "end": 794.66,
+      "text": " W and U and beta, or B, are just shared"
+    },
+    {
+      "chunk": 1,
+      "start": 794.66,
+      "end": 796.48,
+      "text": " and easy"
+    },
+    {
+      "chunk": 1,
+      "start": 796.48,
+      "end": 811.01999,
+      "text": " so just like with the other models we train them the same way we we define a loss function for"
+    },
+    {
+      "chunk": 1,
+      "start": 811.01999,
+      "end": 816.7,
+      "text": " example in this one that we just talked about here where the output is some linear thing"
+    },
+    {
+      "chunk": 1,
+      "start": 816.7,
+      "end": 825.0,
+      "text": " that's of course the same as assuming that you have a least squares regression style output"
+    },
+    {
+      "chunk": 1,
+      "start": 825.0,
+      "end": 832.5,
+      "text": " and so in that case we would be minimizing one like that if it was a different loss like a soft"
+    },
+    {
+      "chunk": 1,
+      "start": 832.5,
+      "end": 837.58,
+      "text": " max or sigmoid then it would be that other loss functions those other loss functions like we"
+    },
+    {
+      "chunk": 1,
+      "start": 837.58,
+      "end": 849.26001,
+      "text": " talked about earlier and um and so we train it this way right and it looks like the only thing"
+    },
+    {
+      "chunk": 1,
+      "start": 849.26001,
+      "end": 850.92,
+      "text": " that's relevant is the"
+    },
+    {
+      "chunk": 1,
+      "start": 850.92,
+      "end": 853.0400099999999,
+      "text": " is the last observation"
+    },
+    {
+      "chunk": 1,
+      "start": 853.0400099999999,
+      "end": 855.2,
+      "text": " right because that really"
+    },
+    {
+      "chunk": 1,
+      "start": 855.2,
+      "end": 855.92,
+      "text": " is the goal"
+    },
+    {
+      "chunk": 1,
+      "start": 855.92,
+      "end": 859.04,
+      "text": " but remember the last observation"
+    },
+    {
+      "chunk": 1,
+      "start": 859.04,
+      "end": 860.54,
+      "text": " is just the last observation"
+    },
+    {
+      "chunk": 1,
+      "start": 860.54,
+      "end": 862.56,
+      "text": " in that part"
+    },
+    {
+      "chunk": 1,
+      "start": 862.56,
+      "end": 864.06,
+      "text": " you still have to"
+    },
+    {
+      "chunk": 1,
+      "start": 864.06,
+      "end": 867.0,
+      "text": " you still train it"
+    },
+    {
+      "chunk": 1,
+      "start": 867.0,
+      "end": 868.3199999999999,
+      "text": " also on this"
+    },
+    {
+      "chunk": 1,
+      "start": 868.3199999999999,
+      "end": 871.48,
+      "text": " right it still"
+    },
+    {
+      "chunk": 1,
+      "start": 871.48,
+      "end": 873.46002,
+      "text": " predicts that one"
+    },
+    {
+      "chunk": 1,
+      "start": 873.46002,
+      "end": 875.6,
+      "text": " also given the input"
+    },
+    {
+      "chunk": 1,
+      "start": 875.6,
+      "end": 876.26,
+      "text": " before it"
+    },
+    {
+      "chunk": 1,
+      "start": 879.26,
+      "end": 880.6800000000001,
+      "text": " But you would write it this way."
+    },
+    {
+      "chunk": 1,
+      "start": 881.3,
+      "end": 882.0200199999999,
+      "text": " Hold on one sec."
+    },
+    {
+      "chunk": 1,
+      "start": 887.9,
+      "end": 888.36,
+      "text": " Sorry."
+    },
+    {
+      "chunk": 1,
+      "start": 889.4799800000001,
+      "end": 890.38,
+      "text": " My phone away."
+    },
+    {
+      "chunk": 1,
+      "start": 892.06,
+      "end": 893.26,
+      "text": " All right, so..."
+    },
+    {
+      "chunk": 1,
+      "start": 896.26,
+      "end": 906.76,
+      "text": " Yeah and Yeah and as we showed that all the observations do"
+    },
+    {
+      "chunk": 1,
+      "start": 906.76,
+      "end": 909.4200000000001,
+      "text": " or all the x's do contribute to the last one"
+    },
+    {
+      "chunk": 1,
+      "start": 909.4200000000001,
+      "end": 912.9,
+      "text": " because it's always pulled forward through the a's"
+    },
+    {
+      "chunk": 1,
+      "start": 912.9,
+      "end": 917.98,
+      "text": " but we essentially are minimizing this function"
+    },
+    {
+      "chunk": 1,
+      "start": 917.98,
+      "end": 923.8,
+      "text": " and all of these are vectors"
+    },
+    {
+      "chunk": 1,
+      "start": 923.8,
+      "end": 925.76,
+      "text": " it's kind of obvious"
+    },
+    {
+      "chunk": 1,
+      "start": 925.76,
+      "end": 927.46,
+      "text": " let's see"
+    },
+    {
+      "chunk": 1,
+      "start": 927.46,
+      "end": 934.3199999999999,
+      "text": " so why are the outputs there at all"
+    },
+    {
+      "chunk": 1,
+      "start": 934.3199999999999,
+      "end": 938.48,
+      "text": " I mean they are trained"
+    },
+    {
+      "chunk": 1,
+      "start": 938.48,
+      "end": 939.8,
+      "text": " they are predicted"
+    },
+    {
+      "chunk": 1,
+      "start": 939.8,
+      "end": 941.3,
+      "text": " and also"
+    },
+    {
+      "chunk": 1,
+      "start": 941.3,
+      "end": 947.58002,
+      "text": " yeah you're training"
+    },
+    {
+      "chunk": 1,
+      "start": 947.58002,
+      "end": 949.98,
+      "text": " each one"
+    },
+    {
+      "chunk": 1,
+      "start": 949.98,
+      "end": 951.9,
+      "text": " it's kind of a weird question"
+    },
+    {
+      "chunk": 1,
+      "start": 951.9,
+      "end": 955.6800000000001,
+      "text": " because this is the loss function, but you can see here"
+    },
+    {
+      "chunk": 1,
+      "start": 955.6800000000001,
+      "end": 959.3399999999999,
+      "text": " how the model is constructed if"
+    },
+    {
+      "chunk": 1,
+      "start": 959.3399999999999,
+      "end": 965.52,
+      "text": " I really wish I"
+    },
+    {
+      "chunk": 1,
+      "start": 965.52,
+      "end": 969.72,
+      "text": " if all this was gone and this was"
+    },
+    {
+      "chunk": 1,
+      "start": 969.72,
+      "end": 973.41998,
+      "text": " the L for that moment, then you train just that."
+    },
+    {
+      "chunk": 1,
+      "start": 974.3199999999999,
+      "end": 977.3399999999999,
+      "text": " So you do train using every single output."
+    },
+    {
+      "chunk": 1,
+      "start": 978.7,
+      "end": 980.94,
+      "text": " It's just you write the equation this way."
+    },
+    {
+      "chunk": 1,
+      "start": 981.9,
+      "end": 985.8,
+      "text": " because you want it to"
+    },
+    {
+      "chunk": 1,
+      "start": 985.8,
+      "end": 988.04,
+      "text": " where are we"
+    },
+    {
+      "chunk": 1,
+      "start": 988.04,
+      "end": 991.86,
+      "text": " like I said Monday morning"
+    },
+    {
+      "chunk": 1,
+      "start": 991.86,
+      "end": 993.36,
+      "text": " brutal so yeah"
+    },
+    {
+      "chunk": 1,
+      "start": 993.36,
+      "end": 995.9,
+      "text": " they're there because they're also used in the"
+    },
+    {
+      "chunk": 1,
+      "start": 995.9,
+      "end": 996.14,
+      "text": " training"
+    },
+    {
+      "chunk": 1,
+      "start": 996.14,
+      "end": 998.58002,
+      "text": " weird question"
+    },
+    {
+      "chunk": 1,
+      "start": 998.58002,
+      "end": 1002.58002,
+      "text": " they come for free"
+    },
+    {
+      "chunk": 1,
+      "start": 1002.58002,
+      "end": 1004.08002,
+      "text": " yeah"
+    },
+    {
+      "chunk": 1,
+      "start": 1004.08002,
+      "end": 1010.86,
+      "text": " seems like a"
+    },
+    {
+      "chunk": 1,
+      "start": 1010.86,
+      "end": 1014.1600000000001,
+      "text": " Does anyone see any deeper meaning in this question?"
+    },
+    {
+      "chunk": 1,
+      "start": 1014.3199999999999,
+      "end": 1016.24,
+      "text": " I mean, for me, it's just..."
+    },
+    {
+      "chunk": 1,
+      "start": 1016.24,
+      "end": 1016.5,
+      "text": " Okay."
+    },
+    {
+      "chunk": 1,
+      "start": 1017.4,
+      "end": 1019.08002,
+      "text": " Because you see the point, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 1019.12,
+      "end": 1019.8199999999999,
+      "text": " That you're training."
+    },
+    {
+      "chunk": 1,
+      "start": 1021.1800000000001,
+      "end": 1023.86,
+      "text": " You do use all of them for the training."
+    },
+    {
+      "chunk": 1,
+      "start": 1024.53998,
+      "end": 1026.9199800000001,
+      "text": " And you do sometimes just want to predict,"
+    },
+    {
+      "chunk": 1,
+      "start": 1027.53998,
+      "end": 1030.32,
+      "text": " based off of one input, what's the next one?"
+    },
+    {
+      "chunk": 1,
+      "start": 1031.6399999999999,
+      "end": 1034.84,
+      "text": " Because the sequence length is just a decision."
+    },
+    {
+      "chunk": 1,
+      "start": 1034.84,
+      "end": 1062.72,
+      "text": " okay so here an example you can fit it to the uh new york stock exchange this is a very popular thing to do And yeah so the stocks and time series in general is kind of a tricky thing"
+    },
+    {
+      "chunk": 1,
+      "start": 1062.94,
+      "end": 1068.46,
+      "text": " In particular, stocks and things on the market."
+    },
+    {
+      "chunk": 1,
+      "start": 1068.82,
+      "end": 1074.22,
+      "text": " Because often it's less about how the mean is changing and more about how the variance is changing."
+    },
+    {
+      "chunk": 1,
+      "start": 1074.22,
+      "end": 1075.66,
+      "text": " You have to consider both things."
+    },
+    {
+      "chunk": 1,
+      "start": 1076.4,
+      "end": 1078.2,
+      "text": " So the data can get quite nasty."
+    },
+    {
+      "chunk": 1,
+      "start": 1078.94,
+      "end": 1084.22,
+      "text": " And often how things are interacting and how they are working can be very complicated."
+    },
+    {
+      "chunk": 1,
+      "start": 1084.52,
+      "end": 1089.0800199999999,
+      "text": " So it's not crazy to want to go to a model that maybe we don't understand so well,"
+    },
+    {
+      "chunk": 1,
+      "start": 1089.16,
+      "end": 1092.22,
+      "text": " like a machine learning model, to get a prediction,"
+    },
+    {
+      "chunk": 1,
+      "start": 1092.6,
+      "end": 1099.6,
+      "text": " even if the, you know, because trying to do it with a model that you'd understand"
+    },
+    {
+      "chunk": 1,
+      "start": 1099.6,
+      "end": 1102.52,
+      "text": " would probably, is quite difficult."
+    },
+    {
+      "chunk": 1,
+      "start": 1104.22,
+      "end": 1119.98,
+      "text": " And since the goal here really is just forecasting, I should say that too, that with trading, you just really want to know what's coming next, who can predict best."
+    },
+    {
+      "chunk": 1,
+      "start": 1121.08,
+      "end": 1128.26,
+      "text": " So the data has, you know, it's every day and you want to predict this."
+    },
+    {
+      "chunk": 1,
+      "start": 1128.44,
+      "end": 1131.26,
+      "text": " All of these time series have a high autocorrelation."
+    },
+    {
+      "chunk": 1,
+      "start": 1131.56,
+      "end": 1133.7,
+      "text": " That's why time series is such a pain."
+    },
+    {
+      "chunk": 1,
+      "start": 1134.22,
+      "end": 1144.52,
+      "text": " This is autocorrelation, which breaks up, which means that since everything is autocorrelated, that your samples, your time points are not independent."
+    },
+    {
+      "chunk": 1,
+      "start": 1145.58,
+      "end": 1145.76,
+      "text": " Right?"
+    },
+    {
+      "chunk": 1,
+      "start": 1146.08,
+      "end": 1150.42,
+      "text": " So any model that you have is going to have to account for that dependency structure."
+    },
+    {
+      "chunk": 1,
+      "start": 1152.6399999999999,
+      "end": 1160.6399999999999,
+      "text": " And also your predictions and your confidence in your predictions have to know that these time points are correlated."
+    },
+    {
+      "chunk": 1,
+      "start": 1164.22,
+      "end": 1170.88,
+      "text": " So we're trying to predict the trading volume V from these three variables."
+    },
+    {
+      "chunk": 1,
+      "start": 1171.74,
+      "end": 1172.52,
+      "text": " All right."
+    },
+    {
+      "chunk": 1,
+      "start": 1172.8200000000002,
+      "end": 1173.96,
+      "text": " What were the variables again?"
+    },
+    {
+      "chunk": 1,
+      "start": 1173.96,
+      "end": 1182.22,
+      "text": " It was trading volume and returns."
+    },
+    {
+      "chunk": 1,
+      "start": 1185.9,
+      "end": 1193.98,
+      "text": " Yeah, V is volume returns and V is, yeah, what's the other one?"
+    },
+    {
+      "chunk": 1,
+      "start": 1194.22,
+      "end": 1196.52,
+      "text": " Z is then the volatility, I guess."
+    },
+    {
+      "chunk": 2,
+      "start": 1200.0,
+      "end": 1206.4,
+      "text": " we can think of volatility like the variance of the,"
+    },
+    {
+      "chunk": 2,
+      "start": 1206.48,
+      "end": 1207.14,
+      "text": " of the thing,"
+    },
+    {
+      "chunk": 2,
+      "start": 1207.36,
+      "end": 1211.02,
+      "text": " how much is changing each day."
+    },
+    {
+      "chunk": 2,
+      "start": 1213.54,
+      "end": 1215.3,
+      "text": " So we have that."
+    },
+    {
+      "chunk": 2,
+      "start": 1215.6,
+      "end": 1217.94,
+      "text": " All of these things are time series,"
+    },
+    {
+      "chunk": 2,
+      "start": 1218.04,
+      "end": 1219.22,
+      "text": " high autocorrelation,"
+    },
+    {
+      "chunk": 2,
+      "start": 1219.66,
+      "end": 1224.52,
+      "text": " and we want to predict V of T based off of these things,"
+    },
+    {
+      "chunk": 2,
+      "start": 1225.4,
+      "end": 1225.56,
+      "text": " right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1225.6,
+      "end": 1226.52,
+      "text": " Based off of these inputs."
+    },
+    {
+      "chunk": 2,
+      "start": 1226.52,
+      "end": 1236.86,
+      "text": " so how do we do this well we construct x of one to be this right so we're just constructing"
+    },
+    {
+      "chunk": 2,
+      "start": 1236.86,
+      "end": 1248.12,
+      "text": " x is the way um um you know working back in time so we determine a length that we want to consider"
+    },
+    {
+      "chunk": 2,
+      "start": 1248.12,
+      "end": 1256.32,
+      "text": " as our as the as or you know it is very much like the the token length in a large language"
+    },
+    {
+      "chunk": 2,
+      "start": 1256.32,
+      "end": 1259.76,
+      "text": " model. You want it to know about the previous"
+    },
+    {
+      "chunk": 2,
+      "start": 1259.76,
+      "end": 1263.64,
+      "text": " L things"
+    },
+    {
+      "chunk": 2,
+      "start": 1263.64,
+      "end": 1266.84,
+      "text": " for your prediction to work."
+    },
+    {
+      "chunk": 2,
+      "start": 1267.72,
+      "end": 1270.64,
+      "text": " In order for your prediction to..."
+    },
+    {
+      "chunk": 2,
+      "start": 1270.64,
+      "end": 1276.28,
+      "text": " You want to have it consider these things when making a prediction to the next one."
+    },
+    {
+      "chunk": 2,
+      "start": 1279.16,
+      "end": 1280.52,
+      "text": " Alright, so you need that."
+    },
+    {
+      "chunk": 2,
+      "start": 1282.02,
+      "end": 1285.2,
+      "text": " And then you formulate the problem as we showed it earlier."
+    },
+    {
+      "chunk": 2,
+      "start": 1286.32,
+      "end": 1290.62,
+      "text": " All right, let's go back to figure 10.12."
+    },
+    {
+      "chunk": 2,
+      "start": 1290.76,
+      "end": 1291.16,
+      "text": " What's that?"
+    },
+    {
+      "chunk": 2,
+      "start": 1295.66,
+      "end": 1299.16,
+      "text": " Yeah, so you formulate it like this again."
+    },
+    {
+      "chunk": 2,
+      "start": 1310.74,
+      "end": 1311.96,
+      "text": " Where are we?"
+    },
+    {
+      "chunk": 2,
+      "start": 1312.64,
+      "end": 1312.94,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 2,
+      "start": 1316.32,
+      "end": 1323.26,
+      "text": " Yeah, and of course, this is only a very simple version."
+    },
+    {
+      "chunk": 2,
+      "start": 1324.28,
+      "end": 1329.82,
+      "text": " There's ones where basically the output,"
+    },
+    {
+      "chunk": 2,
+      "start": 1330.78,
+      "end": 1334.02,
+      "text": " what we have is O, or I think it's O."
+    },
+    {
+      "chunk": 2,
+      "start": 1336.26,
+      "end": 1340.16,
+      "text": " What we have is the output can go snake back into the A's"
+    },
+    {
+      "chunk": 2,
+      "start": 1340.16,
+      "end": 1340.92,
+      "text": " and things like that."
+    },
+    {
+      "chunk": 2,
+      "start": 1341.02,
+      "end": 1342.9,
+      "text": " There's a lot of variants of these things."
+    },
+    {
+      "chunk": 2,
+      "start": 1343.0,
+      "end": 1344.16,
+      "text": " This is just the simplest one."
+    },
+    {
+      "chunk": 2,
+      "start": 1346.32,
+      "end": 1353.08,
+      "text": " I hate using slides but okay Where even is the end of this example"
+    },
+    {
+      "chunk": 2,
+      "start": 1358.32,
+      "end": 1359.54,
+      "text": " See, this is the problem."
+    },
+    {
+      "chunk": 2,
+      "start": 1359.92,
+      "end": 1362.8600000000001,
+      "text": " I was ready last week, and now I'm all lost."
+    },
+    {
+      "chunk": 2,
+      "start": 1363.74,
+      "end": 1365.34,
+      "text": " But, because it's Monday."
+    },
+    {
+      "chunk": 2,
+      "start": 1365.76,
+      "end": 1366.48,
+      "text": " It's Monday morning."
+    },
+    {
+      "chunk": 2,
+      "start": 1366.98,
+      "end": 1368.38,
+      "text": " I tried to do this yesterday."
+    },
+    {
+      "chunk": 2,
+      "start": 1369.16,
+      "end": 1370.9,
+      "text": " I was sailing yesterday."
+    },
+    {
+      "chunk": 2,
+      "start": 1371.38,
+      "end": 1372.56,
+      "text": " So I'm very sore."
+    },
+    {
+      "chunk": 2,
+      "start": 1372.56,
+      "end": 1375.3,
+      "text": " yeah"
+    },
+    {
+      "chunk": 2,
+      "start": 1375.3,
+      "end": 1376.58,
+      "text": " sorry"
+    },
+    {
+      "chunk": 2,
+      "start": 1376.58,
+      "end": 1378.74,
+      "text": " you don't"
+    },
+    {
+      "chunk": 2,
+      "start": 1378.74,
+      "end": 1381.12,
+      "text": " need to care about that"
+    },
+    {
+      "chunk": 2,
+      "start": 1381.12,
+      "end": 1382.06,
+      "text": " okay so anyways"
+    },
+    {
+      "chunk": 2,
+      "start": 1382.06,
+      "end": 1383.8,
+      "text": " we have this"
+    },
+    {
+      "chunk": 2,
+      "start": 1383.8,
+      "end": 1388.26,
+      "text": " we have this model"
+    },
+    {
+      "chunk": 2,
+      "start": 1388.26,
+      "end": 1391.12,
+      "text": " and then it's used a lot"
+    },
+    {
+      "chunk": 2,
+      "start": 1391.12,
+      "end": 1392.1399999999999,
+      "text": " and where's the end"
+    },
+    {
+      "chunk": 2,
+      "start": 1392.1399999999999,
+      "end": 1394.18,
+      "text": " there's no come on"
+    },
+    {
+      "chunk": 2,
+      "start": 1394.18,
+      "end": 1398.26,
+      "text": " wow"
+    },
+    {
+      "chunk": 2,
+      "start": 1398.26,
+      "end": 1399.94,
+      "text": " this just sort of ends"
+    },
+    {
+      "chunk": 2,
+      "start": 1399.94,
+      "end": 1407.22,
+      "text": " so we can assume that this worked really well"
+    },
+    {
+      "chunk": 2,
+      "start": 1407.22,
+      "end": 1413.08,
+      "text": " so I guess the point was not to actually show that how you can"
+    },
+    {
+      "chunk": 2,
+      "start": 1413.08,
+      "end": 1416.8,
+      "text": " predict with it but rather that it's able to right"
+    },
+    {
+      "chunk": 2,
+      "start": 1416.8,
+      "end": 1420.32,
+      "text": " and I guess to show that you can have"
+    },
+    {
+      "chunk": 2,
+      "start": 1420.32,
+      "end": 1426.73999,
+      "text": " three different inputs come in right so the variable can be an input for itself"
+    },
+    {
+      "chunk": 2,
+      "start": 1426.73999,
+      "end": 1431.84,
+      "text": " V, R, and Z all be inputs as part of the X."
+    },
+    {
+      "chunk": 2,
+      "start": 1432.84,
+      "end": 1435.1,
+      "text": " And then in this case, Y is also an output."
+    },
+    {
+      "chunk": 2,
+      "start": 1435.38,
+      "end": 1437.68,
+      "text": " Sorry, the V is also the output."
+    },
+    {
+      "chunk": 2,
+      "start": 1439.51999,
+      "end": 1442.56,
+      "text": " Because that's the only thing we're predicting is V."
+    },
+    {
+      "chunk": 2,
+      "start": 1442.82,
+      "end": 1444.68,
+      "text": " We're not predicting R or Z."
+    },
+    {
+      "chunk": 2,
+      "start": 1447.58,
+      "end": 1449.68,
+      "text": " And so a while ago,"
+    },
+    {
+      "chunk": 2,
+      "start": 1450.2,
+      "end": 1454.1399999999999,
+      "text": " in a time series course I was teaching,"
+    },
+    {
+      "chunk": 2,
+      "start": 1454.1399999999999,
+      "end": 1458.04,
+      "text": " and there the point was not machine learning either"
+    },
+    {
+      "chunk": 2,
+      "start": 1458.04,
+      "end": 1461.04,
+      "text": " there was just time series, just classical time series"
+    },
+    {
+      "chunk": 2,
+      "start": 1461.04,
+      "end": 1464.16,
+      "text": " and every year there was a project"
+    },
+    {
+      "chunk": 2,
+      "start": 1464.16,
+      "end": 1465.8600000000001,
+      "text": " as in most classes"
+    },
+    {
+      "chunk": 2,
+      "start": 1465.8600000000001,
+      "end": 1470.4199800000001,
+      "text": " and so that year we said alright everyone's going to do the same project"
+    },
+    {
+      "chunk": 2,
+      "start": 1470.4199800000001,
+      "end": 1474.0800199999999,
+      "text": " and it's going to be some Bitcoin"
+    },
+    {
+      "chunk": 2,
+      "start": 1474.0800199999999,
+      "end": 1477.3,
+      "text": " or something, one of these terrible"
+    },
+    {
+      "chunk": 2,
+      "start": 1477.3,
+      "end": 1478.76,
+      "text": " currencies"
+    },
+    {
+      "chunk": 2,
+      "start": 1478.76,
+      "end": 1480.28,
+      "text": " and"
+    },
+    {
+      "chunk": 2,
+      "start": 1480.28,
+      "end": 1482.8600000000001,
+      "text": " yeah"
+    },
+    {
+      "chunk": 2,
+      "start": 1482.8600000000001,
+      "end": 1483.5,
+      "text": " the"
+    },
+    {
+      "chunk": 2,
+      "start": 1483.5,
+      "end": 1485.3,
+      "text": " cryptocurrencies"
+    },
+    {
+      "chunk": 2,
+      "start": 1485.3,
+      "end": 1489.38,
+      "text": " are a terrible thing to use for a project"
+    },
+    {
+      "chunk": 2,
+      "start": 1489.38,
+      "end": 1490.76,
+      "text": " because"
+    },
+    {
+      "chunk": 2,
+      "start": 1490.76,
+      "end": 1492.88,
+      "text": " they're impossible to predict"
+    },
+    {
+      "chunk": 2,
+      "start": 1492.88,
+      "end": 1494.9199800000001,
+      "text": " they're so volatile, they're so crazy"
+    },
+    {
+      "chunk": 2,
+      "start": 1494.9199800000001,
+      "end": 1510.68,
+      "text": " that they meaningless to predict so it wasn the best example project But we did compare RNNs to the standard time series models"
+    },
+    {
+      "chunk": 2,
+      "start": 1511.3600000000001,
+      "end": 1514.16,
+      "text": " And unfortunately, they were equally bad."
+    },
+    {
+      "chunk": 2,
+      "start": 1514.78,
+      "end": 1517.26,
+      "text": " But I think that was really just the data problem"
+    },
+    {
+      "chunk": 2,
+      "start": 1517.26,
+      "end": 1520.26,
+      "text": " because no one should be using Bitcoin."
+    },
+    {
+      "chunk": 2,
+      "start": 1521.46,
+      "end": 1522.94,
+      "text": " It is stupid."
+    },
+    {
+      "chunk": 2,
+      "start": 1525.0,
+      "end": 1531.48,
+      "text": " But either way, you can see why someone would want to develop a model like this."
+    },
+    {
+      "chunk": 2,
+      "start": 1531.54,
+      "end": 1533.04,
+      "text": " They don't really care how it works."
+    },
+    {
+      "chunk": 2,
+      "start": 1533.32,
+      "end": 1535.28,
+      "text": " They just want the most expressive model."
+    },
+    {
+      "chunk": 2,
+      "start": 1535.4,
+      "end": 1539.56,
+      "text": " And machine learning models are often very good at working well."
+    },
+    {
+      "chunk": 2,
+      "start": 1539.74,
+      "end": 1541.3,
+      "text": " Or they can often work very well."
+    },
+    {
+      "chunk": 2,
+      "start": 1541.9199800000001,
+      "end": 1543.62,
+      "text": " And so then you just want to predict."
+    },
+    {
+      "chunk": 2,
+      "start": 1544.74,
+      "end": 1546.78,
+      "text": " And here's a good example, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1547.44,
+      "end": 1551.1,
+      "text": " You put in your variables and your other variables as inputs."
+    },
+    {
+      "chunk": 2,
+      "start": 1551.4199800000001,
+      "end": 1553.8,
+      "text": " And then you just train the model and then use it to predict."
+    },
+    {
+      "chunk": 2,
+      "start": 1553.88,
+      "end": 1554.6,
+      "text": " It's very simple."
+    },
+    {
+      "chunk": 2,
+      "start": 1555.0,
+      "end": 1559.2,
+      "text": " it's easier than trying to construct the time series model where you would"
+    },
+    {
+      "chunk": 2,
+      "start": 1559.2,
+      "end": 1561.52,
+      "text": " actually go through, pick your parameters,"
+    },
+    {
+      "chunk": 2,
+      "start": 1562.4199800000001,
+      "end": 1566.9199800000001,
+      "text": " determine what things should go in there. It's more delicate training."
+    },
+    {
+      "chunk": 2,
+      "start": 1569.78,
+      "end": 1573.8,
+      "text": " Yeah. But if you don't care how it works and you just want to get the results,"
+    },
+    {
+      "chunk": 2,
+      "start": 1574.9,
+      "end": 1576.06,
+      "text": " these models are pretty good."
+    },
+    {
+      "chunk": 2,
+      "start": 1578.76,
+      "end": 1579.82,
+      "text": " Okay. So"
+    },
+    {
+      "chunk": 2,
+      "start": 1579.82,
+      "end": 1589.9199800000001,
+      "text": " yeah, so we have up to a lag L."
+    },
+    {
+      "chunk": 2,
+      "start": 1591.0,
+      "end": 1591.28,
+      "text": " Right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1592.34,
+      "end": 1593.26,
+      "text": " I already said that."
+    },
+    {
+      "chunk": 2,
+      "start": 1594.7,
+      "end": 1595.96,
+      "text": " Formulate them on like that."
+    },
+    {
+      "chunk": 2,
+      "start": 1596.16,
+      "end": 1598.3,
+      "text": " And then we're done with that one."
+    },
+    {
+      "chunk": 2,
+      "start": 1600.8,
+      "end": 1601.28,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 2,
+      "start": 1601.78,
+      "end": 1602.1399999999999,
+      "text": " Okay."
+    },
+    {
+      "chunk": 2,
+      "start": 1607.1,
+      "end": 1607.66,
+      "text": " So"
+    },
+    {
+      "chunk": 2,
+      "start": 1607.66,
+      "end": 1612.3600000000001,
+      "text": " yeah so that's how a recurrent neural network works"
+    },
+    {
+      "chunk": 2,
+      "start": 1612.3600000000001,
+      "end": 1613.12,
+      "text": " very"
+    },
+    {
+      "chunk": 2,
+      "start": 1613.12,
+      "end": 1615.88,
+      "text": " superficially"
+    },
+    {
+      "chunk": 2,
+      "start": 1615.88,
+      "end": 1620.22,
+      "text": " and so these are"
+    },
+    {
+      "chunk": 2,
+      "start": 1620.22,
+      "end": 1624.03998,
+      "text": " I would say a lot of these neural networks"
+    },
+    {
+      "chunk": 2,
+      "start": 1624.03998,
+      "end": 1625.56,
+      "text": " and the frameworks have been engineered"
+    },
+    {
+      "chunk": 2,
+      "start": 1625.56,
+      "end": 1628.12,
+      "text": " some have been more mathematically determined"
+    },
+    {
+      "chunk": 2,
+      "start": 1628.12,
+      "end": 1631.4,
+      "text": " but a lot have just been constructed"
+    },
+    {
+      "chunk": 2,
+      "start": 1631.4,
+      "end": 1633.78,
+      "text": " for the different problems"
+    },
+    {
+      "chunk": 2,
+      "start": 1633.78,
+      "end": 1639.47998,
+      "text": " so we've learned about some of these fancy trends"
+    },
+    {
+      "chunk": 2,
+      "start": 1639.47998,
+      "end": 1641.8,
+      "text": " and these methods but is it worth"
+    },
+    {
+      "chunk": 2,
+      "start": 1641.8,
+      "end": 1643.2,
+      "text": " using these methods"
+    },
+    {
+      "chunk": 2,
+      "start": 1643.2,
+      "end": 1657.28,
+      "text": " right when to like yeah I think this is a very common discussion in this building It you know how often should we just be using regression"
+    },
+    {
+      "chunk": 2,
+      "start": 1657.28,
+      "end": 1661.9,
+      "text": " and how often should we turn to more advanced methods like the forest"
+    },
+    {
+      "chunk": 2,
+      "start": 1661.9,
+      "end": 1665.04,
+      "text": " or in particular machine learning models like the neural networks,"
+    },
+    {
+      "chunk": 2,
+      "start": 1665.16,
+      "end": 1666.4,
+      "text": " models with a lot of parameters."
+    },
+    {
+      "chunk": 2,
+      "start": 1669.54,
+      "end": 1671.32,
+      "text": " When is that even a good idea?"
+    },
+    {
+      "chunk": 2,
+      "start": 1671.32,
+      "end": 1674.94,
+      "text": " So a while ago"
+    },
+    {
+      "chunk": 2,
+      "start": 1674.94,
+      "end": 1677.1,
+      "text": " One of the"
+    },
+    {
+      "chunk": 2,
+      "start": 1677.1,
+      "end": 1680.02,
+      "text": " Least depressing"
+    },
+    {
+      "chunk": 2,
+      "start": 1680.02,
+      "end": 1682.4199800000001,
+      "text": " Data sets that we looked at was salary"
+    },
+    {
+      "chunk": 2,
+      "start": 1682.4199800000001,
+      "end": 1684.4199800000001,
+      "text": " Which I believe"
+    },
+    {
+      "chunk": 2,
+      "start": 1684.4199800000001,
+      "end": 1685.74,
+      "text": " Isn't that exciting either"
+    },
+    {
+      "chunk": 2,
+      "start": 1685.74,
+      "end": 1688.62,
+      "text": " But we looked at a prediction of salary"
+    },
+    {
+      "chunk": 2,
+      "start": 1688.62,
+      "end": 1690.1,
+      "text": " Based on for baseball players"
+    },
+    {
+      "chunk": 2,
+      "start": 1690.1,
+      "end": 1692.1399999999999,
+      "text": " Which of course you can all relate to deeply"
+    },
+    {
+      "chunk": 2,
+      "start": 1692.1399999999999,
+      "end": 1692.62,
+      "text": " Right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1693.3600000000001,
+      "end": 1694.66,
+      "text": " You guys are all athletes"
+    },
+    {
+      "chunk": 2,
+      "start": 1694.66,
+      "end": 1696.5800199999999,
+      "text": " Or love baseball"
+    },
+    {
+      "chunk": 2,
+      "start": 1696.5800199999999,
+      "end": 1698.0800199999999,
+      "text": " Right? Who loves baseball?"
+    },
+    {
+      "chunk": 2,
+      "start": 1699.24,
+      "end": 1699.5800199999999,
+      "text": " Anyone?"
+    },
+    {
+      "chunk": 2,
+      "start": 1701.32,
+      "end": 1702.7,
+      "text": " Who's ever been to a baseball game?"
+    },
+    {
+      "chunk": 2,
+      "start": 1704.5800199999999,
+      "end": 1706.74,
+      "text": " Who's ever seen baseball on TV?"
+    },
+    {
+      "chunk": 2,
+      "start": 1708.54,
+      "end": 1709.5800199999999,
+      "text": " There we go."
+    },
+    {
+      "chunk": 2,
+      "start": 1709.8600000000001,
+      "end": 1710.4199800000001,
+      "text": " Four people."
+    },
+    {
+      "chunk": 2,
+      "start": 1710.9,
+      "end": 1711.44,
+      "text": " That's good."
+    },
+    {
+      "chunk": 2,
+      "start": 1712.4,
+      "end": 1713.16003,
+      "text": " Did you like it?"
+    },
+    {
+      "chunk": 2,
+      "start": 1714.78,
+      "end": 1715.88,
+      "text": " It's okay, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1716.46,
+      "end": 1717.98,
+      "text": " No, it's super boring, though."
+    },
+    {
+      "chunk": 2,
+      "start": 1718.12,
+      "end": 1721.8200000000002,
+      "text": " If you ever go, the benches are uncomfortable, and then you just sit there,"
+    },
+    {
+      "chunk": 2,
+      "start": 1721.9,
+      "end": 1724.98,
+      "text": " and then if you're lucky, someone gets naked and runs across the field."
+    },
+    {
+      "chunk": 2,
+      "start": 1725.66003,
+      "end": 1727.38,
+      "text": " Otherwise, nothing really happens."
+    },
+    {
+      "chunk": 2,
+      "start": 1727.38,
+      "end": 1733.1,
+      "text": " It's like someone hits it with the ball with the stick and then the ball goes up and then maybe they catch it, maybe they don't."
+    },
+    {
+      "chunk": 2,
+      "start": 1734.72,
+      "end": 1736.33997,
+      "text": " I'd rather watch a different sport."
+    },
+    {
+      "chunk": 2,
+      "start": 1737.8,
+      "end": 1738.8,
+      "text": " Hockey is more exciting."
+    },
+    {
+      "chunk": 2,
+      "start": 1738.9,
+      "end": 1740.8200000000002,
+      "text": " Then they beat the shit out of each other half the time."
+    },
+    {
+      "chunk": 2,
+      "start": 1741.38,
+      "end": 1743.8,
+      "text": " And you still might get someone naked running across the ice."
+    },
+    {
+      "chunk": 2,
+      "start": 1743.88,
+      "end": 1744.62,
+      "text": " And then it's cold."
+    },
+    {
+      "chunk": 2,
+      "start": 1745.38,
+      "end": 1746.02,
+      "text": " Very exciting."
+    },
+    {
+      "chunk": 2,
+      "start": 1747.3200000000002,
+      "end": 1748.28,
+      "text": " You get the point."
+    },
+    {
+      "chunk": 2,
+      "start": 1748.92,
+      "end": 1752.8600000000001,
+      "text": " So baseball is very exciting, of course, or not."
+    },
+    {
+      "chunk": 2,
+      "start": 1753.58,
+      "end": 1755.44,
+      "text": " And we tried to predict salaries, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1755.44,
+      "end": 1757.0,
+      "text": " And you could do it with a linear model."
+    },
+    {
+      "chunk": 2,
+      "start": 1757.38,
+      "end": 1760.8200000000002,
+      "text": " which is nice and easy, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1760.83997,
+      "end": 1765.12,
+      "text": " We have 20 parameters, linear model, boom, we're good to go."
+    },
+    {
+      "chunk": 2,
+      "start": 1767.0,
+      "end": 1770.76,
+      "text": " Or you could use cross-validation, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1770.83997,
+      "end": 1773.52,
+      "text": " We talked about cross-validation as a way of picking your parameters,"
+    },
+    {
+      "chunk": 2,
+      "start": 1773.98,
+      "end": 1776.74,
+      "text": " determining what your model is, your model selection."
+    },
+    {
+      "chunk": 2,
+      "start": 1777.6799999999998,
+      "end": 1780.46,
+      "text": " And when we did that, we had 12 parameters left."
+    },
+    {
+      "chunk": 2,
+      "start": 1782.76,
+      "end": 1785.6,
+      "text": " Oh, sorry, lasso with cross-validation."
+    },
+    {
+      "chunk": 2,
+      "start": 1785.76,
+      "end": 1786.6,
+      "text": " That's what I meant to say."
+    },
+    {
+      "chunk": 2,
+      "start": 1787.38,
+      "end": 1789.74,
+      "text": " Where Lasso was a regularization, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1789.74,
+      "end": 1790.74,
+      "text": " That was..."
+    },
+    {
+      "chunk": 2,
+      "start": 1790.74,
+      "end": 1796.1,
+      "text": " And regularization"
+    },
+    {
+      "chunk": 2,
+      "start": 1796.1,
+      "end": 1797.74,
+      "text": " is a..."
+    },
+    {
+      "chunk": 2,
+      "start": 1797.74,
+      "end": 1799.8200000000002,
+      "text": " is key, key, key to when these"
+    },
+    {
+      "chunk": 3,
+      "start": 1800.0,
+      "end": 1810.44,
+      "text": " models. And we can also do a comparison with a neural network that has one hidden layer and 64"
+    },
+    {
+      "chunk": 3,
+      "start": 1810.44,
+      "end": 1818.3,
+      "text": " units. So this model has way more parameters. And as you know, a thousand parameters for a machine"
+    },
+    {
+      "chunk": 3,
+      "start": 1818.3,
+      "end": 1821.58,
+      "text": " learning model, or I don't know if you know this, but machine learning models, a thousand parameters"
+    },
+    {
+      "chunk": 3,
+      "start": 1821.58,
+      "end": 1828.56,
+      "text": " are nothing, right? We're talking trillions of parameters in current AI models for language."
+    },
+    {
+      "chunk": 3,
+      "start": 1828.56,
+      "end": 1832.14,
+      "text": " so anything this small is like peanuts"
+    },
+    {
+      "chunk": 3,
+      "start": 1832.14,
+      "end": 1835.78,
+      "text": " so we have"
+    },
+    {
+      "chunk": 3,
+      "start": 1835.78,
+      "end": 1838.44,
+      "text": " if we compare these three different models"
+    },
+    {
+      "chunk": 3,
+      "start": 1838.44,
+      "end": 1843.18,
+      "text": " then we can see clearly"
+    },
+    {
+      "chunk": 3,
+      "start": 1843.18,
+      "end": 1845.58,
+      "text": " that linear regression"
+    },
+    {
+      "chunk": 3,
+      "start": 1845.58,
+      "end": 1848.62,
+      "text": " is probably not going to do that well"
+    },
+    {
+      "chunk": 3,
+      "start": 1848.62,
+      "end": 1852.22,
+      "text": " because 20 parameters is a lot of parameters"
+    },
+    {
+      "chunk": 3,
+      "start": 1852.22,
+      "end": 1855.74,
+      "text": " and so we get some kind of test error of 0.56"
+    },
+    {
+      "chunk": 3,
+      "start": 1855.74,
+      "end": 1858.9,
+      "text": " right"
+    },
+    {
+      "chunk": 3,
+      "start": 1858.9,
+      "end": 1863.9,
+      "text": " doesn't say"
+    },
+    {
+      "chunk": 3,
+      "start": 1863.9,
+      "end": 1870.1,
+      "text": " yeah so it's important to do the test error"
+    },
+    {
+      "chunk": 3,
+      "start": 1870.1,
+      "end": 1873.54,
+      "text": " here's his mean absolute error I don't know let's see"
+    },
+    {
+      "chunk": 3,
+      "start": 1873.54,
+      "end": 1878.96,
+      "text": " yeah so this is most likely the mean absolute error"
+    },
+    {
+      "chunk": 3,
+      "start": 1878.96,
+      "end": 1880.84,
+      "text": " on test data"
+    },
+    {
+      "chunk": 3,
+      "start": 1880.84,
+      "end": 1884.68,
+      "text": " because otherwise"
+    },
+    {
+      "chunk": 3,
+      "start": 1884.68,
+      "end": 1888.76,
+      "text": " this would be lower than that one."
+    },
+    {
+      "chunk": 3,
+      "start": 1891.34,
+      "end": 1893.2,
+      "text": " All right, so it's going to be on test data,"
+    },
+    {
+      "chunk": 3,
+      "start": 1893.62,
+      "end": 1894.78,
+      "text": " which is what you want to do."
+    },
+    {
+      "chunk": 3,
+      "start": 1895.58,
+      "end": 1898.74,
+      "text": " We talked about that, that if you add more parameters"
+    },
+    {
+      "chunk": 3,
+      "start": 1898.74,
+      "end": 1900.78,
+      "text": " on your fit data, you're always going to do better,"
+    },
+    {
+      "chunk": 3,
+      "start": 1901.82,
+      "end": 1903.8,
+      "text": " but not necessarily in your test data."
+    },
+    {
+      "chunk": 3,
+      "start": 1907.56,
+      "end": 1909.98,
+      "text": " So within your regression, let's say,"
+    },
+    {
+      "chunk": 3,
+      "start": 1909.98,
+      "end": 1912.18,
+      "text": " well, this is, you do only so well."
+    },
+    {
+      "chunk": 3,
+      "start": 1912.18,
+      "end": 1917.04,
+      "text": " if you add a regularization term, then you do better, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 1917.14,
+      "end": 1918.22,
+      "text": " And we talked about that."
+    },
+    {
+      "chunk": 3,
+      "start": 1918.3,
+      "end": 1922.64,
+      "text": " We talked about the fact that when you regularize a model,"
+    },
+    {
+      "chunk": 3,
+      "start": 1923.96,
+      "end": 1928.26,
+      "text": " what often you're doing is you're changing the trade-off"
+    },
+    {
+      "chunk": 3,
+      "start": 1928.26,
+      "end": 1930.9,
+      "text": " between your bias and variance, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 1930.94,
+      "end": 1933.74,
+      "text": " And what you're getting is something with a lower variance,"
+    },
+    {
+      "chunk": 3,
+      "start": 1934.3,
+      "end": 1937.9,
+      "text": " which means that you can now predict better."
+    },
+    {
+      "chunk": 3,
+      "start": 1937.9,
+      "end": 1941.48,
+      "text": " or what it means now is that you're less sensitive"
+    },
+    {
+      "chunk": 3,
+      "start": 1941.48,
+      "end": 1944.58,
+      "text": " to the specifics of your data set, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 1944.66,
+      "end": 1955.02,
+      "text": " So if your data set has a bit of noise then you less sensitive to the specifics of the data set"
+    },
+    {
+      "chunk": 3,
+      "start": 1955.1,
+      "end": 1957.32,
+      "text": " You should be able to generalize better across other data sets,"
+    },
+    {
+      "chunk": 3,
+      "start": 1958.0,
+      "end": 1959.94,
+      "text": " specifically trying to minimize the variance."
+    },
+    {
+      "chunk": 3,
+      "start": 1962.02,
+      "end": 1966.0,
+      "text": " And a neural network with nothing on it,"
+    },
+    {
+      "chunk": 3,
+      "start": 1966.1399999999999,
+      "end": 1967.8,
+      "text": " because that's what I'm assuming they've done."
+    },
+    {
+      "chunk": 3,
+      "start": 1968.6,
+      "end": 1970.8600000000001,
+      "text": " So here they have an ETERNY regularization,"
+    },
+    {
+      "chunk": 3,
+      "start": 1971.24,
+      "end": 1974.0,
+      "text": " which generally you never want to do that."
+    },
+    {
+      "chunk": 3,
+      "start": 1974.0,
+      "end": 1979.26,
+      "text": " You don't want to train a model with a lot of parameters and no regularization."
+    },
+    {
+      "chunk": 3,
+      "start": 1979.5,
+      "end": 1982.6,
+      "text": " It's like a recipe for disaster, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 1982.6399999999999,
+      "end": 1987.04001,
+      "text": " The whole point of regularization is to get you to generalize better."
+    },
+    {
+      "chunk": 3,
+      "start": 1988.22,
+      "end": 1995.5,
+      "text": " So the neural networks are trained with a lot of parameters so that they're extremely expressive, so they can basically represent everything, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 1995.5,
+      "end": 2002.5,
+      "text": " We talked about this idea of the universal approximation, that you can approximate any kind of model."
+    },
+    {
+      "chunk": 3,
+      "start": 2002.5,
+      "end": 2005.74,
+      "text": " but you need to pick the model."
+    },
+    {
+      "chunk": 3,
+      "start": 2006.32,
+      "end": 2007.6399999999999,
+      "text": " You need to be able to determine"
+    },
+    {
+      "chunk": 3,
+      "start": 2007.6399999999999,
+      "end": 2009.54001,
+      "text": " between the many, many possibilities"
+    },
+    {
+      "chunk": 3,
+      "start": 2009.54001,
+      "end": 2010.62,
+      "text": " of what you have."
+    },
+    {
+      "chunk": 3,
+      "start": 2011.44,
+      "end": 2012.9,
+      "text": " And so you want to predict the model."
+    },
+    {
+      "chunk": 3,
+      "start": 2012.98001,
+      "end": 2014.04001,
+      "text": " You want to construct the model"
+    },
+    {
+      "chunk": 3,
+      "start": 2014.04001,
+      "end": 2015.48001,
+      "text": " that has the best variance."
+    },
+    {
+      "chunk": 3,
+      "start": 2016.48001,
+      "end": 2019.38,
+      "text": " And the way you can push that"
+    },
+    {
+      "chunk": 3,
+      "start": 2019.38,
+      "end": 2023.7,
+      "text": " is by adding regularization, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2025.0,
+      "end": 2026.94,
+      "text": " So don't train them."
+    },
+    {
+      "chunk": 3,
+      "start": 2027.12,
+      "end": 2027.84,
+      "text": " Don't, yeah."
+    },
+    {
+      "chunk": 3,
+      "start": 2028.16,
+      "end": 2029.58,
+      "text": " I can't think of an example"
+    },
+    {
+      "chunk": 3,
+      "start": 2029.58,
+      "end": 2031.45999,
+      "text": " where you'd ever want to train a neural network"
+    },
+    {
+      "chunk": 3,
+      "start": 2031.45999,
+      "end": 2033.3600000000001,
+      "text": " without a regularization."
+    },
+    {
+      "chunk": 3,
+      "start": 2033.84,
+      "end": 2035.95999,
+      "text": " And remember, regularization can be in many forms."
+    },
+    {
+      "chunk": 3,
+      "start": 2036.48001,
+      "end": 2039.08,
+      "text": " It could be explicit like an L1 or an L2,"
+    },
+    {
+      "chunk": 3,
+      "start": 2039.56,
+      "end": 2043.94,
+      "text": " or it can be this implicit regularization like the,"
+    },
+    {
+      "chunk": 3,
+      "start": 2043.94,
+      "end": 2046.9,
+      "text": " we talked about it last time,"
+    },
+    {
+      "chunk": 3,
+      "start": 2047.04001,
+      "end": 2052.45999,
+      "text": " the mini batch of the stochastic gradient descent, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2053.6,
+      "end": 2055.36,
+      "text": " Or it can be dropout."
+    },
+    {
+      "chunk": 3,
+      "start": 2055.86,
+      "end": 2057.1,
+      "text": " We talked about that too,"
+    },
+    {
+      "chunk": 3,
+      "start": 2057.14,
+      "end": 2061.32,
+      "text": " where you just remove some of the nodes during training."
+    },
+    {
+      "chunk": 3,
+      "start": 2061.46,
+      "end": 2070.06,
+      "text": " randomly. And then that forces the model to not rely on any specific part, right? Those regular,"
+    },
+    {
+      "chunk": 3,
+      "start": 2070.26,
+      "end": 2078.9,
+      "text": " those forms of regularization, uh, encourage better solutions. But anyways, in this, you know,"
+    },
+    {
+      "chunk": 3,
+      "start": 2078.9,
+      "end": 2089.0,
+      "text": " kind of contrived setting, I'm going to say contrived. I think other people teaching the"
+    },
+    {
+      "chunk": 3,
+      "start": 2089.0,
+      "end": 2094.36,
+      "text": " same course would not call this contrived but call it real and i would say this is if you"
+    },
+    {
+      "chunk": 3,
+      "start": 2094.36,
+      "end": 2103.44,
+      "text": " constructed your model this way you doing it wrong like you just it not a very big model your neural network model and then no regularization What going on here"
+    },
+    {
+      "chunk": 3,
+      "start": 2105.38,
+      "end": 2107.1,
+      "text": " So anyways, in this case,"
+    },
+    {
+      "chunk": 3,
+      "start": 2107.36,
+      "end": 2109.4,
+      "text": " you did worse with a neural network."
+    },
+    {
+      "chunk": 3,
+      "start": 2109.4,
+      "end": 2110.2200000000003,
+      "text": " Oh, no."
+    },
+    {
+      "chunk": 3,
+      "start": 2116.56,
+      "end": 2119.2799999999997,
+      "text": " Yeah, and here the claim is that neural networks are"
+    },
+    {
+      "chunk": 3,
+      "start": 2119.2799999999997,
+      "end": 2122.54,
+      "text": " attractive when the size of the training set is extremely large,"
+    },
+    {
+      "chunk": 3,
+      "start": 2122.64,
+      "end": 2124.88,
+      "text": " and when the model interpretability is not a priority."
+    },
+    {
+      "chunk": 3,
+      "start": 2125.0,
+      "end": 2126.7799999999997,
+      "text": " this first thing"
+    },
+    {
+      "chunk": 3,
+      "start": 2126.7799999999997,
+      "end": 2130.2799999999997,
+      "text": " I would say that's not"
+    },
+    {
+      "chunk": 3,
+      "start": 2130.2799999999997,
+      "end": 2132.76,
+      "text": " I mean that's true in the sense that"
+    },
+    {
+      "chunk": 3,
+      "start": 2132.76,
+      "end": 2135.44,
+      "text": " the bigger your data set"
+    },
+    {
+      "chunk": 3,
+      "start": 2135.44,
+      "end": 2136.96,
+      "text": " the better your model is going to be"
+    },
+    {
+      "chunk": 3,
+      "start": 2136.96,
+      "end": 2140.2799999999997,
+      "text": " and the fact is if you have a very small data set"
+    },
+    {
+      "chunk": 3,
+      "start": 2140.2799999999997,
+      "end": 2141.66,
+      "text": " there's not much you can do anyway"
+    },
+    {
+      "chunk": 3,
+      "start": 2141.66,
+      "end": 2142.58002,
+      "text": " so why bother"
+    },
+    {
+      "chunk": 3,
+      "start": 2142.58002,
+      "end": 2144.7799999999997,
+      "text": " right if you only have"
+    },
+    {
+      "chunk": 3,
+      "start": 2144.7799999999997,
+      "end": 2147.64,
+      "text": " like this data set was probably short as shit"
+    },
+    {
+      "chunk": 3,
+      "start": 2147.64,
+      "end": 2148.48,
+      "text": " right this is"
+    },
+    {
+      "chunk": 3,
+      "start": 2148.48,
+      "end": 2150.62,
+      "text": " there's not that many baseball players in the world"
+    },
+    {
+      "chunk": 3,
+      "start": 2150.62,
+      "end": 2153.5,
+      "text": " yeah 263 baseball players"
+    },
+    {
+      "chunk": 3,
+      "start": 2153.5,
+      "end": 2155.41998,
+      "text": " that's not much data"
+    },
+    {
+      "chunk": 3,
+      "start": 2155.41998,
+      "end": 2158.08002,
+      "text": " I wouldn't have bothered with a neural network either"
+    },
+    {
+      "chunk": 3,
+      "start": 2158.08002,
+      "end": 2159.9,
+      "text": " just because what's the point"
+    },
+    {
+      "chunk": 3,
+      "start": 2159.9,
+      "end": 2162.32,
+      "text": " you're not going to be able to identify"
+    },
+    {
+      "chunk": 3,
+      "start": 2162.32,
+      "end": 2163.74,
+      "text": " very complicated functions"
+    },
+    {
+      "chunk": 3,
+      "start": 2163.74,
+      "end": 2164.7,
+      "text": " because there is none"
+    },
+    {
+      "chunk": 3,
+      "start": 2164.7,
+      "end": 2167.58002,
+      "text": " you don't have enough data to do that"
+    },
+    {
+      "chunk": 3,
+      "start": 2167.58002,
+      "end": 2169.08002,
+      "text": " so you do"
+    },
+    {
+      "chunk": 3,
+      "start": 2169.08002,
+      "end": 2172.06,
+      "text": " the neural networks are more"
+    },
+    {
+      "chunk": 3,
+      "start": 2172.06,
+      "end": 2174.08002,
+      "text": " attractive when the data set is bigger"
+    },
+    {
+      "chunk": 3,
+      "start": 2174.08002,
+      "end": 2175.82,
+      "text": " because then it can actually learn"
+    },
+    {
+      "chunk": 3,
+      "start": 2175.82,
+      "end": 2176.98,
+      "text": " complicated stuff"
+    },
+    {
+      "chunk": 3,
+      "start": 2176.98,
+      "end": 2179.24,
+      "text": " but"
+    },
+    {
+      "chunk": 3,
+      "start": 2179.24,
+      "end": 2182.04,
+      "text": " more importantly I would completely agree"
+    },
+    {
+      "chunk": 3,
+      "start": 2182.04,
+      "end": 2183.04,
+      "text": " with the second part"
+    },
+    {
+      "chunk": 3,
+      "start": 2183.04,
+      "end": 2187.56,
+      "text": " when interpretability is not a priority."
+    },
+    {
+      "chunk": 3,
+      "start": 2189.2200000000003,
+      "end": 2191.62,
+      "text": " And I would say currently today,"
+    },
+    {
+      "chunk": 3,
+      "start": 2192.04,
+      "end": 2194.2799999999997,
+      "text": " and I'm not saying this will hold in a year or two,"
+    },
+    {
+      "chunk": 3,
+      "start": 2195.4,
+      "end": 2196.7799999999997,
+      "text": " if you fit your model,"
+    },
+    {
+      "chunk": 3,
+      "start": 2197.3,
+      "end": 2198.91998,
+      "text": " if you have a data set"
+    },
+    {
+      "chunk": 3,
+      "start": 2198.91998,
+      "end": 2201.38,
+      "text": " and you fit it with a complicated neural network,"
+    },
+    {
+      "chunk": 3,
+      "start": 2201.82,
+      "end": 2204.64,
+      "text": " in the end, you don't know what you have."
+    },
+    {
+      "chunk": 3,
+      "start": 2204.8,
+      "end": 2206.41998,
+      "text": " And it's the same thing was true"
+    },
+    {
+      "chunk": 3,
+      "start": 2206.41998,
+      "end": 2211.2,
+      "text": " with the forest stuff, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2211.26,
+      "end": 2212.3,
+      "text": " When it was just a tree,"
+    },
+    {
+      "chunk": 3,
+      "start": 2212.3,
+      "end": 2213.7799999999997,
+      "text": " which didn't work particularly well."
+    },
+    {
+      "chunk": 3,
+      "start": 2214.2,
+      "end": 2215.52,
+      "text": " You could interpret it just fine,"
+    },
+    {
+      "chunk": 3,
+      "start": 2215.76,
+      "end": 2217.7200000000003,
+      "text": " but the last models that we were looking at"
+    },
+    {
+      "chunk": 3,
+      "start": 2217.7200000000003,
+      "end": 2220.46,
+      "text": " that were so good, like the XGB boost,"
+    },
+    {
+      "chunk": 3,
+      "start": 2221.04,
+      "end": 2222.74,
+      "text": " they get really weird"
+    },
+    {
+      "chunk": 3,
+      "start": 2222.74,
+      "end": 2225.8,
+      "text": " because it's all on the residuals"
+    },
+    {
+      "chunk": 3,
+      "start": 2225.8,
+      "end": 2227.2799999999997,
+      "text": " and the residuals of the residuals"
+    },
+    {
+      "chunk": 3,
+      "start": 2227.2799999999997,
+      "end": 2229.44,
+      "text": " and you can't really interpret them that well."
+    },
+    {
+      "chunk": 3,
+      "start": 2230.12,
+      "end": 2231.56,
+      "text": " And it's the same thing with the neural networks."
+    },
+    {
+      "chunk": 3,
+      "start": 2231.7,
+      "end": 2235.41998,
+      "text": " When you have 20 layers of stuff"
+    },
+    {
+      "chunk": 3,
+      "start": 2235.41998,
+      "end": 2237.56,
+      "text": " and you have a billion parameters and so many nodes,"
+    },
+    {
+      "chunk": 3,
+      "start": 2238.32,
+      "end": 2240.06,
+      "text": " you don't really know how it works."
+    },
+    {
+      "chunk": 3,
+      "start": 2240.06,
+      "end": 2243.38,
+      "text": " now of course there's a lot of people working"
+    },
+    {
+      "chunk": 3,
+      "start": 2243.38,
+      "end": 2255.7,
+      "text": " to fix that so for example in my research what we doing is we studying the"
+    },
+    {
+      "chunk": 3,
+      "start": 2255.7,
+      "end": 2259.54,
+      "text": " the activation functions. So for the activations,"
+    },
+    {
+      "chunk": 3,
+      "start": 2260.06,
+      "end": 2266.2,
+      "text": " so you can imagine here's the network, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2266.2799999999997,
+      "end": 2269.86,
+      "text": " Here's the X, here's the Y we're studying like what patterns,"
+    },
+    {
+      "chunk": 3,
+      "start": 2269.86,
+      "end": 2272.24,
+      "text": " what representations have been learned."
+    },
+    {
+      "chunk": 3,
+      "start": 2275.0,
+      "end": 2279.34,
+      "text": " right you could think of it like what are the functions that are being learned"
+    },
+    {
+      "chunk": 3,
+      "start": 2279.34,
+      "end": 2288.36,
+      "text": " by the network and then later the idea the hope is that by studying the act what the what has been"
+    },
+    {
+      "chunk": 3,
+      "start": 2288.36,
+      "end": 2300.16,
+      "text": " learned we can then find a better way of doing it right so um uh yeah and i think what could"
+    },
+    {
+      "chunk": 3,
+      "start": 2300.16,
+      "end": 2302.36,
+      "text": " be a viable thing in the future."
+    },
+    {
+      "chunk": 3,
+      "start": 2303.7799999999997,
+      "end": 2304.64,
+      "text": " I mean, to some extent,"
+    },
+    {
+      "chunk": 3,
+      "start": 2304.7200000000003,
+      "end": 2305.58002,
+      "text": " this has already happened"
+    },
+    {
+      "chunk": 3,
+      "start": 2305.58002,
+      "end": 2306.6,
+      "text": " in other examples,"
+    },
+    {
+      "chunk": 3,
+      "start": 2306.86,
+      "end": 2308.14,
+      "text": " but you can imagine"
+    },
+    {
+      "chunk": 3,
+      "start": 2308.14,
+      "end": 2310.4,
+      "text": " you have this very big data set"
+    },
+    {
+      "chunk": 3,
+      "start": 2310.4,
+      "end": 2311.5,
+      "text": " that's kind of complicated."
+    },
+    {
+      "chunk": 3,
+      "start": 2311.68,
+      "end": 2312.74,
+      "text": " You don't know what to do with it."
+    },
+    {
+      "chunk": 3,
+      "start": 2313.12,
+      "end": 2315.74,
+      "text": " You fit it with a big neural network"
+    },
+    {
+      "chunk": 3,
+      "start": 2315.74,
+      "end": 2316.68,
+      "text": " that's very flexible."
+    },
+    {
+      "chunk": 3,
+      "start": 2317.2,
+      "end": 2319.36,
+      "text": " It learns strong representations."
+    },
+    {
+      "chunk": 3,
+      "start": 2320.04,
+      "end": 2320.58,
+      "text": " You're like, great."
+    },
+    {
+      "chunk": 3,
+      "start": 2321.64,
+      "end": 2322.74,
+      "text": " And then you can pick out..."
+    },
+    {
+      "chunk": 3,
+      "start": 2324.52,
+      "end": 2326.44,
+      "text": " And then once you identify"
+    },
+    {
+      "chunk": 3,
+      "start": 2326.44,
+      "end": 2327.82,
+      "text": " the representations in there,"
+    },
+    {
+      "chunk": 3,
+      "start": 2327.9,
+      "end": 2329.7200000000003,
+      "text": " then you can train a much smaller model"
+    },
+    {
+      "chunk": 3,
+      "start": 2329.7200000000003,
+      "end": 2332.33997,
+      "text": " that still performs equally well,"
+    },
+    {
+      "chunk": 3,
+      "start": 2332.48,
+      "end": 2335.33997,
+      "text": " but now just to construct those representations."
+    },
+    {
+      "chunk": 3,
+      "start": 2336.76,
+      "end": 2340.32,
+      "text": " And that's how we can go and shrink the models"
+    },
+    {
+      "chunk": 3,
+      "start": 2340.32,
+      "end": 2342.86,
+      "text": " into something interpretable and understandable."
+    },
+    {
+      "chunk": 3,
+      "start": 2344.3,
+      "end": 2349.2799999999997,
+      "text": " And yeah, so that's what a lot of people are trying to do."
+    },
+    {
+      "chunk": 3,
+      "start": 2349.36,
+      "end": 2350.2200000000003,
+      "text": " We're trying to do it."
+    },
+    {
+      "chunk": 3,
+      "start": 2350.2200000000003,
+      "end": 2353.14,
+      "text": " There's also Inga at ED."
+    },
+    {
+      "chunk": 3,
+      "start": 2353.7,
+      "end": 2357.3,
+      "text": " She cares a lot about these Shapley values and Shapley stuff."
+    },
+    {
+      "chunk": 3,
+      "start": 2357.3,
+      "end": 2363.9,
+      "text": " and that's moving in the same direction of trying to identify what is the network learned,"
+    },
+    {
+      "chunk": 3,
+      "start": 2364.48,
+      "end": 2366.54,
+      "text": " what is it using, what information is it using,"
+    },
+    {
+      "chunk": 3,
+      "start": 2366.54,
+      "end": 2375.12,
+      "text": " so that we have a more understandable, more reliable, more explainable model."
+    },
+    {
+      "chunk": 3,
+      "start": 2375.4,
+      "end": 2375.98,
+      "text": " That's the word."
+    },
+    {
+      "chunk": 3,
+      "start": 2376.52,
+      "end": 2378.68,
+      "text": " So explainability, interpretability are important."
+    },
+    {
+      "chunk": 3,
+      "start": 2379.4,
+      "end": 2381.46,
+      "text": " Currently, you don't have a lot of that."
+    },
+    {
+      "chunk": 3,
+      "start": 2381.46,
+      "end": 2399.82,
+      "text": " But what you can often, what is often quite nice is that if you were to take a neural network and actually, you know, play around with it, like maybe add more parameters, you know, engineer it and really try to predict as well as you can."
+    },
+    {
+      "chunk": 4,
+      "start": 2400.0,
+      "end": 2403.42,
+      "text": " then probably you can get this error down to"
+    },
+    {
+      "chunk": 4,
+      "start": 2403.42,
+      "end": 2406.78,
+      "text": " we'll invent a new one"
+    },
+    {
+      "chunk": 4,
+      "start": 2406.78,
+      "end": 2411.06,
+      "text": " so we'll say neural network"
+    },
+    {
+      "chunk": 4,
+      "start": 2411.06,
+      "end": 2412.7,
+      "text": " star star"
+    },
+    {
+      "chunk": 4,
+      "start": 2412.7,
+      "end": 2415.62,
+      "text": " like 1 billion parameters"
+    },
+    {
+      "chunk": 4,
+      "start": 2415.62,
+      "end": 2417.06,
+      "text": " and this is bullshit right"
+    },
+    {
+      "chunk": 4,
+      "start": 2417.06,
+      "end": 2419.14,
+      "text": " and then we'll say"
+    },
+    {
+      "chunk": 4,
+      "start": 2419.14,
+      "end": 2422.36,
+      "text": " with regularization"
+    },
+    {
+      "chunk": 4,
+      "start": 2422.36,
+      "end": 2425.42,
+      "text": " and lots of tricks and engineering"
+    },
+    {
+      "chunk": 4,
+      "start": 2425.42,
+      "end": 2427.42,
+      "text": " and we spend a lot of time to make this work"
+    },
+    {
+      "chunk": 4,
+      "start": 2427.42,
+      "end": 2432.4,
+      "text": " and then we get the error down to 2.521"
+    },
+    {
+      "chunk": 4,
+      "start": 2432.4,
+      "end": 2436.78,
+      "text": " and we get this down to 0.50"
+    },
+    {
+      "chunk": 4,
+      "start": 2436.78,
+      "end": 2439.34,
+      "text": " right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2440.06,
+      "end": 2442.9,
+      "text": " One nice thing is if we did that"
+    },
+    {
+      "chunk": 4,
+      "start": 2442.9,
+      "end": 2444.28,
+      "text": " and if that's what it came out to"
+    },
+    {
+      "chunk": 4,
+      "start": 2444.28,
+      "end": 2448.14,
+      "text": " we could say well as fun as that was"
+    },
+    {
+      "chunk": 4,
+      "start": 2448.14,
+      "end": 2449.26,
+      "text": " and as great as it was"
+    },
+    {
+      "chunk": 4,
+      "start": 2449.26,
+      "end": 2451.28,
+      "text": " it actually did not really improve"
+    },
+    {
+      "chunk": 4,
+      "start": 2451.28,
+      "end": 2453.7,
+      "text": " over just the lasso with the 12 terms"
+    },
+    {
+      "chunk": 4,
+      "start": 2453.7,
+      "end": 2456.6,
+      "text": " so then we have an idea as to what is the"
+    },
+    {
+      "chunk": 4,
+      "start": 2456.6,
+      "end": 2468.72,
+      "text": " the um you know the best you can do so i don't know at this point i think i'm just rambling but"
+    },
+    {
+      "chunk": 4,
+      "start": 2468.72,
+      "end": 2473.52,
+      "text": " the the point is is that you can use these in different ways to see what's the best kind how"
+    },
+    {
+      "chunk": 4,
+      "start": 2473.52,
+      "end": 2481.0,
+      "text": " what's the upper bound in terms of model fit like how well you can really do um but"
+    },
+    {
+      "chunk": 4,
+      "start": 2481.0,
+      "end": 2484.62,
+      "text": " the notes here are correct that"
+    },
+    {
+      "chunk": 4,
+      "start": 2484.62,
+      "end": 2488.9,
+      "text": " if you really want interpretability at the moment, these models"
+    },
+    {
+      "chunk": 4,
+      "start": 2488.9,
+      "end": 2491.3,
+      "text": " are often not very interpretable."
+    },
+    {
+      "chunk": 4,
+      "start": 2493.98,
+      "end": 2495.28,
+      "text": " As good as they are."
+    },
+    {
+      "chunk": 4,
+      "start": 2496.52,
+      "end": 2500.04,
+      "text": " So there's one more topic that we want to talk about. It's called double descent."
+    },
+    {
+      "chunk": 4,
+      "start": 2500.7,
+      "end": 2504.94,
+      "text": " It is very, very interesting. So let's take a 15 minute break and then"
+    },
+    {
+      "chunk": 4,
+      "start": 2504.94,
+      "end": 2505.84,
+      "text": " we'll get back to that."
+    },
+    {
+      "chunk": 4,
+      "start": 2511.0,
+      "end": 2519.54,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2541.0,
+      "end": 2574.98,
+      "text": " Thank you"
+    },
+    {
+      "chunk": 4,
+      "start": 2575.0,
+      "end": 2604.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2605.0,
+      "end": 2634.98001,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2635.0,
+      "end": 2664.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2665.0,
+      "end": 2694.97998,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2695.0,
+      "end": 2724.98,
+      "text": " Thank you"
+    },
+    {
+      "chunk": 4,
+      "start": 2725.0,
+      "end": 2754.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2755.0,
+      "end": 2784.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2785.0,
+      "end": 2814.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2815.0,
+      "end": 2844.97998,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2845.0,
+      "end": 2874.98,
+      "text": " Thank you"
+    },
+    {
+      "chunk": 4,
+      "start": 2875.0,
+      "end": 2904.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2905.0,
+      "end": 2934.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2935.0,
+      "end": 2964.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2965.0,
+      "end": 2994.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 4,
+      "start": 2995.0,
+      "end": 3024.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3000.0,
+      "end": 3029.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3030.0,
+      "end": 3059.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3060.0,
+      "end": 3089.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3090.0,
+      "end": 3119.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3120.0,
+      "end": 3174.98,
+      "text": " Thank you Thank you"
+    },
+    {
+      "chunk": 5,
+      "start": 3175.0,
+      "end": 3204.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3205.0,
+      "end": 3234.98001,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3235.0,
+      "end": 3264.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3265.0,
+      "end": 3294.97998,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3295.0,
+      "end": 3324.98,
+      "text": " Thank you"
+    },
+    {
+      "chunk": 5,
+      "start": 3325.0,
+      "end": 3354.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3355.0,
+      "end": 3384.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3385.0,
+      "end": 3414.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3415.0,
+      "end": 3444.97998,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3445.0,
+      "end": 3474.98,
+      "text": " Thank you"
+    },
+    {
+      "chunk": 5,
+      "start": 3475.0,
+      "end": 3504.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3505.0,
+      "end": 3534.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3535.0,
+      "end": 3564.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3565.0,
+      "end": 3594.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 5,
+      "start": 3595.0,
+      "end": 3599.82,
+      "text": " Hmm."
+    },
+    {
+      "chunk": 6,
+      "start": 3600.0,
+      "end": 3615.26,
+      "text": " let's see"
+    },
+    {
+      "chunk": 6,
+      "start": 3615.26,
+      "end": 3616.56,
+      "text": " where did the iPad go"
+    },
+    {
+      "chunk": 6,
+      "start": 3616.56,
+      "end": 3621.52,
+      "text": " share"
+    },
+    {
+      "chunk": 6,
+      "start": 3621.52,
+      "end": 3623.52,
+      "text": " iPad"
+    },
+    {
+      "chunk": 6,
+      "start": 3623.52,
+      "end": 3625.26,
+      "text": " go iPad"
+    },
+    {
+      "chunk": 6,
+      "start": 3630.0,
+      "end": 3632.52,
+      "text": " There we go."
+    },
+    {
+      "chunk": 6,
+      "start": 3633.32,
+      "end": 3635.94,
+      "text": " Okay, and the noise sound is back."
+    },
+    {
+      "chunk": 6,
+      "start": 3637.64,
+      "end": 3638.98,
+      "text": " And this thing."
+    },
+    {
+      "chunk": 6,
+      "start": 3641.06,
+      "end": 3642.14,
+      "text": " Do, do, do."
+    },
+    {
+      "chunk": 6,
+      "start": 3660.0,
+      "end": 3677.96,
+      "text": " so for me this is a the part of the course that i like the most i think the as i said i think the"
+    },
+    {
+      "chunk": 6,
+      "start": 3677.96,
+      "end": 3682.04,
+      "text": " first day they're definitely going to be a question about bias variance in the test"
+    },
+    {
+      "chunk": 6,
+      "start": 3682.04,
+      "end": 3688.16,
+      "text": " because i think that concept is the kind of the running theme through the course"
+    },
+    {
+      "chunk": 6,
+      "start": 3688.16,
+      "end": 3693.8,
+      "text": " in all the models we looked at, we thought we talked about at least briefly or not."
+    },
+    {
+      "chunk": 6,
+      "start": 3695.94,
+      "end": 3699.78,
+      "text": " In what way is this affecting the trade-off between the bias and the variance?"
+    },
+    {
+      "chunk": 6,
+      "start": 3700.5,
+      "end": 3704.0,
+      "text": " Why do we want to reduce the variance?"
+    },
+    {
+      "chunk": 6,
+      "start": 3704.26,
+      "end": 3706.22,
+      "text": " Why is that such an important thing?"
+    },
+    {
+      "chunk": 6,
+      "start": 3706.3,
+      "end": 3707.32,
+      "text": " Why is it such a critical thing?"
+    },
+    {
+      "chunk": 6,
+      "start": 3709.52,
+      "end": 3712.28,
+      "text": " That's been a recurring theme."
+    },
+    {
+      "chunk": 6,
+      "start": 3713.18,
+      "end": 3717.68,
+      "text": " And now we're going to talk about this observation that was made"
+    },
+    {
+      "chunk": 6,
+      "start": 3717.68,
+      "end": 3722.68,
+      "text": " I think the first paper was in the 70s."
+    },
+    {
+      "chunk": 6,
+      "start": 3725.5,
+      "end": 3726.02,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 6,
+      "start": 3726.74,
+      "end": 3732.46,
+      "text": " At the Bell Labs, which was like this heavenly place for science."
+    },
+    {
+      "chunk": 6,
+      "start": 3733.1,
+      "end": 3736.86,
+      "text": " It was this amazing world where you just play around with stuff."
+    },
+    {
+      "chunk": 6,
+      "start": 3737.2,
+      "end": 3738.96,
+      "text": " And so many things were discovered."
+    },
+    {
+      "chunk": 6,
+      "start": 3739.44,
+      "end": 3741.28,
+      "text": " And I think it was because no one had to do paperwork."
+    },
+    {
+      "chunk": 6,
+      "start": 3741.4,
+      "end": 3742.46,
+      "text": " No one had any responsibilities."
+    },
+    {
+      "chunk": 6,
+      "start": 3742.86,
+      "end": 3744.2,
+      "text": " They were just, they were encouraged to play."
+    },
+    {
+      "chunk": 6,
+      "start": 3744.2,
+      "end": 3755.78,
+      "text": " Problem is it was a telephone Company that was supporting it and eventually They like well actually now we have all these Nobel Prizes but we don have any money So then they screwed it up"
+    },
+    {
+      "chunk": 6,
+      "start": 3756.42,
+      "end": 3759.38,
+      "text": " But for at least 20 years, they came up, or I don't know how many years."
+    },
+    {
+      "chunk": 6,
+      "start": 3759.48,
+      "end": 3764.98,
+      "text": " But for many, many years, it was just discovery after discovery after discovery of just really fun stuff."
+    },
+    {
+      "chunk": 6,
+      "start": 3765.44,
+      "end": 3768.28,
+      "text": " And it was this hot spot of brilliance."
+    },
+    {
+      "chunk": 6,
+      "start": 3769.5,
+      "end": 3772.22,
+      "text": " Claude Shannon, lots of famous people."
+    },
+    {
+      "chunk": 6,
+      "start": 3773.06,
+      "end": 3776.86,
+      "text": " But anyways, double descent was one of the things that they at least discovered there,"
+    },
+    {
+      "chunk": 6,
+      "start": 3776.95999,
+      "end": 3782.16,
+      "text": " but it was popularized later, more recently in terms of machine learning,"
+    },
+    {
+      "chunk": 6,
+      "start": 3782.16,
+      "end": 3791.54001,
+      "text": " because it illustrates something that's really, I think, fundamental to how these big models are working so well."
+    },
+    {
+      "chunk": 6,
+      "start": 3791.54001,
+      "end": 3805.45999,
+      "text": " And so as we talked about very early on, we have this classical regime of model fitting."
+    },
+    {
+      "chunk": 6,
+      "start": 3808.66,
+      "end": 3815.8,
+      "text": " So this is what you would typically learn in a statistics class or even in many optimization classes,"
+    },
+    {
+      "chunk": 6,
+      "start": 3815.8,
+      "end": 3819.86,
+      "text": " that you have a training set,"
+    },
+    {
+      "chunk": 6,
+      "start": 3819.95999,
+      "end": 3820.86,
+      "text": " you have a test set,"
+    },
+    {
+      "chunk": 6,
+      "start": 3821.45999,
+      "end": 3822.4,
+      "text": " then you have a model"
+    },
+    {
+      "chunk": 6,
+      "start": 3822.4,
+      "end": 3826.76001,
+      "text": " with some small number of parameters, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3826.88,
+      "end": 3828.86,
+      "text": " And as you make your complexity,"
+    },
+    {
+      "chunk": 6,
+      "start": 3829.23999,
+      "end": 3830.76001,
+      "text": " we'll keep it as complexity,"
+    },
+    {
+      "chunk": 6,
+      "start": 3831.0,
+      "end": 3832.58,
+      "text": " that way it's not just parameters."
+    },
+    {
+      "chunk": 6,
+      "start": 3833.12,
+      "end": 3834.92,
+      "text": " That way as you go to a more complex model,"
+    },
+    {
+      "chunk": 6,
+      "start": 3835.73999,
+      "end": 3839.06,
+      "text": " you eventually start doing worse."
+    },
+    {
+      "chunk": 6,
+      "start": 3839.32,
+      "end": 3839.82,
+      "text": " Why?"
+    },
+    {
+      "chunk": 6,
+      "start": 3839.82,
+      "end": 3841.64,
+      "text": " You start overfitting, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3843.08,
+      "end": 3843.68,
+      "text": " Overfitting."
+    },
+    {
+      "chunk": 6,
+      "start": 3845.8,
+      "end": 3847.08,
+      "text": " right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3847.14,
+      "end": 3849.88,
+      "text": " You have some data."
+    },
+    {
+      "chunk": 6,
+      "start": 3852.44,
+      "end": 3853.82,
+      "text": " And at first,"
+    },
+    {
+      "chunk": 6,
+      "start": 3854.38,
+      "end": 3855.66,
+      "text": " the model is too simple."
+    },
+    {
+      "chunk": 6,
+      "start": 3856.76,
+      "end": 3857.7799999999997,
+      "text": " That one sucks."
+    },
+    {
+      "chunk": 6,
+      "start": 3858.6,
+      "end": 3860.0,
+      "text": " And then you get a model"
+    },
+    {
+      "chunk": 6,
+      "start": 3860.0,
+      "end": 3861.34,
+      "text": " that seems to do well."
+    },
+    {
+      "chunk": 6,
+      "start": 3861.96,
+      "end": 3863.66,
+      "text": " And then eventually you get a model"
+    },
+    {
+      "chunk": 6,
+      "start": 3863.66,
+      "end": 3869.14,
+      "text": " that overfits, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3869.24,
+      "end": 3871.24,
+      "text": " And that's generally where you say,"
+    },
+    {
+      "chunk": 6,
+      "start": 3871.34,
+      "end": 3874.52002,
+      "text": " oh, that's why you shouldn't use"
+    },
+    {
+      "chunk": 6,
+      "start": 3874.52002,
+      "end": 3877.7200000000003,
+      "text": " overly complicated models because you're just going to overfit your data."
+    },
+    {
+      "chunk": 6,
+      "start": 3878.64,
+      "end": 3881.52002,
+      "text": " And overfitting, overfitting, overfitting, very big concern, blah, blah, blah,"
+    },
+    {
+      "chunk": 6,
+      "start": 3881.68,
+      "end": 3882.68,
+      "text": " years and years of work."
+    },
+    {
+      "chunk": 6,
+      "start": 3883.4,
+      "end": 3888.3,
+      "text": " So for a very long time, we've tried to figure out where is this sweet spot?"
+    },
+    {
+      "chunk": 6,
+      "start": 3889.88,
+      "end": 3891.2799999999997,
+      "text": " How do we get here?"
+    },
+    {
+      "chunk": 6,
+      "start": 3896.16,
+      "end": 3910.8,
+      "text": " All right and I would say that what we discussed in the class a lot was well or two things one was regularization right and that often will just push us into the the sweet spot more"
+    },
+    {
+      "chunk": 6,
+      "start": 3910.8,
+      "end": 3918.68,
+      "text": " stably but we also talked more specifically even when we do regularization about cross-validation"
+    },
+    {
+      "chunk": 6,
+      "start": 3918.68,
+      "end": 3924.2200000000003,
+      "text": " that by picking our parameters across validation,"
+    },
+    {
+      "chunk": 6,
+      "start": 3924.68,
+      "end": 3927.44,
+      "text": " we're essentially always going back to the test set"
+    },
+    {
+      "chunk": 6,
+      "start": 3927.44,
+      "end": 3930.06,
+      "text": " to determine our model complexity."
+    },
+    {
+      "chunk": 6,
+      "start": 3931.06,
+      "end": 3933.66,
+      "text": " So in a way there, we determine where we are,"
+    },
+    {
+      "chunk": 6,
+      "start": 3933.84,
+      "end": 3936.48,
+      "text": " where we want to be by just holding out."
+    },
+    {
+      "chunk": 6,
+      "start": 3937.64,
+      "end": 3940.88,
+      "text": " There are, of course, concerns that if you keep doing that,"
+    },
+    {
+      "chunk": 6,
+      "start": 3940.96,
+      "end": 3942.9,
+      "text": " you actually end up overfitting your test set."
+    },
+    {
+      "chunk": 6,
+      "start": 3943.58002,
+      "end": 3946.76,
+      "text": " And we talked about how you can try to overcome that"
+    },
+    {
+      "chunk": 6,
+      "start": 3946.76,
+      "end": 3947.7,
+      "text": " or account for that."
+    },
+    {
+      "chunk": 6,
+      "start": 3948.68,
+      "end": 3951.91998,
+      "text": " So that's the classic regime, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 3951.98,
+      "end": 3955.98,
+      "text": " That's what statisticians would typically teach you for many, many years."
+    },
+    {
+      "chunk": 6,
+      "start": 3956.36,
+      "end": 3960.58002,
+      "text": " The crazy thing is, is that if you actually keep going,"
+    },
+    {
+      "chunk": 6,
+      "start": 3961.04,
+      "end": 3965.76,
+      "text": " so here we've gone, you know, before we would stop here,"
+    },
+    {
+      "chunk": 6,
+      "start": 3966.48,
+      "end": 3970.1,
+      "text": " and now we're going to keep going to even more complex models."
+    },
+    {
+      "chunk": 6,
+      "start": 3970.62,
+      "end": 3974.8,
+      "text": " So it seems crazy."
+    },
+    {
+      "chunk": 6,
+      "start": 3974.8,
+      "end": 3983.7200000000003,
+      "text": " it really does like people are like wow it for me it blew my mind that this would work"
+    },
+    {
+      "chunk": 6,
+      "start": 3983.7200000000003,
+      "end": 3989.54,
+      "text": " when i learned about it that you can just keep going just make the model way more complex"
+    },
+    {
+      "chunk": 6,
+      "start": 3989.54,
+      "end": 3994.32,
+      "text": " at one point you'd hit this thing and this is called"
+    },
+    {
+      "chunk": 6,
+      "start": 3994.32,
+      "end": 4004.14,
+      "text": " um oh i hate doing stuff and this is called like the interpretability"
+    },
+    {
+      "chunk": 6,
+      "start": 4004.14,
+      "end": 4010.2799999999997,
+      "text": " what is that word"
+    },
+    {
+      "chunk": 6,
+      "start": 4010.2799999999997,
+      "end": 4011.6,
+      "text": " can anyone remember"
+    },
+    {
+      "chunk": 6,
+      "start": 4011.6,
+      "end": 4015.26,
+      "text": " it's basically where the number of parameters"
+    },
+    {
+      "chunk": 6,
+      "start": 4015.26,
+      "end": 4016.86,
+      "text": " it's often for many models"
+    },
+    {
+      "chunk": 6,
+      "start": 4016.86,
+      "end": 4019.2799999999997,
+      "text": " it's where the number of parameters meets the number of samples"
+    },
+    {
+      "chunk": 6,
+      "start": 4019.2799999999997,
+      "end": 4019.8,
+      "text": " you have"
+    },
+    {
+      "chunk": 6,
+      "start": 4019.8,
+      "end": 4023.26,
+      "text": " it's where like the variance explodes"
+    },
+    {
+      "chunk": 6,
+      "start": 4023.26,
+      "end": 4025.12,
+      "text": " actually I think it's in one of these slides"
+    },
+    {
+      "chunk": 6,
+      "start": 4025.12,
+      "end": 4033.08002,
+      "text": " the what"
+    },
+    {
+      "chunk": 6,
+      "start": 4033.08002,
+      "end": 4035.6,
+      "text": " that sounds right"
+    },
+    {
+      "chunk": 6,
+      "start": 4035.6,
+      "end": 4039.91998,
+      "text": " oh is it on"
+    },
+    {
+      "chunk": 6,
+      "start": 4039.91998,
+      "end": 4042.38,
+      "text": " was it on the slide and I didn't see it"
+    },
+    {
+      "chunk": 6,
+      "start": 4052.38,
+      "end": 4056.7799999999997,
+      "text": " oh shit Yeah okay Yeah Thank you"
+    },
+    {
+      "chunk": 6,
+      "start": 4058.92,
+      "end": 4062.12,
+      "text": " You can tell I made these slides. Sorry."
+    },
+    {
+      "chunk": 6,
+      "start": 4063.04,
+      "end": 4067.7200000000003,
+      "text": " But yeah, it's the interpolation point, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 4067.7200000000003,
+      "end": 4073.16,
+      "text": " And it's often around where the number of points are the number of samples."
+    },
+    {
+      "chunk": 6,
+      "start": 4073.16,
+      "end": 4076.7799999999997,
+      "text": " and that's just where the variance explodes."
+    },
+    {
+      "chunk": 6,
+      "start": 4079.91998,
+      "end": 4082.4,
+      "text": " But the cool thing is, and this is crazy,"
+    },
+    {
+      "chunk": 6,
+      "start": 4082.54,
+      "end": 4085.5,
+      "text": " is that as you get more and more complex models,"
+    },
+    {
+      "chunk": 6,
+      "start": 4086.08002,
+      "end": 4088.88,
+      "text": " your test error, so this isn't your training error,"
+    },
+    {
+      "chunk": 6,
+      "start": 4088.91998,
+      "end": 4090.66,
+      "text": " your training error always goes down."
+    },
+    {
+      "chunk": 6,
+      "start": 4091.36,
+      "end": 4093.52,
+      "text": " The training error always just keeps, I mean,"
+    },
+    {
+      "chunk": 6,
+      "start": 4094.52,
+      "end": 4096.76,
+      "text": " inevitably as you add more and more parameters,"
+    },
+    {
+      "chunk": 6,
+      "start": 4096.76,
+      "end": 4098.46,
+      "text": " no matter how many more parameters you add,"
+    },
+    {
+      "chunk": 6,
+      "start": 4098.94,
+      "end": 4100.41998,
+      "text": " this shit will always go down."
+    },
+    {
+      "chunk": 6,
+      "start": 4100.41998,
+      "end": 4103.88,
+      "text": " but the weird thing is that your test error"
+    },
+    {
+      "chunk": 6,
+      "start": 4103.88,
+      "end": 4106.72,
+      "text": " actually can go down a second time"
+    },
+    {
+      "chunk": 6,
+      "start": 4106.72,
+      "end": 4108.28,
+      "text": " right"
+    },
+    {
+      "chunk": 6,
+      "start": 4108.28,
+      "end": 4113.36,
+      "text": " so it seems like it completely contradicts it"
+    },
+    {
+      "chunk": 6,
+      "start": 4113.36,
+      "end": 4114.64,
+      "text": " it doesn't"
+    },
+    {
+      "chunk": 6,
+      "start": 4114.64,
+      "end": 4118.48,
+      "text": " if you compute all of the things from the bias and variance"
+    },
+    {
+      "chunk": 6,
+      "start": 4118.48,
+      "end": 4119.52,
+      "text": " trade off"
+    },
+    {
+      "chunk": 6,
+      "start": 4119.52,
+      "end": 4121.96,
+      "text": " it all always adds up"
+    },
+    {
+      "chunk": 6,
+      "start": 4121.96,
+      "end": 4125.38,
+      "text": " that the bias and the variance are always trading off of each other"
+    },
+    {
+      "chunk": 6,
+      "start": 4125.38,
+      "end": 4127.02,
+      "text": " right"
+    },
+    {
+      "chunk": 6,
+      "start": 4127.02,
+      "end": 4130.4400000000005,
+      "text": " because you can always just go up in one or down in the other."
+    },
+    {
+      "chunk": 6,
+      "start": 4131.48,
+      "end": 4133.74,
+      "text": " And remember, the variance is variance squared."
+    },
+    {
+      "chunk": 6,
+      "start": 4134.74,
+      "end": 4137.32,
+      "text": " Anyways, but they can always turn off of each other."
+    },
+    {
+      "chunk": 6,
+      "start": 4139.0599999999995,
+      "end": 4142.72,
+      "text": " It's just the model at this complexity is where it blows up."
+    },
+    {
+      "chunk": 6,
+      "start": 4142.72,
+      "end": 4145.64,
+      "text": " But, you know, you just keep going."
+    },
+    {
+      "chunk": 6,
+      "start": 4146.82,
+      "end": 4148.22,
+      "text": " So how does that make any sense?"
+    },
+    {
+      "chunk": 6,
+      "start": 4149.2,
+      "end": 4153.68,
+      "text": " Well, one example to illustrate it,"
+    },
+    {
+      "chunk": 6,
+      "start": 4153.74,
+      "end": 4155.86,
+      "text": " they have an example that they've already made."
+    },
+    {
+      "chunk": 6,
+      "start": 4155.86,
+      "end": 4159.88,
+      "text": " so we can take as a generative model for our data."
+    },
+    {
+      "chunk": 6,
+      "start": 4160.0599999999995,
+      "end": 4161.86,
+      "text": " So this is the model we're using to construct data"
+    },
+    {
+      "chunk": 6,
+      "start": 4161.86,
+      "end": 4163.18,
+      "text": " is just the sine function."
+    },
+    {
+      "chunk": 6,
+      "start": 4163.46,
+      "end": 4166.78,
+      "text": " And then we can add some noise to it, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 4166.83997,
+      "end": 4168.58,
+      "text": " Where that noise is now some Gaussian."
+    },
+    {
+      "chunk": 6,
+      "start": 4169.58,
+      "end": 4171.86,
+      "text": " And then what we're going to do is we're going to use splines."
+    },
+    {
+      "chunk": 6,
+      "start": 4172.5,
+      "end": 4174.48,
+      "text": " Splines should be able to fit this pretty well."
+    },
+    {
+      "chunk": 6,
+      "start": 4176.76,
+      "end": 4178.6,
+      "text": " And we talked about splines in the class."
+    },
+    {
+      "chunk": 6,
+      "start": 4179.52,
+      "end": 4182.88,
+      "text": " So here we are with splines and we can use a degree eight"
+    },
+    {
+      "chunk": 6,
+      "start": 4182.88,
+      "end": 4187.62,
+      "text": " and we see a certain fit, that looks pretty good, right?"
+    },
+    {
+      "chunk": 6,
+      "start": 4187.74,
+      "end": 4189.46,
+      "text": " So that looks reasonable."
+    },
+    {
+      "chunk": 6,
+      "start": 4190.0,
+      "end": 4195.82,
+      "text": " If we use a degree 20, right, which is where shit starts blowing up,"
+    },
+    {
+      "chunk": 6,
+      "start": 4195.82,
+      "end": 4199.82,
+      "text": " and that's classically where we would say overfit, this is a bad idea."
+    },
+    {
+      "chunk": 7,
+      "start": 4200.0,
+      "end": 4201.68,
+      "text": " Don't do it, blah, blah, blah."
+    },
+    {
+      "chunk": 7,
+      "start": 4202.26,
+      "end": 4205.76,
+      "text": " But if you keep going, here's 42, here's degree 80,"
+    },
+    {
+      "chunk": 7,
+      "start": 4206.12,
+      "end": 4208.28,
+      "text": " you start seeing things that are weird,"
+    },
+    {
+      "chunk": 7,
+      "start": 4208.78,
+      "end": 4213.1,
+      "text": " mainly that it actually does pretty well in these areas."
+    },
+    {
+      "chunk": 7,
+      "start": 4214.34,
+      "end": 4219.94,
+      "text": " In this case, since splines actually do a pretty good job"
+    },
+    {
+      "chunk": 7,
+      "start": 4219.94,
+      "end": 4225.12,
+      "text": " at modeling cosine curves, the degree 8 is still the winner."
+    },
+    {
+      "chunk": 7,
+      "start": 4225.94,
+      "end": 4229.06,
+      "text": " But degree 80 actually looks way better than degree 20."
+    },
+    {
+      "chunk": 7,
+      "start": 4229.06,
+      "end": 4231.0,
+      "text": " So our error is going down again."
+    },
+    {
+      "chunk": 7,
+      "start": 4232.34,
+      "end": 4242.48,
+      "text": " And actually, you can contrive other situations where actually the error at a higher degree would be better than this degree 8."
+    },
+    {
+      "chunk": 7,
+      "start": 4242.9,
+      "end": 4244.62,
+      "text": " I'll show you an example of that in a second."
+    },
+    {
+      "chunk": 7,
+      "start": 4245.54,
+      "end": 4249.76,
+      "text": " And the whole point is that actually it has an increased flexibility."
+    },
+    {
+      "chunk": 7,
+      "start": 4251.1,
+      "end": 4254.28,
+      "text": " So you have this test error and the training error."
+    },
+    {
+      "chunk": 7,
+      "start": 4254.28,
+      "end": 4260.0,
+      "text": " and then it goes down again."
+    },
+    {
+      "chunk": 7,
+      "start": 4265.48,
+      "end": 4268.32,
+      "text": " Yeah, and one way of thinking about this"
+    },
+    {
+      "chunk": 7,
+      "start": 4268.32,
+      "end": 4271.88,
+      "text": " is actually that it's still always trading off"
+    },
+    {
+      "chunk": 7,
+      "start": 4271.88,
+      "end": 4272.9,
+      "text": " of two different models."
+    },
+    {
+      "chunk": 7,
+      "start": 4273.62,
+      "end": 4275.64,
+      "text": " For example, in here,"
+    },
+    {
+      "chunk": 7,
+      "start": 4275.64,
+      "end": 4282.74,
+      "text": " yeah so imagine"
+    },
+    {
+      "chunk": 7,
+      "start": 4282.74,
+      "end": 4285.68,
+      "text": " actually I'll give a different example"
+    },
+    {
+      "chunk": 7,
+      "start": 4285.68,
+      "end": 4287.1,
+      "text": " and explain it there"
+    },
+    {
+      "chunk": 7,
+      "start": 4287.1,
+      "end": 4289.38,
+      "text": " so here's another example"
+    },
+    {
+      "chunk": 7,
+      "start": 4289.38,
+      "end": 4292.94,
+      "text": " of data"
+    },
+    {
+      "chunk": 7,
+      "start": 4292.94,
+      "end": 4295.4,
+      "text": " so here the dotted line"
+    },
+    {
+      "chunk": 7,
+      "start": 4295.4,
+      "end": 4297.64,
+      "text": " is the true function"
+    },
+    {
+      "chunk": 7,
+      "start": 4297.64,
+      "end": 4299.8,
+      "text": " and you can see"
+    },
+    {
+      "chunk": 7,
+      "start": 4299.8,
+      "end": 4300.96,
+      "text": " it's just a"
+    },
+    {
+      "chunk": 7,
+      "start": 4300.96,
+      "end": 4302.9,
+      "text": " square pulse"
+    },
+    {
+      "chunk": 7,
+      "start": 4302.9,
+      "end": 4304.96,
+      "text": " just one little square box"
+    },
+    {
+      "chunk": 7,
+      "start": 4304.96,
+      "end": 4308.3,
+      "text": " just this where it's zero"
+    },
+    {
+      "chunk": 7,
+      "start": 4308.3,
+      "end": 4312.12,
+      "text": " and then it's one and then it's zero again."
+    },
+    {
+      "chunk": 7,
+      "start": 4312.78,
+      "end": 4316.72,
+      "text": " So just the stupidest truth ever."
+    },
+    {
+      "chunk": 7,
+      "start": 4316.72,
+      "end": 4319.16,
+      "text": " And then it has some added noise"
+    },
+    {
+      "chunk": 7,
+      "start": 4319.16,
+      "end": 4323.88,
+      "text": " which was, I think, Gaussian. I can't remember."
+    },
+    {
+      "chunk": 7,
+      "start": 4325.26,
+      "end": 4328.62,
+      "text": " I made it a while ago. But the idea was simply"
+    },
+    {
+      "chunk": 7,
+      "start": 4328.62,
+      "end": 4332.68,
+      "text": " I wanted to have an example where actually"
+    },
+    {
+      "chunk": 7,
+      "start": 4332.68,
+      "end": 4337.68,
+      "text": " the model class that I'm using to fit it with,"
+    },
+    {
+      "chunk": 7,
+      "start": 4337.68,
+      "end": 4342.68,
+      "text": " I used the polynomial regression here using Legendre polynomial."
+    },
+    {
+      "chunk": 7,
+      "start": 4342.68,
+      "end": 4360.08,
+      "text": " So these are just you can think of it like a plus bx plus cx squared plus 3x plus 3 x cubed like it just it not that but it a it just polynomial regression which we talked about a long time ago we just finding the coefficients"
+    },
+    {
+      "chunk": 7,
+      "start": 4360.08,
+      "end": 4367.5,
+      "text": " of the polynomials and um uh point is i wanted to make sure that the thing i gave it is not well"
+    },
+    {
+      "chunk": 7,
+      "start": 4367.5,
+      "end": 4375.26,
+      "text": " approximated by a polynomial, right? Square functions are discontinuous, right? So here"
+    },
+    {
+      "chunk": 7,
+      "start": 4375.26,
+      "end": 4382.62,
+      "text": " just jumps from zero to one. And then anyway, so it's clearly not in the model class. It's"
+    },
+    {
+      "chunk": 7,
+      "start": 4382.62,
+      "end": 4389.4,
+      "text": " not going to ever really do that well. And what I wanted to show was that actually,"
+    },
+    {
+      "chunk": 7,
+      "start": 4389.4,
+      "end": 4393.36,
+      "text": " if you do the classical model fitting, right?"
+    },
+    {
+      "chunk": 7,
+      "start": 4393.44,
+      "end": 4395.68,
+      "text": " So here you have"
+    },
+    {
+      "chunk": 7,
+      "start": 4395.68,
+      "end": 4403.94,
+      "text": " the same kind of training and test error stuff, right?"
+    },
+    {
+      "chunk": 7,
+      "start": 4404.02,
+      "end": 4407.74,
+      "text": " So here we can see that the training error is always going down."
+    },
+    {
+      "chunk": 7,
+      "start": 4409.68,
+      "end": 4413.0,
+      "text": " Whereas the test error, it goes down until here"
+    },
+    {
+      "chunk": 7,
+      "start": 4413.0,
+      "end": 4415.73999,
+      "text": " and then it goes up again and then it goes down again."
+    },
+    {
+      "chunk": 7,
+      "start": 4416.86,
+      "end": 4418.56,
+      "text": " So we have this double descent."
+    },
+    {
+      "chunk": 7,
+      "start": 4419.4,
+      "end": 4421.28,
+      "text": " phenomenon."
+    },
+    {
+      "chunk": 7,
+      "start": 4422.72,
+      "end": 4428.22,
+      "text": " And what I wanted to show was actually you can get a second descent,"
+    },
+    {
+      "chunk": 7,
+      "start": 4428.58,
+      "end": 4436.34,
+      "text": " which is, you know, also very good or even better than the original descent."
+    },
+    {
+      "chunk": 7,
+      "start": 4438.34,
+      "end": 4441.18,
+      "text": " And so if we look at the solutions that were found,"
+    },
+    {
+      "chunk": 7,
+      "start": 4441.18,
+      "end": 4444.16,
+      "text": " I think the"
+    },
+    {
+      "chunk": 7,
+      "start": 4444.16,
+      "end": 4448.64,
+      "text": " if you look at"
+    },
+    {
+      "chunk": 7,
+      "start": 4448.64,
+      "end": 4450.73999,
+      "text": " the best model under"
+    },
+    {
+      "chunk": 7,
+      "start": 4450.73999,
+      "end": 4453.6,
+      "text": " so with less than"
+    },
+    {
+      "chunk": 7,
+      "start": 4453.6,
+      "end": 4454.42,
+      "text": " 100"
+    },
+    {
+      "chunk": 7,
+      "start": 4454.42,
+      "end": 4459.32,
+      "text": " so I trained with 100 data points"
+    },
+    {
+      "chunk": 7,
+      "start": 4459.32,
+      "end": 4462.14,
+      "text": " and then this is where we have"
+    },
+    {
+      "chunk": 7,
+      "start": 4462.14,
+      "end": 4463.84,
+      "text": " 100"
+    },
+    {
+      "chunk": 7,
+      "start": 4463.84,
+      "end": 4467.86,
+      "text": " and that's where the model tends to explode"
+    },
+    {
+      "chunk": 7,
+      "start": 4467.86,
+      "end": 4470.94,
+      "text": " in that interpolation limit thing"
+    },
+    {
+      "chunk": 7,
+      "start": 4470.94,
+      "end": 4472.9,
+      "text": " or interpolation point."
+    },
+    {
+      "chunk": 7,
+      "start": 4474.82,
+      "end": 4478.2,
+      "text": " And so before that, we get some minimum, like right there."
+    },
+    {
+      "chunk": 7,
+      "start": 4479.64,
+      "end": 4484.38,
+      "text": " That's D equals 24 in this one specific case."
+    },
+    {
+      "chunk": 7,
+      "start": 4485.16,
+      "end": 4491.72,
+      "text": " And there what we see is actually this blue model."
+    },
+    {
+      "chunk": 7,
+      "start": 4493.6,
+      "end": 4506.18,
+      "text": " You can see it doing okay right and that would be the best model where you before the interpolation limit So this is in the first descent"
+    },
+    {
+      "chunk": 7,
+      "start": 4507.24,
+      "end": 4510.5,
+      "text": " Then the model explodes, and then it comes down again."
+    },
+    {
+      "chunk": 7,
+      "start": 4510.78,
+      "end": 4519.48,
+      "text": " And the interesting thing is that it is the solution that it learns."
+    },
+    {
+      "chunk": 7,
+      "start": 4519.8,
+      "end": 4522.48,
+      "text": " I think the interesting thing is the solution that it learns."
+    },
+    {
+      "chunk": 7,
+      "start": 4522.48,
+      "end": 4539.91998,
+      "text": " So if you look at it, right, what it's learned is basically to put a spike at the actual points and then find the kind of the mean or the local mean around it."
+    },
+    {
+      "chunk": 7,
+      "start": 4539.91998,
+      "end": 4546.64,
+      "text": " So it really just, and it makes sense if you think about how it's learned, right?"
+    },
+    {
+      "chunk": 7,
+      "start": 4547.46,
+      "end": 4553.12,
+      "text": " We're trying to minimize the variance, meaning like the sensitivity to any one point."
+    },
+    {
+      "chunk": 7,
+      "start": 4553.6,
+      "end": 4563.7,
+      "text": " And so what it's going to try to do is always just go to something closer to the mean, right?"
+    },
+    {
+      "chunk": 7,
+      "start": 4563.7,
+      "end": 4565.86,
+      "text": " kind of regression to the mean kind of thing"
+    },
+    {
+      "chunk": 7,
+      "start": 4565.86,
+      "end": 4568.7,
+      "text": " where it's going to, it doesn't want to be sensitive"
+    },
+    {
+      "chunk": 7,
+      "start": 4568.7,
+      "end": 4570.88,
+      "text": " to so sensitive to this point."
+    },
+    {
+      "chunk": 7,
+      "start": 4570.96,
+      "end": 4574.41998,
+      "text": " So it's quickly going to shoot it back down to here."
+    },
+    {
+      "chunk": 7,
+      "start": 4574.74,
+      "end": 4578.84,
+      "text": " But what you see is that actually it's fitting"
+    },
+    {
+      "chunk": 7,
+      "start": 4578.84,
+      "end": 4582.48,
+      "text": " all of the actual points in the data."
+    },
+    {
+      "chunk": 7,
+      "start": 4582.62,
+      "end": 4584.22,
+      "text": " So all of the training points"
+    },
+    {
+      "chunk": 7,
+      "start": 4584.22,
+      "end": 4587.36,
+      "text": " are perfectly well fit by the model."
+    },
+    {
+      "chunk": 7,
+      "start": 4589.44,
+      "end": 4591.22,
+      "text": " And that's one of the main points"
+    },
+    {
+      "chunk": 7,
+      "start": 4591.22,
+      "end": 4596.22,
+      "text": " is that in this second regime where we have this second descent,"
+    },
+    {
+      "chunk": 7,
+      "start": 4597.1,
+      "end": 4600.22,
+      "text": " all of the models that we are considering there,"
+    },
+    {
+      "chunk": 7,
+      "start": 4600.34,
+      "end": 4605.38,
+      "text": " all of the possible solutions all fit the training data perfectly."
+    },
+    {
+      "chunk": 7,
+      "start": 4606.74,
+      "end": 4614.64,
+      "text": " Whereas before we're trying to find the best fit to the training data"
+    },
+    {
+      "chunk": 7,
+      "start": 4614.64,
+      "end": 4617.41998,
+      "text": " with some penalty maybe."
+    },
+    {
+      "chunk": 7,
+      "start": 4617.41998,
+      "end": 4623.91998,
+      "text": " But now we have an infinite number of models that all fit the training data perfectly."
+    },
+    {
+      "chunk": 7,
+      "start": 4624.22,
+      "end": 4631.53998,
+      "text": " And we're selecting from those models the one that gives us the best prediction out of sample."
+    },
+    {
+      "chunk": 7,
+      "start": 4631.76,
+      "end": 4632.6,
+      "text": " How do we do that?"
+    },
+    {
+      "chunk": 7,
+      "start": 4632.66,
+      "end": 4634.16,
+      "text": " By minimizing the variance."
+    },
+    {
+      "chunk": 7,
+      "start": 4635.78,
+      "end": 4635.97998,
+      "text": " Right."
+    },
+    {
+      "chunk": 7,
+      "start": 4636.52002,
+      "end": 4642.52002,
+      "text": " And so actually in this model, even though I trained all of them the same way,"
+    },
+    {
+      "chunk": 7,
+      "start": 4643.1,
+      "end": 4653.18,
+      "text": " Essentially what we have is that in this first regime right in this first regime we have y minus"
+    },
+    {
+      "chunk": 7,
+      "start": 4655.06,
+      "end": 4656.84,
+      "text": " I'll write it the,"
+    },
+    {
+      "chunk": 7,
+      "start": 4659.26,
+      "end": 4667.16,
+      "text": " we have this loss function y minus sum over beta x squared, right?"
+    },
+    {
+      "chunk": 7,
+      "start": 4667.24,
+      "end": 4669.16,
+      "text": " That's just your normal regression loss."
+    },
+    {
+      "chunk": 7,
+      "start": 4669.16,
+      "end": 4676.08,
+      "text": " plus the"
+    },
+    {
+      "chunk": 7,
+      "start": 4676.08,
+      "end": 4681.28,
+      "text": " we'll do the"
+    },
+    {
+      "chunk": 7,
+      "start": 4681.28,
+      "end": 4684.14,
+      "text": " yeah it was just an L2 regularization"
+    },
+    {
+      "chunk": 7,
+      "start": 4684.14,
+      "end": 4685.1,
+      "text": " if I remember correctly"
+    },
+    {
+      "chunk": 7,
+      "start": 4685.1,
+      "end": 4687.9,
+      "text": " plus the sum of beta squared"
+    },
+    {
+      "chunk": 7,
+      "start": 4687.9,
+      "end": 4690.0,
+      "text": " that was the first regime"
+    },
+    {
+      "chunk": 7,
+      "start": 4690.0,
+      "end": 4691.02,
+      "text": " and the second regime"
+    },
+    {
+      "chunk": 7,
+      "start": 4691.02,
+      "end": 4692.58002,
+      "text": " you're not really minimizing"
+    },
+    {
+      "chunk": 7,
+      "start": 4692.58002,
+      "end": 4694.32,
+      "text": " I mean you're still minimizing this loss"
+    },
+    {
+      "chunk": 7,
+      "start": 4694.32,
+      "end": 4695.24,
+      "text": " but the reality is"
+    },
+    {
+      "chunk": 7,
+      "start": 4695.24,
+      "end": 4698.56,
+      "text": " it actually is always perfectly minimized"
+    },
+    {
+      "chunk": 7,
+      "start": 4698.56,
+      "end": 4699.14,
+      "text": " so"
+    },
+    {
+      "chunk": 7,
+      "start": 4699.16,
+      "end": 4700.91998,
+      "text": " in here."
+    },
+    {
+      "chunk": 7,
+      "start": 4701.06,
+      "end": 4702.4,
+      "text": " So actually in this regime,"
+    },
+    {
+      "chunk": 7,
+      "start": 4703.56,
+      "end": 4704.72,
+      "text": " you're more doing this."
+    },
+    {
+      "chunk": 7,
+      "start": 4704.86,
+      "end": 4705.8,
+      "text": " You're more, yeah."
+    },
+    {
+      "chunk": 7,
+      "start": 4705.8,
+      "end": 4707.98,
+      "text": " Here we're trying to minimize everything."
+    },
+    {
+      "chunk": 7,
+      "start": 4708.91998,
+      "end": 4711.32,
+      "text": " And here we're minimizing"
+    },
+    {
+      "chunk": 7,
+      "start": 4711.32,
+      "end": 4716.62,
+      "text": " the sum of beta squared"
+    },
+    {
+      "chunk": 7,
+      "start": 4716.62,
+      "end": 4718.3,
+      "text": " subject"
+    },
+    {
+      "chunk": 7,
+      "start": 4718.3,
+      "end": 4721.64,
+      "text": " to"
+    },
+    {
+      "chunk": 7,
+      "start": 4721.64,
+      "end": 4725.36,
+      "text": " y equals"
+    },
+    {
+      "chunk": 7,
+      "start": 4725.36,
+      "end": 4728.0,
+      "text": " the sum,"
+    },
+    {
+      "chunk": 7,
+      "start": 4728.24,
+      "end": 4728.64,
+      "text": " ugh,"
+    },
+    {
+      "chunk": 7,
+      "start": 4729.16003,
+      "end": 4744.4400000000005,
+      "text": " so in a way we've changed the optimization that we're doing we haven't really because we've still"
+    },
+    {
+      "chunk": 7,
+      "start": 4744.4400000000005,
+      "end": 4749.02,
+      "text": " we're still constructing it the same way but since we have so many parameters"
+    },
+    {
+      "chunk": 7,
+      "start": 4749.02,
+      "end": 4754.1,
+      "text": " that um since we have so many more parameters and we have data points"
+    },
+    {
+      "chunk": 7,
+      "start": 4754.1,
+      "end": 4757.92,
+      "text": " the model is so flexible it has an infinite number of ways of fitting it"
+    },
+    {
+      "chunk": 7,
+      "start": 4757.92,
+      "end": 4759.96,
+      "text": " and therefore"
+    },
+    {
+      "chunk": 7,
+      "start": 4759.96,
+      "end": 4760.72,
+      "text": " it"
+    },
+    {
+      "chunk": 7,
+      "start": 4760.72,
+      "end": 4766.28,
+      "text": " it doesn't have to pick just between"
+    },
+    {
+      "chunk": 7,
+      "start": 4766.28,
+      "end": 4768.16003,
+      "text": " the models that"
+    },
+    {
+      "chunk": 7,
+      "start": 4768.16003,
+      "end": 4770.22,
+      "text": " it doesn't have to pick a model that"
+    },
+    {
+      "chunk": 7,
+      "start": 4770.22,
+      "end": 4772.32,
+      "text": " predicts it well, that fits the"
+    },
+    {
+      "chunk": 7,
+      "start": 4772.32,
+      "end": 4774.52,
+      "text": " training data well, all of them do"
+    },
+    {
+      "chunk": 7,
+      "start": 4774.52,
+      "end": 4776.52,
+      "text": " it's finding the one that has the"
+    },
+    {
+      "chunk": 7,
+      "start": 4776.52,
+      "end": 4778.2,
+      "text": " best variance"
+    },
+    {
+      "chunk": 7,
+      "start": 4778.2,
+      "end": 4780.46,
+      "text": " right"
+    },
+    {
+      "chunk": 7,
+      "start": 4780.46,
+      "end": 4784.02,
+      "text": " so it's still making that thing"
+    },
+    {
+      "chunk": 7,
+      "start": 4784.02,
+      "end": 4785.7,
+      "text": " and the reason this"
+    },
+    {
+      "chunk": 7,
+      "start": 4785.7,
+      "end": 4795.18,
+      "text": " Yeah. And you get these double descent when you have a lot of parameters and when you regularize the model correctly."
+    },
+    {
+      "chunk": 7,
+      "start": 4798.38,
+      "end": 4799.82,
+      "text": " So you can have these."
+    },
+    {
+      "chunk": 8,
+      "start": 4800.0,
+      "end": 4802.82,
+      "text": " situations where it works and it's really cool."
+    },
+    {
+      "chunk": 8,
+      "start": 4803.0,
+      "end": 4805.78,
+      "text": " And I think this is one of the main points of,"
+    },
+    {
+      "chunk": 8,
+      "start": 4806.12,
+      "end": 4808.74,
+      "text": " or one of the main reasons machine learning works."
+    },
+    {
+      "chunk": 8,
+      "start": 4810.86,
+      "end": 4811.42,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 8,
+      "start": 4812.44,
+      "end": 4815.44,
+      "text": " So it doesn't contradict the bias variance trade-off."
+    },
+    {
+      "chunk": 8,
+      "start": 4815.8,
+      "end": 4818.2,
+      "text": " If you calculate the bias and the variance terms,"
+    },
+    {
+      "chunk": 8,
+      "start": 4818.26,
+      "end": 4821.32,
+      "text": " like here I've done that and they always add up."
+    },
+    {
+      "chunk": 8,
+      "start": 4822.2,
+      "end": 4823.86,
+      "text": " So here's the bias term."
+    },
+    {
+      "chunk": 8,
+      "start": 4824.16,
+      "end": 4825.58,
+      "text": " Here's the variance term."
+    },
+    {
+      "chunk": 8,
+      "start": 4825.58,
+      "end": 4827.64,
+      "text": " and"
+    },
+    {
+      "chunk": 8,
+      "start": 4827.64,
+      "end": 4831.94,
+      "text": " yeah and you can"
+    },
+    {
+      "chunk": 8,
+      "start": 4831.94,
+      "end": 4834.36,
+      "text": " you can compute the actual"
+    },
+    {
+      "chunk": 8,
+      "start": 4834.36,
+      "end": 4836.22,
+      "text": " error actual mean squared"
+    },
+    {
+      "chunk": 8,
+      "start": 4836.22,
+      "end": 4838.2,
+      "text": " error and also what you"
+    },
+    {
+      "chunk": 8,
+      "start": 4838.2,
+      "end": 4840.26,
+      "text": " you'd predict from summing the"
+    },
+    {
+      "chunk": 8,
+      "start": 4840.26,
+      "end": 4842.42,
+      "text": " bias and the variance term plus the irreducible"
+    },
+    {
+      "chunk": 8,
+      "start": 4842.42,
+      "end": 4844.4,
+      "text": " error which is the third term in that"
+    },
+    {
+      "chunk": 8,
+      "start": 4844.4,
+      "end": 4846.44,
+      "text": " and then you"
+    },
+    {
+      "chunk": 8,
+      "start": 4846.44,
+      "end": 4848.48,
+      "text": " see it lines in a line so you're"
+    },
+    {
+      "chunk": 8,
+      "start": 4848.48,
+      "end": 4850.18,
+      "text": " able you can compute these things"
+    },
+    {
+      "chunk": 8,
+      "start": 4850.18,
+      "end": 4852.12,
+      "text": " and see that it indeed"
+    },
+    {
+      "chunk": 8,
+      "start": 4852.12,
+      "end": 4854.16,
+      "text": " never violates the trade"
+    },
+    {
+      "chunk": 8,
+      "start": 4854.16,
+      "end": 4855.64,
+      "text": " off idea."
+    },
+    {
+      "chunk": 8,
+      "start": 4856.36,
+      "end": 4858.22,
+      "text": " It's just the thing where it's"
+    },
+    {
+      "chunk": 8,
+      "start": 4858.22,
+      "end": 4860.18,
+      "text": " different is that it's not always a"
+    },
+    {
+      "chunk": 8,
+      "start": 4860.18,
+      "end": 4862.06,
+      "text": " U-shape. It can be double the center."
+    },
+    {
+      "chunk": 8,
+      "start": 4862.58,
+      "end": 4864.0,
+      "text": " Yeah. And"
+    },
+    {
+      "chunk": 8,
+      "start": 4864.0,
+      "end": 4866.2,
+      "text": " for me,"
+    },
+    {
+      "chunk": 8,
+      "start": 4866.28,
+      "end": 4868.1,
+      "text": " the right way of looking at it is actually"
+    },
+    {
+      "chunk": 8,
+      "start": 4868.1,
+      "end": 4869.58,
+      "text": " it's changing the optimization."
+    },
+    {
+      "chunk": 8,
+      "start": 4870.48,
+      "end": 4872.12,
+      "text": " Right? Because"
+    },
+    {
+      "chunk": 8,
+      "start": 4872.12,
+      "end": 4882.84681,
+      "text": " you in this regime where you can interpolate between all an infinite number of correct solutions So that part of the magic of the model"
+    },
+    {
+      "chunk": 8,
+      "start": 4884.02681,
+      "end": 4886.626816,
+      "text": " So it doesn't contradict the vice-variance trade-off."
+    },
+    {
+      "chunk": 8,
+      "start": 4889.42681,
+      "end": 4893.24681,
+      "text": " Yeah, sometimes you can achieve good test error by doing this."
+    },
+    {
+      "chunk": 8,
+      "start": 4893.24681,
+      "end": 4898.46681,
+      "text": " yeah and I think this is likely"
+    },
+    {
+      "chunk": 8,
+      "start": 4898.46681,
+      "end": 4899.16681,
+      "text": " that"
+    },
+    {
+      "chunk": 8,
+      "start": 4899.16681,
+      "end": 4902.46681,
+      "text": " this is better done"
+    },
+    {
+      "chunk": 8,
+      "start": 4902.46681,
+      "end": 4904.406815,
+      "text": " in low noise situations"
+    },
+    {
+      "chunk": 8,
+      "start": 4904.406815,
+      "end": 4906.16681,
+      "text": " but"
+    },
+    {
+      "chunk": 8,
+      "start": 4906.16681,
+      "end": 4908.72681,
+      "text": " I mean clearly it works in high noise"
+    },
+    {
+      "chunk": 8,
+      "start": 4908.72681,
+      "end": 4910.60681,
+      "text": " too but it makes"
+    },
+    {
+      "chunk": 8,
+      "start": 4910.60681,
+      "end": 4912.44681,
+      "text": " more sense with high signal"
+    },
+    {
+      "chunk": 8,
+      "start": 4912.44681,
+      "end": 4912.92681,
+      "text": " the noise"
+    },
+    {
+      "chunk": 8,
+      "start": 4912.92681,
+      "end": 4922.32681,
+      "text": " I don't know if this is true"
+    },
+    {
+      "chunk": 8,
+      "start": 4922.32681,
+      "end": 4926.766815,
+      "text": " I sometimes doubt the claims"
+    },
+    {
+      "chunk": 8,
+      "start": 4926.766815,
+      "end": 4929.2268,
+      "text": " but it says most of the statistical learning methods"
+    },
+    {
+      "chunk": 8,
+      "start": 4929.2268,
+      "end": 4931.5068,
+      "text": " do not"
+    },
+    {
+      "chunk": 8,
+      "start": 4931.5068,
+      "end": 4933.60681,
+      "text": " exhibit double descent"
+    },
+    {
+      "chunk": 8,
+      "start": 4933.60681,
+      "end": 4936.42682,
+      "text": " I mean I would agree that most of the things we talked about in the class"
+    },
+    {
+      "chunk": 8,
+      "start": 4936.42682,
+      "end": 4938.02681,
+      "text": " don't show this"
+    },
+    {
+      "chunk": 8,
+      "start": 4938.02681,
+      "end": 4941.5068,
+      "text": " but in the world I don't know"
+    },
+    {
+      "chunk": 8,
+      "start": 4941.5068,
+      "end": 4943.82681,
+      "text": " how many do or don't"
+    },
+    {
+      "chunk": 8,
+      "start": 4943.82681,
+      "end": 4946.58682,
+      "text": " so"
+    },
+    {
+      "chunk": 8,
+      "start": 4946.58682,
+      "end": 4950.26682,
+      "text": " I agree that though double descent"
+    },
+    {
+      "chunk": 8,
+      "start": 4950.26682,
+      "end": 4965.51363,
+      "text": " sometimes occur We don want to rely on this maybe yeah"
+    },
+    {
+      "chunk": 8,
+      "start": 4965.51363,
+      "end": 4968.13362,
+      "text": " again it depends on what you're trying to do"
+    },
+    {
+      "chunk": 8,
+      "start": 4968.13362,
+      "end": 4974.17361,
+      "text": " so here's some articles that you can read for"
+    },
+    {
+      "chunk": 8,
+      "start": 4974.17361,
+      "end": 4978.05362,
+      "text": " some more inspiration about how to"
+    },
+    {
+      "chunk": 8,
+      "start": 4978.05362,
+      "end": 4980.19362,
+      "text": " use it in medicine, healthcare, and ecology"
+    },
+    {
+      "chunk": 8,
+      "start": 4980.19362,
+      "end": 4983.83362,
+      "text": " if you're interested."
+    },
+    {
+      "chunk": 8,
+      "start": 4987.45363,
+      "end": 4989.39362,
+      "text": " That kind of ends this module"
+    },
+    {
+      "chunk": 8,
+      "start": 4989.39362,
+      "end": 4991.65363,
+      "text": " on machine learning or on AI"
+    },
+    {
+      "chunk": 8,
+      "start": 4991.65363,
+      "end": 4993.61362,
+      "text": " or on neural network models."
+    },
+    {
+      "chunk": 8,
+      "start": 4997.71362,
+      "end": 4998.27362,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 8,
+      "start": 4999.27362,
+      "end": 5000.81363,
+      "text": " I think there's"
+    },
+    {
+      "chunk": 8,
+      "start": 5000.81363,
+      "end": 5004.35362,
+      "text": " more that could be said, but that's okay."
+    },
+    {
+      "chunk": 8,
+      "start": 5007.03363,
+      "end": 5009.87363,
+      "text": " So at least I'm glad we ended with this double-ascent stuff"
+    },
+    {
+      "chunk": 8,
+      "start": 5009.87363,
+      "end": 5014.17361,
+      "text": " because I don't know, I found this really fun to dig into,"
+    },
+    {
+      "chunk": 8,
+      "start": 5015.33362,
+      "end": 5018.41362,
+      "text": " how the double descent phenomenon,"
+    },
+    {
+      "chunk": 8,
+      "start": 5020.31363,
+      "end": 5023.33362,
+      "text": " mainly how it doesn't break the bias-variance trade-off"
+    },
+    {
+      "chunk": 8,
+      "start": 5023.33362,
+      "end": 5043.04044,
+      "text": " and how essentially you can have an infant number of solutions and then pick between them by minimizing the variance I think it interesting So any questions or comments"
+    },
+    {
+      "chunk": 8,
+      "start": 5043.04044,
+      "end": 5046.20044,
+      "text": " about this module? Concerns?"
+    },
+    {
+      "chunk": 8,
+      "start": 5046.96043,
+      "end": 5050.80043,
+      "text": " Fears? Desires? I don't know."
+    },
+    {
+      "chunk": 8,
+      "start": 5050.80043,
+      "end": 5052.60043,
+      "text": " Anything? Good?"
+    },
+    {
+      "chunk": 8,
+      "start": 5054.26044,
+      "end": 5058.84042,
+      "text": " Alright, so I guess we can end here for today and then tomorrow we're going to"
+    },
+    {
+      "chunk": 8,
+      "start": 5058.84042,
+      "end": 5060.24045,
+      "text": " talk about the"
+    },
+    {
+      "chunk": 8,
+      "start": 5060.24045,
+      "end": 5062.82043,
+      "text": " summary and just the"
+    },
+    {
+      "chunk": 8,
+      "start": 5062.82043,
+      "end": 5064.80045,
+      "text": " test. Please come"
+    },
+    {
+      "chunk": 8,
+      "start": 5064.80045,
+      "end": 5066.16043,
+      "text": " with questions if you have any."
+    },
+    {
+      "chunk": 8,
+      "start": 5069.30045,
+      "end": 5070.84042,
+      "text": " Yeah, otherwise I'm just going to"
+    },
+    {
+      "chunk": 8,
+      "start": 5070.84042,
+      "end": 5072.46045,
+      "text": " kind of give a summary of everything"
+    },
+    {
+      "chunk": 8,
+      "start": 5072.46045,
+      "end": 5074.28043,
+      "text": " and"
+    },
+    {
+      "chunk": 8,
+      "start": 5074.28043,
+      "end": 5076.20044,
+      "text": " answer questions."
+    },
+    {
+      "chunk": 8,
+      "start": 5078.30045,
+      "end": 5078.78043,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 8,
+      "start": 5081.22043,
+      "end": 5081.94043,
+      "text": " That's it."
+    },
+    {
+      "chunk": 8,
+      "start": 5082.54044,
+      "end": 5084.84042,
+      "text": " So, let me"
+    },
+    {
+      "chunk": 8,
+      "start": 5084.84042,
+      "end": 5086.12042,
+      "text": " know if there's any issues"
+    },
+    {
+      "chunk": 8,
+      "start": 5086.12042,
+      "end": 5087.38043,
+      "text": " and"
+    },
+    {
+      "chunk": 8,
+      "start": 5087.38043,
+      "end": 5089.54044,
+      "text": " stuff."
+    },
+    {
+      "chunk": 8,
+      "start": 5090.82043,
+      "end": 5091.12042,
+      "text": " Okay."
+    },
+    {
+      "chunk": 8,
+      "start": 5091.96045,
+      "end": 5092.60043,
+      "text": " Alright, well."
+    },
+    {
+      "chunk": 8,
+      "start": 5094.76044,
+      "end": 5095.96045,
+      "text": " That's it for today."
+    },
+    {
+      "chunk": 8,
+      "start": 5095.96045,
+      "end": 5096.06042,
+      "text": " Okay."
+    }
+  ]
+}

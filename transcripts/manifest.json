@@ -1,0 +1,191 @@
+[
+  {
+    "lecture": "tma4268-2026-01-05",
+    "has_txt": true,
+    "model": "whisper-large-v3",
+    "duration_min": 104.8,
+    "chars": 65611
+  },
+  {
+    "lecture": "tma4268-2026-01-12",
+    "has_txt": true,
+    "model": "whisper-large-v3",
+    "chars": 59699,
+    "note": "POC; no segments json"
+  },
+  {
+    "lecture": "tma4268-2026-01-13",
+    "has_txt": true,
+    "model": "whisper-large-v3",
+    "duration_min": 106.2,
+    "chars": 61382
+  },
+  {
+    "lecture": "tma4268-2026-01-19",
+    "has_txt": true,
+    "model": "whisper-large-v3",
+    "duration_min": 95.0,
+    "chars": 48962
+  },
+  {
+    "lecture": "tma4268-2026-01-20",
+    "has_txt": true,
+    "model": "whisper-large-v3",
+    "duration_min": 107.2,
+    "chars": 63798
+  },
+  {
+    "lecture": "tma4268-2026-01-26",
+    "has_txt": true,
+    "model": "whisper-large-v3",
+    "duration_min": 111.5,
+    "chars": 67571
+  },
+  {
+    "lecture": "tma4268-2026-01-27",
+    "has_txt": true,
+    "model": "whisper-large-v3",
+    "duration_min": 58.6,
+    "chars": 35264
+  },
+  {
+    "lecture": "tma4268-2026-02-02",
+    "has_txt": true,
+    "model": "whisper-large-v3",
+    "duration_min": 102.6,
+    "chars": 58863
+  },
+  {
+    "lecture": "tma4268-2026-02-03",
+    "has_txt": true,
+    "model": "whisper-large-v3-turbo",
+    "duration_min": 106.2,
+    "chars": 60580
+  },
+  {
+    "lecture": "tma4268-2026-02-09",
+    "has_txt": true,
+    "model": "whisper-large-v3-turbo",
+    "duration_min": 96.6,
+    "chars": 54947
+  },
+  {
+    "lecture": "tma4268-2026-02-10",
+    "has_txt": true,
+    "model": "whisper-large-v3",
+    "duration_min": 57.4,
+    "chars": 40434
+  },
+  {
+    "lecture": "tma4268-2026-02-23",
+    "has_txt": true,
+    "model": "whisper-large-v3-turbo",
+    "duration_min": 103.8,
+    "chars": 56902
+  },
+  {
+    "lecture": "tma4268-2026-02-24",
+    "has_txt": true,
+    "model": "whisper-large-v3-turbo",
+    "duration_min": 103.7,
+    "chars": 55255
+  },
+  {
+    "lecture": "tma4268-2026-03-02",
+    "has_txt": true,
+    "model": "whisper-large-v3-turbo",
+    "duration_min": 77.4,
+    "chars": 45031
+  },
+  {
+    "lecture": "tma4268-2026-03-03",
+    "has_txt": true,
+    "model": "whisper-large-v3-turbo",
+    "duration_min": 72.6,
+    "chars": 39756
+  },
+  {
+    "lecture": "tma4268-2026-03-09",
+    "has_txt": true,
+    "model": "whisper-large-v3-turbo",
+    "duration_min": 82.4,
+    "chars": 41665
+  },
+  {
+    "lecture": "tma4268-2026-03-10",
+    "has_txt": true,
+    "model": "whisper-large-v3-turbo",
+    "duration_min": 100.1,
+    "chars": 63210
+  },
+  {
+    "lecture": "tma4268-2026-03-16",
+    "has_txt": true,
+    "model": "whisper-large-v3-turbo",
+    "duration_min": 92.7,
+    "chars": 46682
+  },
+  {
+    "lecture": "tma4268-2026-03-17",
+    "has_txt": true,
+    "model": "whisper-large-v3-turbo",
+    "duration_min": 106.7,
+    "chars": 60596
+  },
+  {
+    "lecture": "tma4268-2026-04-07",
+    "has_txt": true,
+    "model": "whisper-large-v3-turbo",
+    "duration_min": 104.4,
+    "chars": 64162
+  },
+  {
+    "lecture": "tma4268-2026-04-13",
+    "has_txt": true,
+    "model": "whisper-large-v3-turbo",
+    "duration_min": 100.9,
+    "chars": 58487
+  },
+  {
+    "lecture": "tma4268-2026-04-14",
+    "has_txt": true,
+    "model": "whisper-large-v3-turbo",
+    "duration_min": 106.1,
+    "chars": 67398
+  },
+  {
+    "lecture": "tma4268-2026-04-20",
+    "has_txt": true,
+    "model": "whisper-large-v3-turbo",
+    "duration_min": 51.3,
+    "chars": 30116
+  },
+  {
+    "lecture": "tma4268-2026-04-21",
+    "has_txt": true,
+    "model": "whisper-large-v3-turbo",
+    "duration_min": 105.2,
+    "chars": 56894
+  },
+  {
+    "lecture": "tma4268-2026-04-27-1013",
+    "has_txt": true,
+    "model": "whisper-large-v3-turbo",
+    "duration_min": 0.3,
+    "chars": 10
+  },
+  {
+    "lecture": "tma4268-2026-04-27-1015",
+    "has_txt": true,
+    "model": "whisper-large-v3-turbo",
+    "duration_min": 85.2,
+    "chars": 43270
+  },
+  {
+    "lecture": "tma4268-2026-04-28",
+    "has_txt": true,
+    "model": "whisper-large-v3-turbo",
+    "duration_min": 91.9,
+    "chars": 49222
+  }
+]

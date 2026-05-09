@@ -1,0 +1,4489 @@
+{
+  "model": "whisper-large-v3",
+  "text": "Thank you. All right, let's get started. So today we're going to finish up the resampling methods that we talk about in this module. So as a quick recap, what we're doing here is we're creating a validation set data in order to evaluate a model. And this could either be that, remember, there's often three things we want to be able to do. We want to train the model. We want to train the model. Then we want to validate the model. Often this involves model selection. Right? For example, in this case here, in the left here, we go from low complexity to a high complexity model. Right? And then as, you know, so you can imagine that in this case, in the low complexity, we have a linear model, or we have a model with one covariate, you know, one other variable, or we have a very, you know, a model with no, with just linear terms or, you know, whatever. Right? But you have a model that has low complexity, and then you go to higher complexity. You know, you just run the different models, and then you're able to see how well they do, right? Now, on the training data, right, on the training data, because you have to train each one, you're always going to improve. So as you go to the more complex model assuming that you just adding more parameters and you evaluating it that way then as you go to a more complex model each model assumes also the previous one So your training error will always go down So looking at training error is not going to tell you which model to use but your test data so data that you didn train on should eventually go up again, right? And this is related to the bias and the variance trade-off, where in the beginning you have a high bias and a high variance because you don't have a lot of data or you don't have a lot of complexity. And yeah, the variance is over models. And this is a, I don't want to recap too many times the same thing, but the variance is over the fits that you get from running it on different realizations of the data. So if you would like repeat the experiment, how variable it would be, whereas the bias is how close your estimates are to the truth. Right. And so there are different sources of error. It's actually the bias squared, but that's okay. And the thing is, is that the test sample, you know, on test data, you do actually see that the model eventually gets worse as you make it more complex, right? Because, you know, it's the classic thing where you have, this is your data, and eventually you get an overly complex model, which just generalizes terribly to other data, at least in the classic statistical stuff, which we're talking about now. so we train our model we validate the model in terms of selecting which model we're comparing different things maybe we're tuning some parameters if we have hyperparameters in our data model in our inference model and then we want to test the model or evaluate test the model slash evaluation. So this is what you would use to report how well it is. You don't want to report how well it is on the thing that you fine-tuned because that's a bit problematic. Because you've either fit the model or you've selected different parameters using that data. So you don't want to reuse that data to also report an evaluation That issue of reusing the data incorrectly for both the test and validation sets there you get like, yeah, that's bad. You don't want to do that for obvious reasons that we just talked about. So that's the setting. And of course, how you split up the data, there's a lot of options there. The three main ones that we focus on in the class are first just this, just the validation set is what they called it. Where you just break it up into two pieces once, right? Nice, simple, easy. will obviously use less data for training the model, so you're going to have a high bias. And you probably have a low variance because you're using so much data for the, or I mean, depends on where the split is, but if you do 50-50, that's a lot of data for the test set. So we'll probably have a low variance, but you're kind of unnecessarily hurting yourself, right you can do something uh yeah the other the other two approaches that we talked about last time will will give you less bias by using more of the data in the training set and also more and then also systematically it's also helpful in that it systematically creates a test set multiple times so a little bit more computing time but it's really not a problem because you know This is the age of compute. So the first one was leave one out cross-validation, where you just leave out one time point, or one, sorry, not necessarily time point, but one sample. And so you fit on almost all the data, and then you validate the model on that one. That, of course, will have a very low bias, but actually a high variance, because you're almost always using the same amount of data to train. So you're going to get, across data sets, you're going to get a much, across realizations of the data, you're going to get a lot more variance between the test error because it so small right It basically the bias variance idea that you going to get a lot of that you trading off between this bias and the variance. You're getting less bias in the estimation, but more variance across realizations. Whereas the K-fold is simply to take a larger window on the test set. So instead of doing N of these leave one out cross validations, you group them into partitions of the data, and then you do K-folds. So the really nice thing is that now the amount of data that you reuse every time is not nearly as much, right? So here's five-fold cross-validation. And here, there's only 60% of data overlap between any two pairs of folds of the data, right? And then, of course, the test set is always non-overlapping, right? So we talked about that. And this will have slightly more bias in the sense that you're using less data, so your model isn't going to approximate the truth as well. But the improvement that you get on the reduction of variance is typically very much worth it. Right, so leave one out will have a better bias. But the K-fold will likely have a much better variance. And typically in this setting, you're winning by having less variance, right? Because you want to know, you want to pick a model that will do well if you have another data set, right? And it's that variance across data sets that you really want to reduce. So that's the recap. And as an example of this, we talked mainly about regression setting, but then in the end we talked about this example here where it's a classification, right? And so in this figure, they drew a dotted purple line, which is the Bayes decision thing, the Bayes decision boundary, right? And for that, you actually need to know all the distributions and stuff. That's typically what we can do. But it's basically the you can think of it as the optimal decision boundary. And so now we're we're going to estimate that decision boundary now using logistic regression, which is what we learned about in the last module, right? That's the fitting and distribution of the distribution that's for binary variables. Remember it has that S function and stuff. You guys remember that? Yeah, okay. So we're using that model or that method to create this decision boundary. and what you can do is you can change the degree of the regression model. So you can use a linear regression model or you can say, okay, well, let's have it depend on x squared. So like this, you could call this axis x and this one y, right? And then you could imagine that in one model you have like beta 0 y plus beta 1 x, right? You can imagine this, let this be, I'll put a little y there instead, maybe add another beta naught just for, as a bias term, right? So you can imagine in this case, this could be the part, the linear part that you put into your model, right? and then you can imagine that in the second case maybe it includes you know if you wanted to add quadratic terms you could add it as beta y2 y squared plus beta x2 x squared right and this would be again your linear part which we can just what was it typically i think they used eta right so now we have a more complicated model and that will give us a more flexible decision boundary so in the um for the linear one just a line right that degree one you just get a line and then it breaks them up into two halves If you have a degree two then you can get a curve Remember, this is going to be, it might look a little bit different because you're not, the curve you're making, remember, it has y squared and x squared. Right. So you could get a circle, of course. Right. It all just depends on how these parameters are, whatever they come out to be. Right. When you train it, you fit it to the model. So you get that and then you can see for different degrees. In this case, it doesn't seem to be getting the original model. maybe with more degrees it could actually get the Bayes optimal but it probably won't because it's you know the Bayes optimal is done with either infinite data or knowing some prior distribution that we don't know or whatever so we'll probably not get it perfect but we'll do okay so what we can do is make that same kind of plot we had before right where we can look at the error rate or you know in this case the error rate is going to be our misclassification error right misclassification rate and what you see similar to the other model or the other situation is you get a decrease in the misclassification rate or in this error rate, right? And then last time I was confused why it goes up. Because what I said before, just a minute ago, is that as you make it more complicated, it's going to keep going down, right? And it should. And so I went and I made my own version of this stuff. And so there's, because the, I thought this was generated within our markdown file, but it's not. It's directly from the book. And I didn't see the code in there, though they should have it in the book. But anyways one thing was clear is that the error rate that they use on the y is not actually computed the same way as the log likelihood or the likelihood of the model So you're not actually fitting the error rate directly when you're fitting logistic regression. So even though you're adding more parameters to your model, so you're getting what should be a better fit in your logistic regression, it's not actually minimizing the same thing as the misclassification rate. So you can go to a more complicated model, it can make something better, but technically it could perform worse in misclassification. So one reason that could partially explain this is simply that this is not the model you're optimizing in the logistic regression. It's similar but not the same. So you have no guarantee that it's going to perform the same way. Or that the evaluation will be, as you go to a more complicated model, that the evaluation will be better. And then the other thing is, I think there's a chance that they, I mean, now that I said it, I didn't check this, but I think maybe they deleted some of the linear terms when they added the quadratic. Just to make it more, I mean, I think they're making a point here with this model, right? I think they wanted to, I mean, they're using cartoon examples, so they might make it just harder for the, make the more complex model a little bit more confusing. I don't know. But definitely the thing that they're using to evaluate the model is different than the thing that they're fitting with the model. So in that sense, you're not guaranteed that it's going to go down. So we're all fine. it's okay that the training error goes up even though it's strange but that's okay um the okay so that's the blue and of course the orange is the true error right according to the ground truth and this is the true error rate so this is you know they use it on like 10 000 samples that you didn't use for anything. And so you get a very precise value for the error rate. And then the black one is our cross-validated error. And again, it'll point to a specific number, which in this case is actually the same number as the order of the polynomials Or I guess if you really looking at this blue curve you might consider that one But you can see in the cross data that would be terrible right So in this case, it's good not to use that one, but rather this one here. Okay, so cross-validation in the classification model. Right. And so that's for determining, you know, model complexity or assessing, doing this model selection stuff and deciding what to put in the model. But we also want to assess the model. We want to assess the model. And we can't use it the same data as we use for the validation data because we use that to determine parameters of the model. So we'd be overfitting to that data. So we want to report the performance using completely held out data. Right? So that's what is described here. Using the test set for both model selection and estimation tends to overfit the test data, and the bias will be underestimated. So we don't want that. We want to report the truth. So what we do is two layers of cross-validation Also called nested CV So you go in and you use You take the data You partition it into one set of cross-validation Right? To do the assessment And then within each of those Right? So you can imagine Oh, I draw that I wish they had it I'll just do one fold. You can imagine that you have, you know, you're using this much data, the orange data to do the, to fit them, to assess the model and fit and assess the model. And then you're going to then test it on another. so then you could break up that orange stuff into folds right so I'll do I need a I can make this smaller. Right, so. And you use that data to do a fit. And then you could test on there, validate on there, and you could do that for multiple folds within that part. So, right, that was just one fold. You do another fold. You use those five folds or those K-folds within the first fold of the first thing, right? So within the thing, you use it to determine the model. And then on this pink stuff would be the assessment or purple, whatever that color is. So there would be the assessment And here would be The The The selection Right, is that the word they use? Yeah, selection And then, I mean in this case You actually would be getting a different selection For each fold, but It tends to give you the same Selection anyway, so then you could just look at which ones are popping up, right? Yeah. So that would be the nested CV. Now, in the book, they make a point to talk about the wrong way to do cross-validation, right? And I think the reason they do this is partially because, I mean, everyone has sort of their pet peeves, right? Every person in the field has things that they're like, why don't people know this? And so in this case, their pet peeve is, well, this is part of it, is using cross-validation in the wrong way. So they give this example of where you have very wide data, meaning you have way more predictors than you do sample size. And this problem is not unique to this setting but it exaggerated in this setting And so then what they do what happens in this setting and this setting occurs a lot in genetics and protein data and many other settings I think it also happens in finance. anywhere where the number of samples you have in time or in one dimension, like in the sample dimension, is a lot smaller than the number of predictors that you have or potential predictors. So you can imagine that you only have like a year's worth of stock trading data, but you have like a million stocks, right? So you have way too many parameters, than way more parameters than you do samples. But again, the situation occurs also for less. But what they're going to do is basically have a two-step process. Since there's so many predictors, they want to have a two-step process. The first step identifies a small number of predictors. So it filters out predictors. You can imagine that they use many different ways of doing this. What they chose to use is the correlation between the class label, so whatever they're classifying, and each of the predictors. So let's say they find, you know, like, you can imagine this is a predictor and this is the label. and they see in one case that the predictor looks the same whether that thing's true or not. Right? Or you could also do this in the regression sense where that would be your y value and then you could see that maybe the correlation is just flat, that there's no change. But then you could imagine another predictor, like p1, this would be p2, And the label actually has a decent correlation, right? So the correlation is already doing a bit of the work for you, right? It's already a statistical model. You already doing you already selecting parameters based on this right For this specific data And I think that that a very important part that you selecting these things with it with this data Right You select that That partition of 25 predictors or a small number of predictors And then you fit your classifier or it could be regression model with those 25. So you've already preselected those, and then you're going to evaluate your model with those 25. So then the question is, how can we use cross-validation to produce an estimate of our performance? I want to say, how good is our thing? Let's use cross-validation because we want to see how good it is. So the question is, can we do this only on step two? So can we skip, can we pre-select the things that we're going to study? Can we pick those 25 and then go and use cross-validation to estimate our error or to see how well it does? So, yeah, I mean, the answer's right there in bold, right? No, you can't. But you see why it's problematic, right? You're using the same data to pick your variables and then seeing how well they work. So of course it's going to work well. It's not, you know, and yeah. So you can see that in the recommended exercises, one of the exercises is basically create fake data, right? using data where there should be no relationship at all, but by pre-selecting which variables you use, you actually get a misclassification error of zero. So suggesting like this is an excellent model, when in reality we know that it's crap, right? And I think the reason that Hasty and Tipshirani want to talk about that is because they do do a lot of these kinds of studies with wide data related to like genomic stuff, and they've probably seen it a million times that scientists will go pre-select the things and then test to see if they're valid or how good they are and they report these amazing scores when in reality you can get that from just complete noise so this is an example of how to lie with we'll say bad statistics. So if you ever get bored, there are, I mean, there is a book with that title, Not with the bad part in there, how to lie with statistics. And there's also lots of articles and whatnot. But this is one of the examples of how to lie or exaggerate or, you know, get something significant when it's not there. So, yeah, someone wrote this about the pitfalls of cross-validation for genomic data. Yeah, there's another one. And I guess there's also, if you watch the video, they mention it as well. So, yeah. So those are some articles where they report this, but it's still an issue, right? You can see this is just 2016, and I promise you if you look from this year, you'll find at least one article that's made this mistake within genome stuff. and if you look at other fields like neuroscience you'll find it there, you'll find it basically everywhere people make the same mistakes all the time especially because they don't take that many statistics classes it always seems reasonable, right? you maybe make a selection process and then you forget about it you're like, oh, I did that already and then you move on and you're looking at performances and you forget that it's no longer valid I'm sure if I really looked into it, I probably made that mistake at least once. I don't know if I should admit that. So try to avoid it. Okay, so we talked about cross-validation. And in those cases, we were always, in all these cross-validation approaches, leave one out, K-fold, whatever, we were always partitioning the data so that you took each time point and either put it in a training, a test, or a validation set, right? Always each data point goes somewhere. And only once. In the bootstrap, we're going to do something different. And what we're going to do here is we're going to resample the data, the same length, now with replacement. And so it's a slightly different way of resampling the data. It is a method that came out in the 70s. I think it was 1979, I think, by Efron. and it's funny because it's kind of the obvious thing you would do instead of all this fancy statistics that we've been developing for like the last hundred years so I'm pretty sure Fisher if he had a better computer would have done bootstrap instead of all the distribution stuff maybe we'll give an example there so it's very popular for obtaining standard errors confidence or intervals uh doing tests right uh here's ephron yeah it comes from this phrase to pull ones up to pull oneself up by one's bootstrap so the bootstrap is um is this part of your shoe in the back here, this thing. That's the bootstrap. And so obviously if I pull myself like this, it's kind of useless, right? I'm not really, it's like I can't really pull myself up very far. And actually a long time ago, they used to have in like the standard elementary school textbook, they would have the example of proving using physics that you can't pull yourself up by your own bootstrap. But it's still a phrase. I guess the origins are from this book, Adventures of Baron von... I always knew it as Baron von Munchausen. It's also a fun movie. Or I don't know. It was fun when I was a kid, or when I was young, so maybe it looked really dated now. But it's like a weird adventure of this Baron, and there's a guy who can run really fast, and there's a guy who's wicked strong, and then there's like a bad guy who tries to blow him up or something I can really remember and there a flying boat it very weird and one weird part in particular is when the baron falls into the water and everyone like oh no he dead uh so sad and then he has the thought of pulling himself up by his own bootstrap so i guess i think in the book he actually pulls on his bootstrap and then he comes out of the water in the movie instead of the bootstrap they use his hair so he pulls himself up by his own hair kind of like you would a kid or if they're bad or i guess i don't i wouldn't do that um but he pulled himself up by his hair and somehow he still had the horse attached to him though i mean realistically that it's not the only thing that's not the only issue with that problem but still he pulls himself up and so i think the reason that they uh efron use this as a way of naming this method is that it feels like magic. It feels like you shouldn't be able to do it. It doesn't, like, it's too fancy. It's too cool. Like, how can you reuse the data and somehow make a better model? It's weird, right? So that's where the name comes from. yeah so you're using the data itself to get more information about a statistic and and really the idea is is that your best model for the real world like for the real data so not just the sample that you have but the bigger sample everywhere your best model for that is the data itself and so if you want to look at different realizations of the data you resample from that same data with replacement because it's always going to be the best model for the world right so just keep it as it is repick points take the same number of points and now you have a new data set it's different from the original one and it's as close to what you can expect as possible because you're just resampling your best estimate of the of the true process which you don't have access to, but you have this data set. So it really seems like magic. It's like taking a picture and then taking a picture of the picture 100 times and then averaging them, and somehow it's better than the original picture. It doesn't sound like it makes sense, but it does. All right so in this case we can consider what the standard deviation of the sample median Oh and I think so when you guys took the basic statistics class did anyone take the basic one in Norway? No? You did? Did you do the thing where you learned about the t-test and you learned how to compare two means? And then you also did one where you just took the data and re-sampled it and then each time just said which one is higher and then computed the... Because they were talking about when teaching hypothesis testing and comparing the two means that they would do this version, like the bootstrap version of the same thing. I was just curious if... Because in my mind this is much easier to understand than the notion that a given estimator, like a mean or a median, has a distribution, right? And that's what we're going to talk about now. So let's say we have a data set, right? Any data set? Just like all the heights of everyone in the country? And we want to estimate, and we want to estimate, or we don't have all of them, but we have some sample of it and we want to estimate the median of all the heights but we don't want just the median because that's just a number we want to understand what the distribution is of the median right it's going to shift a little bit depending on which sample you get right we want to understand how variable that is and so if we you know if this was mean i said the mean the average and we could say oh well the distribution of averages should be a a gaussing distribution by blah, blah, blah properties, and we can prove all those things. And that's what Fisher did, right? Fisher said, I think it was Fisher. I guess it was Gauss, but then later Fisher, whatever. Gauss was, Fisher and Gauss and all those guys, they didn't have computers. So they said, okay, well, if I want to know what the distribution is of my estimator, I have to prove it. I have to figure out what it should be. And then I understand that distribution, and then I can fit that distribution and use those. That where we get all these funky things like F tests and T tests and all these things right But in this case we actually don want to do that We want to get the distribution directly like in the form of a histogram So what we're going to do is we're going to take our data set and then resample that data set. Now making a new data set of the same size, but it's not identical to the original data set because some points are sampled more than once, right? So maybe at one point, sample five times, one is three, one is two, one doesn't get sampled at all. It's smaller, but from there, we calculate a median, right, of all the heights of the people in there. And then we do it again and again and again and again and again and again. And then we just plot that histogram of medians. And that's our bootstrap estimate of the underlying distribution of that estimator, of the median in this case. I always like this because it's so much more visual and obvious than saying, oh, well, of course, the distribution of the mean is a Gaussian. I mean, like, I don't know. I always thought that was weird to assume that somehow people will just understand that, especially in a first statistics course where you barely understand the idea of a distribution and then suddenly have to think about the distribution of an estimator, of something you estimated from data. It's not obvious what that means, right? But with this bootstrap, it's really nice because you get, you can see the shape of the distribution. You can compute it and you can see intuitively what it is. It's like, oh, I resampled the data. It's like getting a new data set. and then I compute this median and I look at the histogram. So that's the fun thing. So you get this x tilde, right? And then, yeah, exactly. These are, I think they're saying just the same things. So then, you know, we can calculate if we want, we can calculate the standard deviation of our estimator, of our median. All right, so here, for example, they do it a whole bunch of times. So they take a thousand times, they sample a hundred points from a Gaussian. Each time calculating a mean, And then from all those estimations, right, those times, they then calculate a median. Though in this case, they're always creating a new data set. So this is slightly different than resampling, right? Yeah, I guess here they just want to show what it would be if the data was always independent. Right? In this little code here. because they're not resampling, they're recreating. And so you see a nice thing. But now, like I said, you will recreate the same thing. Yeah, when we're trying to get the empirical distribution, We create N resamples of these things. And we resample the data set N times with replacement. We create this new data set. I mean, it's just what I've already said. All right. And now, so now you create the data set once, and then you resample it, right? So here we're getting this boot one, which is one resampling of the data. And so now the median is different than it was for the original data set. And it's because we have slightly different data, right? Even though it's generated from that original. And now, as we said, we can do a bunch of bootstraps. you typically want to use a big number like a thousand or ten thousand and that's because you want to have a nice shape to the distribution and then see see where you are yeah so we bootstrap the distribution and then we evaluate it and then we can take the, here's the, in this case, the standard deviation of the median, right? Because that was what we wanted to see is what is the we wanted to get the standard deviation of the estimator for the median right So this will give us our standard error So it the empirical standard deviation of the estimates of X tilde right So you could imagine if we were looking at the median height of people, right? then we would end up getting some histogram of these bootstraps right and maybe this is fluctuating from like i don't know i don't know how tall people are but like 1.6 meters to like 2.2.1 i don't know how tall people are i'm sorry i'm not really good at the meters either so i don't yeah if you don't fit on this distribution don't feel bad i don't know what it is but But the nice thing is that then you can do things like you can say, all right, what's the likelihood or what's the probability that a person who's, you know, over here at like 0.5 meters is part of this distribution, right? And so now you can see that this person is very far away from the median, right? And you can think about it in terms of how far away it is according to this histogram of medians. It's much more meaningful than just saying this point is far away from that point. It gives you a distribution to get confidence intervals for your medians or whatever your statistic is for doing tests on them. So the bootstrap is a very powerful method. And I like it because it's super easy. And it just takes more compute and compute's cheap, so who cares? Right? So here you, this is just another example, right? So here they do 1,000 bootstraps and then get a standard error estimate. And so here you can see that the standard deviation of the estimator for the median was 0.1365. if we scroll up to what they did before where they got the new data every time it was 0.125 I guess this is the right estimate 0 probably I don know or it closer but still the bootstrap is surprisingly close Right Surprisingly close to the truth Especially considering, like I said, it seems like magic, right? How do you estimate the distribution of a median without having more than one data set? It seems impossible, but it works. so here you can see yeah in this case it has a kind of funky shape to it but that's okay yeah and then here is just the this is what you would actually use in R they have a function for bootstrap I don't know if they have a function in Python I never used it it's just really very easy to make yourself So I don't think I ever Googled it, but they probably do. Yeah, so could we do it without replacement? I mean, I guess you could, but it's not really the same model, right? I mean, the reason you do replacement is that you want to have the same length of data every single time. So it's not a data length problem and you want your best estimate of the true distribution, which is your data. So that's the whole idea. If you do it without replacement, then either you're always getting the same data every single time, just reordered. So that's useless. Or or I guess if you use a smaller part of the data, like if you just resample the data, like 10 percent of the data every time. that would be I don't know it would be different so okay the thing is you do it with replacement for bootstrap that's the thing so another example with multiple linear regression we want to do confidence intervals for the regression coefficients and the prediction intervals right so we might want to do this for example if our model is wrong or if our model i mean because there are you do get with multiple linear regression there are ways of estimating all these things right because we know the distributions and whatnot but all these distributional assumptions are assumptions and for those to be right your data has to be of a certain type And you know maybe they not So often using a bootstrap will be better or will be making fewer assumptions and can give you a different result. Yeah, so... Yeah. Now, a related, what was I trying to say? Okay, so this is, you do an example of this in the recommended examples, exercises, that's why. Okay. A related idea to bootstrapping is this idea of bagging. Bagging is a term that is short for bootstrap aggregation. and it's very related, and it also seems like magic, right? So bootstrapping, you make up new data, which doesn't make any sense, and then somehow from that you can get a distribution of the thing, which is weird. So there's a similar magic. I mean, it's not magic. It's just how it is. but it's similarly magical that you can do this by you can use this trick in a different way to basically make an ensemble of different models of your data and then average across those so the trick here is to basically make different models use your data to make different models of your relationship between X and Y, and then you average across them. And the surprising thing is by doing that, even though you're always just resampling the same data, you can actually remove bias from your model. So you can get a better model by averaging across these bootstrapped versions of the model. So you bootstrap your data, you fit a model, and then you average across all those models and then magically that's a better model. So yeah, we'll look at that more in module eight. So this is more of a preview than anything that we're going to go through in detail now. So. Right. And in particular, you're by doing this, you're reducing the variance of your of your the the the model you get by averaging a bunch of models will be a model will result in a single model that is less variance than one that if you didn't do this trick again, variance across realizations of the data. So it's going to generalize better. right so yeah and and it's not at all obvious but this is actually the trick that's also happening when you just use a single model but use a ton of parameters remember i told you that if you keep going in the bias variance trade-off when you have like just a ton of parameters eventually your error goes down again and sometimes you can get much better and it's actually using this bagging trick implicitly. So you end up with so many different parameters that actually the collection of parameters finds different models and different parts of the parameters and then essentially averages them together. I mean, it's super weird, but it's interesting. But right now, yeah, we'll just focus on the simple one where you take your samples and just like you did for finding the median or finding the histogram of the median, you draw bootstrap samples. So we're going to make B versions of the data, resampling always the same amount of data with a replacement. And then you take that and you fit whatever your model is, regression, whatever the thing is, right? So you get a whole bunch of these guys here, these F hats, right? You get B of those and then what we want to do is simply your prediction is just the average of those And it's that simple. If the samples were actually independent, which they're not, so if the bootstrap samples are independent, then you would have this relationship. You'd have a much smaller variance across data sets. If each bootstrap data set were independent, then taking an average across all of them would give us a much lower variance of our model. It would generalize better by this amount, basically. That's how much the reduction of that part of the error would be. Of course, we don't get that because we don't have independent samples at all. We have bootstrapped versions of the data, which is the best we can do, I think. I don't see what better we could do. So we're not going to get this. Not possible. But you get something smaller. So, for example, for an estimate of a pairwise correlation, the variance of it, it has this form. so we have smaller variants than yeah, we have a, it's not as good of a reduction in bias as if it were independently sampled data, but it's still pretty good so this is, this method of bootstrapping or bagging, bootstrap aggregating right, aggregation is the add, so it's like bootstrap averaging they tend to work well for models that have poor prediction accuracy and we going to talk more about this in module 8 where we talk about bagging trees Just fun. And like I said, this is actually this is also the reason why the high parameter models work so well. It's very related. You're getting a whole bunch of models and averaging. So further reading on this topic and also the videos. The videos are goofy, but they're pretty good. And they, of course, cover the same material. So I would recommend them. Now, the rest of the slides for today are all about R Markdown. It's very boring. And like I said R is optional this year So you can use it Or you can use LaTeX and Python Stuff like the Either one is fine for the projects So this is There's just some notes here I'm not going to talk through them But There's some pointers and things In R I don't Yeah So Again We're Next week We're gonna do The compulsory exercise In class Right And then it's due Whatever the I forget It's due the date That it says in Blackboard I think it's the 18th Or something I don't Yeah It gets So don't quote me On the 18th Look on Blackboard Whatever it says there And make sure you Hand it in on time because it's required for the exam, right? So ideally you would have already joined a group on Blackboard If you want to find a group and you don have one you can email the seaman the PhD student who helping And then on the wiki that we have there you have the compulsory project, the compulsory exercises. So just go through that, work on them, hand them in. You can use our markdown or LaTeX or whatever. And then just please, when you submit, ideally you would submit the PDF and all the other crap, right? But yeah, we'll mainly just look at the PDF. If it's PDF and our markdown, that's great. If you're using LaTeX, then just use LaTeX and include the scripts somewhere in a zip file or something. And then scores and comments will be given by Siemen and Blackboard. All right. So that's it for today. It's an early day. I'm sorry we went past one, but I figured we could just go through and finish early. So I didn't say that, but I meant to. are there any questions about this stuff well okay so we did cover the material that is included in the exercises so you should have everything you need for that and again next week there's no class the week after that we're back with module six which is I forget what six is whatever it says it is alright so have fun and let us know if you need any help Thank you.",
+  "duration": 3441.592063,
+  "segments": [
+    {
+      "chunk": 0,
+      "start": 0.0,
+      "end": 29.98,
+      "text": " Thank you."
+    },
+    {
+      "chunk": 0,
+      "start": 30.0,
+      "end": 35.8,
+      "text": " All right, let's get started."
+    },
+    {
+      "chunk": 0,
+      "start": 36.3,
+      "end": 40.02,
+      "text": " So today we're going to finish up the resampling methods"
+    },
+    {
+      "chunk": 0,
+      "start": 40.02,
+      "end": 45.96,
+      "text": " that we talk about in this module."
+    },
+    {
+      "chunk": 0,
+      "start": 46.579998,
+      "end": 50.44,
+      "text": " So as a quick recap, what we're doing here is we're creating"
+    },
+    {
+      "chunk": 0,
+      "start": 50.44,
+      "end": 54.62,
+      "text": " a validation set data in order to evaluate a model."
+    },
+    {
+      "chunk": 0,
+      "start": 56.04,
+      "end": 58.1,
+      "text": " And this could either be that, remember,"
+    },
+    {
+      "chunk": 0,
+      "start": 58.1,
+      "end": 61.66,
+      "text": " there's often three things we want to be able to do."
+    },
+    {
+      "chunk": 0,
+      "start": 62.8,
+      "end": 64.28,
+      "text": " We want to train the model."
+    },
+    {
+      "chunk": 0,
+      "start": 66.36,
+      "end": 67.84,
+      "text": " We want to train the model."
+    },
+    {
+      "chunk": 0,
+      "start": 69.619995,
+      "end": 71.08,
+      "text": " Then we want to validate"
+    },
+    {
+      "chunk": 0,
+      "start": 71.08,
+      "end": 75.119995,
+      "text": " the model."
+    },
+    {
+      "chunk": 0,
+      "start": 76.4,
+      "end": 78.88,
+      "text": " Often this involves model selection."
+    },
+    {
+      "chunk": 0,
+      "start": 81.6,
+      "end": 82.2,
+      "text": " Right?"
+    },
+    {
+      "chunk": 0,
+      "start": 83.38,
+      "end": 85.659996,
+      "text": " For example, in this case here,"
+    },
+    {
+      "chunk": 0,
+      "start": 85.659996,
+      "end": 94.34,
+      "text": " in the left here, we go from low complexity to a high complexity model."
+    },
+    {
+      "chunk": 0,
+      "start": 95.53999,
+      "end": 95.579994,
+      "text": " Right?"
+    },
+    {
+      "chunk": 0,
+      "start": 95.96,
+      "end": 98.81999,
+      "text": " And then as, you know, so you can imagine that in this case,"
+    },
+    {
+      "chunk": 0,
+      "start": 98.85999,
+      "end": 101.38,
+      "text": " in the low complexity, we have a linear model,"
+    },
+    {
+      "chunk": 0,
+      "start": 101.38,
+      "end": 105.03999,
+      "text": " or we have a model with one covariate, you know, one other variable,"
+    },
+    {
+      "chunk": 0,
+      "start": 105.299995,
+      "end": 108.579994,
+      "text": " or we have a very, you know, a model with no,"
+    },
+    {
+      "chunk": 0,
+      "start": 109.56,
+      "end": 112.939995,
+      "text": " with just linear terms or, you know, whatever."
+    },
+    {
+      "chunk": 0,
+      "start": 113.259995,
+      "end": 113.42,
+      "text": " Right?"
+    },
+    {
+      "chunk": 0,
+      "start": 113.42,
+      "end": 117.84,
+      "text": " But you have a model that has low complexity, and then you go to higher complexity."
+    },
+    {
+      "chunk": 0,
+      "start": 120.2,
+      "end": 125.38,
+      "text": " You know, you just run the different models, and then you're able to see how well they do, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 125.82,
+      "end": 134.62,
+      "text": " Now, on the training data, right, on the training data, because you have to train each one, you're always going to improve."
+    },
+    {
+      "chunk": 0,
+      "start": 134.62,
+      "end": 158.22,
+      "text": " So as you go to the more complex model assuming that you just adding more parameters and you evaluating it that way then as you go to a more complex model each model assumes also the previous one So your training error will always go down So looking at training error is not going to tell you which model to use but your test data so data that you didn train on"
+    },
+    {
+      "chunk": 0,
+      "start": 158.84,
+      "end": 164.22,
+      "text": " should eventually go up again, right? And this is related to the bias and the variance trade-off,"
+    },
+    {
+      "chunk": 0,
+      "start": 164.95999,
+      "end": 169.38,
+      "text": " where in the beginning you have a high bias and a high variance because you don't have a lot of"
+    },
+    {
+      "chunk": 0,
+      "start": 169.38,
+      "end": 172.3,
+      "text": " data or you don't have a lot of complexity."
+    },
+    {
+      "chunk": 0,
+      "start": 174.12,
+      "end": 175.84,
+      "text": " And yeah, the variance is over models."
+    },
+    {
+      "chunk": 0,
+      "start": 176.62,
+      "end": 179.48,
+      "text": " And this is a, I don't want to recap too many times the same thing,"
+    },
+    {
+      "chunk": 0,
+      "start": 179.54001,
+      "end": 184.22,
+      "text": " but the variance is over the fits that you get from running it on different"
+    },
+    {
+      "chunk": 0,
+      "start": 184.22,
+      "end": 185.8,
+      "text": " realizations of the data."
+    },
+    {
+      "chunk": 0,
+      "start": 186.16,
+      "end": 190.32,
+      "text": " So if you would like repeat the experiment, how variable it would be,"
+    },
+    {
+      "chunk": 0,
+      "start": 190.32,
+      "end": 194.28,
+      "text": " whereas the bias is how close your estimates are to the truth."
+    },
+    {
+      "chunk": 0,
+      "start": 195.45999,
+      "end": 195.56,
+      "text": " Right."
+    },
+    {
+      "chunk": 0,
+      "start": 196.28,
+      "end": 198.6,
+      "text": " And so there are different sources of error."
+    },
+    {
+      "chunk": 0,
+      "start": 199.38,
+      "end": 201.42,
+      "text": " It's actually the bias squared, but that's okay."
+    },
+    {
+      "chunk": 0,
+      "start": 203.92,
+      "end": 216.14,
+      "text": " And the thing is, is that the test sample, you know, on test data, you do actually see that the model eventually gets worse as you make it more complex, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 216.14,
+      "end": 235.28,
+      "text": " Because, you know, it's the classic thing where you have, this is your data, and eventually you get an overly complex model, which just generalizes terribly to other data, at least in the classic statistical stuff, which we're talking about now."
+    },
+    {
+      "chunk": 0,
+      "start": 235.28,
+      "end": 239.18,
+      "text": " so we train our model"
+    },
+    {
+      "chunk": 0,
+      "start": 239.18,
+      "end": 243.01999,
+      "text": " we validate the model"
+    },
+    {
+      "chunk": 0,
+      "start": 243.01999,
+      "end": 245.62,
+      "text": " in terms of selecting"
+    },
+    {
+      "chunk": 0,
+      "start": 245.62,
+      "end": 248.84,
+      "text": " which model we're comparing different things"
+    },
+    {
+      "chunk": 0,
+      "start": 248.84,
+      "end": 251.45999,
+      "text": " maybe we're tuning some parameters if we have hyperparameters"
+    },
+    {
+      "chunk": 0,
+      "start": 251.45999,
+      "end": 253.16,
+      "text": " in our data model"
+    },
+    {
+      "chunk": 0,
+      "start": 253.16,
+      "end": 255.64,
+      "text": " in our inference model"
+    },
+    {
+      "chunk": 0,
+      "start": 255.64,
+      "end": 260.96,
+      "text": " and then we want to test the model"
+    },
+    {
+      "chunk": 0,
+      "start": 260.96,
+      "end": 262.96,
+      "text": " or evaluate"
+    },
+    {
+      "chunk": 0,
+      "start": 262.96,
+      "end": 265.14,
+      "text": " test the model"
+    },
+    {
+      "chunk": 0,
+      "start": 265.14,
+      "end": 268.12,
+      "text": " slash"
+    },
+    {
+      "chunk": 0,
+      "start": 268.12,
+      "end": 270.94,
+      "text": " evaluation."
+    },
+    {
+      "chunk": 0,
+      "start": 273.5,
+      "end": 277.38,
+      "text": " So this is what you would use to report how well it is."
+    },
+    {
+      "chunk": 0,
+      "start": 277.88,
+      "end": 281.18,
+      "text": " You don't want to report how well it is on the thing that you fine-tuned"
+    },
+    {
+      "chunk": 0,
+      "start": 281.18,
+      "end": 284.56,
+      "text": " because that's a bit problematic."
+    },
+    {
+      "chunk": 0,
+      "start": 285.18,
+      "end": 289.46002,
+      "text": " Because you've either fit the model or you've"
+    },
+    {
+      "chunk": 0,
+      "start": 289.46002,
+      "end": 293.34,
+      "text": " selected different parameters using that data. So you don't want to"
+    },
+    {
+      "chunk": 0,
+      "start": 293.34,
+      "end": 294.38,
+      "text": " reuse that data"
+    },
+    {
+      "chunk": 0,
+      "start": 294.38,
+      "end": 307.18,
+      "text": " to also report an evaluation That issue of reusing the data incorrectly for both the test and validation sets"
+    },
+    {
+      "chunk": 0,
+      "start": 308.22,
+      "end": 309.32,
+      "text": " there you get like,"
+    },
+    {
+      "chunk": 0,
+      "start": 310.44,
+      "end": 311.44,
+      "text": " yeah, that's bad."
+    },
+    {
+      "chunk": 0,
+      "start": 311.48,
+      "end": 312.28,
+      "text": " You don't want to do that"
+    },
+    {
+      "chunk": 0,
+      "start": 312.28,
+      "end": 316.8,
+      "text": " for obvious reasons that we just talked about."
+    },
+    {
+      "chunk": 0,
+      "start": 317.12,
+      "end": 319.66,
+      "text": " So that's the setting."
+    },
+    {
+      "chunk": 0,
+      "start": 319.66,
+      "end": 321.84,
+      "text": " And of course, how you split up the data,"
+    },
+    {
+      "chunk": 0,
+      "start": 322.54,
+      "end": 324.18,
+      "text": " there's a lot of options there."
+    },
+    {
+      "chunk": 0,
+      "start": 324.18,
+      "end": 335.44,
+      "text": " The three main ones that we focus on in the class are first just this, just the validation set is what they called it."
+    },
+    {
+      "chunk": 0,
+      "start": 340.7,
+      "end": 346.34,
+      "text": " Where you just break it up into two pieces once, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 347.14,
+      "end": 348.58,
+      "text": " Nice, simple, easy."
+    },
+    {
+      "chunk": 0,
+      "start": 348.58,
+      "end": 354.91998,
+      "text": " will obviously use less data for training the model, so you're going to have a high bias."
+    },
+    {
+      "chunk": 0,
+      "start": 356.04,
+      "end": 360.24,
+      "text": " And you probably have a low variance because you're using so much data for the, or I mean,"
+    },
+    {
+      "chunk": 0,
+      "start": 360.24,
+      "end": 366.2,
+      "text": " depends on where the split is, but if you do 50-50, that's a lot of data for the test set."
+    },
+    {
+      "chunk": 0,
+      "start": 367.76,
+      "end": 372.7,
+      "text": " So we'll probably have a low variance, but you're kind of unnecessarily hurting yourself,"
+    },
+    {
+      "chunk": 0,
+      "start": 372.7,
+      "end": 379.94,
+      "text": " right you can do something uh yeah the other the other two approaches that we talked about last"
+    },
+    {
+      "chunk": 0,
+      "start": 379.94,
+      "end": 387.2,
+      "text": " time will will give you less bias by using more of the data in the training set and also more"
+    },
+    {
+      "chunk": 0,
+      "start": 387.2,
+      "end": 393.18,
+      "text": " and then also systematically it's also helpful in that it systematically creates a test set"
+    },
+    {
+      "chunk": 0,
+      "start": 393.18,
+      "end": 398.34,
+      "text": " multiple times so a little bit more computing time but it's really not a problem because you know"
+    },
+    {
+      "chunk": 0,
+      "start": 398.34,
+      "end": 400.88,
+      "text": " This is the age of compute."
+    },
+    {
+      "chunk": 0,
+      "start": 402.03998,
+      "end": 404.5,
+      "text": " So the first one was leave one out cross-validation,"
+    },
+    {
+      "chunk": 0,
+      "start": 405.0,
+      "end": 407.08,
+      "text": " where you just leave out one time point,"
+    },
+    {
+      "chunk": 0,
+      "start": 408.02,
+      "end": 410.44,
+      "text": " or one, sorry, not necessarily time point, but one sample."
+    },
+    {
+      "chunk": 0,
+      "start": 411.06,
+      "end": 412.86,
+      "text": " And so you fit on almost all the data,"
+    },
+    {
+      "chunk": 0,
+      "start": 413.12,
+      "end": 416.9,
+      "text": " and then you validate the model on that one."
+    },
+    {
+      "chunk": 0,
+      "start": 417.36,
+      "end": 419.34,
+      "text": " That, of course, will have a very low bias,"
+    },
+    {
+      "chunk": 0,
+      "start": 420.72,
+      "end": 422.03998,
+      "text": " but actually a high variance,"
+    },
+    {
+      "chunk": 0,
+      "start": 422.04,
+      "end": 432.91998,
+      "text": " because you're almost always using the same amount of data to train."
+    },
+    {
+      "chunk": 0,
+      "start": 433.1,
+      "end": 439.34,
+      "text": " So you're going to get, across data sets, you're going to get a much,"
+    },
+    {
+      "chunk": 0,
+      "start": 439.7,
+      "end": 442.14,
+      "text": " across realizations of the data, you're going to get a lot more variance"
+    },
+    {
+      "chunk": 0,
+      "start": 442.14,
+      "end": 455.02,
+      "text": " between the test error because it so small right It basically the bias variance idea that you going to get a lot of that you"
+    },
+    {
+      "chunk": 0,
+      "start": 455.02,
+      "end": 457.1,
+      "text": " trading off between this bias and the variance."
+    },
+    {
+      "chunk": 0,
+      "start": 457.34,
+      "end": 463.74,
+      "text": " You're getting less bias in the estimation, but more variance across realizations."
+    },
+    {
+      "chunk": 0,
+      "start": 465.56,
+      "end": 472.8,
+      "text": " Whereas the K-fold is simply to take a larger window on the test set."
+    },
+    {
+      "chunk": 0,
+      "start": 472.8,
+      "end": 485.48,
+      "text": " So instead of doing N of these leave one out cross validations, you group them into partitions of the data, and then you do K-folds."
+    },
+    {
+      "chunk": 0,
+      "start": 485.62,
+      "end": 491.14,
+      "text": " So the really nice thing is that now the amount of data that you reuse every time is not nearly as much, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 491.14,
+      "end": 495.6,
+      "text": " So here's five-fold cross-validation."
+    },
+    {
+      "chunk": 0,
+      "start": 495.6,
+      "end": 506.6,
+      "text": " And here, there's only 60% of data overlap between any two pairs of folds of the data, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 507.26,
+      "end": 511.5,
+      "text": " And then, of course, the test set is always non-overlapping, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 511.66,
+      "end": 512.94,
+      "text": " So we talked about that."
+    },
+    {
+      "chunk": 0,
+      "start": 512.94,
+      "end": 523.12,
+      "text": " And this will have slightly more bias in the sense that you're using less data, so your model isn't going to approximate the truth as well."
+    },
+    {
+      "chunk": 0,
+      "start": 523.62,
+      "end": 530.94,
+      "text": " But the improvement that you get on the reduction of variance is typically very much worth it."
+    },
+    {
+      "chunk": 0,
+      "start": 532.18,
+      "end": 535.48,
+      "text": " Right, so leave one out will have a better bias."
+    },
+    {
+      "chunk": 0,
+      "start": 536.6,
+      "end": 540.74,
+      "text": " But the K-fold will likely have a much better variance."
+    },
+    {
+      "chunk": 0,
+      "start": 540.74,
+      "end": 547.92,
+      "text": " And typically in this setting, you're winning by having less variance, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 547.98,
+      "end": 555.12,
+      "text": " Because you want to know, you want to pick a model that will do well if you have another data set, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 555.16003,
+      "end": 559.18,
+      "text": " And it's that variance across data sets that you really want to reduce."
+    },
+    {
+      "chunk": 0,
+      "start": 560.83997,
+      "end": 563.62,
+      "text": " So that's the recap."
+    },
+    {
+      "chunk": 0,
+      "start": 563.62,
+      "end": 576.62,
+      "text": " And as an example of this, we talked mainly about regression setting, but then in the end we talked about this example here where it's a classification, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 577.12,
+      "end": 589.3,
+      "text": " And so in this figure, they drew a dotted purple line, which is the Bayes decision thing, the Bayes decision boundary, right?"
+    },
+    {
+      "chunk": 0,
+      "start": 589.3,
+      "end": 592.3,
+      "text": " And for that, you actually need to know all the distributions and stuff."
+    },
+    {
+      "chunk": 0,
+      "start": 592.3,
+      "end": 594.33997,
+      "text": " That's typically what we can do."
+    },
+    {
+      "chunk": 0,
+      "start": 594.33997,
+      "end": 597.56,
+      "text": " But it's basically the you can think of it as the optimal decision boundary."
+    },
+    {
+      "chunk": 0,
+      "start": 599.06,
+      "end": 599.82,
+      "text": " And so now we're"
+    },
+    {
+      "chunk": 1,
+      "start": 600.0,
+      "end": 604.54,
+      "text": " we're going to estimate that decision boundary now using logistic regression,"
+    },
+    {
+      "chunk": 1,
+      "start": 604.76,
+      "end": 608.58,
+      "text": " which is what we learned about in the last module, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 608.66,
+      "end": 616.48,
+      "text": " That's the fitting and distribution of the distribution that's for binary variables."
+    },
+    {
+      "chunk": 1,
+      "start": 616.72,
+      "end": 618.72,
+      "text": " Remember it has that S function and stuff."
+    },
+    {
+      "chunk": 1,
+      "start": 618.8,
+      "end": 619.44,
+      "text": " You guys remember that?"
+    },
+    {
+      "chunk": 1,
+      "start": 620.88,
+      "end": 621.46,
+      "text": " Yeah, okay."
+    },
+    {
+      "chunk": 1,
+      "start": 621.46,
+      "end": 628.1,
+      "text": " So we're using that model or that method to create this decision boundary."
+    },
+    {
+      "chunk": 1,
+      "start": 628.1,
+      "end": 635.12,
+      "text": " and what you can do is you can change the degree of the regression model."
+    },
+    {
+      "chunk": 1,
+      "start": 635.8,
+      "end": 638.62,
+      "text": " So you can use a linear regression model or you can say,"
+    },
+    {
+      "chunk": 1,
+      "start": 638.62,
+      "end": 642.48,
+      "text": " okay, well, let's have it depend on x squared."
+    },
+    {
+      "chunk": 1,
+      "start": 642.88,
+      "end": 650.22,
+      "text": " So like this, you could call this axis x and this one y, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 650.22,
+      "end": 666.4,
+      "text": " And then you could imagine that in one model you have like beta 0 y plus beta 1 x, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 666.4,
+      "end": 685.72,
+      "text": " You can imagine this, let this be, I'll put a little y there instead, maybe add another beta naught just for, as a bias term, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 685.8,
+      "end": 693.02,
+      "text": " So you can imagine in this case, this could be the part, the linear part that you put into your model, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 693.02,
+      "end": 698.24,
+      "text": " and then you can imagine that in the second case"
+    },
+    {
+      "chunk": 1,
+      "start": 698.24,
+      "end": 704.3,
+      "text": " maybe it includes"
+    },
+    {
+      "chunk": 1,
+      "start": 704.3,
+      "end": 706.74,
+      "text": " you know if you wanted to add quadratic terms"
+    },
+    {
+      "chunk": 1,
+      "start": 706.74,
+      "end": 711.8,
+      "text": " you could add it as"
+    },
+    {
+      "chunk": 1,
+      "start": 711.8,
+      "end": 715.02,
+      "text": " beta y2"
+    },
+    {
+      "chunk": 1,
+      "start": 715.02,
+      "end": 719.6,
+      "text": " y squared plus beta"
+    },
+    {
+      "chunk": 1,
+      "start": 719.6,
+      "end": 722.42,
+      "text": " x2 x squared"
+    },
+    {
+      "chunk": 1,
+      "start": 722.42,
+      "end": 727.5,
+      "text": " right and this would be again your linear part which we can just"
+    },
+    {
+      "chunk": 1,
+      "start": 727.5,
+      "end": 731.74,
+      "text": " what was it typically i think they used eta"
+    },
+    {
+      "chunk": 1,
+      "start": 731.74,
+      "end": 741.98,
+      "text": " right so now we have a more complicated model and that will give us a more flexible decision"
+    },
+    {
+      "chunk": 1,
+      "start": 741.98,
+      "end": 757.62,
+      "text": " boundary so in the um for the linear one just a line right that degree one you just get a line and then it breaks them up into two halves If you have a degree two then you can get a curve"
+    },
+    {
+      "chunk": 1,
+      "start": 760.3199999999999,
+      "end": 761.78,
+      "text": " Remember, this is going to be,"
+    },
+    {
+      "chunk": 1,
+      "start": 763.78,
+      "end": 766.84,
+      "text": " it might look a little bit different"
+    },
+    {
+      "chunk": 1,
+      "start": 766.84,
+      "end": 771.3,
+      "text": " because you're not, the curve you're making,"
+    },
+    {
+      "chunk": 1,
+      "start": 771.9599900000001,
+      "end": 774.62,
+      "text": " remember, it has y squared and x squared."
+    },
+    {
+      "chunk": 1,
+      "start": 775.0,
+      "end": 785.84,
+      "text": " Right. So you could get a circle, of course. Right. It all just depends on how these parameters are, whatever they come out to be. Right. When you train it, you fit it to the model."
+    },
+    {
+      "chunk": 1,
+      "start": 787.5400099999999,
+      "end": 797.76,
+      "text": " So you get that and then you can see for different degrees. In this case, it doesn't seem to be getting the original model."
+    },
+    {
+      "chunk": 1,
+      "start": 797.76,
+      "end": 801.86,
+      "text": " maybe with more degrees it could actually get the Bayes optimal"
+    },
+    {
+      "chunk": 1,
+      "start": 801.86,
+      "end": 806.08,
+      "text": " but it probably won't because it's you know the Bayes optimal"
+    },
+    {
+      "chunk": 1,
+      "start": 806.08,
+      "end": 810.6,
+      "text": " is done with either infinite data or knowing some prior distribution that we don't know"
+    },
+    {
+      "chunk": 1,
+      "start": 810.6,
+      "end": 814.66,
+      "text": " or whatever so we'll probably not get it perfect but we'll do"
+    },
+    {
+      "chunk": 1,
+      "start": 814.66,
+      "end": 818.64,
+      "text": " okay so what we can"
+    },
+    {
+      "chunk": 1,
+      "start": 818.64,
+      "end": 822.16,
+      "text": " do is make that same kind of plot we had before"
+    },
+    {
+      "chunk": 1,
+      "start": 822.16,
+      "end": 825.64,
+      "text": " right where we can look at the error rate"
+    },
+    {
+      "chunk": 1,
+      "start": 825.64,
+      "end": 835.56,
+      "text": " or you know in this case the error rate is going to be our misclassification error right misclassification"
+    },
+    {
+      "chunk": 1,
+      "start": 835.56,
+      "end": 848.62,
+      "text": " rate and what you see similar to the other model or the other situation is you get a decrease"
+    },
+    {
+      "chunk": 1,
+      "start": 848.62,
+      "end": 851.48001,
+      "text": " in the misclassification rate"
+    },
+    {
+      "chunk": 1,
+      "start": 851.48001,
+      "end": 854.4,
+      "text": " or in this error rate, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 855.86,
+      "end": 858.12,
+      "text": " And then last time I was confused"
+    },
+    {
+      "chunk": 1,
+      "start": 858.12,
+      "end": 859.94,
+      "text": " why it goes up."
+    },
+    {
+      "chunk": 1,
+      "start": 861.22,
+      "end": 862.7,
+      "text": " Because what I said before,"
+    },
+    {
+      "chunk": 1,
+      "start": 863.02,
+      "end": 863.94,
+      "text": " just a minute ago,"
+    },
+    {
+      "chunk": 1,
+      "start": 864.02,
+      "end": 866.1,
+      "text": " is that as you make it more complicated,"
+    },
+    {
+      "chunk": 1,
+      "start": 866.28,
+      "end": 867.54,
+      "text": " it's going to keep going down, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 868.06,
+      "end": 868.8,
+      "text": " And it should."
+    },
+    {
+      "chunk": 1,
+      "start": 869.8,
+      "end": 873.3,
+      "text": " And so I went and I made my own version"
+    },
+    {
+      "chunk": 1,
+      "start": 873.3,
+      "end": 873.96002,
+      "text": " of this stuff."
+    },
+    {
+      "chunk": 1,
+      "start": 874.86,
+      "end": 875.7,
+      "text": " And so there's,"
+    },
+    {
+      "chunk": 1,
+      "start": 875.7,
+      "end": 876.7,
+      "text": " because the,"
+    },
+    {
+      "chunk": 1,
+      "start": 876.7,
+      "end": 881.24,
+      "text": " I thought this was generated within our markdown file, but it's not."
+    },
+    {
+      "chunk": 1,
+      "start": 881.7,
+      "end": 883.22,
+      "text": " It's directly from the book."
+    },
+    {
+      "chunk": 1,
+      "start": 884.24,
+      "end": 889.36,
+      "text": " And I didn't see the code in there, though they should have it in the book."
+    },
+    {
+      "chunk": 1,
+      "start": 889.46002,
+      "end": 906.12,
+      "text": " But anyways one thing was clear is that the error rate that they use on the y is not actually computed the same way as the log likelihood or the likelihood of the model"
+    },
+    {
+      "chunk": 1,
+      "start": 906.22,
+      "end": 912.0,
+      "text": " So you're not actually fitting the error rate directly when you're fitting logistic regression."
+    },
+    {
+      "chunk": 1,
+      "start": 912.62,
+      "end": 920.28,
+      "text": " So even though you're adding more parameters to your model, so you're getting what should be a better fit in your logistic regression,"
+    },
+    {
+      "chunk": 1,
+      "start": 920.28,
+      "end": 925.7,
+      "text": " it's not actually minimizing the same thing as the misclassification rate."
+    },
+    {
+      "chunk": 1,
+      "start": 926.12,
+      "end": 929.46,
+      "text": " So you can go to a more complicated model, it can make something better,"
+    },
+    {
+      "chunk": 1,
+      "start": 930.02,
+      "end": 934.46,
+      "text": " but technically it could perform worse in misclassification."
+    },
+    {
+      "chunk": 1,
+      "start": 935.1800000000001,
+      "end": 938.41998,
+      "text": " So one reason that could partially explain this"
+    },
+    {
+      "chunk": 1,
+      "start": 938.41998,
+      "end": 942.56,
+      "text": " is simply that this is not the model you're optimizing"
+    },
+    {
+      "chunk": 1,
+      "start": 942.56,
+      "end": 945.3,
+      "text": " in the logistic regression."
+    },
+    {
+      "chunk": 1,
+      "start": 945.3,
+      "end": 946.6600000000001,
+      "text": " It's similar but not the same."
+    },
+    {
+      "chunk": 1,
+      "start": 947.0,
+      "end": 949.7,
+      "text": " So you have no guarantee that it's going to perform the same way."
+    },
+    {
+      "chunk": 1,
+      "start": 950.28,
+      "end": 955.96,
+      "text": " Or that the evaluation will be, as you go to a more complicated model, that the evaluation will be better."
+    },
+    {
+      "chunk": 1,
+      "start": 956.8399999999999,
+      "end": 968.88,
+      "text": " And then the other thing is, I think there's a chance that they, I mean, now that I said it, I didn't check this, but I think maybe they deleted some of the linear terms when they added the quadratic."
+    },
+    {
+      "chunk": 1,
+      "start": 969.91998,
+      "end": 974.62,
+      "text": " Just to make it more, I mean, I think they're making a point here with this model, right?"
+    },
+    {
+      "chunk": 1,
+      "start": 974.62,
+      "end": 984.8399999999999,
+      "text": " I think they wanted to, I mean, they're using cartoon examples, so they might make it just harder for the, make the more complex model a little bit more confusing."
+    },
+    {
+      "chunk": 1,
+      "start": 985.8199999999999,
+      "end": 986.2,
+      "text": " I don't know."
+    },
+    {
+      "chunk": 1,
+      "start": 987.02,
+      "end": 993.41998,
+      "text": " But definitely the thing that they're using to evaluate the model is different than the thing that they're fitting with the model."
+    },
+    {
+      "chunk": 1,
+      "start": 994.04,
+      "end": 997.3399999999999,
+      "text": " So in that sense, you're not guaranteed that it's going to go down."
+    },
+    {
+      "chunk": 1,
+      "start": 997.72,
+      "end": 999.44,
+      "text": " So we're all fine."
+    },
+    {
+      "chunk": 1,
+      "start": 999.44,
+      "end": 1009.48,
+      "text": " it's okay that the training error goes up even though it's strange but that's okay um the okay"
+    },
+    {
+      "chunk": 1,
+      "start": 1009.48,
+      "end": 1018.6600000000001,
+      "text": " so that's the blue and of course the orange is the true error right according to the ground truth"
+    },
+    {
+      "chunk": 1,
+      "start": 1018.6600000000001,
+      "end": 1025.8,
+      "text": " and this is the true error rate so this is you know they use it on like 10 000 samples that you"
+    },
+    {
+      "chunk": 1,
+      "start": 1025.8,
+      "end": 1027.8,
+      "text": " didn't use for anything."
+    },
+    {
+      "chunk": 1,
+      "start": 1027.8,
+      "end": 1031.47998,
+      "text": " And so you get a very precise value for the error rate."
+    },
+    {
+      "chunk": 1,
+      "start": 1031.47998,
+      "end": 1035.1399999999999,
+      "text": " And then the black one is our cross-validated error."
+    },
+    {
+      "chunk": 1,
+      "start": 1035.1399999999999,
+      "end": 1038.8,
+      "text": " And again, it'll point to a specific number,"
+    },
+    {
+      "chunk": 1,
+      "start": 1040.0,
+      "end": 1042.62,
+      "text": " which in this case is actually the same number"
+    },
+    {
+      "chunk": 1,
+      "start": 1042.62,
+      "end": 1054.8,
+      "text": " as the order of the polynomials Or I guess if you really looking at this blue curve you might consider that one But you can see in the cross data that would be terrible right"
+    },
+    {
+      "chunk": 1,
+      "start": 1055.06,
+      "end": 1062.06,
+      "text": " So in this case, it's good not to use that one, but rather this one here."
+    },
+    {
+      "chunk": 1,
+      "start": 1064.84,
+      "end": 1073.56,
+      "text": " Okay, so cross-validation in the classification model."
+    },
+    {
+      "chunk": 1,
+      "start": 1075.0,
+      "end": 1087.54,
+      "text": " Right. And so that's for determining, you know, model complexity or assessing, doing this model selection stuff and deciding what to put in the model."
+    },
+    {
+      "chunk": 1,
+      "start": 1087.94,
+      "end": 1090.7,
+      "text": " But we also want to assess the model."
+    },
+    {
+      "chunk": 1,
+      "start": 1092.7,
+      "end": 1094.4,
+      "text": " We want to assess the model."
+    },
+    {
+      "chunk": 1,
+      "start": 1095.78,
+      "end": 1103.0,
+      "text": " And we can't use it the same data as we use for the validation data because we use that to determine parameters of the model."
+    },
+    {
+      "chunk": 1,
+      "start": 1103.0,
+      "end": 1106.8,
+      "text": " So we'd be overfitting to that data."
+    },
+    {
+      "chunk": 1,
+      "start": 1107.9199800000001,
+      "end": 1113.54,
+      "text": " So we want to report the performance using completely held out data."
+    },
+    {
+      "chunk": 1,
+      "start": 1115.96,
+      "end": 1116.56,
+      "text": " Right?"
+    },
+    {
+      "chunk": 1,
+      "start": 1117.58,
+      "end": 1120.66003,
+      "text": " So that's what is described here."
+    },
+    {
+      "chunk": 1,
+      "start": 1121.06,
+      "end": 1127.48,
+      "text": " Using the test set for both model selection and estimation tends to overfit the test data, and the bias will be underestimated."
+    },
+    {
+      "chunk": 1,
+      "start": 1128.2,
+      "end": 1129.58,
+      "text": " So we don't want that."
+    },
+    {
+      "chunk": 1,
+      "start": 1129.7,
+      "end": 1131.83997,
+      "text": " We want to report the truth."
+    },
+    {
+      "chunk": 1,
+      "start": 1131.83997,
+      "end": 1135.28,
+      "text": " So what we do is two layers of cross-validation"
+    },
+    {
+      "chunk": 1,
+      "start": 1135.28,
+      "end": 1137.24,
+      "text": " Also called nested CV"
+    },
+    {
+      "chunk": 1,
+      "start": 1137.24,
+      "end": 1140.46,
+      "text": " So you go in and you use"
+    },
+    {
+      "chunk": 1,
+      "start": 1140.46,
+      "end": 1143.83997,
+      "text": " You take the data"
+    },
+    {
+      "chunk": 1,
+      "start": 1143.83997,
+      "end": 1147.94,
+      "text": " You partition it into one set of cross-validation"
+    },
+    {
+      "chunk": 1,
+      "start": 1147.94,
+      "end": 1148.72,
+      "text": " Right?"
+    },
+    {
+      "chunk": 1,
+      "start": 1148.96,
+      "end": 1150.26,
+      "text": " To do the assessment"
+    },
+    {
+      "chunk": 1,
+      "start": 1150.26,
+      "end": 1153.46,
+      "text": " And then within each of those"
+    },
+    {
+      "chunk": 1,
+      "start": 1153.46,
+      "end": 1154.7,
+      "text": " Right?"
+    },
+    {
+      "chunk": 1,
+      "start": 1154.78,
+      "end": 1155.56,
+      "text": " So you can imagine"
+    },
+    {
+      "chunk": 1,
+      "start": 1155.56,
+      "end": 1158.58,
+      "text": " Oh, I draw that"
+    },
+    {
+      "chunk": 1,
+      "start": 1158.58,
+      "end": 1159.42,
+      "text": " I wish they had it"
+    },
+    {
+      "chunk": 1,
+      "start": 1161.83997,
+      "end": 1163.96,
+      "text": " I'll just do one fold."
+    },
+    {
+      "chunk": 1,
+      "start": 1163.96,
+      "end": 1181.83997,
+      "text": " You can imagine that you have, you know, you're using this much data, the orange data to do the, to fit them, to assess the model and fit and assess the model."
+    },
+    {
+      "chunk": 1,
+      "start": 1182.24,
+      "end": 1186.62,
+      "text": " And then you're going to then test it on another."
+    },
+    {
+      "chunk": 1,
+      "start": 1186.62,
+      "end": 1189.76,
+      "text": " so then you could break up that orange stuff"
+    },
+    {
+      "chunk": 1,
+      "start": 1189.76,
+      "end": 1193.74,
+      "text": " into folds"
+    },
+    {
+      "chunk": 1,
+      "start": 1193.74,
+      "end": 1195.44,
+      "text": " right so I'll do"
+    },
+    {
+      "chunk": 1,
+      "start": 1195.44,
+      "end": 1199.8200000000002,
+      "text": " I need a"
+    },
+    {
+      "chunk": 2,
+      "start": 1200.0,
+      "end": 1201.26,
+      "text": " I can make this smaller."
+    },
+    {
+      "chunk": 2,
+      "start": 1204.04,
+      "end": 1205.34,
+      "text": " Right, so."
+    },
+    {
+      "chunk": 2,
+      "start": 1212.4,
+      "end": 1217.4,
+      "text": " And you use that data to do a fit."
+    },
+    {
+      "chunk": 2,
+      "start": 1217.86,
+      "end": 1222.86,
+      "text": " And then you could test on there, validate on there,"
+    },
+    {
+      "chunk": 2,
+      "start": 1223.46,
+      "end": 1225.38,
+      "text": " and you could do that for multiple folds"
+    },
+    {
+      "chunk": 2,
+      "start": 1225.38,
+      "end": 1228.38,
+      "text": " within that part."
+    },
+    {
+      "chunk": 2,
+      "start": 1228.38,
+      "end": 1229.72,
+      "text": " So, right, that was just one fold."
+    },
+    {
+      "chunk": 2,
+      "start": 1230.14,
+      "end": 1231.2,
+      "text": " You do another fold."
+    },
+    {
+      "chunk": 2,
+      "start": 1235.68,
+      "end": 1246.34,
+      "text": " You use those five folds or those K-folds within the first fold of the first thing, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1246.48,
+      "end": 1250.0,
+      "text": " So within the thing, you use it to determine the model."
+    },
+    {
+      "chunk": 2,
+      "start": 1250.46,
+      "end": 1256.36,
+      "text": " And then on this pink stuff would be the assessment or purple, whatever that color is."
+    },
+    {
+      "chunk": 2,
+      "start": 1256.36,
+      "end": 1258.72,
+      "text": " So there would be the assessment"
+    },
+    {
+      "chunk": 2,
+      "start": 1258.72,
+      "end": 1263.08,
+      "text": " And here would be"
+    },
+    {
+      "chunk": 2,
+      "start": 1263.08,
+      "end": 1263.68,
+      "text": " The"
+    },
+    {
+      "chunk": 2,
+      "start": 1263.68,
+      "end": 1266.02,
+      "text": " The"
+    },
+    {
+      "chunk": 2,
+      "start": 1266.02,
+      "end": 1268.18,
+      "text": " The selection"
+    },
+    {
+      "chunk": 2,
+      "start": 1268.18,
+      "end": 1270.82,
+      "text": " Right, is that the word they use?"
+    },
+    {
+      "chunk": 2,
+      "start": 1271.34,
+      "end": 1271.98,
+      "text": " Yeah, selection"
+    },
+    {
+      "chunk": 2,
+      "start": 1271.98,
+      "end": 1277.16,
+      "text": " And then, I mean in this case"
+    },
+    {
+      "chunk": 2,
+      "start": 1277.16,
+      "end": 1279.02,
+      "text": " You actually would be getting a different selection"
+    },
+    {
+      "chunk": 2,
+      "start": 1279.02,
+      "end": 1280.62,
+      "text": " For each fold, but"
+    },
+    {
+      "chunk": 2,
+      "start": 1280.62,
+      "end": 1283.18,
+      "text": " It tends to give you the same"
+    },
+    {
+      "chunk": 2,
+      "start": 1283.18,
+      "end": 1285.12,
+      "text": " Selection anyway, so then you could just look at which"
+    },
+    {
+      "chunk": 2,
+      "start": 1285.12,
+      "end": 1287.48,
+      "text": " ones are popping up, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1289.92,
+      "end": 1290.52,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 2,
+      "start": 1292.46,
+      "end": 1294.28,
+      "text": " So that would be the nested CV."
+    },
+    {
+      "chunk": 2,
+      "start": 1296.54,
+      "end": 1300.16,
+      "text": " Now, in the book, they make a point"
+    },
+    {
+      "chunk": 2,
+      "start": 1300.16,
+      "end": 1305.34,
+      "text": " to talk about the wrong way to do cross-validation,"
+    },
+    {
+      "chunk": 2,
+      "start": 1305.78,
+      "end": 1309.02,
+      "text": " right? And I think the reason they do this is partially"
+    },
+    {
+      "chunk": 2,
+      "start": 1309.02,
+      "end": 1312.84,
+      "text": " because, I mean, everyone has sort of their pet peeves, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1312.84,
+      "end": 1318.66,
+      "text": " Every person in the field has things that they're like, why don't people know this?"
+    },
+    {
+      "chunk": 2,
+      "start": 1319.46,
+      "end": 1330.42,
+      "text": " And so in this case, their pet peeve is, well, this is part of it, is using cross-validation in the wrong way."
+    },
+    {
+      "chunk": 2,
+      "start": 1331.24,
+      "end": 1342.26,
+      "text": " So they give this example of where you have very wide data, meaning you have way more predictors than you do sample size."
+    },
+    {
+      "chunk": 2,
+      "start": 1342.26,
+      "end": 1359.56,
+      "text": " And this problem is not unique to this setting but it exaggerated in this setting And so then what they do what happens in this setting and this setting occurs a lot in genetics and protein data and many other settings"
+    },
+    {
+      "chunk": 2,
+      "start": 1360.48,
+      "end": 1362.32,
+      "text": " I think it also happens in finance."
+    },
+    {
+      "chunk": 2,
+      "start": 1362.32,
+      "end": 1367.02,
+      "text": " anywhere where the number of samples you have in time"
+    },
+    {
+      "chunk": 2,
+      "start": 1367.02,
+      "end": 1371.7,
+      "text": " or in one dimension, like in the sample dimension,"
+    },
+    {
+      "chunk": 2,
+      "start": 1371.84,
+      "end": 1375.1399999999999,
+      "text": " is a lot smaller than the number of predictors that you have"
+    },
+    {
+      "chunk": 2,
+      "start": 1375.1399999999999,
+      "end": 1376.68,
+      "text": " or potential predictors."
+    },
+    {
+      "chunk": 2,
+      "start": 1377.24,
+      "end": 1379.82,
+      "text": " So you can imagine that you only have like a year's worth"
+    },
+    {
+      "chunk": 2,
+      "start": 1379.82,
+      "end": 1385.0,
+      "text": " of stock trading data, but you have like a million stocks, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1385.0,
+      "end": 1388.78,
+      "text": " So you have way too many parameters,"
+    },
+    {
+      "chunk": 2,
+      "start": 1388.78,
+      "end": 1392.54001,
+      "text": " than way more parameters than you do samples."
+    },
+    {
+      "chunk": 2,
+      "start": 1392.9,
+      "end": 1396.52,
+      "text": " But again, the situation occurs also for less."
+    },
+    {
+      "chunk": 2,
+      "start": 1396.52,
+      "end": 1405.34,
+      "text": " But what they're going to do is basically have a two-step process."
+    },
+    {
+      "chunk": 2,
+      "start": 1405.6399999999999,
+      "end": 1409.34,
+      "text": " Since there's so many predictors, they want to have a two-step process."
+    },
+    {
+      "chunk": 2,
+      "start": 1409.48001,
+      "end": 1415.16,
+      "text": " The first step identifies a small number of predictors."
+    },
+    {
+      "chunk": 2,
+      "start": 1415.58,
+      "end": 1417.32,
+      "text": " So it filters out predictors."
+    },
+    {
+      "chunk": 2,
+      "start": 1417.32,
+      "end": 1421.95999,
+      "text": " You can imagine that they use many different ways of doing this."
+    },
+    {
+      "chunk": 2,
+      "start": 1422.68,
+      "end": 1432.32,
+      "text": " What they chose to use is the correlation between the class label, so whatever they're classifying, and each of the predictors."
+    },
+    {
+      "chunk": 2,
+      "start": 1432.95999,
+      "end": 1444.94,
+      "text": " So let's say they find, you know, like, you can imagine this is a predictor and this is the label."
+    },
+    {
+      "chunk": 2,
+      "start": 1444.94,
+      "end": 1450.84,
+      "text": " and they see in one case that the predictor looks the same"
+    },
+    {
+      "chunk": 2,
+      "start": 1450.84,
+      "end": 1453.1,
+      "text": " whether that thing's true or not."
+    },
+    {
+      "chunk": 2,
+      "start": 1455.1,
+      "end": 1455.7,
+      "text": " Right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1456.5,
+      "end": 1459.28,
+      "text": " Or you could also do this in the regression sense"
+    },
+    {
+      "chunk": 2,
+      "start": 1459.28,
+      "end": 1461.24,
+      "text": " where that would be your y value"
+    },
+    {
+      "chunk": 2,
+      "start": 1461.24,
+      "end": 1466.12,
+      "text": " and then you could see that maybe the correlation is just flat,"
+    },
+    {
+      "chunk": 2,
+      "start": 1466.62,
+      "end": 1467.62,
+      "text": " that there's no change."
+    },
+    {
+      "chunk": 2,
+      "start": 1469.9199800000001,
+      "end": 1472.4,
+      "text": " But then you could imagine another predictor,"
+    },
+    {
+      "chunk": 2,
+      "start": 1472.72,
+      "end": 1474.38,
+      "text": " like p1, this would be p2,"
+    },
+    {
+      "chunk": 2,
+      "start": 1474.94,
+      "end": 1480.34,
+      "text": " And the label actually has a decent correlation, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1484.34,
+      "end": 1489.4199800000001,
+      "text": " So the correlation is already doing a bit of the work for you, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1489.44,
+      "end": 1490.97998,
+      "text": " It's already a statistical model."
+    },
+    {
+      "chunk": 2,
+      "start": 1491.53998,
+      "end": 1514.5,
+      "text": " You already doing you already selecting parameters based on this right For this specific data And I think that that a very important part that you selecting these things with it with this data Right You select that That partition of 25 predictors or a small number of predictors"
+    },
+    {
+      "chunk": 2,
+      "start": 1514.72,
+      "end": 1521.3,
+      "text": " And then you fit your classifier or it could be regression model with those 25."
+    },
+    {
+      "chunk": 2,
+      "start": 1521.3,
+      "end": 1528.18,
+      "text": " So you've already preselected those, and then you're going to evaluate your model with those 25."
+    },
+    {
+      "chunk": 2,
+      "start": 1530.44,
+      "end": 1537.3,
+      "text": " So then the question is, how can we use cross-validation to produce an estimate of our performance?"
+    },
+    {
+      "chunk": 2,
+      "start": 1537.9,
+      "end": 1539.12,
+      "text": " I want to say, how good is our thing?"
+    },
+    {
+      "chunk": 2,
+      "start": 1539.52,
+      "end": 1543.46,
+      "text": " Let's use cross-validation because we want to see how good it is."
+    },
+    {
+      "chunk": 2,
+      "start": 1544.18,
+      "end": 1547.88,
+      "text": " So the question is, can we do this only on step two?"
+    },
+    {
+      "chunk": 2,
+      "start": 1547.88,
+      "end": 1552.1399999999999,
+      "text": " So can we skip, can we pre-select the things that we're going to study?"
+    },
+    {
+      "chunk": 2,
+      "start": 1552.72,
+      "end": 1561.76,
+      "text": " Can we pick those 25 and then go and use cross-validation to estimate our error or to see how well it does?"
+    },
+    {
+      "chunk": 2,
+      "start": 1563.44,
+      "end": 1568.9199800000001,
+      "text": " So, yeah, I mean, the answer's right there in bold, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1569.82,
+      "end": 1570.94,
+      "text": " No, you can't."
+    },
+    {
+      "chunk": 2,
+      "start": 1573.04,
+      "end": 1575.66,
+      "text": " But you see why it's problematic, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1575.66,
+      "end": 1582.8600000000001,
+      "text": " You're using the same data to pick your variables and then seeing how well they work."
+    },
+    {
+      "chunk": 2,
+      "start": 1583.68,
+      "end": 1585.06,
+      "text": " So of course it's going to work well."
+    },
+    {
+      "chunk": 2,
+      "start": 1585.06,
+      "end": 1592.1399999999999,
+      "text": " It's not, you know, and yeah."
+    },
+    {
+      "chunk": 2,
+      "start": 1592.82,
+      "end": 1604.02,
+      "text": " So you can see that in the recommended exercises, one of the exercises is basically create fake data, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1604.02,
+      "end": 1606.7,
+      "text": " using data where there should be no relationship at all,"
+    },
+    {
+      "chunk": 2,
+      "start": 1607.04,
+      "end": 1610.2,
+      "text": " but by pre-selecting which variables you use,"
+    },
+    {
+      "chunk": 2,
+      "start": 1610.4199800000001,
+      "end": 1613.26,
+      "text": " you actually get a misclassification error of zero."
+    },
+    {
+      "chunk": 2,
+      "start": 1613.88,
+      "end": 1616.9,
+      "text": " So suggesting like this is an excellent model,"
+    },
+    {
+      "chunk": 2,
+      "start": 1617.46,
+      "end": 1620.8600000000001,
+      "text": " when in reality we know that it's crap, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1620.96,
+      "end": 1624.3600000000001,
+      "text": " And I think the reason that Hasty and Tipshirani"
+    },
+    {
+      "chunk": 2,
+      "start": 1624.3600000000001,
+      "end": 1626.16,
+      "text": " want to talk about that is because they do do"
+    },
+    {
+      "chunk": 2,
+      "start": 1626.16,
+      "end": 1627.68,
+      "text": " a lot of these kinds of studies"
+    },
+    {
+      "chunk": 2,
+      "start": 1627.68,
+      "end": 1630.66,
+      "text": " with wide data related to like genomic stuff,"
+    },
+    {
+      "chunk": 2,
+      "start": 1630.66,
+      "end": 1634.18,
+      "text": " and they've probably seen it a million times"
+    },
+    {
+      "chunk": 2,
+      "start": 1634.18,
+      "end": 1638.03998,
+      "text": " that scientists will go pre-select the things"
+    },
+    {
+      "chunk": 2,
+      "start": 1638.03998,
+      "end": 1639.52002,
+      "text": " and then test to see if they're valid"
+    },
+    {
+      "chunk": 2,
+      "start": 1639.52002,
+      "end": 1640.94,
+      "text": " or how good they are"
+    },
+    {
+      "chunk": 2,
+      "start": 1640.94,
+      "end": 1643.02002,
+      "text": " and they report these amazing scores"
+    },
+    {
+      "chunk": 2,
+      "start": 1643.02002,
+      "end": 1660.46,
+      "text": " when in reality you can get that from just complete noise so this is an example of how to lie with"
+    },
+    {
+      "chunk": 2,
+      "start": 1662.04,
+      "end": 1664.56,
+      "text": " we'll say bad statistics."
+    },
+    {
+      "chunk": 2,
+      "start": 1667.8,
+      "end": 1672.82,
+      "text": " So if you ever get bored, there are,"
+    },
+    {
+      "chunk": 2,
+      "start": 1672.98,
+      "end": 1674.44,
+      "text": " I mean, there is a book with that title,"
+    },
+    {
+      "chunk": 2,
+      "start": 1674.44,
+      "end": 1677.22,
+      "text": " Not with the bad part in there, how to lie with statistics."
+    },
+    {
+      "chunk": 2,
+      "start": 1677.88,
+      "end": 1680.56,
+      "text": " And there's also lots of articles and whatnot."
+    },
+    {
+      "chunk": 2,
+      "start": 1681.12,
+      "end": 1688.04,
+      "text": " But this is one of the examples of how to lie or exaggerate or, you know, get something significant when it's not there."
+    },
+    {
+      "chunk": 2,
+      "start": 1691.18,
+      "end": 1699.96,
+      "text": " So, yeah, someone wrote this about the pitfalls of cross-validation for genomic data."
+    },
+    {
+      "chunk": 2,
+      "start": 1702.9,
+      "end": 1704.38,
+      "text": " Yeah, there's another one."
+    },
+    {
+      "chunk": 2,
+      "start": 1704.44,
+      "end": 1712.0,
+      "text": " And I guess there's also, if you watch the video, they mention it as well."
+    },
+    {
+      "chunk": 2,
+      "start": 1715.2,
+      "end": 1716.1799999999998,
+      "text": " So, yeah."
+    },
+    {
+      "chunk": 2,
+      "start": 1717.52,
+      "end": 1722.1399999999999,
+      "text": " So those are some articles where they report this, but it's still an issue, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1722.2,
+      "end": 1726.28,
+      "text": " You can see this is just 2016, and I promise you if you look from this year,"
+    },
+    {
+      "chunk": 2,
+      "start": 1726.33997,
+      "end": 1731.94,
+      "text": " you'll find at least one article that's made this mistake within genome stuff."
+    },
+    {
+      "chunk": 2,
+      "start": 1731.94,
+      "end": 1734.16003,
+      "text": " and if you look at other fields like neuroscience"
+    },
+    {
+      "chunk": 2,
+      "start": 1734.16003,
+      "end": 1736.08,
+      "text": " you'll find it there, you'll find it basically everywhere"
+    },
+    {
+      "chunk": 2,
+      "start": 1736.08,
+      "end": 1738.6799999999998,
+      "text": " people make the same mistakes all the time"
+    },
+    {
+      "chunk": 2,
+      "start": 1738.6799999999998,
+      "end": 1742.42,
+      "text": " especially because they don't take that many statistics classes"
+    },
+    {
+      "chunk": 2,
+      "start": 1742.42,
+      "end": 1745.3,
+      "text": " it always seems reasonable, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1745.3600000000001,
+      "end": 1748.88,
+      "text": " you maybe make a selection process and then you forget about it"
+    },
+    {
+      "chunk": 2,
+      "start": 1748.88,
+      "end": 1750.1,
+      "text": " you're like, oh, I did that already"
+    },
+    {
+      "chunk": 2,
+      "start": 1750.1,
+      "end": 1754.44,
+      "text": " and then you move on and you're looking at performances"
+    },
+    {
+      "chunk": 2,
+      "start": 1754.44,
+      "end": 1758.78,
+      "text": " and you forget that it's no longer valid"
+    },
+    {
+      "chunk": 2,
+      "start": 1758.78,
+      "end": 1764.1,
+      "text": " I'm sure if I really looked into it, I probably made that mistake at least once."
+    },
+    {
+      "chunk": 2,
+      "start": 1765.0,
+      "end": 1766.3,
+      "text": " I don't know if I should admit that."
+    },
+    {
+      "chunk": 2,
+      "start": 1770.04,
+      "end": 1771.76,
+      "text": " So try to avoid it."
+    },
+    {
+      "chunk": 2,
+      "start": 1772.8200000000002,
+      "end": 1776.62,
+      "text": " Okay, so we talked about cross-validation."
+    },
+    {
+      "chunk": 2,
+      "start": 1776.62,
+      "end": 1780.38,
+      "text": " And in those cases, we were always, in all these cross-validation approaches,"
+    },
+    {
+      "chunk": 2,
+      "start": 1780.54,
+      "end": 1784.58,
+      "text": " leave one out, K-fold, whatever, we were always partitioning the data"
+    },
+    {
+      "chunk": 2,
+      "start": 1784.58,
+      "end": 1788.58,
+      "text": " so that you took each time point"
+    },
+    {
+      "chunk": 2,
+      "start": 1788.58,
+      "end": 1792.2,
+      "text": " and either put it in a training,"
+    },
+    {
+      "chunk": 2,
+      "start": 1792.6399999999999,
+      "end": 1794.98,
+      "text": " a test, or a validation set, right?"
+    },
+    {
+      "chunk": 2,
+      "start": 1795.54,
+      "end": 1798.08,
+      "text": " Always each data point goes somewhere."
+    },
+    {
+      "chunk": 3,
+      "start": 1800.0,
+      "end": 1801.26,
+      "text": " And only once."
+    },
+    {
+      "chunk": 3,
+      "start": 1801.62,
+      "end": 1803.66,
+      "text": " In the bootstrap, we're going to do something different."
+    },
+    {
+      "chunk": 3,
+      "start": 1804.46,
+      "end": 1810.7,
+      "text": " And what we're going to do here is we're going to resample the data, the same length, now with replacement."
+    },
+    {
+      "chunk": 3,
+      "start": 1812.14,
+      "end": 1815.28,
+      "text": " And so it's a slightly different way of resampling the data."
+    },
+    {
+      "chunk": 3,
+      "start": 1817.24,
+      "end": 1822.2,
+      "text": " It is a method that came out in the 70s."
+    },
+    {
+      "chunk": 3,
+      "start": 1822.42,
+      "end": 1827.02,
+      "text": " I think it was 1979, I think, by Efron."
+    },
+    {
+      "chunk": 3,
+      "start": 1827.02,
+      "end": 1830.04,
+      "text": " and"
+    },
+    {
+      "chunk": 3,
+      "start": 1830.04,
+      "end": 1835.02,
+      "text": " it's funny because it's kind of the obvious thing"
+    },
+    {
+      "chunk": 3,
+      "start": 1835.02,
+      "end": 1836.0,
+      "text": " you would do"
+    },
+    {
+      "chunk": 3,
+      "start": 1836.0,
+      "end": 1841.04,
+      "text": " instead of all this fancy statistics"
+    },
+    {
+      "chunk": 3,
+      "start": 1841.04,
+      "end": 1843.6,
+      "text": " that we've been developing for like the last hundred years"
+    },
+    {
+      "chunk": 3,
+      "start": 1843.6,
+      "end": 1846.48,
+      "text": " so I'm pretty sure Fisher if he had a better computer"
+    },
+    {
+      "chunk": 3,
+      "start": 1846.48,
+      "end": 1849.64,
+      "text": " would have done bootstrap instead of"
+    },
+    {
+      "chunk": 3,
+      "start": 1849.64,
+      "end": 1851.24,
+      "text": " all the distribution stuff"
+    },
+    {
+      "chunk": 3,
+      "start": 1851.24,
+      "end": 1854.26,
+      "text": " maybe we'll give an example there"
+    },
+    {
+      "chunk": 3,
+      "start": 1854.26,
+      "end": 1861.7,
+      "text": " so it's very popular for obtaining standard errors confidence or intervals uh doing tests"
+    },
+    {
+      "chunk": 3,
+      "start": 1861.7,
+      "end": 1865.92,
+      "text": " right uh here's ephron"
+    },
+    {
+      "chunk": 3,
+      "start": 1865.92,
+      "end": 1874.68,
+      "text": " yeah it comes from this phrase to pull ones up to pull oneself up by one's bootstrap"
+    },
+    {
+      "chunk": 3,
+      "start": 1874.68,
+      "end": 1881.06,
+      "text": " so the bootstrap is um is this part of your shoe in the back"
+    },
+    {
+      "chunk": 3,
+      "start": 1881.06,
+      "end": 1883.8,
+      "text": " here, this thing."
+    },
+    {
+      "chunk": 3,
+      "start": 1885.0,
+      "end": 1886.0,
+      "text": " That's the bootstrap."
+    },
+    {
+      "chunk": 3,
+      "start": 1886.58,
+      "end": 1888.78,
+      "text": " And so obviously if I pull myself like this,"
+    },
+    {
+      "chunk": 3,
+      "start": 1889.84,
+      "end": 1891.38,
+      "text": " it's kind of useless, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 1891.48,
+      "end": 1892.08,
+      "text": " I'm not really,"
+    },
+    {
+      "chunk": 3,
+      "start": 1892.52,
+      "end": 1894.7,
+      "text": " it's like I can't really pull myself up"
+    },
+    {
+      "chunk": 3,
+      "start": 1894.7,
+      "end": 1896.42,
+      "text": " very far."
+    },
+    {
+      "chunk": 3,
+      "start": 1899.74,
+      "end": 1901.62,
+      "text": " And actually a long time ago,"
+    },
+    {
+      "chunk": 3,
+      "start": 1901.74,
+      "end": 1903.28,
+      "text": " they used to have in like the standard"
+    },
+    {
+      "chunk": 3,
+      "start": 1903.28,
+      "end": 1904.42,
+      "text": " elementary school textbook,"
+    },
+    {
+      "chunk": 3,
+      "start": 1904.96,
+      "end": 1906.26,
+      "text": " they would have the example of"
+    },
+    {
+      "chunk": 3,
+      "start": 1906.26,
+      "end": 1908.52,
+      "text": " proving using physics"
+    },
+    {
+      "chunk": 3,
+      "start": 1908.52,
+      "end": 1910.52,
+      "text": " that you can't pull yourself up"
+    },
+    {
+      "chunk": 3,
+      "start": 1910.52,
+      "end": 1911.36,
+      "text": " by your own bootstrap."
+    },
+    {
+      "chunk": 3,
+      "start": 1912.56,
+      "end": 1915.02,
+      "text": " But it's still a phrase."
+    },
+    {
+      "chunk": 3,
+      "start": 1915.3,
+      "end": 1917.78,
+      "text": " I guess the origins are from this book,"
+    },
+    {
+      "chunk": 3,
+      "start": 1919.0,
+      "end": 1922.08,
+      "text": " Adventures of Baron von..."
+    },
+    {
+      "chunk": 3,
+      "start": 1922.08,
+      "end": 1924.98,
+      "text": " I always knew it as Baron von Munchausen."
+    },
+    {
+      "chunk": 3,
+      "start": 1925.68,
+      "end": 1927.3,
+      "text": " It's also a fun movie."
+    },
+    {
+      "chunk": 3,
+      "start": 1927.98,
+      "end": 1928.54,
+      "text": " Or I don't know."
+    },
+    {
+      "chunk": 3,
+      "start": 1928.58,
+      "end": 1929.6399999999999,
+      "text": " It was fun when I was a kid,"
+    },
+    {
+      "chunk": 3,
+      "start": 1929.74,
+      "end": 1931.04,
+      "text": " or when I was young,"
+    },
+    {
+      "chunk": 3,
+      "start": 1931.28,
+      "end": 1932.6399999999999,
+      "text": " so maybe it looked really dated now."
+    },
+    {
+      "chunk": 3,
+      "start": 1933.6,
+      "end": 1936.3600000000001,
+      "text": " But it's like a weird adventure of this Baron,"
+    },
+    {
+      "chunk": 3,
+      "start": 1936.82,
+      "end": 1939.04,
+      "text": " and there's a guy who can run really fast,"
+    },
+    {
+      "chunk": 3,
+      "start": 1939.12,
+      "end": 1940.42,
+      "text": " and there's a guy who's wicked strong,"
+    },
+    {
+      "chunk": 3,
+      "start": 1940.52,
+      "end": 1944.06,
+      "text": " and then there's like a bad guy who tries to blow him up or something"
+    },
+    {
+      "chunk": 3,
+      "start": 1944.06,
+      "end": 1958.76,
+      "text": " I can really remember and there a flying boat it very weird and one weird part in particular is when the baron falls into the water and everyone like oh no he dead uh so sad and then he has the thought"
+    },
+    {
+      "chunk": 3,
+      "start": 1958.76,
+      "end": 1965.12,
+      "text": " of pulling himself up by his own bootstrap so i guess i think in the book he actually pulls on"
+    },
+    {
+      "chunk": 3,
+      "start": 1965.12,
+      "end": 1970.52,
+      "text": " his bootstrap and then he comes out of the water in the movie instead of the bootstrap they use his"
+    },
+    {
+      "chunk": 3,
+      "start": 1970.52,
+      "end": 1976.54,
+      "text": " hair so he pulls himself up by his own hair kind of like you would a kid or if they're bad or i"
+    },
+    {
+      "chunk": 3,
+      "start": 1976.54,
+      "end": 1982.04,
+      "text": " guess i don't i wouldn't do that um but he pulled himself up by his hair and somehow he still had"
+    },
+    {
+      "chunk": 3,
+      "start": 1982.04,
+      "end": 1986.94,
+      "text": " the horse attached to him though i mean realistically that it's not the only thing that's not the only"
+    },
+    {
+      "chunk": 3,
+      "start": 1986.94,
+      "end": 1993.48,
+      "text": " issue with that problem but still he pulls himself up and so i think the reason that they uh efron"
+    },
+    {
+      "chunk": 3,
+      "start": 1993.48,
+      "end": 2000.9,
+      "text": " use this as a way of naming this method is that it feels like magic. It feels like you shouldn't"
+    },
+    {
+      "chunk": 3,
+      "start": 2000.9,
+      "end": 2009.16,
+      "text": " be able to do it. It doesn't, like, it's too fancy. It's too cool. Like, how can you reuse"
+    },
+    {
+      "chunk": 3,
+      "start": 2009.16,
+      "end": 2018.2,
+      "text": " the data and somehow make a better model? It's weird, right? So that's where the name comes from."
+    },
+    {
+      "chunk": 3,
+      "start": 2018.2,
+      "end": 2025.78,
+      "text": " yeah so you're using the data itself to get more information about a statistic"
+    },
+    {
+      "chunk": 3,
+      "start": 2025.78,
+      "end": 2034.56,
+      "text": " and and really the idea is is that your best model for the real world like for the real data"
+    },
+    {
+      "chunk": 3,
+      "start": 2034.56,
+      "end": 2041.22,
+      "text": " so not just the sample that you have but the bigger sample everywhere your best model for"
+    },
+    {
+      "chunk": 3,
+      "start": 2041.22,
+      "end": 2046.34,
+      "text": " that is the data itself and so if you want to look at different realizations of the data"
+    },
+    {
+      "chunk": 3,
+      "start": 2046.34,
+      "end": 2053.44,
+      "text": " you resample from that same data with replacement because it's always going to be the best model for"
+    },
+    {
+      "chunk": 3,
+      "start": 2053.44,
+      "end": 2060.16,
+      "text": " the world right so just keep it as it is repick points take the same number of points and now"
+    },
+    {
+      "chunk": 3,
+      "start": 2060.16,
+      "end": 2066.97998,
+      "text": " you have a new data set it's different from the original one and it's as close to what you can"
+    },
+    {
+      "chunk": 3,
+      "start": 2066.97998,
+      "end": 2072.66,
+      "text": " expect as possible because you're just resampling your best estimate of the of the true process"
+    },
+    {
+      "chunk": 3,
+      "start": 2072.66,
+      "end": 2075.86,
+      "text": " which you don't have access to, but you have this data set."
+    },
+    {
+      "chunk": 3,
+      "start": 2076.65997,
+      "end": 2078.34,
+      "text": " So it really seems like magic."
+    },
+    {
+      "chunk": 3,
+      "start": 2078.52,
+      "end": 2085.08002,
+      "text": " It's like taking a picture and then taking a picture of the picture 100 times"
+    },
+    {
+      "chunk": 3,
+      "start": 2085.08002,
+      "end": 2087.56,
+      "text": " and then averaging them, and somehow it's better than the original picture."
+    },
+    {
+      "chunk": 3,
+      "start": 2087.8,
+      "end": 2090.15997,
+      "text": " It doesn't sound like it makes sense, but it does."
+    },
+    {
+      "chunk": 3,
+      "start": 2093.15997,
+      "end": 2107.06,
+      "text": " All right so in this case we can consider what the standard deviation of the sample median Oh and I think so when you guys took the basic statistics class"
+    },
+    {
+      "chunk": 3,
+      "start": 2107.36,
+      "end": 2109.46,
+      "text": " did anyone take the basic one in Norway?"
+    },
+    {
+      "chunk": 3,
+      "start": 2111.42,
+      "end": 2111.98,
+      "text": " No?"
+    },
+    {
+      "chunk": 3,
+      "start": 2113.76,
+      "end": 2114.5,
+      "text": " You did?"
+    },
+    {
+      "chunk": 3,
+      "start": 2114.9,
+      "end": 2119.2200000000003,
+      "text": " Did you do the thing where you learned about the t-test"
+    },
+    {
+      "chunk": 3,
+      "start": 2119.2200000000003,
+      "end": 2121.34,
+      "text": " and you learned how to compare two means?"
+    },
+    {
+      "chunk": 3,
+      "start": 2121.52,
+      "end": 2124.18,
+      "text": " And then you also did one where you just took the data"
+    },
+    {
+      "chunk": 3,
+      "start": 2124.18,
+      "end": 2129.08002,
+      "text": " and re-sampled it and then each time just said which one is higher"
+    },
+    {
+      "chunk": 3,
+      "start": 2129.08002,
+      "end": 2132.46,
+      "text": " and then computed the..."
+    },
+    {
+      "chunk": 3,
+      "start": 2132.46,
+      "end": 2137.1,
+      "text": " Because they were talking about when teaching hypothesis testing"
+    },
+    {
+      "chunk": 3,
+      "start": 2137.1,
+      "end": 2139.74,
+      "text": " and comparing the two means"
+    },
+    {
+      "chunk": 3,
+      "start": 2139.74,
+      "end": 2145.3,
+      "text": " that they would do this version, like the bootstrap"
+    },
+    {
+      "chunk": 3,
+      "start": 2145.3,
+      "end": 2146.41998,
+      "text": " version of the same thing."
+    },
+    {
+      "chunk": 3,
+      "start": 2146.41998,
+      "end": 2149.41998,
+      "text": " I was just curious if..."
+    },
+    {
+      "chunk": 3,
+      "start": 2149.41998,
+      "end": 2153.8,
+      "text": " Because in my mind this is much easier to understand than the notion"
+    },
+    {
+      "chunk": 3,
+      "start": 2153.8,
+      "end": 2157.4,
+      "text": " that a given estimator, like a mean or a median,"
+    },
+    {
+      "chunk": 3,
+      "start": 2157.84,
+      "end": 2160.48,
+      "text": " has a distribution, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2161.5,
+      "end": 2163.58002,
+      "text": " And that's what we're going to talk about now."
+    },
+    {
+      "chunk": 3,
+      "start": 2164.7,
+      "end": 2170.66,
+      "text": " So let's say we have a data set, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2170.74,
+      "end": 2171.68,
+      "text": " Any data set?"
+    },
+    {
+      "chunk": 3,
+      "start": 2171.94,
+      "end": 2176.68,
+      "text": " Just like all the heights of everyone in the country?"
+    },
+    {
+      "chunk": 3,
+      "start": 2177.0,
+      "end": 2178.32,
+      "text": " And we want to estimate,"
+    },
+    {
+      "chunk": 3,
+      "start": 2178.8,
+      "end": 2181.86,
+      "text": " and we want to estimate,"
+    },
+    {
+      "chunk": 3,
+      "start": 2182.04,
+      "end": 2183.32,
+      "text": " or we don't have all of them,"
+    },
+    {
+      "chunk": 3,
+      "start": 2183.32,
+      "end": 2187.26,
+      "text": " but we have some sample of it and we want to estimate the median of all the heights"
+    },
+    {
+      "chunk": 3,
+      "start": 2187.26,
+      "end": 2191.54,
+      "text": " but we don't want just the median because that's just a number we want to understand what the"
+    },
+    {
+      "chunk": 3,
+      "start": 2191.54,
+      "end": 2197.64,
+      "text": " distribution is of the median right it's going to shift a little bit depending on which sample you"
+    },
+    {
+      "chunk": 3,
+      "start": 2197.64,
+      "end": 2205.56,
+      "text": " get right we want to understand how variable that is and so if we you know if this was mean"
+    },
+    {
+      "chunk": 3,
+      "start": 2205.56,
+      "end": 2212.3,
+      "text": " i said the mean the average and we could say oh well the distribution of averages should be a"
+    },
+    {
+      "chunk": 3,
+      "start": 2212.3,
+      "end": 2218.48,
+      "text": " a gaussing distribution by blah, blah, blah properties, and we can prove all those things."
+    },
+    {
+      "chunk": 3,
+      "start": 2218.91998,
+      "end": 2223.82,
+      "text": " And that's what Fisher did, right? Fisher said, I think it was Fisher. I guess it was Gauss,"
+    },
+    {
+      "chunk": 3,
+      "start": 2223.91998,
+      "end": 2227.44,
+      "text": " but then later Fisher, whatever. Gauss was, Fisher and Gauss and all those guys,"
+    },
+    {
+      "chunk": 3,
+      "start": 2227.44,
+      "end": 2232.76,
+      "text": " they didn't have computers. So they said, okay, well, if I want to know what the distribution is"
+    },
+    {
+      "chunk": 3,
+      "start": 2232.76,
+      "end": 2237.3,
+      "text": " of my estimator, I have to prove it. I have to figure out what it should be."
+    },
+    {
+      "chunk": 3,
+      "start": 2237.62,
+      "end": 2242.68,
+      "text": " And then I understand that distribution, and then I can fit that distribution and use those."
+    },
+    {
+      "chunk": 3,
+      "start": 2242.76,
+      "end": 2256.04,
+      "text": " That where we get all these funky things like F tests and T tests and all these things right But in this case we actually don want to do that We want to get the distribution directly like in the form of a histogram"
+    },
+    {
+      "chunk": 3,
+      "start": 2257.12,
+      "end": 2259.92,
+      "text": " So what we're going to do is we're going to take our data set"
+    },
+    {
+      "chunk": 3,
+      "start": 2259.92,
+      "end": 2263.04,
+      "text": " and then resample that data set."
+    },
+    {
+      "chunk": 3,
+      "start": 2264.2799999999997,
+      "end": 2268.26,
+      "text": " Now making a new data set of the same size,"
+    },
+    {
+      "chunk": 3,
+      "start": 2268.54,
+      "end": 2272.08,
+      "text": " but it's not identical to the original data set"
+    },
+    {
+      "chunk": 3,
+      "start": 2272.08,
+      "end": 2275.08,
+      "text": " because some points are sampled more than once, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2275.12,
+      "end": 2277.12,
+      "text": " So maybe at one point, sample five times,"
+    },
+    {
+      "chunk": 3,
+      "start": 2277.2200000000003,
+      "end": 2278.38,
+      "text": " one is three, one is two,"
+    },
+    {
+      "chunk": 3,
+      "start": 2279.1,
+      "end": 2280.74,
+      "text": " one doesn't get sampled at all."
+    },
+    {
+      "chunk": 3,
+      "start": 2281.96,
+      "end": 2284.3,
+      "text": " It's smaller, but from there,"
+    },
+    {
+      "chunk": 3,
+      "start": 2284.38,
+      "end": 2286.62,
+      "text": " we calculate a median, right,"
+    },
+    {
+      "chunk": 3,
+      "start": 2286.7200000000003,
+      "end": 2288.2200000000003,
+      "text": " of all the heights of the people in there."
+    },
+    {
+      "chunk": 3,
+      "start": 2288.44,
+      "end": 2290.34,
+      "text": " And then we do it again and again and again"
+    },
+    {
+      "chunk": 3,
+      "start": 2290.34,
+      "end": 2291.4,
+      "text": " and again and again and again."
+    },
+    {
+      "chunk": 3,
+      "start": 2291.74,
+      "end": 2295.2799999999997,
+      "text": " And then we just plot that histogram of medians."
+    },
+    {
+      "chunk": 3,
+      "start": 2296.2799999999997,
+      "end": 2300.24,
+      "text": " And that's our bootstrap estimate"
+    },
+    {
+      "chunk": 3,
+      "start": 2300.24,
+      "end": 2304.38,
+      "text": " of the underlying distribution of that estimator,"
+    },
+    {
+      "chunk": 3,
+      "start": 2304.58002,
+      "end": 2306.02,
+      "text": " of the median in this case."
+    },
+    {
+      "chunk": 3,
+      "start": 2306.91998,
+      "end": 2310.24,
+      "text": " I always like this because it's so much more visual and obvious"
+    },
+    {
+      "chunk": 3,
+      "start": 2310.24,
+      "end": 2313.04,
+      "text": " than saying, oh, well, of course,"
+    },
+    {
+      "chunk": 3,
+      "start": 2313.2200000000003,
+      "end": 2315.62,
+      "text": " the distribution of the mean is a Gaussian."
+    },
+    {
+      "chunk": 3,
+      "start": 2315.62,
+      "end": 2318.0,
+      "text": " I mean, like, I don't know."
+    },
+    {
+      "chunk": 3,
+      "start": 2318.06,
+      "end": 2320.2200000000003,
+      "text": " I always thought that was weird to assume"
+    },
+    {
+      "chunk": 3,
+      "start": 2320.2200000000003,
+      "end": 2322.24,
+      "text": " that somehow people will just understand that,"
+    },
+    {
+      "chunk": 3,
+      "start": 2323.0,
+      "end": 2324.86,
+      "text": " especially in a first statistics course"
+    },
+    {
+      "chunk": 3,
+      "start": 2324.86,
+      "end": 2327.5,
+      "text": " where you barely understand the idea of a distribution"
+    },
+    {
+      "chunk": 3,
+      "start": 2327.5,
+      "end": 2332.96,
+      "text": " and then suddenly have to think about the distribution of an estimator,"
+    },
+    {
+      "chunk": 3,
+      "start": 2333.7,
+      "end": 2335.2200000000003,
+      "text": " of something you estimated from data."
+    },
+    {
+      "chunk": 3,
+      "start": 2336.04,
+      "end": 2340.1,
+      "text": " It's not obvious what that means, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2340.74,
+      "end": 2343.36,
+      "text": " But with this bootstrap, it's really nice because you get,"
+    },
+    {
+      "chunk": 3,
+      "start": 2344.36,
+      "end": 2346.7,
+      "text": " you can see the shape of the distribution."
+    },
+    {
+      "chunk": 3,
+      "start": 2346.9,
+      "end": 2349.9,
+      "text": " You can compute it and you can see intuitively what it is."
+    },
+    {
+      "chunk": 3,
+      "start": 2349.9,
+      "end": 2351.26,
+      "text": " It's like, oh, I resampled the data."
+    },
+    {
+      "chunk": 3,
+      "start": 2351.8,
+      "end": 2353.64,
+      "text": " It's like getting a new data set."
+    },
+    {
+      "chunk": 3,
+      "start": 2353.64,
+      "end": 2357.54,
+      "text": " and then I compute this median and I look at the histogram."
+    },
+    {
+      "chunk": 3,
+      "start": 2361.08,
+      "end": 2362.96,
+      "text": " So that's the fun thing."
+    },
+    {
+      "chunk": 3,
+      "start": 2363.1,
+      "end": 2368.9,
+      "text": " So you get this x tilde, right?"
+    },
+    {
+      "chunk": 3,
+      "start": 2369.42,
+      "end": 2373.82,
+      "text": " And then, yeah, exactly."
+    },
+    {
+      "chunk": 3,
+      "start": 2374.2799999999997,
+      "end": 2376.24,
+      "text": " These are, I think they're saying just the same things."
+    },
+    {
+      "chunk": 3,
+      "start": 2377.12,
+      "end": 2380.36,
+      "text": " So then, you know, we can calculate if we want,"
+    },
+    {
+      "chunk": 3,
+      "start": 2380.44,
+      "end": 2383.6,
+      "text": " we can calculate the standard deviation of our estimator, of our median."
+    },
+    {
+      "chunk": 3,
+      "start": 2383.64,
+      "end": 2388.8,
+      "text": " All right, so here, for example,"
+    },
+    {
+      "chunk": 3,
+      "start": 2388.8,
+      "end": 2391.46,
+      "text": " they do it a whole bunch of times."
+    },
+    {
+      "chunk": 3,
+      "start": 2391.46,
+      "end": 2394.64,
+      "text": " So they take a thousand times,"
+    },
+    {
+      "chunk": 3,
+      "start": 2394.64,
+      "end": 2396.94,
+      "text": " they sample a hundred points from a Gaussian."
+    },
+    {
+      "chunk": 3,
+      "start": 2397.82,
+      "end": 2399.82,
+      "text": " Each time calculating a mean,"
+    },
+    {
+      "chunk": 4,
+      "start": 2400.0,
+      "end": 2410.28,
+      "text": " And then from all those estimations, right, those times, they then calculate a median."
+    },
+    {
+      "chunk": 4,
+      "start": 2412.28,
+      "end": 2414.94,
+      "text": " Though in this case, they're always creating a new data set."
+    },
+    {
+      "chunk": 4,
+      "start": 2415.02,
+      "end": 2417.9,
+      "text": " So this is slightly different than resampling, right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2419.76,
+      "end": 2424.2,
+      "text": " Yeah, I guess here they just want to show what it would be if the data was always independent."
+    },
+    {
+      "chunk": 4,
+      "start": 2425.3,
+      "end": 2425.74,
+      "text": " Right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2425.82,
+      "end": 2427.32,
+      "text": " In this little code here."
+    },
+    {
+      "chunk": 4,
+      "start": 2427.32,
+      "end": 2431.52,
+      "text": " because they're not resampling, they're recreating."
+    },
+    {
+      "chunk": 4,
+      "start": 2434.22,
+      "end": 2436.06,
+      "text": " And so you see a nice thing."
+    },
+    {
+      "chunk": 4,
+      "start": 2438.14,
+      "end": 2443.2,
+      "text": " But now, like I said, you will recreate the same thing."
+    },
+    {
+      "chunk": 4,
+      "start": 2449.2,
+      "end": 2452.54,
+      "text": " Yeah, when we're trying to get the empirical distribution,"
+    },
+    {
+      "chunk": 4,
+      "start": 2452.54,
+      "end": 2457.84,
+      "text": " We create N resamples of these things."
+    },
+    {
+      "chunk": 4,
+      "start": 2458.58,
+      "end": 2463.36,
+      "text": " And we resample the data set N times with replacement."
+    },
+    {
+      "chunk": 4,
+      "start": 2463.66,
+      "end": 2465.24,
+      "text": " We create this new data set."
+    },
+    {
+      "chunk": 4,
+      "start": 2465.34,
+      "end": 2466.94,
+      "text": " I mean, it's just what I've already said."
+    },
+    {
+      "chunk": 4,
+      "start": 2468.86,
+      "end": 2469.12,
+      "text": " All right."
+    },
+    {
+      "chunk": 4,
+      "start": 2469.84,
+      "end": 2478.46,
+      "text": " And now, so now you create the data set once, and then you resample it, right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2478.46,
+      "end": 2482.82,
+      "text": " So here we're getting this boot one, which is one resampling of the data."
+    },
+    {
+      "chunk": 4,
+      "start": 2484.66,
+      "end": 2490.72,
+      "text": " And so now the median is different than it was for the original data set."
+    },
+    {
+      "chunk": 4,
+      "start": 2491.0,
+      "end": 2494.3,
+      "text": " And it's because we have slightly different data, right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2494.7,
+      "end": 2497.88,
+      "text": " Even though it's generated from that original."
+    },
+    {
+      "chunk": 4,
+      "start": 2500.22,
+      "end": 2505.22,
+      "text": " And now, as we said, we can do a bunch of bootstraps."
+    },
+    {
+      "chunk": 4,
+      "start": 2505.22,
+      "end": 2508.62,
+      "text": " you typically want to use a big number"
+    },
+    {
+      "chunk": 4,
+      "start": 2508.62,
+      "end": 2510.04,
+      "text": " like a thousand or ten thousand"
+    },
+    {
+      "chunk": 4,
+      "start": 2510.04,
+      "end": 2515.56,
+      "text": " and that's because you want to have a nice shape to the distribution"
+    },
+    {
+      "chunk": 4,
+      "start": 2515.56,
+      "end": 2517.44,
+      "text": " and then see"
+    },
+    {
+      "chunk": 4,
+      "start": 2517.44,
+      "end": 2520.52,
+      "text": " see where you are"
+    },
+    {
+      "chunk": 4,
+      "start": 2520.52,
+      "end": 2524.34,
+      "text": " yeah"
+    },
+    {
+      "chunk": 4,
+      "start": 2524.34,
+      "end": 2528.3,
+      "text": " so we bootstrap the distribution"
+    },
+    {
+      "chunk": 4,
+      "start": 2528.3,
+      "end": 2530.46,
+      "text": " and then we evaluate it"
+    },
+    {
+      "chunk": 4,
+      "start": 2530.46,
+      "end": 2533.94,
+      "text": " and then we can take"
+    },
+    {
+      "chunk": 4,
+      "start": 2533.94,
+      "end": 2542.48,
+      "text": " the, here's the, in this case, the standard deviation of the median, right? Because that"
+    },
+    {
+      "chunk": 4,
+      "start": 2542.48,
+      "end": 2560.54,
+      "text": " was what we wanted to see is what is the we wanted to get the standard deviation of the estimator for the median right So this will give us our standard error So it the empirical standard deviation of the estimates of X tilde right"
+    },
+    {
+      "chunk": 4,
+      "start": 2560.62,
+      "end": 2565.82,
+      "text": " So you could imagine if we were looking at the median height of people, right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2565.82,
+      "end": 2576.8,
+      "text": " then we would end up getting some histogram of these bootstraps right and maybe this is"
+    },
+    {
+      "chunk": 4,
+      "start": 2576.8,
+      "end": 2583.28,
+      "text": " fluctuating from like i don't know i don't know how tall people are but like 1.6 meters to like"
+    },
+    {
+      "chunk": 4,
+      "start": 2583.28,
+      "end": 2589.94,
+      "text": " 2.2.1 i don't know how tall people are i'm sorry i'm not really good at the meters either so i"
+    },
+    {
+      "chunk": 4,
+      "start": 2589.94,
+      "end": 2595.8,
+      "text": " don't yeah if you don't fit on this distribution don't feel bad i don't know what it is but"
+    },
+    {
+      "chunk": 4,
+      "start": 2595.82,
+      "end": 2614.14,
+      "text": " But the nice thing is that then you can do things like you can say, all right, what's the likelihood or what's the probability that a person who's, you know, over here at like 0.5 meters is part of this distribution, right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2614.14,
+      "end": 2620.0,
+      "text": " And so now you can see that this person is very far away from the median, right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2620.0,
+      "end": 2623.6,
+      "text": " And you can think about it in terms of how far away it is"
+    },
+    {
+      "chunk": 4,
+      "start": 2623.6,
+      "end": 2626.14,
+      "text": " according to this histogram of medians."
+    },
+    {
+      "chunk": 4,
+      "start": 2627.6,
+      "end": 2632.82,
+      "text": " It's much more meaningful than just saying this point is far away from that point."
+    },
+    {
+      "chunk": 4,
+      "start": 2633.62,
+      "end": 2637.86,
+      "text": " It gives you a distribution to get confidence intervals for your medians"
+    },
+    {
+      "chunk": 4,
+      "start": 2637.86,
+      "end": 2641.73999,
+      "text": " or whatever your statistic is for doing tests on them."
+    },
+    {
+      "chunk": 4,
+      "start": 2642.94,
+      "end": 2645.42,
+      "text": " So the bootstrap is a very powerful method."
+    },
+    {
+      "chunk": 4,
+      "start": 2646.22,
+      "end": 2648.28,
+      "text": " And I like it because it's super easy."
+    },
+    {
+      "chunk": 4,
+      "start": 2650.0,
+      "end": 2652.95999,
+      "text": " And it just takes more compute and compute's cheap, so who cares?"
+    },
+    {
+      "chunk": 4,
+      "start": 2657.6,
+      "end": 2658.12,
+      "text": " Right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2658.34,
+      "end": 2661.8,
+      "text": " So here you, this is just another example, right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2661.8,
+      "end": 2668.52,
+      "text": " So here they do 1,000 bootstraps and then get a standard error estimate."
+    },
+    {
+      "chunk": 4,
+      "start": 2669.44,
+      "end": 2678.38,
+      "text": " And so here you can see that the standard deviation of the estimator for the median was 0.1365."
+    },
+    {
+      "chunk": 4,
+      "start": 2678.38,
+      "end": 2682.34,
+      "text": " if we scroll up to what they did before"
+    },
+    {
+      "chunk": 4,
+      "start": 2682.34,
+      "end": 2686.62,
+      "text": " where they got the new data every time"
+    },
+    {
+      "chunk": 4,
+      "start": 2686.62,
+      "end": 2688.18,
+      "text": " it was 0.125"
+    },
+    {
+      "chunk": 4,
+      "start": 2688.18,
+      "end": 2692.56,
+      "text": " I guess this is the right estimate"
+    },
+    {
+      "chunk": 4,
+      "start": 2692.56,
+      "end": 2704.32,
+      "text": " 0 probably I don know or it closer but still the bootstrap is surprisingly close Right Surprisingly close to the truth"
+    },
+    {
+      "chunk": 4,
+      "start": 2705.16,
+      "end": 2707.76,
+      "text": " Especially considering, like I said, it seems like magic, right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2707.84,
+      "end": 2711.14,
+      "text": " How do you estimate the distribution of a median"
+    },
+    {
+      "chunk": 4,
+      "start": 2711.14,
+      "end": 2714.6,
+      "text": " without having more than one data set?"
+    },
+    {
+      "chunk": 4,
+      "start": 2715.38,
+      "end": 2719.42,
+      "text": " It seems impossible, but it works."
+    },
+    {
+      "chunk": 4,
+      "start": 2719.42,
+      "end": 2722.58,
+      "text": " so here you can see"
+    },
+    {
+      "chunk": 4,
+      "start": 2722.58,
+      "end": 2727.24,
+      "text": " yeah in this case it has a kind of funky shape to it"
+    },
+    {
+      "chunk": 4,
+      "start": 2727.24,
+      "end": 2728.32,
+      "text": " but that's okay"
+    },
+    {
+      "chunk": 4,
+      "start": 2728.32,
+      "end": 2735.16,
+      "text": " yeah and then here is just the"
+    },
+    {
+      "chunk": 4,
+      "start": 2735.16,
+      "end": 2739.0,
+      "text": " this is what you would actually use in R"
+    },
+    {
+      "chunk": 4,
+      "start": 2739.0,
+      "end": 2740.8,
+      "text": " they have a function for bootstrap"
+    },
+    {
+      "chunk": 4,
+      "start": 2740.8,
+      "end": 2744.32,
+      "text": " I don't know if they have a function in Python"
+    },
+    {
+      "chunk": 4,
+      "start": 2744.32,
+      "end": 2745.2799999999997,
+      "text": " I never used it"
+    },
+    {
+      "chunk": 4,
+      "start": 2745.2799999999997,
+      "end": 2747.86,
+      "text": " it's just really very easy to make yourself"
+    },
+    {
+      "chunk": 4,
+      "start": 2747.86,
+      "end": 2751.86,
+      "text": " So I don't think I ever Googled it, but they probably do."
+    },
+    {
+      "chunk": 4,
+      "start": 2758.18,
+      "end": 2761.48,
+      "text": " Yeah, so could we do it without replacement?"
+    },
+    {
+      "chunk": 4,
+      "start": 2762.3,
+      "end": 2765.68,
+      "text": " I mean, I guess you could, but it's not really the same model, right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2765.7200000000003,
+      "end": 2771.66,
+      "text": " I mean, the reason you do replacement is that you want to have the same length of data every single time."
+    },
+    {
+      "chunk": 4,
+      "start": 2771.66,
+      "end": 2777.91998,
+      "text": " So it's not a data length problem and you want your best estimate of the true distribution, which is your data."
+    },
+    {
+      "chunk": 4,
+      "start": 2778.02,
+      "end": 2785.1,
+      "text": " So that's the whole idea. If you do it without replacement, then either you're always getting the same data every single time, just reordered."
+    },
+    {
+      "chunk": 4,
+      "start": 2785.2,
+      "end": 2796.82,
+      "text": " So that's useless. Or or I guess if you use a smaller part of the data, like if you just resample the data, like 10 percent of the data every time."
+    },
+    {
+      "chunk": 4,
+      "start": 2796.82,
+      "end": 2800.58002,
+      "text": " that would be"
+    },
+    {
+      "chunk": 4,
+      "start": 2800.58002,
+      "end": 2802.82,
+      "text": " I don't know"
+    },
+    {
+      "chunk": 4,
+      "start": 2802.82,
+      "end": 2805.12,
+      "text": " it would be different"
+    },
+    {
+      "chunk": 4,
+      "start": 2805.12,
+      "end": 2811.12,
+      "text": " so okay"
+    },
+    {
+      "chunk": 4,
+      "start": 2811.12,
+      "end": 2816.0,
+      "text": " the thing is you do it with replacement"
+    },
+    {
+      "chunk": 4,
+      "start": 2816.0,
+      "end": 2817.12,
+      "text": " for bootstrap"
+    },
+    {
+      "chunk": 4,
+      "start": 2817.12,
+      "end": 2819.08002,
+      "text": " that's the thing"
+    },
+    {
+      "chunk": 4,
+      "start": 2819.08002,
+      "end": 2823.4,
+      "text": " so another example with multiple linear regression"
+    },
+    {
+      "chunk": 4,
+      "start": 2823.4,
+      "end": 2829.58,
+      "text": " we want to do confidence intervals for the regression coefficients and the prediction intervals"
+    },
+    {
+      "chunk": 4,
+      "start": 2829.58,
+      "end": 2839.71997,
+      "text": " right so we might want to do this for example if our model is wrong or if our model i mean because"
+    },
+    {
+      "chunk": 4,
+      "start": 2839.71997,
+      "end": 2843.68,
+      "text": " there are you do get with multiple linear regression there are ways of estimating all"
+    },
+    {
+      "chunk": 4,
+      "start": 2843.68,
+      "end": 2855.62,
+      "text": " these things right because we know the distributions and whatnot but all these distributional assumptions are assumptions and for those to be right your data has to be of a certain type And you know maybe they not"
+    },
+    {
+      "chunk": 4,
+      "start": 2855.88,
+      "end": 2859.2799999999997,
+      "text": " So often using a bootstrap will be better"
+    },
+    {
+      "chunk": 4,
+      "start": 2859.2799999999997,
+      "end": 2862.38,
+      "text": " or will be making fewer assumptions"
+    },
+    {
+      "chunk": 4,
+      "start": 2862.38,
+      "end": 2864.42,
+      "text": " and can give you a different result."
+    },
+    {
+      "chunk": 4,
+      "start": 2867.6,
+      "end": 2869.42,
+      "text": " Yeah, so..."
+    },
+    {
+      "chunk": 4,
+      "start": 2872.12,
+      "end": 2874.7,
+      "text": " Yeah."
+    },
+    {
+      "chunk": 4,
+      "start": 2875.0,
+      "end": 2878.66,
+      "text": " Now, a related, what was I trying to say?"
+    },
+    {
+      "chunk": 4,
+      "start": 2882.76,
+      "end": 2889.98,
+      "text": " Okay, so this is, you do an example of this in the recommended examples, exercises, that's why."
+    },
+    {
+      "chunk": 4,
+      "start": 2890.3,
+      "end": 2890.48,
+      "text": " Okay."
+    },
+    {
+      "chunk": 4,
+      "start": 2892.0,
+      "end": 2897.76,
+      "text": " A related idea to bootstrapping is this idea of bagging."
+    },
+    {
+      "chunk": 4,
+      "start": 2899.02,
+      "end": 2903.7,
+      "text": " Bagging is a term that is short for bootstrap aggregation."
+    },
+    {
+      "chunk": 4,
+      "start": 2905.0,
+      "end": 2912.44,
+      "text": " and it's very related, and it also seems like magic, right?"
+    },
+    {
+      "chunk": 4,
+      "start": 2912.52,
+      "end": 2916.94,
+      "text": " So bootstrapping, you make up new data, which doesn't make any sense,"
+    },
+    {
+      "chunk": 4,
+      "start": 2917.16003,
+      "end": 2920.33997,
+      "text": " and then somehow from that you can get a distribution of the thing,"
+    },
+    {
+      "chunk": 4,
+      "start": 2920.52,
+      "end": 2921.68,
+      "text": " which is weird."
+    },
+    {
+      "chunk": 4,
+      "start": 2922.94,
+      "end": 2924.82,
+      "text": " So there's a similar magic."
+    },
+    {
+      "chunk": 4,
+      "start": 2924.98,
+      "end": 2926.3,
+      "text": " I mean, it's not magic."
+    },
+    {
+      "chunk": 4,
+      "start": 2926.3,
+      "end": 2928.88,
+      "text": " It's just how it is."
+    },
+    {
+      "chunk": 4,
+      "start": 2928.88,
+      "end": 2934.66003,
+      "text": " but it's similarly magical that you can do this by"
+    },
+    {
+      "chunk": 4,
+      "start": 2934.66003,
+      "end": 2939.7200000000003,
+      "text": " you can use this trick in a different way"
+    },
+    {
+      "chunk": 4,
+      "start": 2939.7200000000003,
+      "end": 2944.68,
+      "text": " to basically make an ensemble of different models of your data"
+    },
+    {
+      "chunk": 4,
+      "start": 2944.68,
+      "end": 2946.3,
+      "text": " and then average across those"
+    },
+    {
+      "chunk": 4,
+      "start": 2946.3,
+      "end": 2950.9,
+      "text": " so the trick here is to basically"
+    },
+    {
+      "chunk": 4,
+      "start": 2950.9,
+      "end": 2953.44,
+      "text": " make different models"
+    },
+    {
+      "chunk": 4,
+      "start": 2953.44,
+      "end": 2956.18,
+      "text": " use your data to make different models"
+    },
+    {
+      "chunk": 4,
+      "start": 2956.18,
+      "end": 2959.0,
+      "text": " of your relationship between X and Y,"
+    },
+    {
+      "chunk": 4,
+      "start": 2959.3,
+      "end": 2961.38,
+      "text": " and then you average across them."
+    },
+    {
+      "chunk": 4,
+      "start": 2962.2,
+      "end": 2964.54,
+      "text": " And the surprising thing is by doing that,"
+    },
+    {
+      "chunk": 4,
+      "start": 2964.62,
+      "end": 2970.96,
+      "text": " even though you're always just resampling the same data,"
+    },
+    {
+      "chunk": 4,
+      "start": 2971.16003,
+      "end": 2973.92,
+      "text": " you can actually remove bias from your model."
+    },
+    {
+      "chunk": 4,
+      "start": 2974.56,
+      "end": 2976.86,
+      "text": " So you can get a better model"
+    },
+    {
+      "chunk": 4,
+      "start": 2976.86,
+      "end": 2982.48,
+      "text": " by averaging across these bootstrapped versions of the model."
+    },
+    {
+      "chunk": 4,
+      "start": 2982.48,
+      "end": 2984.7200000000003,
+      "text": " So you bootstrap your data, you fit a model,"
+    },
+    {
+      "chunk": 4,
+      "start": 2984.7200000000003,
+      "end": 2986.98,
+      "text": " and then you average across all those models"
+    },
+    {
+      "chunk": 4,
+      "start": 2986.98,
+      "end": 2990.24,
+      "text": " and then magically that's a better model."
+    },
+    {
+      "chunk": 4,
+      "start": 2990.52,
+      "end": 2994.5,
+      "text": " So yeah, we'll look at that more in module eight."
+    },
+    {
+      "chunk": 4,
+      "start": 2994.92,
+      "end": 2996.14,
+      "text": " So this is more of a preview"
+    },
+    {
+      "chunk": 4,
+      "start": 2996.14,
+      "end": 2998.82,
+      "text": " than anything that we're going to go through in detail now."
+    },
+    {
+      "chunk": 4,
+      "start": 2998.82,
+      "end": 2999.82,
+      "text": " So."
+    },
+    {
+      "chunk": 5,
+      "start": 3000.0,
+      "end": 3021.28,
+      "text": " Right. And in particular, you're by doing this, you're reducing the variance of your of your the the the model you get by averaging a bunch of models will be a model will result in a single model that is less variance than one that if you didn't do this trick again, variance across realizations of the data."
+    },
+    {
+      "chunk": 5,
+      "start": 3021.28,
+      "end": 3022.7,
+      "text": " So it's going to generalize better."
+    },
+    {
+      "chunk": 5,
+      "start": 3022.7,
+      "end": 3025.28,
+      "text": " right so"
+    },
+    {
+      "chunk": 5,
+      "start": 3025.28,
+      "end": 3034.12,
+      "text": " yeah and and it's not at all obvious but this is actually the trick that's also happening"
+    },
+    {
+      "chunk": 5,
+      "start": 3034.12,
+      "end": 3040.32,
+      "text": " when you just use a single model but use a ton of parameters remember i told you that if you keep"
+    },
+    {
+      "chunk": 5,
+      "start": 3040.32,
+      "end": 3045.38,
+      "text": " going in the bias variance trade-off when you have like just a ton of parameters eventually"
+    },
+    {
+      "chunk": 5,
+      "start": 3045.38,
+      "end": 3050.12,
+      "text": " your error goes down again and sometimes you can get much better and it's actually using this"
+    },
+    {
+      "chunk": 5,
+      "start": 3050.12,
+      "end": 3057.06,
+      "text": " bagging trick implicitly. So you end up with so many different parameters that actually the"
+    },
+    {
+      "chunk": 5,
+      "start": 3057.06,
+      "end": 3061.46,
+      "text": " collection of parameters finds different models and different parts of the parameters"
+    },
+    {
+      "chunk": 5,
+      "start": 3061.46,
+      "end": 3067.4,
+      "text": " and then essentially averages them together. I mean, it's super weird, but it's interesting."
+    },
+    {
+      "chunk": 5,
+      "start": 3068.86,
+      "end": 3073.86,
+      "text": " But right now, yeah, we'll just focus on the simple one where you take your samples"
+    },
+    {
+      "chunk": 5,
+      "start": 3073.86,
+      "end": 3079.6,
+      "text": " and just like you did for finding the median or finding the histogram of the median,"
+    },
+    {
+      "chunk": 5,
+      "start": 3080.12,
+      "end": 3083.22,
+      "text": " you draw bootstrap samples."
+    },
+    {
+      "chunk": 5,
+      "start": 3083.48,
+      "end": 3086.04,
+      "text": " So we're going to make B versions of the data,"
+    },
+    {
+      "chunk": 5,
+      "start": 3087.32,
+      "end": 3090.44,
+      "text": " resampling always the same amount of data with a replacement."
+    },
+    {
+      "chunk": 5,
+      "start": 3091.22,
+      "end": 3095.28,
+      "text": " And then you take that and you fit whatever your model is,"
+    },
+    {
+      "chunk": 5,
+      "start": 3095.32,
+      "end": 3097.06,
+      "text": " regression, whatever the thing is, right?"
+    },
+    {
+      "chunk": 5,
+      "start": 3097.06,
+      "end": 3105.06,
+      "text": " So you get a whole bunch of these guys here, these F hats, right?"
+    },
+    {
+      "chunk": 5,
+      "start": 3105.7,
+      "end": 3112.11802,
+      "text": " You get B of those and then what we want to do is simply your prediction is just the average of those"
+    },
+    {
+      "chunk": 5,
+      "start": 3115.89802,
+      "end": 3118.638016,
+      "text": " And it's that simple."
+    },
+    {
+      "chunk": 5,
+      "start": 3120.07802,
+      "end": 3124.09802,
+      "text": " If the samples were actually independent, which they're not,"
+    },
+    {
+      "chunk": 5,
+      "start": 3124.638016,
+      "end": 3129.93802,
+      "text": " so if the bootstrap samples are independent, then you would have this relationship."
+    },
+    {
+      "chunk": 5,
+      "start": 3129.93802,
+      "end": 3133.65802,
+      "text": " You'd have a much smaller variance across data sets."
+    },
+    {
+      "chunk": 5,
+      "start": 3133.65802,
+      "end": 3143.71802,
+      "text": " If each bootstrap data set were independent, then taking an average across all of them would give us a much lower variance of our model."
+    },
+    {
+      "chunk": 5,
+      "start": 3144.43802,
+      "end": 3149.59802,
+      "text": " It would generalize better by this amount, basically."
+    },
+    {
+      "chunk": 5,
+      "start": 3150.03802,
+      "end": 3153.65802,
+      "text": " That's how much the reduction of that part of the error would be."
+    },
+    {
+      "chunk": 5,
+      "start": 3154.49802,
+      "end": 3159.37802,
+      "text": " Of course, we don't get that because we don't have independent samples at all."
+    },
+    {
+      "chunk": 5,
+      "start": 3159.37802,
+      "end": 3165.03802,
+      "text": " We have bootstrapped versions of the data, which is the best we can do, I think."
+    },
+    {
+      "chunk": 5,
+      "start": 3165.21802,
+      "end": 3166.91801,
+      "text": " I don't see what better we could do."
+    },
+    {
+      "chunk": 5,
+      "start": 3168.07802,
+      "end": 3169.83801,
+      "text": " So we're not going to get this."
+    },
+    {
+      "chunk": 5,
+      "start": 3172.01802,
+      "end": 3173.05801,
+      "text": " Not possible."
+    },
+    {
+      "chunk": 5,
+      "start": 3175.15802,
+      "end": 3176.738,
+      "text": " But you get something smaller."
+    },
+    {
+      "chunk": 5,
+      "start": 3177.31802,
+      "end": 3184.25803,
+      "text": " So, for example, for an estimate of a pairwise correlation, the variance of it, it has this form."
+    },
+    {
+      "chunk": 5,
+      "start": 3184.25803,
+      "end": 3188.31802,
+      "text": " so we have smaller variants than"
+    },
+    {
+      "chunk": 5,
+      "start": 3188.31802,
+      "end": 3193.39801,
+      "text": " yeah, we have a, it's not as"
+    },
+    {
+      "chunk": 5,
+      "start": 3193.39801,
+      "end": 3196.41801,
+      "text": " good of a reduction in bias as if it were"
+    },
+    {
+      "chunk": 5,
+      "start": 3196.41801,
+      "end": 3200.63802,
+      "text": " independently sampled data, but it's still pretty good"
+    },
+    {
+      "chunk": 5,
+      "start": 3200.63802,
+      "end": 3205.43802,
+      "text": " so this is, this method of"
+    },
+    {
+      "chunk": 5,
+      "start": 3205.43802,
+      "end": 3209.07802,
+      "text": " bootstrapping or bagging, bootstrap aggregating"
+    },
+    {
+      "chunk": 5,
+      "start": 3209.07802,
+      "end": 3213.67801,
+      "text": " right, aggregation is the add, so it's like bootstrap averaging"
+    },
+    {
+      "chunk": 5,
+      "start": 3213.67801,
+      "end": 3227.37604,
+      "text": " they tend to work well for models that have poor prediction accuracy and we going to talk more about this in module 8 where we talk about bagging trees"
+    },
+    {
+      "chunk": 5,
+      "start": 3228.19603,
+      "end": 3228.53604,
+      "text": " Just fun."
+    },
+    {
+      "chunk": 5,
+      "start": 3232.77603,
+      "end": 3234.75604,
+      "text": " And like I said, this is actually"
+    },
+    {
+      "chunk": 5,
+      "start": 3234.75604,
+      "end": 3239.81604,
+      "text": " this is also the reason why the high parameter models work so well."
+    },
+    {
+      "chunk": 5,
+      "start": 3239.81604,
+      "end": 3243.39604,
+      "text": " It's very related. You're getting a whole bunch of models"
+    },
+    {
+      "chunk": 5,
+      "start": 3243.39604,
+      "end": 3251.43604,
+      "text": " and averaging. So further reading on this topic and also the videos. The videos are goofy,"
+    },
+    {
+      "chunk": 5,
+      "start": 3251.57603,
+      "end": 3256.19604,
+      "text": " but they're pretty good. And they, of course, cover the same material. So I would recommend them."
+    },
+    {
+      "chunk": 5,
+      "start": 3257.43604,
+      "end": 3263.43604,
+      "text": " Now, the rest of the slides for today are all about R Markdown. It's very boring."
+    },
+    {
+      "chunk": 5,
+      "start": 3263.43604,
+      "end": 3265.41605,
+      "text": " And like I said"
+    },
+    {
+      "chunk": 5,
+      "start": 3265.41605,
+      "end": 3268.39603,
+      "text": " R is optional this year"
+    },
+    {
+      "chunk": 5,
+      "start": 3268.39603,
+      "end": 3270.07605,
+      "text": " So you can use it"
+    },
+    {
+      "chunk": 5,
+      "start": 3270.07605,
+      "end": 3273.25604,
+      "text": " Or you can use"
+    },
+    {
+      "chunk": 5,
+      "start": 3273.25604,
+      "end": 3274.7960199999998,
+      "text": " LaTeX and Python"
+    },
+    {
+      "chunk": 5,
+      "start": 3274.7960199999998,
+      "end": 3276.37604,
+      "text": " Stuff like the"
+    },
+    {
+      "chunk": 5,
+      "start": 3276.37604,
+      "end": 3280.83603,
+      "text": " Either one is fine for the projects"
+    },
+    {
+      "chunk": 5,
+      "start": 3280.83603,
+      "end": 3282.47604,
+      "text": " So this is"
+    },
+    {
+      "chunk": 5,
+      "start": 3282.47604,
+      "end": 3284.01605,
+      "text": " There's just some notes here"
+    },
+    {
+      "chunk": 5,
+      "start": 3284.01605,
+      "end": 3285.73602,
+      "text": " I'm not going to talk through them"
+    },
+    {
+      "chunk": 5,
+      "start": 3285.73602,
+      "end": 3287.97604,
+      "text": " But"
+    },
+    {
+      "chunk": 5,
+      "start": 3287.97604,
+      "end": 3290.93604,
+      "text": " There's some pointers and things"
+    },
+    {
+      "chunk": 5,
+      "start": 3290.93604,
+      "end": 3292.65604,
+      "text": " In R"
+    },
+    {
+      "chunk": 5,
+      "start": 3292.65604,
+      "end": 3295.59604,
+      "text": " I don't"
+    },
+    {
+      "chunk": 5,
+      "start": 3295.59604,
+      "end": 3297.81604,
+      "text": " Yeah"
+    },
+    {
+      "chunk": 5,
+      "start": 3297.81604,
+      "end": 3298.39603,
+      "text": " So"
+    },
+    {
+      "chunk": 5,
+      "start": 3298.39603,
+      "end": 3299.7960199999998,
+      "text": " Again"
+    },
+    {
+      "chunk": 5,
+      "start": 3299.7960199999998,
+      "end": 3300.45605,
+      "text": " We're"
+    },
+    {
+      "chunk": 5,
+      "start": 3300.45605,
+      "end": 3301.45605,
+      "text": " Next week"
+    },
+    {
+      "chunk": 5,
+      "start": 3301.45605,
+      "end": 3302.15604,
+      "text": " We're gonna do"
+    },
+    {
+      "chunk": 5,
+      "start": 3302.15604,
+      "end": 3303.45605,
+      "text": " The compulsory exercise"
+    },
+    {
+      "chunk": 5,
+      "start": 3303.45605,
+      "end": 3304.41605,
+      "text": " In class"
+    },
+    {
+      "chunk": 5,
+      "start": 3304.41605,
+      "end": 3304.91605,
+      "text": " Right"
+    },
+    {
+      "chunk": 5,
+      "start": 3304.91605,
+      "end": 3306.41605,
+      "text": " And then it's due"
+    },
+    {
+      "chunk": 5,
+      "start": 3306.41605,
+      "end": 3307.37604,
+      "text": " Whatever the"
+    },
+    {
+      "chunk": 5,
+      "start": 3307.37604,
+      "end": 3307.83603,
+      "text": " I forget"
+    },
+    {
+      "chunk": 5,
+      "start": 3307.83603,
+      "end": 3308.69604,
+      "text": " It's due the date"
+    },
+    {
+      "chunk": 5,
+      "start": 3308.69604,
+      "end": 3309.39603,
+      "text": " That it says in"
+    },
+    {
+      "chunk": 5,
+      "start": 3309.39603,
+      "end": 3310.43604,
+      "text": " Blackboard"
+    },
+    {
+      "chunk": 5,
+      "start": 3310.43604,
+      "end": 3311.43604,
+      "text": " I think it's the 18th"
+    },
+    {
+      "chunk": 5,
+      "start": 3311.43604,
+      "end": 3311.83603,
+      "text": " Or something"
+    },
+    {
+      "chunk": 5,
+      "start": 3311.83603,
+      "end": 3313.71603,
+      "text": " I don't"
+    },
+    {
+      "chunk": 5,
+      "start": 3313.71603,
+      "end": 3314.85602,
+      "text": " Yeah"
+    },
+    {
+      "chunk": 5,
+      "start": 3314.85602,
+      "end": 3315.21603,
+      "text": " It gets"
+    },
+    {
+      "chunk": 5,
+      "start": 3315.21603,
+      "end": 3317.17603,
+      "text": " So don't quote me"
+    },
+    {
+      "chunk": 5,
+      "start": 3317.17603,
+      "end": 3317.7960199999998,
+      "text": " On the 18th"
+    },
+    {
+      "chunk": 5,
+      "start": 3317.7960199999998,
+      "end": 3318.81604,
+      "text": " Look on Blackboard"
+    },
+    {
+      "chunk": 5,
+      "start": 3318.81604,
+      "end": 3319.77603,
+      "text": " Whatever it says there"
+    },
+    {
+      "chunk": 5,
+      "start": 3319.77603,
+      "end": 3321.47604,
+      "text": " And make sure you"
+    },
+    {
+      "chunk": 5,
+      "start": 3321.47604,
+      "end": 3322.21603,
+      "text": " Hand it in on time"
+    },
+    {
+      "chunk": 5,
+      "start": 3322.21603,
+      "end": 3324.77603,
+      "text": " because it's required for the exam, right?"
+    },
+    {
+      "chunk": 5,
+      "start": 3324.91605,
+      "end": 3342.63406,
+      "text": " So ideally you would have already joined a group on Blackboard If you want to find a group and you don have one you can email the seaman the PhD student who helping And then on the wiki that we have"
+    },
+    {
+      "chunk": 5,
+      "start": 3343.15405,
+      "end": 3349.87405,
+      "text": " there you have the compulsory project, the compulsory exercises. So just go through that,"
+    },
+    {
+      "chunk": 5,
+      "start": 3349.87405,
+      "end": 3359.43405,
+      "text": " work on them, hand them in. You can use our markdown or LaTeX or whatever. And then just"
+    },
+    {
+      "chunk": 5,
+      "start": 3359.43405,
+      "end": 3367.89407,
+      "text": " please, when you submit, ideally you would submit the PDF and all the other crap, right? But yeah,"
+    },
+    {
+      "chunk": 5,
+      "start": 3368.73407,
+      "end": 3374.73407,
+      "text": " we'll mainly just look at the PDF. If it's PDF and our markdown, that's great. If you're using"
+    },
+    {
+      "chunk": 5,
+      "start": 3374.73407,
+      "end": 3384.33405,
+      "text": " LaTeX, then just use LaTeX and include the scripts somewhere in a zip file or something."
+    },
+    {
+      "chunk": 5,
+      "start": 3386.17407,
+      "end": 3389.55408,
+      "text": " And then scores and comments will be given by Siemen and Blackboard."
+    },
+    {
+      "chunk": 5,
+      "start": 3390.81406,
+      "end": 3391.43405,
+      "text": " All right."
+    },
+    {
+      "chunk": 5,
+      "start": 3391.73407,
+      "end": 3393.95407,
+      "text": " So that's it for today."
+    },
+    {
+      "chunk": 5,
+      "start": 3394.09406,
+      "end": 3394.93405,
+      "text": " It's an early day."
+    },
+    {
+      "chunk": 5,
+      "start": 3395.77405,
+      "end": 3400.05408,
+      "text": " I'm sorry we went past one, but I figured we could just go through and finish early."
+    },
+    {
+      "chunk": 5,
+      "start": 3401.11407,
+      "end": 3403.59406,
+      "text": " So I didn't say that, but I meant to."
+    },
+    {
+      "chunk": 5,
+      "start": 3403.59406,
+      "end": 3406.05408,
+      "text": " are there any questions about this stuff"
+    },
+    {
+      "chunk": 5,
+      "start": 3406.05408,
+      "end": 3409.63406,
+      "text": " well okay"
+    },
+    {
+      "chunk": 5,
+      "start": 3409.63406,
+      "end": 3412.19406,
+      "text": " so we did cover the material that is"
+    },
+    {
+      "chunk": 5,
+      "start": 3412.19406,
+      "end": 3413.99408,
+      "text": " included in the exercises so"
+    },
+    {
+      "chunk": 5,
+      "start": 3413.99408,
+      "end": 3415.99408,
+      "text": " you should have everything you need for that"
+    },
+    {
+      "chunk": 5,
+      "start": 3415.99408,
+      "end": 3418.15405,
+      "text": " and again next week there's no class"
+    },
+    {
+      "chunk": 5,
+      "start": 3418.15405,
+      "end": 3420.21405,
+      "text": " the week after that we're back with module"
+    },
+    {
+      "chunk": 5,
+      "start": 3420.21405,
+      "end": 3420.55408,
+      "text": " six"
+    },
+    {
+      "chunk": 5,
+      "start": 3420.55408,
+      "end": 3423.69406,
+      "text": " which is"
+    },
+    {
+      "chunk": 5,
+      "start": 3423.69406,
+      "end": 3424.85406,
+      "text": " I forget what six is"
+    },
+    {
+      "chunk": 5,
+      "start": 3424.85406,
+      "end": 3427.05408,
+      "text": " whatever it says it is"
+    },
+    {
+      "chunk": 5,
+      "start": 3427.05408,
+      "end": 3428.83405,
+      "text": " alright so"
+    },
+    {
+      "chunk": 5,
+      "start": 3428.83405,
+      "end": 3431.39404,
+      "text": " have fun and"
+    },
+    {
+      "chunk": 5,
+      "start": 3431.39404,
+      "end": 3433.47406,
+      "text": " let us know if you need any help"
+    },
+    {
+      "chunk": 5,
+      "start": 3433.47406,
+      "end": 3441.39404,
+      "text": " Thank you."
+    }
+  ]
+}
