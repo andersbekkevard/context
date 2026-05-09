@@ -38,6 +38,7 @@ Per-module multiple-choice drills, ~25 questions each. Click an option to lock y
 - <a href="/decks/m04-classif.html" target="_blank" rel="noopener">04: Classification</a>
 - <a href="/decks/m05-resample.html" target="_blank" rel="noopener">05: Resampling</a>
 - <a href="/decks/m06-modelsel.html" target="_blank" rel="noopener">06: Model selection & regularisation</a>
+- <a href="/decks/m06-modelsel-dimreduct.html" target="_blank" rel="noopener">06b: PCA, PCR & PLS (dim-reduction deep dive)</a>
 - <a href="/decks/m07-beyondlinear.html" target="_blank" rel="noopener">07: Beyond linearity</a>
 - <a href="/decks/m08-trees.html" target="_blank" rel="noopener">08: Tree-based methods</a>
 - <a href="/decks/m09-boosting.html" target="_blank" rel="noopener">09: Boosting</a>

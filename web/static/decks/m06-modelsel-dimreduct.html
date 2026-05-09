@@ -1,0 +1,1077 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 06 — PCA, PCR &amp; PLS · TMA4268</title>
+
+  <!-- Sync theme with the Quartz wiki (reads same localStorage key, falls back to OS) -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var theme = saved || (prefersDark ? "dark" : "light");
+        document.documentElement.setAttribute("saved-theme", theme);
+      } catch (e) {
+        document.documentElement.setAttribute("saved-theme", "light");
+      }
+    })();
+  </script>
+
+  <!-- Quartz fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+
+  <link rel="stylesheet" href="exam.css">
+
+  <!-- KaTeX for inline math -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$',  right: '$',  display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });"></script>
+</head>
+<body>
+  <main class="exam-shell">
+    <header class="exam-head">
+      <a href="/" class="back-link">← Back to wiki</a>
+      <h1>Module 06 — PCA, PCR &amp; PLS</h1>
+      <p class="meta">35 questions · 130 points · ~55 min</p>
+      <p class="meta">
+        Focused drill on the dimension-reduction route through module 6:
+        principal-component analysis, principal-components regression, and partial least squares.
+        The deck mixes recall, computation, and scenario-interpretation questions with
+        Socratic <em>understanding</em> questions designed to probe the <em>why</em> behind each method —
+        active recall against ISLP §6.3 and §12.2.
+        Click an option to lock the answer; the explanation auto-opens. Score tracker bottom-left.
+      </p>
+    </header>
+
+    <!-- ─────── Q1 — recall: PCA optimization framing inside PCR ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 1</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">In the PCR pipeline, the first principal component $Z_1 = \sum_j \phi_{j1} X_j$ of the standardized predictors is the linear combination that:</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> minimizes the sum of squared distances from each $x_i$ to its nearest cluster centroid.</li>
+        <li><span class="opt-label">B</span> maximizes the sample covariance between $Z_1$ and the response $Y$, with no norm constraint on $\phi_1$.</li>
+        <li><span class="opt-label">C</span> equals the original predictor with the largest sample variance, with the other loadings set to zero.</li>
+        <li><span class="opt-label">D</span> maximizes $\text{Var}(Z_1)$ subject to $\sum_j \phi_{j1}^2 = 1$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: D</span>
+          <p>The prof's verbatim framing: "find the best way of rotating our shit such that now it has a maximum variance." The unit-norm constraint exists exactly so the algorithm rotates rather than rescales.</p>
+          <p>A confuses PCA with K-means (within-cluster sum-of-squares). B describes PLS, which is supervised and uses $Y$ — PCA is unsupervised, so $Y$ never enters. C confuses "direction of largest variance" with "variable with largest variance"; PCA finds linear <em>combinations</em>, not single columns.</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-analysis">principal-component-analysis</a>, <a href="/concepts/principal-component-regression">principal-component-regression</a>. Lecture: <a href="/lectures/L21-unsupervised-1">L21-unsupervised-1</a>. ISLP §12.2.1.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q2 — UNDERSTANDING: why the unit-norm constraint exists ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 2</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">Suppose someone proposed dropping the unit-norm constraint $\sum_j \phi_{j1}^2 = 1$ from the PCA optimization. <em>Why</em> does the constraint exist — what specifically goes wrong without it?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Without the constraint, the algorithm would average all variables equally, producing a single uninformative direction.</li>
+        <li><span class="opt-label">B</span> Without the constraint the optimization becomes unbounded — multiplying $\phi_1$ by any positive scalar inflates $\text{Var}(\phi_1^\top x_i)$ arbitrarily, so the algorithm could manufacture infinite "explained variance" without finding a genuine direction.</li>
+        <li><span class="opt-label">C</span> Without the constraint, PCA would no longer be invariant to rotations of the coordinate system.</li>
+        <li><span class="opt-label">D</span> Without the constraint, loadings could become negative, which has no interpretation.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The prof's verbatim explanation: "If you didn't subject that constraint, you could just make it … arbitrarily create high numbers, but also because we don't want to rescale the data." The unit-norm forces PCA to pick a <em>direction</em>, not a <em>magnification</em> — the variance comparison is meaningful only if all candidate $\phi$ live on the unit sphere.</p>
+          <p>A is wrong: PCA does not average — it weights variables in proportion to how they covary. C is unrelated; orthonormal rotations preserve the constraint anyway. D is a non-issue: negative loadings have a clean interpretation (variable contributes in the opposite direction).</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-analysis">principal-component-analysis</a>. Lecture: <a href="/lectures/L21-unsupervised-1">L21-unsupervised-1</a>. ISLP §12.2.1.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q3 — T/F: PCA fundamentals ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 3</span>
+        <span class="exam-q__points">5 points</span>
+      </header>
+      <p class="q-text">Mark each statement about principal component analysis as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) PCA is scale-invariant: rescaling one column by a factor of 1000 does not change the loadings.</span>
+          <label><input type="radio" name="q3-a" value="true"> True</label>
+          <label><input type="radio" name="q3-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) The squared loadings of a single principal component sum to 1: $\sum_j \phi_{jm}^2 = 1$.</span>
+          <label><input type="radio" name="q3-b" value="true"> True</label>
+          <label><input type="radio" name="q3-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Principal components are unique only up to a sign flip; opposite-sign loadings from two software packages describe the same component.</span>
+          <label><input type="radio" name="q3-c" value="true"> True</label>
+          <label><input type="radio" name="q3-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) PCA constructs components using the response variable $Y$.</span>
+          <label><input type="radio" name="q3-d" value="true"> True</label>
+          <label><input type="radio" name="q3-d" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">e) Computing all $p$ principal components and keeping every one of them is itself a form of dimensionality reduction.</span>
+          <label><input type="radio" name="q3-e" value="true"> True</label>
+          <label><input type="radio" name="q3-e" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>False</strong> — the prof's slide bullet read aloud: "PCA is not scale invariant." Without standardization, the largest-unit variable dominates PC1.</li>
+            <li><strong>True</strong> — loading vectors are unit norm by construction; this is the constraint that prevents PCA from cheating by inflating variance through scaling.</li>
+            <li><strong>True</strong> — "the principal component vector is unique. Of course, the sign flip is boring. It just means which direction it is."</li>
+            <li><strong>False</strong> — PCA is unsupervised; it sees only $X$. This is precisely the failure mode that motivates PLS.</li>
+            <li><strong>False</strong> — keeping all $p$ PCs is a rotation of coordinates. Reduction comes from <em>truncating</em> to the first $M &lt; p$.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-analysis">principal-component-analysis</a>, <a href="/concepts/dimensionality-reduction">dimensionality-reduction</a>. Lecture: <a href="/lectures/L21-unsupervised-1">L21-unsupervised-1</a>. ISLP §12.2.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q4 — UNDERSTANDING: PCA as rotation vs projection ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 4</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">PCA is sometimes called a "rotation." In what precise sense is this language exact, and where does it become merely useful shorthand?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> PCA is exactly a rotation only on standardized data; on unstandardized data it is a stretching operation.</li>
+        <li><span class="opt-label">B</span> PCA rotates each observation independently around the data centroid by an angle equal to its first PC score.</li>
+        <li><span class="opt-label">C</span> Computing all $p$ PCs is exactly an orthonormal change of basis — total variance is preserved. Truncating to $M &lt; p$ is the projection step; people use "rotation" as shorthand for the whole pipeline.</li>
+        <li><span class="opt-label">D</span> PCA is exactly a rotation only when the response $Y$ is held constant; otherwise it becomes supervised.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>The rotation is exact on the <em>full</em> set of $p$ PCs — you've just changed basis with an orthonormal matrix, which preserves all distances and total variance. The reduction comes from chopping at $M &lt; p$ (the projection step). Conflating these two steps is a common source of confusion: "PCA reduces dimension" is true only after the truncation, not at the rotation.</p>
+          <p>A inverts the dependency — standardization affects which directions get picked, not whether PCA is a rotation. B describes a rotation of <em>observations</em>, not coordinates; PCA rotates coordinates, leaving the points fixed. D adds a supervised hook PCA does not have.</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-analysis">principal-component-analysis</a>, <a href="/concepts/dimensionality-reduction">dimensionality-reduction</a>. Lecture: <a href="/lectures/L21-unsupervised-1">L21-unsupervised-1</a>. ISLP §12.2.2 develops the orthonormal-basis-and-projection geometry.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q5 — computation: PVE threshold count (Exam 2025 P2f, translated) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 5</span>
+        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__src">Exam 2025 P2f</span>
+      </header>
+      <p class="q-text">PCA is performed on a dataset with 6 standardized predictors. The eigenvalues of the sample covariance are:</p>
+      <p class="q-text">$\lambda_1 = 3.0,\ \lambda_2 = 1.5,\ \lambda_3 = 0.8,\ \lambda_4 = 0.4,\ \lambda_5 = 0.2,\ \lambda_6 = 0.1.$</p>
+      <p class="q-text">How many principal components must you keep to retain at least 90% of the total variance?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 4 components</li>
+        <li><span class="opt-label">B</span> 3 components</li>
+        <li><span class="opt-label">C</span> 5 components</li>
+        <li><span class="opt-label">D</span> 6 components</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Total variance $= 3.0 + 1.5 + 0.8 + 0.4 + 0.2 + 0.1 = 6$ (which equals $p$, since the variables are standardized). Cumulative PVE: $3.0/6 = 0.500$; $+1.5/6 = 0.750$; $+0.8/6 = 0.883$ (still under 0.90); $+0.4/6 = 0.950$ — threshold crossed at $M = 4$.</p>
+          <p>B stops at 0.883 and reads "almost 90%" as enough — the threshold is 0.90, not 0.85. C and D add components past the threshold; once 0.95 is reached, more components do not earn their keep.</p>
+          <p class="ref">Atoms: <a href="/concepts/explained-variance-and-scree-plot">explained-variance-and-scree-plot</a>, <a href="/concepts/principal-component-analysis">principal-component-analysis</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>. ISLP §12.2.3.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q6 — computation: PC1 score (Exam 2025 P2f, translated) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 6</span>
+        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__src">Exam 2025 P2f</span>
+      </header>
+      <p class="q-text">Continuing the setup: the loading vector for PC1 is $\phi_1 = (0.7,\ 0.5,\ 0.4,\ 0.3,\ 0.1,\ 0.0)^\top$. For an observation with standardized values $x = (1,\ -1,\ 0.5,\ 0,\ 2,\ -2)$, what is the score $z_1 = \phi_1^\top x$?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $1.6$</li>
+        <li><span class="opt-label">B</span> $0.6$</li>
+        <li><span class="opt-label">C</span> $2.0$</li>
+        <li><span class="opt-label">D</span> $0.7$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>$z_1 = 0.7(1) + 0.5(-1) + 0.4(0.5) + 0.3(0) + 0.1(2) + 0.0(-2) = 0.7 - 0.5 + 0.2 + 0 + 0.2 + 0 = 0.6$. Show your work for partial credit.</p>
+          <p>A drops the signs on the negative entries of $x$ ($0.7 + 0.5 + 0.2 + 0 + 0.2 = 1.6$) — the absolute-value mistake. C ignores the multiplications and sums the loadings instead ($0.7 + 0.5 + 0.4 + 0.3 + 0.1 + 0 = 2.0$). D keeps only the largest contribution $\phi_{11} x_1 = 0.7$ and drops the rest.</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-analysis">principal-component-analysis</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>. ISLP §12.2.1.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q7 — computation: PVE arithmetic ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 7</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">PCA on a centered dataset gives PC1 with variance $\lambda_1 = 7.2$, while the total variance of the data is $9.6$. What is the proportion of variance explained by PC1?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $0.50$</li>
+        <li><span class="opt-label">B</span> $1.33$</li>
+        <li><span class="opt-label">C</span> $0.75$</li>
+        <li><span class="opt-label">D</span> $0.87$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>$\text{PVE}_1 = \lambda_1 / \sum_k \lambda_k = 7.2 / 9.6 = 0.75$.</p>
+          <p>A divides the wrong way (e.g. uses some incorrect total $14.4$). B inverts the ratio ($9.6 / 7.2 \approx 1.33$); a PVE cannot exceed 1. D computes $\sqrt{0.75} \approx 0.87$ — confuses variance with standard deviation.</p>
+          <p class="ref">Atoms: <a href="/concepts/explained-variance-and-scree-plot">explained-variance-and-scree-plot</a>, <a href="/concepts/principal-component-analysis">principal-component-analysis</a>. ISLP §12.2.3 (PVE definition and the $R^2 = 1 - \text{RSS}/\text{TSS}$ identity).</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q8 — UNDERSTANDING: PCA on curved data ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 8</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">Suppose your $n$ observations lie almost exactly on a unit circle in $\mathbb{R}^2$, so the underlying structure is one-dimensional and curved. What does PCA report — and what does this tell you about its scope?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> A single PC capturing the circular structure exactly, since the data lie on a 1-D manifold.</li>
+        <li><span class="opt-label">B</span> A non-linear PC that wraps along the circle.</li>
+        <li><span class="opt-label">C</span> A flat scree plot with both eigenvalues equal to zero, since the data have no linear variance.</li>
+        <li><span class="opt-label">D</span> Two PCs of roughly equal variance — PCA's <em>linear</em> projections cannot represent the 1-D curved manifold, so the algorithm reports the data as essentially 2-D.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: D</span>
+          <p>PCA assumes <em>linear</em> structure. The prof: "PCA is kind of stuck just making linear stuff. It can't do anything non-linear." A circle is intrinsically 1-D but not <em>linearly</em> 1-D — the variance spreads across both x and y axes equally, so the scree plot looks flat and PCA gives no useful reduction. Nonlinear methods (kernel PCA, autoencoders) handle this; PCA does not.</p>
+          <p>A would only hold for a 1-D <em>line</em>, not a curve. B invents a non-linear PC PCA cannot construct. C is wrong on arithmetic: the data have nonzero linear variance along both axes (that's the whole point — variance is spread, not absent).</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-analysis">principal-component-analysis</a>, <a href="/concepts/dimensionality-reduction">dimensionality-reduction</a>. Lecture: <a href="/lectures/L21-unsupervised-1">L21-unsupervised-1</a>. ISLP §12.2 (linear-projection framing throughout).</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q9 — T/F: standardization & scale-(non)-invariance ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 9</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Standardizing predictors before PCA / PCR is recommended whenever the variables are measured in different units.</span>
+          <label><input type="radio" name="q9-a" value="true"> True</label>
+          <label><input type="radio" name="q9-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) PCR is scale-invariant: rescaling one predictor does not change the fitted PCR model.</span>
+          <label><input type="radio" name="q9-b" value="true"> True</label>
+          <label><input type="radio" name="q9-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) After back-transforming PCR coefficients to original-$X$ space, all $\hat\beta_j$ are typically nonzero — even after $M &lt; p$ components are kept.</span>
+          <label><input type="radio" name="q9-c" value="true"> True</label>
+          <label><input type="radio" name="q9-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Without standardization, the variable with the largest unit-magnitude tends to dominate PC1 purely because its raw numbers are bigger.</span>
+          <label><input type="radio" name="q9-d" value="true"> True</label>
+          <label><input type="radio" name="q9-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — PCA is variance-driven; mixed units make the eigenvalue ranking meaningless without standardization.</li>
+            <li><strong>False</strong> — PCR inherits PCA's scale-(non)-invariance: rescaling one column changes which directions the PCs align with, and therefore the fit.</li>
+            <li><strong>True</strong> — every PC is a linear combination of all original $X_j$, so the back-transform $\hat\beta_j = \sum_m \hat\theta_m \phi_{jm}$ is generically nonzero. PCR is not a variable-selection method.</li>
+            <li><strong>True</strong> — the prof's USArrests demo: without scaling, PC1 loaded almost entirely on <code>Assault</code> (variance 6945) — meaningless artifact of units.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/standardization">standardization</a>, <a href="/concepts/principal-component-regression">principal-component-regression</a>. Lecture: <a href="/lectures/L14-modelsel-3">L14-modelsel-3</a>. ISLP §12.2.4.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q10 — scenario: loading interpretation ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 10</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">You run PCA on four standardized macroeconomic predictors ($X_1$ = GDP growth, $X_2$ = interest rate, $X_3$ = inflation, $X_4$ = unemployment) and obtain the first PC loadings $\phi_1 = (0.7,\ -0.6,\ 0.3,\ -0.2)^\top$. Which is the most accurate reading of PC1?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> PC1 acts as an "economic-activity" axis: high PC1 scores correspond to high GDP growth and low interest rates, with smaller contributions from inflation and unemployment.</li>
+        <li><span class="opt-label">B</span> PC1 weights all four variables roughly equally, since the loadings are small and similar in absolute value.</li>
+        <li><span class="opt-label">C</span> PC1 represents the response that PCR will regress $Y$ onto, since loadings are chosen to maximize $\text{Cov}(\phi_1^\top X, Y)$.</li>
+        <li><span class="opt-label">D</span> The negative loading on $X_2$ means that interest rate has been excluded from the PCA decomposition.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Sign and magnitude both matter. Big positive loading on GDP and big negative loading on interest rate define the axis; smaller loadings contribute proportionally less. Standard prof move on USArrests: PC1 loads roughly equally on Murder/Assault/Rape (an "overall criminality" axis); same kind of reading here.</p>
+          <p>B is wrong on form: $|0.7|$ and $|0.2|$ differ by a factor of $3.5$ — not "roughly equal." C describes PLS, not PCA; PCA never sees $Y$. D confuses negative loadings with zero loadings; a negative loading means the variable contributes in the opposite direction, not that it is excluded.</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-analysis">principal-component-analysis</a>, <a href="/concepts/dimensionality-reduction">dimensionality-reduction</a>. ISLP §12.2.1 (loading interpretation, USArrests example).</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q11 — UNDERSTANDING: why standardize for PCA but not OLS ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 11</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">Why is standardization mandatory for PCA / PCR / PLS but only cosmetic for OLS? Pick the explanation that most directly captures the asymmetry.</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> PCA's objective ($\text{Var}$) is unit-dependent — rescaling $X_j$ by $c$ multiplies its variance by $c^2$, so the PC ranking changes; OLS's coefficient $\hat\beta_j$ rescales by $1/c$ to compensate, leaving fitted values $\hat y$ unchanged.</li>
+        <li><span class="opt-label">B</span> PCA cannot operate on negative numbers, while OLS can.</li>
+        <li><span class="opt-label">C</span> OLS uses a likelihood approach immune to scaling; PCA uses a covariance metric that is not.</li>
+        <li><span class="opt-label">D</span> PCA is built on top of LDA, which assumes equal class variances, while OLS does not.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>This is the load-bearing distinction between coefficient-fitting and direction-finding methods. OLS is <em>equivariant</em> under linear rescaling — the model accommodates the unit change automatically. PCA's objective is the variance of a particular linear combination, and variance scales with the square of any unit change, so the ranking of directions is unit-dependent. The prof's slide: "PCA is not scale invariant."</p>
+          <p>B is just wrong: PCA handles negative numbers fine. C is incoherent — neither method is "likelihood-based" in this course; OLS is least-squares (its likelihood interpretation requires a Gaussian assumption that does not change the equivariance argument). D has the dependency backwards and irrelevant.</p>
+          <p class="ref">Atoms: <a href="/concepts/standardization">standardization</a>, <a href="/concepts/principal-component-analysis">principal-component-analysis</a>. ISLP §12.2.4 ("Scaling the variables").</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q12 — scenario: PCR pipeline ordering ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 12</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Which of the following describes the canonical PCR procedure with $M$ chosen by cross-validation?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Run PCA on the raw $X$, then standardize the components, then fit OLS of $Y$ on the first $M$ components.</li>
+        <li><span class="opt-label">B</span> Standardize $Y$, run PCA on the standardized $Y$, then regress each $X_j$ on the first $M$ PCs.</li>
+        <li><span class="opt-label">C</span> Fit OLS of $Y$ on $X$, run PCA on the residuals, and keep the first $M$ residual components.</li>
+        <li><span class="opt-label">D</span> Standardize $X$, run PCA on it, and for each $M = 1, \ldots, p$ fit OLS of $Y$ on the first $M$ PCs and compute CV-MSE; choose $M$ at the CV minimum.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: D</span>
+          <p>The prof's verbatim recipe: "Standardize $X$, run PCA, get $Z_1, \ldots, Z_p$. Fit a standard linear regression of $Y$ on $Z_1, \ldots, Z_M$, where $M$ is a tuning parameter. Sweep $M$ from 1 up to $p$. Pick the $M$ that minimizes CV-MSE."</p>
+          <p>A standardizes the wrong object — components are already on the variance scale of the standardized $X$. B inverts the role of $X$ and $Y$ (PCA is on the predictors, not the response). C is residual-PCA — a different idea entirely; no method in the course works this way.</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/cross-validation">cross-validation</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.1.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q13 — recall: PCA vs PCR ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 13</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">What is the relationship between PCA and PCR?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> PCR uses cross-validation to choose components; PCA is required to use a scree plot.</li>
+        <li><span class="opt-label">B</span> PCA is unsupervised dimension reduction; PCR is the supervised pipeline that follows PCA with an OLS regression of $Y$ on the first $M$ components.</li>
+        <li><span class="opt-label">C</span> PCA cannot handle correlated predictors; PCR is a modification that can.</li>
+        <li><span class="opt-label">D</span> PCR uses $\text{Cov}(X, Y)$ to choose components, whereas PCA uses $\text{Var}(X)$ alone.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>PCR = PCA front-end + OLS back-end. The PCA step is the same unsupervised algorithm covered in module 10; the regression step on the first $M$ PCs makes the pipeline supervised. The prof: "you're taking the X, you're squishing it down to fit your model, and then you go backwards to the original model again."</p>
+          <p>A is wrong: nothing forces PCA to use a scree plot, and CV is a perfectly valid criterion for choosing $M$ in PCA-for-supervised-tasks. C is wrong: PCA handles correlated predictors fine — that is in fact PCR's main reason to exist. D describes PLS, not PCR; PCR uses PCA's variance-maximizing components.</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/principal-component-analysis">principal-component-analysis</a>. Lecture: <a href="/lectures/L14-modelsel-3">L14-modelsel-3</a>. ISLP §6.3.1.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q14 — scenario: PCR ≈ discretized ridge ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 14</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">The prof framed PCR as "a discretized version of ridge regression." Which sentence best captures the analogy?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Both methods place pressure on the small-eigenvalue PC directions; PCR drops them outright once past the cutoff $M$, while ridge shrinks them smoothly via a per-PC factor that is heavier on smaller eigenvalues.</li>
+        <li><span class="opt-label">B</span> Both methods use the same penalty term $\lambda \sum_j \beta_j^2$, but PCR rounds the resulting $\hat\beta$'s to the nearest integer.</li>
+        <li><span class="opt-label">C</span> PCR equals ridge in the limit $\lambda \to 0$; outside that limit the two methods are unrelated.</li>
+        <li><span class="opt-label">D</span> Both methods perform exact variable selection by zeroing out small original-$X$ coefficients $\hat\beta_j$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Verbatim: "Higher pressure on less important PCs. PCR discards the $p - M$ smallest eigenvalue components." Ridge applies the smooth shrinkage factor $\lambda_j^2 / (\lambda_j^2 + \lambda)$ on each PC direction — heavier on small eigenvalues. Same target (small-variance directions), different shape (hard truncation vs. smooth shrinkage).</p>
+          <p>B invents a quantization step that PCR does not have. C inverts the relationship; ridge with $\lambda = 0$ is OLS, not PCR. D is wrong on both counts: neither PCR nor ridge does exact variable selection. That is the lasso's job.</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/ridge-regression">ridge-regression</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.1.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q15 — UNDERSTANDING: why the PCR-ridge analogy works mathematically ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 15</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">Both ridge and PCR put pressure on the small-eigenvalue PC directions. <em>Why</em> does this happen — what is the deeper mathematical reason these two methods end up doing similar things?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Both methods minimize the same penalized loss with different penalty functions.</li>
+        <li><span class="opt-label">B</span> The small-eigenvalue PC directions are the directions where the OLS coefficient estimates are <em>unstable</em> — their variance scales as $\sigma^2 / \lambda_j$. Both methods damp this variance: ridge smoothly via the factor $\lambda_j^2 / (\lambda_j^2 + \lambda)$, PCR by hard truncation past the cutoff $M$.</li>
+        <li><span class="opt-label">C</span> Both methods run an SVD as a preprocessing step before fitting.</li>
+        <li><span class="opt-label">D</span> Both methods are special cases of lasso under different limits.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>This is the load-bearing reason behind the discretized-ridge framing. Decomposing OLS along the eigen-basis of $X^\top X$, the coefficient on the $j$-th eigendirection has variance proportional to $1/\lambda_j$ — small-eigenvalue directions are the noisy ones. Both regularizers know this implicitly: ridge attenuates each direction by a smooth factor that bites hardest on small $\lambda_j$, and PCR drops the smallest $\lambda_j$ directions outright. Same target, different shape.</p>
+          <p>A is too vague to be informative — and PCR is not formulated as a penalized loss. C is mechanically wrong: PCR uses an eigendecomposition / SVD of $X$, while standard ridge solvers do not require one. D inverts the family relations: lasso is its own animal, not a parent of ridge or PCR.</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/ridge-regression">ridge-regression</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.2.3 + §6.3.1 (the eigenbasis view of ridge and the PCR-as-discretized-ridge bridge).</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q16 — T/F: PCR properties (incl. Exam 2023 stem) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 16</span>
+        <span class="exam-q__points">5 points</span>
+      </header>
+      <p class="q-text">Mark each statement about principal-components regression (PCR) as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) PCR performs variable selection: choosing $M &lt; p$ zeroes out the original-$X$ coefficient $\hat\beta_j$ for each dropped predictor.</span>
+          <label><input type="radio" name="q16-a" value="true"> True</label>
+          <label><input type="radio" name="q16-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) PCR can be seen as a discretized version of ridge regression.</span>
+          <label><input type="radio" name="q16-b" value="true"> True</label>
+          <label><input type="radio" name="q16-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) After back-transforming, the original-$X$ coefficient is $\hat\beta_j = \sum_{m=1}^{M} \hat\theta_m \phi_{jm}$, where $\hat\theta_m$ are the regression coefficients on the components.</span>
+          <label><input type="radio" name="q16-c" value="true"> True</label>
+          <label><input type="radio" name="q16-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) PCR uses the response $Y$ when constructing the principal components.</span>
+          <label><input type="radio" name="q16-d" value="true"> True</label>
+          <label><input type="radio" name="q16-d" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">e) When $M = p$, PCR coincides with OLS on the original standardized predictors.</span>
+          <label><input type="radio" name="q16-e" value="true"> True</label>
+          <label><input type="radio" name="q16-e" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>False</strong> — every PC is a linear combination of all $X_j$, so all back-transformed $\hat\beta_j$ are typically nonzero. The prof: "Just like Ridge, [PCR] doesn't actually select the parameters." Lifted from Exam 2023 P5.</li>
+            <li><strong>True</strong> — verbatim slide quote: "PCR can be seen as a discretized version of ridge regression."</li>
+            <li><strong>True</strong> — direct from the slide-flagged "constrained interpretation": dimension reduction constrains $\hat\beta$ to live in the $M$-dimensional subspace spanned by the kept loadings.</li>
+            <li><strong>False</strong> — PCA (the front end of PCR) is unsupervised. This is exactly the no-guarantee-the-high-variance-directions-relate-to-$Y$ pitfall, fixed by PLS.</li>
+            <li><strong>True</strong> — at $M = p$ the rotation is invertible and OLS on the rotated predictors gives the same fit as OLS on the originals (under standardization, the $\hat y$'s match exactly).</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/ridge-regression">ridge-regression</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.1.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q17 — UNDERSTANDING: why PCR struggles where ridge does not on Credit ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 17</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">On the Credit dataset, the prof reported that PCR needed $M \approx 10$ components (out of $\sim 11$) to perform well, while ridge regression performed comparably keeping all directions but shrinking. <em>Why</em> doesn't ridge suffer the same failure?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Ridge places its hyperparameter $\lambda$ on the L1 norm, which automatically picks the right components.</li>
+        <li><span class="opt-label">B</span> Ridge regression internally fits a separate cross-validation pass for each predictor, so it adapts to which one drives $Y$.</li>
+        <li><span class="opt-label">C</span> Ridge keeps every PC direction in the fit, just shrinking the small-eigenvalue ones — so a low-$X$-variance but $Y$-predictive direction is <em>retained at smaller magnitude</em>. PCR's hard truncation drops that direction outright until $M$ grows large enough to include it.</li>
+        <li><span class="opt-label">D</span> Ridge applies the same shrinkage factor to every direction, equalizing their importance.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>This is the resolution of the Credit puzzle. Income is a low-$X$-variance but $Y$-predictive direction. PCR's hard threshold throws it away unless $M$ reaches the rank of that direction (which happened to be 10). Ridge keeps it in the model from the start, just shrunk — so a small-but-nonzero contribution is recovered at every $\lambda$. Smoothness wins exactly when the relevant direction sits low in the variance ranking.</p>
+          <p>A misnames ridge's penalty (it is L2, not L1). B is a fabrication — ridge does a single CV over $\lambda$, not per-predictor. D contradicts the slide-flagged factor $\lambda_j^2 / (\lambda_j^2 + \lambda)$, which gives <em>different</em> shrinkage to different directions (heavier on small eigenvalues).</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/ridge-regression">ridge-regression</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.1, Figure 6.20 (PCR / PLS / ridge / lasso compared on simulated data).</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q18 — scenario: PCR's failure mode (Credit) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 18</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">On the Credit dataset, the prof reported that PCR's CV-MSE was minimized at $M = 10$ out of $\sim 11$ available components — almost no dimension reduction. What does this tell you?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> PCR overfit the data because $M$ was chosen too close to $p$.</li>
+        <li><span class="opt-label">B</span> The high-variance directions of $X$ were not the directions driving $Y$; <code>income</code> turned out to be a low-$X$-variance but predictive feature, so PCR needed many components before that signal entered.</li>
+        <li><span class="opt-label">C</span> The Credit dataset is too small for PCR to be applicable.</li>
+        <li><span class="opt-label">D</span> PCA was run without standardization, inflating one eigenvalue and forcing a large $M$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Verbatim: "Even though the things that you care about were just ended up being four variables, primarily, it took you 10 PCs to get there." Income happened not to vary much in $X$-space, so the relevant direction was buried late in the PC ordering. This is the canonical failure of PCR's assumption (2) — that high-$X$-variance directions are also $Y$-predictive.</p>
+          <p>A inverts the cause: $M$ being close to $p$ here is a <em>diagnosis</em> of the failure mode, not the cause. C is unrelated to the prof's reasoning. D is a real PCR pitfall but not the one at play here — the analysis was correctly standardized.</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/partial-least-squares">partial-least-squares</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.1.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q19 — computation: back-transform β_j ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 19</span>
+        <span class="exam-q__points">5 points</span>
+      </header>
+      <p class="q-text">You run PCR with $M = 2$ on three standardized predictors. The first two loading vectors are $\phi_1 = (0.7,\ 0.5,\ 0.5)^\top$ and $\phi_2 = (-0.3,\ 0.6,\ 0.7)^\top$. The OLS regression of $Y$ on the components gives $\hat\theta_1 = 4$ and $\hat\theta_2 = 2$. What is the back-transformed coefficient $\hat\beta_2$ on the second original predictor?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $1.2$</li>
+        <li><span class="opt-label">B</span> $2.0$</li>
+        <li><span class="opt-label">C</span> $1.1$</li>
+        <li><span class="opt-label">D</span> $3.2$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: D</span>
+          <p>Back-transform formula: $\hat\beta_j = \sum_{m=1}^M \hat\theta_m \phi_{jm}$. So $\hat\beta_2 = \hat\theta_1 \phi_{21} + \hat\theta_2 \phi_{22} = 4(0.5) + 2(0.6) = 2 + 1.2 = 3.2$.</p>
+          <p>A keeps only the second-component term ($2 \cdot 0.6 = 1.2$), forgetting the contribution from $\hat\theta_1$. B keeps only the first-component term ($4 \cdot 0.5 = 2.0$). C adds the loadings without weighting by the $\hat\theta_m$'s ($0.5 + 0.6 = 1.1$).</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>. Lecture: <a href="/lectures/L14-modelsel-3">L14-modelsel-3</a>. ISLP §6.3.1.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q20 — UNDERSTANDING: why PCR with M=1 is still not variable selection ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 20</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">PCR with $M = 1$ keeps only one component out of $p = 20$, producing a model with effectively one feature. Why is this still <em>not</em> a form of variable selection?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Variable selection requires explicit hypothesis testing on each $X_j$, which PCR omits.</li>
+        <li><span class="opt-label">B</span> $M = 1$ produces a model that is too simple to count as having identified any predictors.</li>
+        <li><span class="opt-label">C</span> PCR uses an L2 penalty internally, and L2 cannot zero coefficients.</li>
+        <li><span class="opt-label">D</span> That single component is a linear combination of <em>all</em> $p$ original predictors, so when you back-transform $\hat\theta_1$ via $\hat\beta_j = \hat\theta_1 \phi_{j1}$ every $\hat\beta_j$ is nonzero — no $X_j$ has been excluded from the fitted model.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: D</span>
+          <p>The core insight is the back-transform. The model in PC-space looks one-dimensional, but the equivalent model in $X$-space uses all 20 predictors with weights $\hat\theta_1 \phi_{j1}$ each. Variable selection requires actual zeros on $\hat\beta_j$ — and unless $\phi_{j1} = 0$ exactly (almost never the case), every original predictor stays in.</p>
+          <p>A confuses procedure with effect — variable selection can be achieved without hypothesis tests (lasso is the obvious example). B is too vague; the question is about the structural property, not the model's power. C misnames PCR's mechanism: PCR has no explicit penalty, it has a hard truncation; and the L2 claim about penalties is unrelated to whether a method can produce zeros (lasso uses L1, which can; ridge uses L2, which cannot — but PCR does neither).</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/lasso">lasso</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.1, closing: "PCR does not perform feature selection."</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q21 — recall: choosing M for PCR ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 21</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">What is the principled way to choose the number of components $M$ in PCR?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Pick the $M$ at the elbow of the scree plot of $X$.</li>
+        <li><span class="opt-label">B</span> Set $M = p$ to retain 100% of the variance in $X$.</li>
+        <li><span class="opt-label">C</span> Cross-validate the downstream regression and pick the $M$ at the CV-MSE minimum, optionally via the 1-SE rule.</li>
+        <li><span class="opt-label">D</span> Pick the smallest $M$ for which the cumulative PVE in $X$ reaches 95%.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>For supervised use ($Y$ available), CV the downstream regression. This is what the prof actually does in PCR; from the dimensionality-reduction atom: "Treat $M$ like any other tuning parameter. … Cross-validate $M$ against the downstream model — much more principled than the elbow on a scree plot."</p>
+          <p>A is the unsupervised criterion; it ignores how well the kept components actually predict $Y$. B is no reduction at all — defeats PCR's purpose. D uses an $X$-only criterion, which can miss directions that drive $Y$ (the Credit example: 95% PVE arrives well before the income-driving direction, so the $X$-only cutoff would be wrong here).</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/cross-validation">cross-validation</a>, <a href="/concepts/explained-variance-and-scree-plot">explained-variance-and-scree-plot</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.1.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q22 — UNDERSTANDING: why PCR with M=p equals OLS ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 22</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">Why does PCR with $M = p$ produce exactly the same fitted values $\hat y$ as OLS on the standardized predictors?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> A rotation to all $p$ orthogonal PC directions preserves the column span of $X$. Fitting $Y$ on the rotated columns gives the same projection of $Y$ onto $\text{col}(X)$ that OLS does.</li>
+        <li><span class="opt-label">B</span> With $M = p$, PCR's tuning parameter equals zero, eliminating its regularization.</li>
+        <li><span class="opt-label">C</span> When $M = p$, the back-transform formula $\hat\beta_j = \sum_m \hat\theta_m \phi_{jm}$ collapses to the lasso solution.</li>
+        <li><span class="opt-label">D</span> PCR ignores the response $Y$ when $M = p$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>This is the linear-algebra anchor. OLS finds $\hat y$ as the projection of $Y$ onto the column space of $X$. A change of basis to orthogonal PCs does not change which subspace you are projecting onto — it just expresses the same projection in different coordinates. Reduction occurs <em>only</em> when $M &lt; p$, because then you are projecting onto a strict subspace of $\text{col}(X)$.</p>
+          <p>B speaks of a "tuning parameter that equals zero" — there is no such parameter in PCR, only the discrete $M$. C invokes lasso for no reason; PCR's back-transform is a sum over loadings, not a soft-thresholding solution. D contradicts the recipe: PCR uses $Y$ in the regression step regardless of $M$.</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>. Lecture: <a href="/lectures/L14-modelsel-3">L14-modelsel-3</a>. ISLP §6.3.1, opening pages.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q23 — T/F: PCR vs ridge vs lasso ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 23</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Lasso can produce exact zeros in $\hat\beta$; PCR generally cannot, even after back-transform.</span>
+          <label><input type="radio" name="q23-a" value="true"> True</label>
+          <label><input type="radio" name="q23-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Ridge regression and PCR both place heavier pressure on small-eigenvalue PC directions; ridge shrinks smoothly while PCR truncates.</span>
+          <label><input type="radio" name="q23-b" value="true"> True</label>
+          <label><input type="radio" name="q23-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Faced with two nearly perfectly correlated predictors, lasso typically keeps both with shared weight; ridge typically drops one and zeroes the other.</span>
+          <label><input type="radio" name="q23-c" value="true"> True</label>
+          <label><input type="radio" name="q23-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Ridge, PCR, and PLS are good choices when predictive accuracy matters and you do not need to identify which raw variables drive $Y$.</span>
+          <label><input type="radio" name="q23-d" value="true"> True</label>
+          <label><input type="radio" name="q23-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — L1 produces exact zeros at corners of the constraint region; PCR's back-transform sums over loadings and is generically nonzero.</li>
+            <li><strong>True</strong> — the canonical "discretized ridge" framing.</li>
+            <li><strong>False</strong> — the directions are reversed: lasso typically keeps one and zeroes the other (it picks); ridge typically holds both back and shares the weight.</li>
+            <li><strong>True</strong> — verbatim from the prof: "Use PCR/ridge when you want predictive power and don't care which raw variables drive it. Use lasso or subset selection when you need this or that one." PLS sits with PCR/ridge in this triage.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/lasso">lasso</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.2 + §6.3.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q24 — recall: PLS optimization criterion ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 24</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">In partial least squares (PLS) regression, the first component $Z_1 = \sum_j \phi_{j1} X_j$ is constructed to maximize:</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $\text{Var}(Z_1)$ subject to $\sum_j \phi_{j1}^2 = 1$.</li>
+        <li><span class="opt-label">B</span> $\sum_j |\phi_{j1}|$ subject to a fixed $\text{Var}(Z_1)$.</li>
+        <li><span class="opt-label">C</span> the joint log-likelihood of $(X, Y)$ under a Gaussian model.</li>
+        <li><span class="opt-label">D</span> $\text{Cov}(Z_1, Y)$ subject to $\sum_j \phi_{j1}^2 = 1$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: D</span>
+          <p>Verbatim from the prof: "It's the same idea as the principal component analysis, only now you're finding the principal components not as the directions of maximal variance of $X$, but the maximal covariance of $X$ and $Y$." So PLS is supervised; PCA / PCR is unsupervised.</p>
+          <p>A is the PCA / PCR criterion (variance, no $Y$). B mixes PLS with the L1 penalty of lasso — PLS has no sparsity penalty. C invokes a generative likelihood that PLS does not assume; PLS is a deterministic algorithm, not a likelihood method.</p>
+          <p class="ref">Atoms: <a href="/concepts/partial-least-squares">partial-least-squares</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.2.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q25 — recall: PLS algorithm step ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 25</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">In the PLS algorithm, the loading $\phi_{j1}$ for the first component is set to:</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> the eigenvector of $X^\top X$ corresponding to the largest eigenvalue.</li>
+        <li><span class="opt-label">B</span> the OLS coefficient from the simple regression of $Y$ on $X_j$ alone, which is proportional to $\text{Corr}(Y, X_j)$.</li>
+        <li><span class="opt-label">C</span> $1/p$ for every $j$, so PLS averages all predictors in the first component.</li>
+        <li><span class="opt-label">D</span> zero for every $j$ except the predictor with the largest sample variance.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Verbatim slide: "$\phi_{j1}$ is the coefficient from the simple linear regression of $Y$ onto $X_j$. This coefficient is proportional to the correlation between $Y$ and $X_j$. PLS puts highest weight on the variables that are most strongly related to the response." That is the entire supervised twist over PCA.</p>
+          <p>A is the PCA recipe (variance, no $Y$). C is a flat-weight average that PLS does not use — and would carry no $Y$-information. D is variable selection, which neither PLS nor PCR performs.</p>
+          <p class="ref">Atoms: <a href="/concepts/partial-least-squares">partial-least-squares</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.2.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q26 — UNDERSTANDING: why φ_j1 is the simple-regression coefficient (intuition) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 26</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">PLS sets $\phi_{j1}$ proportional to the simple-regression coefficient of $Y$ on $X_j$. What is the <em>intuition</em> — why is this rule the right one for the supervised criterion PLS optimizes?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Simple regression is the most computationally efficient way to compute eigenvectors.</li>
+        <li><span class="opt-label">B</span> The rule is required for the unit-norm constraint to hold automatically.</li>
+        <li><span class="opt-label">C</span> To maximize $\text{Cov}(Z_1, Y)$, you want $Z_1$ to weight each $X_j$ in proportion to how strongly $X_j$ alone predicts $Y$ — and the simple-regression coefficient of $Y$ on $X_j$ is precisely that supervised relevance metric (proportional to $\text{Corr}(Y, X_j)$).</li>
+        <li><span class="opt-label">D</span> It guarantees that PLS produces sparser solutions than lasso.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>This is the supervised twist: PLS asks "which $X_j$'s predict $Y$ on their own?" and uses the answer as loadings. Variables with strong simple-regression coefficients (equivalently, high $|\text{Corr}(Y, X_j)|$) dominate $Z_1$ — directly serving the $\text{Cov}(Z_1, Y)$ objective. PCA, by contrast, asks "which $X_j$'s vary most and co-vary together?" with no $Y$ reference.</p>
+          <p>A misreads efficiency for justification — and PLS's loading rule is not an eigenvector calculation. B is wrong on mechanics: the unit-norm constraint is enforced by an explicit normalization step in the algorithm, not by the choice of weights. D is the opposite of true; PLS does not produce sparse solutions at all.</p>
+          <p class="ref">Atoms: <a href="/concepts/partial-least-squares">partial-least-squares</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.2.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q27 — T/F: PLS basics ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 27</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement about partial least squares (PLS) as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) PLS uses the response $Y$ when constructing components.</span>
+          <label><input type="radio" name="q27-a" value="true"> True</label>
+          <label><input type="radio" name="q27-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Like PCR, PLS yields a model whose back-transformed $\hat\beta_j$ are typically nonzero on every original predictor.</span>
+          <label><input type="radio" name="q27-b" value="true"> True</label>
+          <label><input type="radio" name="q27-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) PLS performs explicit variable selection by zeroing out small loadings.</span>
+          <label><input type="radio" name="q27-c" value="true"> True</label>
+          <label><input type="radio" name="q27-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Successive PLS components are orthogonal by construction; the algorithm deflates $X$ before computing the next component.</span>
+          <label><input type="radio" name="q27-d" value="true"> True</label>
+          <label><input type="radio" name="q27-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — PLS maximizes $\text{Cov}(\phi^\top X, Y)$ at every step; that is the entire reason PLS exists separate from PCR.</li>
+            <li><strong>True</strong> — like PCR, PLS rotates predictors into composite components, so back-transformed coefficients are linear combinations of all $X_j$ and generically nonzero.</li>
+            <li><strong>False</strong> — PLS is not a variable-selection method. Selecting variables (exact zeros) is what lasso does.</li>
+            <li><strong>True</strong> — slide-flagged: "We regress each variable on $Z_1$ and take the residuals … We then compute $Z_2$ using this orthogonalized data."</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/partial-least-squares">partial-least-squares</a>, <a href="/concepts/principal-component-regression">principal-component-regression</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.2.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q28 — scenario: PLS vs PCR pick ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 28</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">You are predicting $Y$ from standardized predictors. Through prior knowledge you know that $Y$ depends strongly on a particular predictor $X_3$ that happens to have a small variance relative to the other predictors. Compared with PCR, PLS will generally:</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> throw $X_3$ away earlier, since PLS prioritizes high-variance directions of $X$.</li>
+        <li><span class="opt-label">B</span> behave identically to PCR, since both methods are unsupervised dimension-reduction tools.</li>
+        <li><span class="opt-label">C</span> refuse to fit, because PLS requires all predictors to have equal variance.</li>
+        <li><span class="opt-label">D</span> weight $X_3$ heavily in its first component, because the simple-regression coefficient of $Y$ on $X_3$ is large; PCR would push $X_3$ into a late component because $X_3$'s $X$-variance is small.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: D</span>
+          <p>This is the textbook PCR-vs-PLS contrast. PCR picks directions by $\text{Var}(X)$ — small-variance predictive directions get buried late in the ordering (the Credit / income story). PLS picks by $\text{Cov}(X, Y)$ — a strong simple-regression coefficient on $Y$ feeds directly into a heavy loading on the first component.</p>
+          <p>A reverses the direction: PCR (not PLS) is the one prioritizing high-$X$-variance. B confuses PLS's status: PCA is unsupervised, but PLS is supervised. C invents a requirement PLS does not have.</p>
+          <p class="ref">Atoms: <a href="/concepts/partial-least-squares">partial-least-squares</a>, <a href="/concepts/principal-component-regression">principal-component-regression</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.2.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q29 — T/F: the PLS verdict ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 29</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement about PLS's empirical behavior as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) PLS generally outperforms ridge and PCR in test MSE because it uses the response $Y$.</span>
+          <label><input type="radio" name="q29-a" value="true"> True</label>
+          <label><input type="radio" name="q29-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Supervised dimension reduction can reduce bias relative to PCR but may also increase variance, so PLS does not strictly dominate.</span>
+          <label><input type="radio" name="q29-b" value="true"> True</label>
+          <label><input type="radio" name="q29-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) PLS, PCR, and ridge tend to behave similarly in practice; ridge is often preferred because it shrinks smoothly rather than in discrete steps.</span>
+          <label><input type="radio" name="q29-c" value="true"> True</label>
+          <label><input type="radio" name="q29-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Like PCR, PLS produces back-transformed $\hat\beta_j$ that are linear combinations of the original predictors, with no exact zeros.</span>
+          <label><input type="radio" name="q29-d" value="true"> True</label>
+          <label><input type="radio" name="q29-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>False</strong> — slide-flagged and read aloud: "In practice, PLS often performs no better than ridge regression or PCR but it's Swedish, so it's like they're meatballs, they're not better but they sound good."</li>
+            <li><strong>True</strong> — slide bullet: "Supervised dimension reduction of PLS can reduce bias. It also has the potential to increase variance."</li>
+            <li><strong>True</strong> — verbatim slide: "PLS, PCR and ridge regression tend to behave similarly. Ridge regression may be preferred because it shrinks smoothly, rather than in discrete steps."</li>
+            <li><strong>True</strong> — same as PCR; the back-transform is a sum over loadings, generically nonzero.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/partial-least-squares">partial-least-squares</a>, <a href="/concepts/ridge-regression">ridge-regression</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.2.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q30 — T/F: cross-method comparison ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 30</span>
+        <span class="exam-q__points">5 points</span>
+      </header>
+      <p class="q-text">Mark each statement about PCA, PCR, PLS, ridge, and lasso as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Ridge regression and PCR both struggle with collinearity; only lasso handles it.</span>
+          <label><input type="radio" name="q30-a" value="true"> True</label>
+          <label><input type="radio" name="q30-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Lasso typically produces exact zeros in $\hat\beta$; ridge typically does not; PCR (after back-transform) typically does not either.</span>
+          <label><input type="radio" name="q30-b" value="true"> True</label>
+          <label><input type="radio" name="q30-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) PLS uses $Y$ to choose its components; PCA does not.</span>
+          <label><input type="radio" name="q30-c" value="true"> True</label>
+          <label><input type="radio" name="q30-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) When the truth is sparse (only a few raw $X_j$'s drive $Y$), lasso is generally preferred to PCR / PLS / ridge.</span>
+          <label><input type="radio" name="q30-d" value="true"> True</label>
+          <label><input type="radio" name="q30-d" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">e) PCA is a special case of PLS with $Y = X$, since both methods maximize the covariance with the response.</span>
+          <label><input type="radio" name="q30-e" value="true"> True</label>
+          <label><input type="radio" name="q30-e" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>False</strong> — ridge handles collinearity by sharing weight smoothly across correlated predictors, and PCR is built explicitly to attack collinearity by rotating to orthogonal components. Reverses the truth.</li>
+            <li><strong>True</strong> — only the L1 penalty produces exact-zero solutions among these four; ridge shrinks to small but nonzero values, and PCR's back-transform is a sum over loadings.</li>
+            <li><strong>True</strong> — the canonical supervised-vs-unsupervised contrast.</li>
+            <li><strong>True</strong> — slide-flagged: lasso wins when sparsity is the right structural assumption; PCR / PLS / ridge are non-sparse smoothers and dilute the signal across components.</li>
+            <li><strong>False</strong> — PCA maximizes $\text{Var}(Z)$ on $X$ alone; PLS maximizes $\text{Cov}(Z, Y)$. Substituting $Y = X$ into the PLS criterion would give $\text{Cov}(Z, X)$, not $\text{Var}(Z)$ — and the PLS algorithm uses $Y$ to set $\phi_{j1}$ via the simple regression of $Y$ on $X_j$, which is degenerate when $Y = X$.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/partial-least-squares">partial-least-squares</a>, <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/lasso">lasso</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q31 — UNDERSTANDING: judgment, ridge vs PCR with tied CV-MSE ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 31</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">Two analyses fit the same regression: one with PCR ($M = 4$), one with ridge (with $\lambda$ chosen by CV). They report essentially identical CV-MSE. The prof would lean toward reporting which, and why?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> PCR — fewer hyperparameters means simpler models, always.</li>
+        <li><span class="opt-label">B</span> Ridge — its smooth shrinkage is less sensitive to the exact tuning value than PCR's discrete $M$, so the result is more stable across resamples; the prof: "ridge regression behaves smoothly instead of this kind of discrete thing which PCR and PLS both have."</li>
+        <li><span class="opt-label">C</span> PCR — the $M = 4$ representation is more interpretable than a continuous $\lambda$.</li>
+        <li><span class="opt-label">D</span> Whichever method has the smaller training MSE, since training MSE rules tie-breaking.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>When two methods tie on test performance, the prof prefers the more <em>stable</em> one — the one whose answer wouldn't shift under a small CV-fold reshuffle. Ridge wins on smoothness: $\lambda$ moves continuously, so a tiny change in CV doesn't flip the model. PCR's $M$ jumps in unit steps; a small CV change can switch $M$ from 4 to 5 and substantially change the back-transformed $\hat\beta$.</p>
+          <p>A is too absolute — "always" is the giveaway, and "fewer hyperparameters" is not what makes a model preferable when both have similar effective complexity. C inverts an interpretation argument: $\lambda$ is just as interpretable as $M$ once you understand each method, and arguably more so for forecasting users. D ignores that training MSE is not a tie-break for generalization — the deck has been pushing this all along.</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/cross-validation">cross-validation</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.1 + §6.6 (exercises 9–10 contrast PCR/PLS/ridge/lasso on identical datasets).</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q32 — scenario: pick the method ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 32</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">You are predicting credit-card spend from $p = 50$ candidate predictors, many of which are nearly collinear. A stated goal is interpretability: you want to report which raw variables drive $Y$. Which method best fits the goals?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Ridge regression: handles collinearity by shrinking smoothly across correlated predictors.</li>
+        <li><span class="opt-label">B</span> PCR: rotates correlated predictors into orthogonal PCs and drops the small-variance ones.</li>
+        <li><span class="opt-label">C</span> Lasso: handles collinearity and zeroes out non-driving predictors, leaving an interpretable subset of raw variables.</li>
+        <li><span class="opt-label">D</span> PLS: same as PCR but supervised, using $\text{Cov}(X, Y)$ to pick directions.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>"Use lasso or subset selection when you need 'this or that one.'" Lasso both regularizes and selects, so it is the only method here whose output points at specific raw variables.</p>
+          <p>A retains all 50 predictors with shrunken coefficients — every $\hat\beta_j$ is nonzero, so no variable selection. B and D both produce components that are linear combinations of all 50 variables, so the back-transformed $\hat\beta_j$ are generically nonzero — no clean variable interpretation. The prof's verbatim triage: "Use PCR/ridge when you want predictive power and don't care which raw variables drive it. Use lasso or subset selection when you need this or that one."</p>
+          <p class="ref">Atoms: <a href="/concepts/lasso">lasso</a>, <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/ridge-regression">ridge-regression</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.2 + §6.3.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q33 — T/F: scree plot vs CV ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 33</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement about choosing $M$ and reading PCA diagnostics as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) When PCA is the front end of a supervised regression (PCR), $M$ should be chosen by cross-validating the downstream regression rather than by the scree elbow.</span>
+          <label><input type="radio" name="q33-a" value="true"> True</label>
+          <label><input type="radio" name="q33-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) The "elbow" of a scree plot is determined by a unique well-accepted procedure that always produces the same $M$.</span>
+          <label><input type="radio" name="q33-b" value="true"> True</label>
+          <label><input type="radio" name="q33-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Cumulative PVE is monotonically non-decreasing in $M$.</span>
+          <label><input type="radio" name="q33-c" value="true"> True</label>
+          <label><input type="radio" name="q33-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) If the scree plot is roughly flat — every PC has similar PVE — PCA has revealed strong low-dimensional structure in the data.</span>
+          <label><input type="radio" name="q33-d" value="true"> True</label>
+          <label><input type="radio" name="q33-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — supervised task → cross-validate the supervised criterion. ISL is candid that the scree elbow "is inherently <em>ad hoc</em>"; CV is the principled alternative when $Y$ is available.</li>
+            <li><strong>False</strong> — ISL: "this type of visual analysis is inherently ad hoc … there is no well-accepted objective way to decide." Two readers can differ by ±1 PC.</li>
+            <li><strong>True</strong> — each added eigenvalue is non-negative, so the running sum cannot decrease. A drop signals a coding bug.</li>
+            <li><strong>False</strong> — the opposite. Flat scree means no real low-dim structure; PCA is not earning its keep. Strong structure shows up as a sharp early drop.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/explained-variance-and-scree-plot">explained-variance-and-scree-plot</a>, <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/cross-validation">cross-validation</a>. ISLP §12.2.3 + §12.2.4.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q34 — recall: dim reduction vs variable selection ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 34</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">Which of the following is best classified as <strong>variable selection</strong> rather than dimensionality reduction?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Lasso with $\lambda &gt; 0$.</li>
+        <li><span class="opt-label">B</span> PLS with $M = 2$ components.</li>
+        <li><span class="opt-label">C</span> An autoencoder that compresses 100 inputs into 10 hidden units.</li>
+        <li><span class="opt-label">D</span> LDA used as a $K-1$-dimensional projection.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>The prof's distinction: dimensionality reduction "gives you components, and each component is a combination of the original axes," while variable selection (lasso, subset selection) "actually selects the parameters." Lasso's L1 penalty zeroes some $\hat\beta_j$ outright — that is selection.</p>
+          <p>B and C are dimensionality reduction (PLS produces composite components; the autoencoder produces 10 learned features that are nonlinear combinations of the 100 inputs). D is the LDA-as-projection view from module 4 — also dimension reduction; a $K-1$-dim projection of the predictors is a compressed representation, not a selection of original variables.</p>
+          <p class="ref">Atoms: <a href="/concepts/lasso">lasso</a>, <a href="/concepts/dimensionality-reduction">dimensionality-reduction</a>, <a href="/concepts/partial-least-squares">partial-least-squares</a>. ISLP §6.2.2 (lasso) + §6.3 (dim reduction umbrella).</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q35 — scenario: when PCR scatters a sparse signal ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 35</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">When the true response depends on a small subset of the original predictors, which method's signature failure is to <em>scatter</em> that signal across many components, leaving no clean variable interpretation in the back-transformed coefficients?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Lasso, because the L1 penalty enforces sparsity in $\hat\beta$.</li>
+        <li><span class="opt-label">B</span> Ridge regression, because the L2 penalty shrinks every coefficient toward zero by the same proportion.</li>
+        <li><span class="opt-label">C</span> PCR, because every PC is a linear combination of all original predictors, so the back-transformed $\hat\beta_j$ are generically all nonzero.</li>
+        <li><span class="opt-label">D</span> Best-subset selection, because it enumerates every subset of predictors.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>PCR rotates the predictors before regressing, so a sparse truth in original-$X$ space becomes a dense truth in PC space — and the back-transformed coefficients are generically all nonzero. PLS has the same issue. The prof's framing: "Use lasso or subset selection when you need this or that one."</p>
+          <p>A inverts the direction: lasso's sparsity is the <em>cure</em>, not the failure. B is wrong on details too: ridge does not shrink every coefficient by the same proportion — its per-PC factor $\lambda_j^2/(\lambda_j^2 + \lambda)$ is heavier on small eigenvalues. D enumerates subsets but does not scatter signal; if anything best-subset gives clean variable identification (at the cost of compute).</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/lasso">lasso</a>, <a href="/concepts/partial-least-squares">partial-least-squares</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.1.</p>
+        </div>
+      </details>
+    </article>
+
+  </main>
+  <script src="exam.js"></script>
+</body>
+</html>
