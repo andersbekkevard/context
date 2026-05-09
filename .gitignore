@@ -5,9 +5,6 @@ Thumbs.db
 # Obsidian local vault config
 .obsidian/
 
-# Private notes — off-limits per CLAUDE.md
-notes/
-
 # Legacy reference repo (deletable when web/ is fully self-sufficient)
 databaser/
 outputs/

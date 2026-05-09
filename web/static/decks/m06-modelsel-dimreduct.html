@@ -262,17 +262,17 @@
       </header>
       <p class="q-text">Suppose your $n$ observations lie almost exactly on a unit circle in $\mathbb{R}^2$, so the underlying structure is one-dimensional and curved. What does PCA report — and what does this tell you about its scope?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> A single PC capturing the circular structure exactly, since the data lie on a 1-D manifold.</li>
-        <li><span class="opt-label">B</span> A non-linear PC that wraps along the circle.</li>
-        <li><span class="opt-label">C</span> A flat scree plot with both eigenvalues equal to zero, since the data have no linear variance.</li>
-        <li><span class="opt-label">D</span> Two PCs of roughly equal variance — PCA's <em>linear</em> projections cannot represent the 1-D curved manifold, so the algorithm reports the data as essentially 2-D.</li>
+        <li><span class="opt-label">A</span> A single dominant PC capturing the circular structure exactly, since the data lie on an intrinsically 1-D manifold and PCA finds the manifold.</li>
+        <li><span class="opt-label">B</span> A first PC that traces along the circle non-linearly, with the second eigenvalue essentially zero — so the scree plot peaks sharply at PC1.</li>
+        <li><span class="opt-label">C</span> A flat scree plot with both eigenvalues equal to zero, since the data have no linear variance and PCA returns the null direction.</li>
+        <li><span class="opt-label">D</span> Two PCs of roughly equal variance — PCA's linear projections can't follow a curve, so the algorithm reports the data as effectively 2-D.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: D</span>
           <p>PCA assumes <em>linear</em> structure. The prof: "PCA is kind of stuck just making linear stuff. It can't do anything non-linear." A circle is intrinsically 1-D but not <em>linearly</em> 1-D — the variance spreads across both x and y axes equally, so the scree plot looks flat and PCA gives no useful reduction. Nonlinear methods (kernel PCA, autoencoders) handle this; PCA does not.</p>
-          <p>A would only hold for a 1-D <em>line</em>, not a curve. B invents a non-linear PC PCA cannot construct. C is wrong on arithmetic: the data have nonzero linear variance along both axes (that's the whole point — variance is spread, not absent).</p>
+          <p>A confuses "1-D manifold" with "1-D linear subspace" — only the latter is what PCA can find. B invents a non-linear PC: PCA's loadings define a linear combination of the original columns, never a curve. C is wrong on arithmetic: a unit circle has nonzero linear variance along both axes (that's the whole point — variance is spread, not absent).</p>
           <p class="ref">Atoms: <a href="/concepts/principal-component-analysis">principal-component-analysis</a>, <a href="/concepts/dimensionality-reduction">dimensionality-reduction</a>. Lecture: <a href="/lectures/L21-unsupervised-1">L21-unsupervised-1</a>. ISLP §12.2 (linear-projection framing throughout).</p>
         </div>
       </details>
@@ -329,10 +329,10 @@
       </header>
       <p class="q-text">You run PCA on four standardized macroeconomic predictors ($X_1$ = GDP growth, $X_2$ = interest rate, $X_3$ = inflation, $X_4$ = unemployment) and obtain the first PC loadings $\phi_1 = (0.7,\ -0.6,\ 0.3,\ -0.2)^\top$. Which is the most accurate reading of PC1?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> PC1 acts as an "economic-activity" axis: high PC1 scores correspond to high GDP growth and low interest rates, with smaller contributions from inflation and unemployment.</li>
-        <li><span class="opt-label">B</span> PC1 weights all four variables roughly equally, since the loadings are small and similar in absolute value.</li>
-        <li><span class="opt-label">C</span> PC1 represents the response that PCR will regress $Y$ onto, since loadings are chosen to maximize $\text{Cov}(\phi_1^\top X, Y)$.</li>
-        <li><span class="opt-label">D</span> The negative loading on $X_2$ means that interest rate has been excluded from the PCA decomposition.</li>
+        <li><span class="opt-label">A</span> An "economic-activity" axis: high PC1 corresponds to high GDP growth and low interest rates, with smaller contributions from inflation and unemployment.</li>
+        <li><span class="opt-label">B</span> A weighted-average axis of all four variables, since the loadings are similar in absolute value and the unit-norm constraint forces near-equal weighting.</li>
+        <li><span class="opt-label">C</span> The response that PCR will regress $Y$ onto, since the loadings have been chosen to maximize $\text{Cov}(\phi_1^\top X, Y)$.</li>
+        <li><span class="opt-label">D</span> A three-variable axis: the negative loading on $X_2$ means interest rate has been excluded from the PCA, leaving GDP, inflation, and unemployment.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -353,17 +353,17 @@
       </header>
       <p class="q-text">Why is standardization mandatory for PCA / PCR / PLS but only cosmetic for OLS? Pick the explanation that most directly captures the asymmetry.</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> PCA's objective ($\text{Var}$) is unit-dependent — rescaling $X_j$ by $c$ multiplies its variance by $c^2$, so the PC ranking changes; OLS's coefficient $\hat\beta_j$ rescales by $1/c$ to compensate, leaving fitted values $\hat y$ unchanged.</li>
-        <li><span class="opt-label">B</span> PCA cannot operate on negative numbers, while OLS can.</li>
-        <li><span class="opt-label">C</span> OLS uses a likelihood approach immune to scaling; PCA uses a covariance metric that is not.</li>
-        <li><span class="opt-label">D</span> PCA is built on top of LDA, which assumes equal class variances, while OLS does not.</li>
+        <li><span class="opt-label">A</span> PCA's variance objective is unit-dependent — rescaling $X_j$ by $c$ multiplies its variance by $c^2$ and changes the PC ranking. OLS's $\hat\beta_j$ rescales by $1/c$ in compensation, so the fitted $\hat y$ is unchanged.</li>
+        <li><span class="opt-label">B</span> OLS uses an internal cross-validation pass that adjusts for scale differences, while PCA's eigendecomposition has no such compensation step.</li>
+        <li><span class="opt-label">C</span> OLS is fit by maximum likelihood under a Gaussian model, which is unit-invariant by construction; PCA uses a covariance metric, which is not.</li>
+        <li><span class="opt-label">D</span> PCA's eigendecomposition only converges when all predictors share common units; OLS solves the normal equations directly and so handles mixed units natively.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: A</span>
           <p>This is the load-bearing distinction between coefficient-fitting and direction-finding methods. OLS is <em>equivariant</em> under linear rescaling — the model accommodates the unit change automatically. PCA's objective is the variance of a particular linear combination, and variance scales with the square of any unit change, so the ranking of directions is unit-dependent. The prof's slide: "PCA is not scale invariant."</p>
-          <p>B is just wrong: PCA handles negative numbers fine. C is incoherent — neither method is "likelihood-based" in this course; OLS is least-squares (its likelihood interpretation requires a Gaussian assumption that does not change the equivariance argument). D has the dependency backwards and irrelevant.</p>
+          <p>B fabricates an internal CV pass for OLS — there is none; OLS is a closed-form solver with no scale-correction machinery. C confuses likelihood with equivariance: under a Gaussian likelihood, OLS's invariance under rescaling is the same equivariance argument, not a likelihood-specific property — and PCA can be given a likelihood interpretation too (probabilistic PCA) without becoming scale-invariant. D fabricates a convergence dependency: eigendecomposition operates on a covariance matrix regardless of input units; the issue is interpretation of the eigenvalue ranking, not whether the algorithm runs.</p>
           <p class="ref">Atoms: <a href="/concepts/standardization">standardization</a>, <a href="/concepts/principal-component-analysis">principal-component-analysis</a>. ISLP §12.2.4 ("Scaling the variables").</p>
         </div>
       </details>
@@ -377,10 +377,10 @@
       </header>
       <p class="q-text">Which of the following describes the canonical PCR procedure with $M$ chosen by cross-validation?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Run PCA on the raw $X$, then standardize the components, then fit OLS of $Y$ on the first $M$ components.</li>
-        <li><span class="opt-label">B</span> Standardize $Y$, run PCA on the standardized $Y$, then regress each $X_j$ on the first $M$ PCs.</li>
-        <li><span class="opt-label">C</span> Fit OLS of $Y$ on $X$, run PCA on the residuals, and keep the first $M$ residual components.</li>
-        <li><span class="opt-label">D</span> Standardize $X$, run PCA on it, and for each $M = 1, \ldots, p$ fit OLS of $Y$ on the first $M$ PCs and compute CV-MSE; choose $M$ at the CV minimum.</li>
+        <li><span class="opt-label">A</span> Run PCA on the raw unstandardized $X$, then standardize the resulting components to unit variance, and fit OLS of $Y$ on the first $M$ standardized components.</li>
+        <li><span class="opt-label">B</span> Standardize $Y$, run PCA on the standardized response, then regress each $X_j$ on the first $M$ PCs of $Y$ and average the coefficients.</li>
+        <li><span class="opt-label">C</span> Fit OLS of $Y$ on $X$, run PCA on the residuals, and keep the first $M$ residual components as the new predictors in a refit.</li>
+        <li><span class="opt-label">D</span> Standardize $X$, run PCA, then for each $M = 1, \ldots, p$ fit OLS of $Y$ on the first $M$ PCs and pick the $M$ minimizing CV-MSE.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -401,10 +401,10 @@
       </header>
       <p class="q-text">What is the relationship between PCA and PCR?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> PCR uses cross-validation to choose components; PCA is required to use a scree plot.</li>
-        <li><span class="opt-label">B</span> PCA is unsupervised dimension reduction; PCR is the supervised pipeline that follows PCA with an OLS regression of $Y$ on the first $M$ components.</li>
-        <li><span class="opt-label">C</span> PCA cannot handle correlated predictors; PCR is a modification that can.</li>
-        <li><span class="opt-label">D</span> PCR uses $\text{Cov}(X, Y)$ to choose components, whereas PCA uses $\text{Var}(X)$ alone.</li>
+        <li><span class="opt-label">A</span> PCR uses cross-validation to choose components; PCA is required to use the scree-plot elbow as its cutoff rule.</li>
+        <li><span class="opt-label">B</span> PCA is unsupervised dimension reduction; PCR follows PCA with an OLS regression of $Y$ on the first $M$ components.</li>
+        <li><span class="opt-label">C</span> PCA cannot handle correlated predictors; PCR is a modification that adds a shrinkage penalty so collinearity is absorbed.</li>
+        <li><span class="opt-label">D</span> PCR uses $\text{Cov}(X, Y)$ to choose its components, whereas PCA uses $\text{Var}(X)$ alone with no reference to $Y$.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -425,17 +425,17 @@
       </header>
       <p class="q-text">The prof framed PCR as "a discretized version of ridge regression." Which sentence best captures the analogy?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Both methods place pressure on the small-eigenvalue PC directions; PCR drops them outright once past the cutoff $M$, while ridge shrinks them smoothly via a per-PC factor that is heavier on smaller eigenvalues.</li>
-        <li><span class="opt-label">B</span> Both methods use the same penalty term $\lambda \sum_j \beta_j^2$, but PCR rounds the resulting $\hat\beta$'s to the nearest integer.</li>
-        <li><span class="opt-label">C</span> PCR equals ridge in the limit $\lambda \to 0$; outside that limit the two methods are unrelated.</li>
-        <li><span class="opt-label">D</span> Both methods perform exact variable selection by zeroing out small original-$X$ coefficients $\hat\beta_j$.</li>
+        <li><span class="opt-label">A</span> Both methods pressure the small-eigenvalue PC directions; PCR drops them past the cutoff $M$, while ridge shrinks them smoothly via $\lambda_j^2 / (\lambda_j^2 + \lambda)$, heaviest on the smallest eigenvalues.</li>
+        <li><span class="opt-label">B</span> Both methods solve the same penalized least-squares problem; ridge writes it in Lagrangian form, PCR in budget-constraint form $\sum_j \beta_j^2 \leq M$.</li>
+        <li><span class="opt-label">C</span> PCR equals ridge regression in the limit $\lambda \to 0$; outside that limit the two methods are mathematically unrelated and behave differently.</li>
+        <li><span class="opt-label">D</span> Both methods perform exact variable selection by zeroing out the smallest original-$X$ coefficients $\hat\beta_j$ once their estimated effect drops below a threshold.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: A</span>
           <p>Verbatim: "Higher pressure on less important PCs. PCR discards the $p - M$ smallest eigenvalue components." Ridge applies the smooth shrinkage factor $\lambda_j^2 / (\lambda_j^2 + \lambda)$ on each PC direction — heavier on small eigenvalues. Same target (small-variance directions), different shape (hard truncation vs. smooth shrinkage).</p>
-          <p>B invents a quantization step that PCR does not have. C inverts the relationship; ridge with $\lambda = 0$ is OLS, not PCR. D is wrong on both counts: neither PCR nor ridge does exact variable selection. That is the lasso's job.</p>
+          <p>B invents a budget formulation: PCR has no penalized-loss representation; its mechanism is hard truncation in PC space, not a constraint on $\sum_j \beta_j^2$. C inverts the relationship — ridge with $\lambda = 0$ is OLS, and PCR with $M = p$ is also OLS, so they meet at the no-shrinkage endpoint, not at $\lambda \to 0$. D is wrong on both counts: neither PCR nor ridge does exact variable selection — that is lasso's job.</p>
           <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/ridge-regression">ridge-regression</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.1.</p>
         </div>
       </details>
@@ -449,17 +449,17 @@
       </header>
       <p class="q-text">Both ridge and PCR put pressure on the small-eigenvalue PC directions. <em>Why</em> does this happen — what is the deeper mathematical reason these two methods end up doing similar things?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Both methods minimize the same penalized loss with different penalty functions.</li>
-        <li><span class="opt-label">B</span> The small-eigenvalue PC directions are the directions where the OLS coefficient estimates are <em>unstable</em> — their variance scales as $\sigma^2 / \lambda_j$. Both methods damp this variance: ridge smoothly via the factor $\lambda_j^2 / (\lambda_j^2 + \lambda)$, PCR by hard truncation past the cutoff $M$.</li>
-        <li><span class="opt-label">C</span> Both methods run an SVD as a preprocessing step before fitting.</li>
-        <li><span class="opt-label">D</span> Both methods are special cases of lasso under different limits.</li>
+        <li><span class="opt-label">A</span> Both methods are penalized least-squares estimators sharing a common $L_2$ regularizer applied to the original-$X$ coefficients $\hat\beta_j$.</li>
+        <li><span class="opt-label">B</span> Small-eigenvalue PC directions are where OLS estimates are <em>unstable</em> — their variance scales as $\sigma^2 / \lambda_j$. Both methods damp this: ridge smoothly via $\lambda_j^2 / (\lambda_j^2 + \lambda)$, PCR by hard truncation past $M$.</li>
+        <li><span class="opt-label">C</span> Both methods preprocess $X$ via singular-value decomposition and then solve the regression on the resulting orthogonal columns, which gives them identical bias profiles.</li>
+        <li><span class="opt-label">D</span> Both methods are limiting cases of lasso: ridge as $\alpha \to 0$ in the elastic net, PCR as $\alpha \to 1$ with hard thresholding on the components.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: B</span>
           <p>This is the load-bearing reason behind the discretized-ridge framing. Decomposing OLS along the eigen-basis of $X^\top X$, the coefficient on the $j$-th eigendirection has variance proportional to $1/\lambda_j$ — small-eigenvalue directions are the noisy ones. Both regularizers know this implicitly: ridge attenuates each direction by a smooth factor that bites hardest on small $\lambda_j$, and PCR drops the smallest $\lambda_j$ directions outright. Same target, different shape.</p>
-          <p>A is too vague to be informative — and PCR is not formulated as a penalized loss. C is mechanically wrong: PCR uses an eigendecomposition / SVD of $X$, while standard ridge solvers do not require one. D inverts the family relations: lasso is its own animal, not a parent of ridge or PCR.</p>
+          <p>A is wrong about PCR's formulation: ridge minimizes $\|y - X\beta\|^2 + \lambda\|\beta\|^2$, but PCR has no penalty term — it works by hard truncation in PC space, not by penalized loss. C is mechanically wrong: PCR uses an eigendecomposition / SVD of $X$, while standard ridge solvers do not require one. D inverts the family relations: lasso is its own animal, not a parent of ridge or PCR; ridge is not "elastic net at $\alpha = 0$" running through a lasso limit.</p>
           <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/ridge-regression">ridge-regression</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.2.3 + §6.3.1 (the eigenbasis view of ridge and the PCR-as-discretized-ridge bridge).</p>
         </div>
       </details>
@@ -522,17 +522,17 @@
       </header>
       <p class="q-text">On the Credit dataset, the prof reported that PCR needed $M \approx 10$ components (out of $\sim 11$) to perform well, while ridge regression performed comparably keeping all directions but shrinking. <em>Why</em> doesn't ridge suffer the same failure?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Ridge places its hyperparameter $\lambda$ on the L1 norm, which automatically picks the right components.</li>
-        <li><span class="opt-label">B</span> Ridge regression internally fits a separate cross-validation pass for each predictor, so it adapts to which one drives $Y$.</li>
-        <li><span class="opt-label">C</span> Ridge keeps every PC direction in the fit, just shrinking the small-eigenvalue ones — so a low-$X$-variance but $Y$-predictive direction is <em>retained at smaller magnitude</em>. PCR's hard truncation drops that direction outright until $M$ grows large enough to include it.</li>
-        <li><span class="opt-label">D</span> Ridge applies the same shrinkage factor to every direction, equalizing their importance.</li>
+        <li><span class="opt-label">A</span> Ridge places its hyperparameter $\lambda$ on the $L_1$ norm of $\hat\beta$, which automatically picks the right small set of components for the response.</li>
+        <li><span class="opt-label">B</span> Ridge runs an internal cross-validation pass for each predictor separately, so it can adapt to which raw $X_j$ drives $Y$ regardless of the predictor's $X$-variance.</li>
+        <li><span class="opt-label">C</span> Ridge keeps every PC direction, just shrinking the small-eigenvalue ones — a low-$X$-variance but $Y$-predictive direction is retained at smaller magnitude, while PCR's hard truncation drops it.</li>
+        <li><span class="opt-label">D</span> Ridge applies the same shrinkage factor to every direction, equalizing their importance and so picking up small-$X$-variance directions automatically alongside the dominant ones.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: C</span>
           <p>This is the resolution of the Credit puzzle. Income is a low-$X$-variance but $Y$-predictive direction. PCR's hard threshold throws it away unless $M$ reaches the rank of that direction (which happened to be 10). Ridge keeps it in the model from the start, just shrunk — so a small-but-nonzero contribution is recovered at every $\lambda$. Smoothness wins exactly when the relevant direction sits low in the variance ranking.</p>
-          <p>A misnames ridge's penalty (it is L2, not L1). B is a fabrication — ridge does a single CV over $\lambda$, not per-predictor. D contradicts the slide-flagged factor $\lambda_j^2 / (\lambda_j^2 + \lambda)$, which gives <em>different</em> shrinkage to different directions (heavier on small eigenvalues).</p>
+          <p>A misnames ridge's penalty (it's $L_2$, not $L_1$) and conflates penalty type with selection — even with $L_1$ ridge wouldn't be picking "components" anyway. B fabricates a per-predictor CV: ridge does a single CV pass over $\lambda$, not one per variable. D contradicts the slide-flagged factor $\lambda_j^2 / (\lambda_j^2 + \lambda)$, which gives <em>different</em> shrinkage to different directions (heavier on small eigenvalues, not equal).</p>
           <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/ridge-regression">ridge-regression</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.1, Figure 6.20 (PCR / PLS / ridge / lasso compared on simulated data).</p>
         </div>
       </details>
@@ -546,17 +546,17 @@
       </header>
       <p class="q-text">On the Credit dataset, the prof reported that PCR's CV-MSE was minimized at $M = 10$ out of $\sim 11$ available components — almost no dimension reduction. What does this tell you?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> PCR overfit the data because $M$ was chosen too close to $p$.</li>
-        <li><span class="opt-label">B</span> The high-variance directions of $X$ were not the directions driving $Y$; <code>income</code> turned out to be a low-$X$-variance but predictive feature, so PCR needed many components before that signal entered.</li>
-        <li><span class="opt-label">C</span> The Credit dataset is too small for PCR to be applicable.</li>
-        <li><span class="opt-label">D</span> PCA was run without standardization, inflating one eigenvalue and forcing a large $M$.</li>
+        <li><span class="opt-label">A</span> PCR overfit the data because $M$ was chosen too close to $p$, so the cross-validated test error went up rather than down.</li>
+        <li><span class="opt-label">B</span> The high-variance directions of $X$ were not the directions driving $Y$; <code>income</code> was a low-$X$-variance but predictive feature, so PCR needed many components before that signal entered.</li>
+        <li><span class="opt-label">C</span> The Credit predictors are so strongly collinear that each PC captures only a fragment of the $Y$-relevant direction, so $M$ has to be large to reassemble the signal.</li>
+        <li><span class="opt-label">D</span> PCA was run without standardization, so one large-unit predictor dominated the leading PCs and the rest of the components were needed to recover the signal.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: B</span>
           <p>Verbatim: "Even though the things that you care about were just ended up being four variables, primarily, it took you 10 PCs to get there." Income happened not to vary much in $X$-space, so the relevant direction was buried late in the PC ordering. This is the canonical failure of PCR's assumption (2) — that high-$X$-variance directions are also $Y$-predictive.</p>
-          <p>A inverts the cause: $M$ being close to $p$ here is a <em>diagnosis</em> of the failure mode, not the cause. C is unrelated to the prof's reasoning. D is a real PCR pitfall but not the one at play here — the analysis was correctly standardized.</p>
+          <p>A inverts cause and diagnosis: $M$ being close to $p$ is the <em>symptom</em> of the failure mode, not its cause, and overfitting would push CV-MSE up at large $M$, the opposite of what was observed. C describes a different failure mode (rank-deficient collinearity) and contradicts PCA's geometry — strong collinearity collapses signal into <em>fewer</em> PCs, not more. D is a real PCR pitfall but not the one at play here — the prof's pipeline standardized $X$ correctly.</p>
           <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/partial-least-squares">partial-least-squares</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.1.</p>
         </div>
       </details>
@@ -594,17 +594,17 @@
       </header>
       <p class="q-text">PCR with $M = 1$ keeps only one component out of $p = 20$, producing a model with effectively one feature. Why is this still <em>not</em> a form of variable selection?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Variable selection requires explicit hypothesis testing on each $X_j$, which PCR omits.</li>
-        <li><span class="opt-label">B</span> $M = 1$ produces a model that is too simple to count as having identified any predictors.</li>
-        <li><span class="opt-label">C</span> PCR uses an L2 penalty internally, and L2 cannot zero coefficients.</li>
-        <li><span class="opt-label">D</span> That single component is a linear combination of <em>all</em> $p$ original predictors, so when you back-transform $\hat\theta_1$ via $\hat\beta_j = \hat\theta_1 \phi_{j1}$ every $\hat\beta_j$ is nonzero — no $X_j$ has been excluded from the fitted model.</li>
+        <li><span class="opt-label">A</span> Variable selection requires explicit hypothesis testing on each $X_j$, which PCR omits in favour of variance-driven thresholds.</li>
+        <li><span class="opt-label">B</span> $M = 1$ produces a model too simple to count as having identified any predictors, regardless of which $X_j$ end up in the back-transform.</li>
+        <li><span class="opt-label">C</span> PCR uses an $L_2$ penalty internally, and $L_2$ regularization cannot drive coefficients exactly to zero — so no predictor is ever eliminated.</li>
+        <li><span class="opt-label">D</span> The single component is a linear combination of <em>all</em> $p$ predictors, so the back-transform $\hat\beta_j = \hat\theta_1 \phi_{j1}$ is nonzero on every $X_j$ — no predictor has been excluded.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: D</span>
           <p>The core insight is the back-transform. The model in PC-space looks one-dimensional, but the equivalent model in $X$-space uses all 20 predictors with weights $\hat\theta_1 \phi_{j1}$ each. Variable selection requires actual zeros on $\hat\beta_j$ — and unless $\phi_{j1} = 0$ exactly (almost never the case), every original predictor stays in.</p>
-          <p>A confuses procedure with effect — variable selection can be achieved without hypothesis tests (lasso is the obvious example). B is too vague; the question is about the structural property, not the model's power. C misnames PCR's mechanism: PCR has no explicit penalty, it has a hard truncation; and the L2 claim about penalties is unrelated to whether a method can produce zeros (lasso uses L1, which can; ridge uses L2, which cannot — but PCR does neither).</p>
+          <p>A confuses procedure with effect — variable selection can be achieved without hypothesis tests (lasso is the obvious example, and best-subset another). B is too vague; the question is about the structural property of the fit, not whether the model is good. C misnames PCR's mechanism: PCR has no explicit penalty, it has a hard truncation. The $L_2$-can't-zero claim is true for ridge but irrelevant to PCR.</p>
           <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/lasso">lasso</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.1, closing: "PCR does not perform feature selection."</p>
         </div>
       </details>
@@ -618,10 +618,10 @@
       </header>
       <p class="q-text">What is the principled way to choose the number of components $M$ in PCR?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Pick the $M$ at the elbow of the scree plot of $X$.</li>
-        <li><span class="opt-label">B</span> Set $M = p$ to retain 100% of the variance in $X$.</li>
-        <li><span class="opt-label">C</span> Cross-validate the downstream regression and pick the $M$ at the CV-MSE minimum, optionally via the 1-SE rule.</li>
-        <li><span class="opt-label">D</span> Pick the smallest $M$ for which the cumulative PVE in $X$ reaches 95%.</li>
+        <li><span class="opt-label">A</span> Pick the $M$ at the elbow of the scree plot of $X$, since PCA's diagnostic identifies the natural variance cutoff.</li>
+        <li><span class="opt-label">B</span> Set $M = p$ to retain 100% of the variance in $X$ and let OLS handle the rest of the variance budget.</li>
+        <li><span class="opt-label">C</span> Cross-validate the downstream regression on $Y$ and pick the $M$ at the CV-MSE minimum, optionally via the 1-SE rule.</li>
+        <li><span class="opt-label">D</span> Pick the smallest $M$ for which the cumulative PVE in $X$ reaches a threshold like 95%, since that captures most of the input variance.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -642,17 +642,17 @@
       </header>
       <p class="q-text">Why does PCR with $M = p$ produce exactly the same fitted values $\hat y$ as OLS on the standardized predictors?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> A rotation to all $p$ orthogonal PC directions preserves the column span of $X$. Fitting $Y$ on the rotated columns gives the same projection of $Y$ onto $\text{col}(X)$ that OLS does.</li>
-        <li><span class="opt-label">B</span> With $M = p$, PCR's tuning parameter equals zero, eliminating its regularization.</li>
-        <li><span class="opt-label">C</span> When $M = p$, the back-transform formula $\hat\beta_j = \sum_m \hat\theta_m \phi_{jm}$ collapses to the lasso solution.</li>
-        <li><span class="opt-label">D</span> PCR ignores the response $Y$ when $M = p$.</li>
+        <li><span class="opt-label">A</span> A rotation to all $p$ orthogonal PC directions preserves $\text{col}(X)$, so fitting $Y$ on the rotated columns gives the same projection of $Y$ onto $\text{col}(X)$ that OLS does.</li>
+        <li><span class="opt-label">B</span> With $M = p$, PCR's tuning parameter effectively equals zero, so the discretized-ridge analogy means it coincides with ridge at $\lambda = 0$, which itself equals OLS.</li>
+        <li><span class="opt-label">C</span> When $M = p$, the back-transform formula $\hat\beta_j = \sum_m \hat\theta_m \phi_{jm}$ collapses to the closed-form lasso solution because the loadings span all of $\mathbb{R}^p$.</li>
+        <li><span class="opt-label">D</span> When $M = p$, the back-transform sums over all $p$ components and so multiplies the OLS fit by an extra $\Phi^\top \Phi$ rotation factor, but the orthogonality of $\Phi$ cancels it.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: A</span>
           <p>This is the linear-algebra anchor. OLS finds $\hat y$ as the projection of $Y$ onto the column space of $X$. A change of basis to orthogonal PCs does not change which subspace you are projecting onto — it just expresses the same projection in different coordinates. Reduction occurs <em>only</em> when $M &lt; p$, because then you are projecting onto a strict subspace of $\text{col}(X)$.</p>
-          <p>B speaks of a "tuning parameter that equals zero" — there is no such parameter in PCR, only the discrete $M$. C invokes lasso for no reason; PCR's back-transform is a sum over loadings, not a soft-thresholding solution. D contradicts the recipe: PCR uses $Y$ in the regression step regardless of $M$.</p>
+          <p>B routes through ridge unnecessarily — both PCR ($M=p$) and ridge ($\lambda=0$) coincide with OLS, but the equivalence comes directly from the rotation argument, not from passing through ridge. C invokes lasso for no reason; PCR's back-transform is a sum over loadings, not a soft-thresholding solution. D invents a $\Phi^\top \Phi$ correction: $\Phi$ is orthonormal, so $\Phi^\top \Phi = I$ — there is no extra factor to cancel, the OLS fit is recovered immediately.</p>
           <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>. Lecture: <a href="/lectures/L14-modelsel-3">L14-modelsel-3</a>. ISLP §6.3.1, opening pages.</p>
         </div>
       </details>
@@ -757,17 +757,17 @@
       </header>
       <p class="q-text">PLS sets $\phi_{j1}$ proportional to the simple-regression coefficient of $Y$ on $X_j$. What is the <em>intuition</em> — why is this rule the right one for the supervised criterion PLS optimizes?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Simple regression is the most computationally efficient way to compute eigenvectors.</li>
-        <li><span class="opt-label">B</span> The rule is required for the unit-norm constraint to hold automatically.</li>
-        <li><span class="opt-label">C</span> To maximize $\text{Cov}(Z_1, Y)$, you want $Z_1$ to weight each $X_j$ in proportion to how strongly $X_j$ alone predicts $Y$ — and the simple-regression coefficient of $Y$ on $X_j$ is precisely that supervised relevance metric (proportional to $\text{Corr}(Y, X_j)$).</li>
-        <li><span class="opt-label">D</span> It guarantees that PLS produces sparser solutions than lasso.</li>
+        <li><span class="opt-label">A</span> Simple regression of $Y$ on each $X_j$ is the closed-form solution to PCA's variance-maximization problem when the unit-norm constraint is dropped.</li>
+        <li><span class="opt-label">B</span> The rule is required for the unit-norm constraint $\sum_j \phi_{j1}^2 = 1$ to hold automatically without an explicit normalization step in the algorithm.</li>
+        <li><span class="opt-label">C</span> To maximize $\text{Cov}(Z_1, Y)$ you weight each $X_j$ by how strongly it alone predicts $Y$, and the simple-regression coefficient of $Y$ on $X_j$ is exactly that relevance metric ($\propto \text{Corr}(Y, X_j)$).</li>
+        <li><span class="opt-label">D</span> Simple-regression coefficients are unit-invariant, so weighting by them makes PLS scale-invariant — unlike PCA, removing the need to standardize the predictors first.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: C</span>
           <p>This is the supervised twist: PLS asks "which $X_j$'s predict $Y$ on their own?" and uses the answer as loadings. Variables with strong simple-regression coefficients (equivalently, high $|\text{Corr}(Y, X_j)|$) dominate $Z_1$ — directly serving the $\text{Cov}(Z_1, Y)$ objective. PCA, by contrast, asks "which $X_j$'s vary most and co-vary together?" with no $Y$ reference.</p>
-          <p>A misreads efficiency for justification — and PLS's loading rule is not an eigenvector calculation. B is wrong on mechanics: the unit-norm constraint is enforced by an explicit normalization step in the algorithm, not by the choice of weights. D is the opposite of true; PLS does not produce sparse solutions at all.</p>
+          <p>A confuses PLS with PCA — and PCA without the unit-norm constraint is unbounded, not solved by simple regression. B is wrong on mechanics: the unit-norm constraint is enforced by an explicit normalization step in the algorithm, not by the choice of loading values. D is doubly wrong — PLS still requires standardization (same as PCA), and even if simple-regression coefficients were unit-invariant they would not make the method scale-invariant in the way claimed.</p>
           <p class="ref">Atoms: <a href="/concepts/partial-least-squares">partial-least-squares</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>. ISLP §6.3.2.</p>
         </div>
       </details>
