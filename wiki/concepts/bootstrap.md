@@ -149,11 +149,11 @@ The prof spent ~half of L11 on bootstrap. **Definitely on the exam in some form*
 - **Bootstrap doesn't fix bias of the estimator**: only quantifies variability. If $\hat\theta$ is biased, the bootstrap distribution is centered around $\hat\theta$, not the true $\theta$.
 - **Independence trap (carries over from CV).** Bootstrap assumes the original data is iid from $f$. For time series / spatial data, naïve bootstrap breaks the dependency structure and gives wrong SEs. Block bootstrap is the fix (not in scope here).
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the central idea ("data is its own model"), the algorithm, the with-replacement requirement, the $1 - 1/e \approx 0.632$ probability, regression / derived-quantity SE estimation, CI via percentile or normal approximation, bootstrap as alternative to closed-form SEs.
-- **Look up in ISLR:** §5.2 (pp. 209–212) for the conceptual treatment; §5.3.4 (pp. 224–227) for the lab on bootstrap (R syntax , ignore per prof's exam policy).
-- **Skip in ISLR (book-only, prof excluded):** detailed CI methods (BCa, studentized bootstrap), bootstrap hypothesis testing in depth, parametric vs nonparametric bootstrap distinction.
+- **Look up in ISLP:** §5.2 (pp. 209–212) for the conceptual treatment; §5.3.4 (pp. 224–227) for the lab on bootstrap (R syntax , ignore per prof's exam policy).
+- **Skip in ISLP (book-only, prof excluded):** detailed CI methods (BCa, studentized bootstrap), bootstrap hypothesis testing in depth, parametric vs nonparametric bootstrap distinction.
 
 ## Exercise instances
 

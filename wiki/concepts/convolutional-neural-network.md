@@ -75,11 +75,11 @@ The 2023 exam Q5 ([[L27-summary]] reference) includes "Convolutional neural netw
 - **Don't compute filter math on the exam.** The prof: out of scope. If asked anything about CNNs, stay at the level of "conv applies learned filters; pool shrinks; the whole thing is feed-forward."
 - **Data augmentation is especially natural for CNNs** (rotate / shift / flip images) , see [[nn-regularization]].
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the conceptual picture , CNN = feedforward + shared local filters + max-pool; learned (not designed) filters; trained by backprop; data augmentation lives here naturally.
-- **Look up in ISLR:** §10.3 (whole CNN section), specifically §10.3.1 (convolution layers) and §10.3.2 (pooling layers) for the basic concepts.
-- **Skip in ISLR (book-only, prof excluded):**
+- **Look up in ISLP:** §10.3 (whole CNN section), specifically §10.3.1 (convolution layers) and §10.3.2 (pooling layers) for the basic concepts.
+- **Skip in ISLP (book-only, prof excluded):**
   - **Detailed filter math (kernel arithmetic, stride, padding)** - [[L24-nnet-2]] / [[scope]]: high-level only.
   - **Pooling variants** beyond max-pool , [[scope]]: out.
   - **Modern architectures** (AlexNet, VGG, ResNet, Inception, Transformer, attention) , out per [[L27-summary]] / [[scope]].

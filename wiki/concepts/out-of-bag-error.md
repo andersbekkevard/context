@@ -86,11 +86,11 @@ The hint in Exercise 8.1d is explicit: *"The result from RecEx5-Problem 4c can b
 - **Using OOB on small $B$.** With $B = 50$, some observations may have very few OOB predictions to average; the per-observation prediction is noisy. With $B = 500+$, this is rarely an issue.
 - **Forgetting OOB only works for bagging-family methods.** Boosting fits trees sequentially on a single training set (re-weighted in AdaBoost or on residuals in gradient boosting); there's no per-tree OOB concept.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the $1 - 1/e \approx 0.632 / 0.368$ probability, the role of OOB as a free test-set estimate, the connection to variable importance (randomization flavor).
-- **Look up in ISLR:** §8.2.1 (pp. 345), "Out-of-Bag Error Estimation" subsection. Brief, the prof's treatment is similar in depth.
-- **Skip in ISLR (book-only, prof excluded):** formal proof that OOB ~ LOOCV, deeper convergence analysis.
+- **Look up in ISLP:** §8.2.1 (pp. 345), "Out-of-Bag Error Estimation" subsection. Brief, the prof's treatment is similar in depth.
+- **Skip in ISLP (book-only, prof excluded):** formal proof that OOB ~ LOOCV, deeper convergence analysis.
 
 ## Exercise instances
 

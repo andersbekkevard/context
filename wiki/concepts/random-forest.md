@@ -68,7 +68,7 @@ So variance reduction has a **floor at $\rho\sigma^2$**. To reduce that, you hav
 
   > "It just has to be enough… as long as it's enough of them, you're fine. You don't typically estimate this, you don't typically run cross-validation, you can use the OOB error if you want, but really, it's just use enough of them." - [[L19-boosting-1]]
 
-  The slide deck shows ISLR Figure 8.10: error vs $B$ saturates well before $B = 500$ in the gene-expression example. Picking too many trees never causes overfitting (variance just keeps shrinking); pick $B$ large enough that the OOB error has settled.
+  The slide deck shows ISLP Figure 8.10: error vs $B$ saturates well before $B = 500$ in the gene-expression example. Picking too many trees never causes overfitting (variance just keeps shrinking); pick $B$ large enough that the OOB error has settled.
 
 - **$m$ *is* a tuning parameter.** The hyperparameter that actually matters. The slide deck and lectures show $m = \sqrt p$ beating $m = p$ and $m = p/2$ on the gene-expression data, concrete evidence that decorrelation pays.
 - **Use OOB error, not CV, for hyperparameter checks.** The [[out-of-bag-error|OOB]] sample (~1/3 of training points not in any given bootstrap sample) gives a free, validated test error per tree → no separate test set required. *"Increasing $B$ will not change the goodness of fit measure. To find out which number $B$ is sufficient, we do not need to run cross-validation, but can again use the OOB error."*, slide deck.
@@ -114,11 +114,11 @@ The same justification recurs in 2023 exam keys: *"ntrees is not a tuning parame
 - **OOB error is dependent on bootstrap structure**: there's a "strange dependency on the test error from your real error on your test error on how you sampled" ([[L18-trees-2]]), but it works in practice and the prof endorses it for tree ensembles.
 - **Trees are unpruned in RF.** Don't prune individual trees, the ensemble averaging is the regularizer.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** The decorrelation trick (random subset of $m$ predictors per split); default $m$ for classification vs regression; bagging as the $m = p$ special case; $B$ is not a tuning parameter; OOB error as the test-set substitute; the correlated-trees variance formula and what it means; reading [[variable-importance]] plots from RF output.
-- **Look up in ISLR:** §8.2.2 (random forests), §8.2.1 (bagging + OOB), Figure 8.10 (gene-expression $m$-comparison), Algorithm 8.2 in the boxes around here.
-- **Skip in ISLR (book-only, prof excluded):** Detailed pseudocode for `randomForest` internals; extra-trees / extremely randomized trees; theoretical proofs of consistency.
+- **Look up in ISLP:** §8.2.2 (random forests), §8.2.1 (bagging + OOB), Figure 8.10 (gene-expression $m$-comparison), Algorithm 8.2 in the boxes around here.
+- **Skip in ISLP (book-only, prof excluded):** Detailed pseudocode for `randomForest` internals; extra-trees / extremely randomized trees; theoretical proofs of consistency.
 
 ## Exercise instances
 

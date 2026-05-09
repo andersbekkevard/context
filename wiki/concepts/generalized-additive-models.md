@@ -99,7 +99,7 @@ $$\log\frac{P(\texttt{wage} > 250)}{1 - P} = \beta_0 + f_1(\texttt{age}) + \beta
 
 - **GAMs vs trees.** GAMs handle each variable flexibly but additively; trees handle interactions naturally but split each variable in chunks. The prof closes module 7 (and opens module 8) on this contrast, see [[L17-trees-1]] for the ozone / hitters comparison.
 
-## Pros and cons (ISLR §7.7.1)
+## Pros and cons (ISLP §7.7.1)
 
 | Pros | Cons |
 |---|---|
@@ -127,11 +127,11 @@ GAMs appear on **all three past exams** (2023, 2024, 2025) as a method-compariso
 - **Counting dof for a GAM** = sum of dof for each component, and remember to **not** double-count the intercept across components. The 2025 exam Q4e(i) explicitly tests this.
 - **`<HS` education category in logistic wage GAM gave huge CIs**: because there were zero positives in that group. Real-data lesson: empty cells inflate CIs. Re-fit excluding the empty category.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the additive form; per-predictor $f_j$ flexibility; logistic-GAM extension; the `gam()` interface conceptually; partial-effect interpretation of fitted-component plots; backfitting at the conceptual level (it exists, handles `s()` and `lo()`); the additive-vs-interactive trade-off.
-- **Look up in ISLR:** §7.7.1 (regression GAMs, the wage example, Figures 7.11–7.12), §7.7.2 (logistic GAMs, Figures 7.13–7.14), and the pros/cons summary.
-- **Skip in ISLR:** the **backfitting algorithm details** (§7.7.1 footnote on partial residuals, the punchline is in scope, the algebra isn't) and **two-dimensional smoothers** for interactions (mentioned in the cons-of-GAMs paragraph as an extension, not lectured).
+- **Look up in ISLP:** §7.7.1 (regression GAMs, the wage example, Figures 7.11–7.12), §7.7.2 (logistic GAMs, Figures 7.13–7.14), and the pros/cons summary.
+- **Skip in ISLP:** the **backfitting algorithm details** (§7.7.1 footnote on partial residuals, the punchline is in scope, the algebra isn't) and **two-dimensional smoothers** for interactions (mentioned in the cons-of-GAMs paragraph as an extension, not lectured).
 
 ## Exercise instances
 

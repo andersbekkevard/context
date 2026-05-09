@@ -129,11 +129,11 @@ The prof spent ~1/4 of L11 on this, heavy emphasis. **Highly likely true/false o
 - **Forgetting that "supervised" includes informal peeks at $y$.** Removing outliers based on residuals from a preliminary fit, transforming variables based on $y$-stratified plots, all "training."
 - **Mistaking nested CV for repeated CV.** Repeated CV reruns the same k-fold many times to reduce noise; nested CV layers two levels for selection + assessment. Different jobs.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the wrong-way trap (Exercise 5.3 + Hastie/Tibshirani slide), nested CV as the conceptual fix, the "anything using $y$ is training" discipline.
-- **Look up in ISLR:** §5.1.4, pp. 207 (the bias-variance discussion that motivates this) and the worked example in §5.3. The selection-bias example is also in Elements of Statistical Learning §7.10.
-- **Skip in ISLR (book-only, prof excluded):** formal theoretical guarantees for nested CV, the prof gives the conceptual recipe, not the asymptotics.
+- **Look up in ISLP:** §5.1.4, pp. 207 (the bias-variance discussion that motivates this) and the worked example in §5.3. The selection-bias example is also in Elements of Statistical Learning §7.10.
+- **Skip in ISLP (book-only, prof excluded):** formal theoretical guarantees for nested CV, the prof gives the conceptual recipe, not the asymptotics.
 
 ## Exercise instances
 

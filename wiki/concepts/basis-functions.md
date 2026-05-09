@@ -63,7 +63,7 @@ Smoothing splines and local regression **drop** the basis-function frame , they 
 
 This slogan covers **all** of polynomial regression, step functions, and regression splines. The whole module is one trick repeated with richer columns in $X$.
 
-The book also collects this idea into one section (ISLR §7.3): polynomials, indicators, splines, wavelets, Fourier , all just choices of $b_j$. Once the design matrix is built, *every* linear-model tool from module 3 (least squares, $t$/$F$-tests, CIs, residual diagnostics) is in scope.
+The book also collects this idea into one section (ISLP §7.3): polynomials, indicators, splines, wavelets, Fourier , all just choices of $b_j$. Once the design matrix is built, *every* linear-model tool from module 3 (least squares, $t$/$F$-tests, CIs, residual diagnostics) is in scope.
 
 ## Exam signals
 
@@ -80,11 +80,11 @@ The contrast is itself a fair-game exam point: which methods in module 7 fit by 
 - The truncated-power basis $(x - c_j)^3_+$ is the textbook basis but **R uses `bs()` (B-spline)** which gives the same fit with different columns. The prof: "I don't know why they call it BS." Cosmetic , same predictions.
 - For the natural-spline basis (Exercise 7.3), the textbook formula is asymmetric: $b_1(x) = x$, then $b_{k+2}(x) = d_k(x) - d_K(x)$ with $d_k(x) = [(x-c_k)^3_+ - (x-c_{K+1})^3_+]/(c_{K+1} - c_k)$. Easy to mis-write the indexing.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the basis-function frame as the unifier of module 7; the design-matrix construction; that OLS / its inference toolbox carries over.
-- **Look up in ISLR:** §7.3 (the explicit "polynomial and step are special cases" framing); §7.4 for the spline-basis derivation.
-- **Skip in ISLR:** wavelets and Fourier-basis examples , name-checked in §7.3, not in lecture.
+- **Look up in ISLP:** §7.3 (the explicit "polynomial and step are special cases" framing); §7.4 for the spline-basis derivation.
+- **Skip in ISLP:** wavelets and Fourier-basis examples , name-checked in §7.3, not in lecture.
 
 ## Exercise instances
 

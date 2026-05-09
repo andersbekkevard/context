@@ -100,11 +100,11 @@ The prof in [[L27-summary]] explicitly links the "test vs train" pattern to $R^2
 - **Adjusted $R^2$ as a panacea.** Better than $R^2$ but still a training metric and still distrusted by the prof. CV is the principled answer.
 - **Interpretation slip.** "$R^2 = 0.7$" means 70% of the *variance* in $Y$ is explained, *not* "the model is 70% accurate."
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the formula, what it means, why it monotonically increases with $p$, the adjusted form and its penalty, the prof's distrust, that test error is preferred.
-- **Look up in ISLR:** §3.1.3 (pp. 70–71, $R^2$ in simple regression); §3.2.2 (pp. 79–81, adjusted $R^2$ and the four important questions).
-- **Skip in ISLR:** the derivation of adjusted $R^2$ from Mallow's $C_p$, module 6 covers this conceptually only; full algebra is out of scope per [[L12-modelsel-1]] / [[L13-modelsel-2]].
+- **Look up in ISLP:** §3.1.3 (pp. 70–71, $R^2$ in simple regression); §3.2.2 (pp. 79–81, adjusted $R^2$ and the four important questions).
+- **Skip in ISLP:** the derivation of adjusted $R^2$ from Mallow's $C_p$, module 6 covers this conceptually only; full algebra is out of scope per [[L12-modelsel-1]] / [[L13-modelsel-2]].
 
 ## Exercise instances
 

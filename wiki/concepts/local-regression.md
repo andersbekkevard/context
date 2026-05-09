@@ -35,7 +35,7 @@ and predict $\hat f(x_0) = \hat\beta_0(x_0) + \hat\beta_1(x_0) \cdot x_0$. Move 
 - Linear-in-$x$ vs quadratic-in-$x$ inside the local fit: R defaults to local linear ($\beta_0 + \beta_1 x$); local quadratic adds $\beta_2 x^2$. The slide deck's formula is $\beta_0 + \beta_1 x + \beta_2 x^2$ for the quadratic version.
 - "Memory-based": you need all the training data at prediction time (same property as KNN). Not stored as a finite parameter vector.
 
-## The LOESS algorithm (ISLR Algorithm 7.1)
+## The LOESS algorithm (ISLP Algorithm 7.1)
 
 For prediction at $x_0$:
 
@@ -90,17 +90,17 @@ Note the prof's exam treats LOESS and KNN regression as essentially the same ani
 
 ## Pitfalls
 
-- **Curse of dimensionality.** LOESS needs neighbours, and neighbours become meaningless in high $p$. ISLR §7.6: "local regression can perform poorly if $p$ is much larger than about 3 or 4." Same failure mode as KNN.
+- **Curse of dimensionality.** LOESS needs neighbours, and neighbours become meaningless in high $p$. ISLP §7.6: "local regression can perform poorly if $p$ is much larger than about 3 or 4." Same failure mode as KNN.
 - **Span direction**: large span → smooth → low variance, high bias; small span → wiggly → high variance, low bias. Same direction as $K$ in KNN, *opposite* to $\lambda$ in smoothing splines.
 - **Memory-based prediction**: LOESS doesn't compress the data into a finite parameter set. Every prediction requires the full training set in memory and a fresh weighted regression.
 - **Kernel-shape vs span**: span (the fraction of data used) is the headline knob; kernel shape (Gaussian vs tricube vs Epanechnikov) makes a much smaller difference. Don't confuse the two as separate hyperparameters.
-- **Local quadratic vs local linear**: ISLR's general formula uses local linear; the slide deck's formula uses local quadratic ($\beta_0 + \beta_1 x + \beta_2 x^2$). Both are reasonable; quadratic is more flexible at the boundaries.
+- **Local quadratic vs local linear**: ISLP's general formula uses local linear; the slide deck's formula uses local quadratic ($\beta_0 + \beta_1 x + \beta_2 x^2$). Both are reasonable; quadratic is more flexible at the boundaries.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the algorithm (Algorithm 7.1), the "smooth KNN" framing, span as the flexibility knob, behaviour at the two extremes, the `lo(...)` component for GAMs.
-- **Look up in ISLR:** §7.6, Algorithm 7.1, Figure 7.9 (the kernel-weighted local fit), Figure 7.10 (span = 0.7 vs 0.2 on wage data).
-- **Skip in ISLR:** the brief mention of *varying coefficient models* in §7.6, name-checked only; bivariate and multi-dim local regression also not in scope (the curse-of-dimensionality observation *is* in scope, but not the multi-dim algorithm).
+- **Look up in ISLP:** §7.6, Algorithm 7.1, Figure 7.9 (the kernel-weighted local fit), Figure 7.10 (span = 0.7 vs 0.2 on wage data).
+- **Skip in ISLP:** the brief mention of *varying coefficient models* in §7.6, name-checked only; bivariate and multi-dim local regression also not in scope (the curse-of-dimensionality observation *is* in scope, but not the multi-dim algorithm).
 - **Skip:** kernel-density-estimation theory, Nadaraya-Watson estimator algebra, not in slides or lectures.
 
 ## Exercise instances

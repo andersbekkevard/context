@@ -85,11 +85,11 @@ The 2025 exam Q7 had **multiple confusion-matrix-from-output questions** , inter
 - **Forgetting the cutoff.** Confusion matrix at 0.5 cutoff vs at 0.2 cutoff are different; both are "valid" but encode different trade-offs.
 - **Confusing sensitivity and specificity.** Sensitivity = TP / P (rows of true positives, fraction caught). Specificity = TN / N (rows of true negatives, fraction not falsely alarmed). Mnemonic: sensitivity = "Sniffs out positives"; specificity = "Spares the negatives."
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** Definition of the table, overall accuracy/error, sensitivity, specificity, threshold-dependence, in-sample-vs-out-of-sample distinction, class-imbalance gotcha, multi-class generalization.
-- **Look up in ISLR:** §4.4.2, pp. 149–151, Tables 4.4 and 4.5 (LDA on Default with 0.5 vs 0.2 cutoff, side-by-side). §4.4.4, Tables 4.7–4.9 (naive Bayes confusion matrices).
-- **Skip in ISLR:** Heavy detail on type I / type II error nomenclature (§4.4.2 Table 4.6) , useful but not exam-relevant beyond knowing sensitivity = 1 − Type II = power.
+- **Look up in ISLP:** §4.4.2, pp. 149–151, Tables 4.4 and 4.5 (LDA on Default with 0.5 vs 0.2 cutoff, side-by-side). §4.4.4, Tables 4.7–4.9 (naive Bayes confusion matrices).
+- **Skip in ISLP:** Heavy detail on type I / type II error nomenclature (§4.4.2 Table 4.6) , useful but not exam-relevant beyond knowing sensitivity = 1 − Type II = power.
 
 ## Exercise instances
 

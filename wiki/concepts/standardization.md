@@ -133,11 +133,11 @@ The exam_analysis "direction-of-effect" cheat sheet (§4b) has *"PCA without sta
 - **OLS doesn't need it**: but if you standardize and read off $\hat\beta$'s, those are *standardized* coefficients (per-SD effect). Don't compare to unstandardized $\hat\beta$'s from the same dataset.
 - **Categorical dummy encodings**: don't z-score binary/dummy variables, leave them as 0/1. Z-scoring would muddle their interpretation.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the z-score formula, **which methods require it** (ridge / lasso / PCA / k-means / hierarchical / KNN / NNs) and **which don't** (OLS / trees / GAMs), the diagnostic role ("did you standardize?"), the train-only computation rule.
-- **Look up in ISLR:** §6.2.1 (ridge-regression standardization, equation 6.6 specifically); §10.2 (PCA standardization); §12.4.1 (k-means / scaling).
-- **Skip in ISLR (book-only, prof excluded):** elaborate scaling schemes (robust scaling via IQR/MAD, quantile normalization, etc.), name-checked at most. Z-score is the in-scope answer to every "should I scale this?" question.
+- **Look up in ISLP:** §6.2.1 (ridge-regression standardization, equation 6.6 specifically); §10.2 (PCA standardization); §12.4.1 (k-means / scaling).
+- **Skip in ISLP (book-only, prof excluded):** elaborate scaling schemes (robust scaling via IQR/MAD, quantile normalization, etc.), name-checked at most. Z-score is the in-scope answer to every "should I scale this?" question.
 
 ## Exercise instances
 

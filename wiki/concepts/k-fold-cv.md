@@ -78,7 +78,7 @@ $$\widehat{\text{SE}}\big(\text{CV}_{(k)}(\theta)\big) = \sqrt{\frac{1}{k - 1} \
 
 - **The "less variability across reruns" demo** (Auto data slide): 10 reruns of 10-fold CV give curves that are very tight to each other, where 10 reruns of the validation set give curves that disagree wildly. Visual proof that k-fold stabilizes the estimate.
 
-- **The classification curve** (logistic regression + polynomial degrees 1–10 on the ISLR 2-D classification data, slide Fig. 5.7): 10-fold CV (black) closely tracks the true test error (orange); training error (blue) trends upward weirdly because *"the error rate that they use on the y is not actually computed the same way as the log likelihood"*: logistic regression maximizes likelihood, not misclassification rate. So *"more flexibility" no longer guarantees "lower reported error"*, see [[L11-resample-2]] for the detailed explanation.
+- **The classification curve** (logistic regression + polynomial degrees 1–10 on the ISLP 2-D classification data, slide Fig. 5.7): 10-fold CV (black) closely tracks the true test error (orange); training error (blue) trends upward weirdly because *"the error rate that they use on the y is not actually computed the same way as the log likelihood"*: logistic regression maximizes likelihood, not misclassification rate. So *"more flexibility" no longer guarantees "lower reported error"*, see [[L11-resample-2]] for the detailed explanation.
 
 - **Pseudocode** (CE1 problem 4a expected form, KNN regression flavor):
   ```
@@ -116,10 +116,10 @@ CE1 problem 4b explicitly compares k-fold and LOOCV directions:
 - **Reusing the CV-estimated error as a test-set estimate after also picking the model on it**: that's the [[nested-cv-and-cv-pitfalls|nested CV story]]. CV-for-selection ≠ CV-for-assessment.
 - **Stratification not enforced** for classification with rare classes, folds can end up with no positives. Standard fix: stratified k-fold (assign observations to folds within each class).
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the algorithm (regression and classification), the bias/variance compromise, the standard $k = 5$ or $10$ recommendation, the independence trap, the SE formula (used by 1-SE rule), the comparison with validation set and LOOCV.
-- **Look up in ISLR:** §5.1.3 (pp. 203–205) for the algorithm and Figures 5.5/5.6; §5.1.4 (pp. 205–206) for the bias-variance trade-off discussion. Lab in §5.3.2 demonstrates `cv.glm()` (R); ignore the package syntax per the prof's exam-policy.
+- **Look up in ISLP:** §5.1.3 (pp. 203–205) for the algorithm and Figures 5.5/5.6; §5.1.4 (pp. 205–206) for the bias-variance trade-off discussion. Lab in §5.3.2 demonstrates `cv.glm()` (R); ignore the package syntax per the prof's exam-policy.
 
 ## Exercise instances
 

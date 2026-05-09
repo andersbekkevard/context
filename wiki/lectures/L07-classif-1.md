@@ -54,7 +54,7 @@ Three methods for the module:
 - **K-nearest neighbors**: any number of classes, non-parametric, harder to interpret.
 - **Linear and quadratic discriminant analysis**: next time, with Ben.
 
-The motivating dataset is `Default` (credit-card defaults) from ISLR. Two predictors: `income` and `balance`. A scatter plot already tells you "balance seems to be very important because you can sort of draw a line here and that would discriminate the two classes pretty well, but income seems less important. So we should be able to see that in the numbers later when we try to fit something."
+The motivating dataset is `Default` (credit-card defaults) from ISLP. Two predictors: `income` and `balance`. A scatter plot already tells you "balance seems to be very important because you can sort of draw a line here and that would discriminate the two classes pretty well, but income seems less important. So we should be able to see that in the numbers later when we try to fit something."
 
 ## Why naive linear regression on a 0/1 response is unsatisfying
 

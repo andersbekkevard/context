@@ -97,11 +97,11 @@ So: know **what XGBoost adds on top of vanilla GBM** at the conceptual level, bu
   > "XGBoost is probably the first model in the course where we have a number of hyperparameters with weird interactions (regularization vs. pruning vs. learning rate)." - paraphrased from [[L21-unsupervised-1]]
   So tuning is genuinely hard, grid search or random search with early stopping is the practical recipe.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the conceptual menu of what XGBoost adds: second-order gradients, parallelization, L1/L2 leaf regularization, pruning $\gamma$, dropout, same subsampling/learning-rate machinery as vanilla GBM. Plus "this is the one that wins Kaggle."
-- **Look up in ISLR:** ISLR doesn't really cover XGBoost; §8.2.3 talks generic boosting only. The slides reference Boehmke & Greenwell's HOML chapter for the deep treatment (https://bradleyboehmke.github.io/HOML/gbm.html); Anders does **not** need this for the exam.
-- **Skip in ISLR (book-only / explicitly out of scope):**
+- **Look up in ISLP:** ISLP doesn't really cover XGBoost; §8.2.3 talks generic boosting only. The slides reference Boehmke & Greenwell's HOML chapter for the deep treatment (https://bradleyboehmke.github.io/HOML/gbm.html); Anders does **not** need this for the exam.
+- **Skip in ISLP (book-only / explicitly out of scope):**
   - **Second-order Taylor-expansion derivation**: out per the prof.
   - **Approximate split-search algorithms (histogram-based, weighted quantile sketch)**: out.
   - **Detailed regularization derivations**: concept yes, derivations no.

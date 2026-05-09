@@ -54,5 +54,5 @@ The prof's "deep learning is just nested GLMs" module. Three lectures (Apr 20, 2
 - **Shapley values, explainable-AI machinery** - brief mention only - [[L26-nnet-3]]
 - **R / Python package names, Keras / PyTorch syntax** - "no language-specific coding or anything of that sort" - [[L27-summary]]
 
-## ISLR pointer
+## ISLP pointer
 Chapter 10: Deep Learning. Deep treatment of in-scope concepts in this module is in `book/10-deeplearning.md`. Atoms carry section-level `isl-ref:` pointers; for the full algebra of any in-scope concept, route Anders to that chapter.

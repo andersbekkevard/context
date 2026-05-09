@@ -45,5 +45,5 @@ The third tree-ensemble flavor: grow many small trees **sequentially**, each one
 - **CatBoost, LightGBM as separate algorithms** - name-checked only - [[L21-unsupervised-1]]
 - **R / Python package names, function syntax, executable code** - *"no language, no memorizing package names, no language-specific coding"* - [[L27-summary]]
 
-## ISLR pointer
-Chapter 8 (§8.2.3 Boosting, §8.2.5 partial dependence plots, `book/08-trees.md`). Atoms carry section-level `isl-ref:` pointers; for the full forward-stagewise / Algorithm 10.3 derivation route Anders to the relevant ISLR section.
+## ISLP pointer
+Chapter 8 (§8.2.3 Boosting, §8.2.5 partial dependence plots, `book/08-trees.md`). Atoms carry section-level `isl-ref:` pointers; for the full forward-stagewise / Algorithm 10.3 derivation route Anders to the relevant ISLP section.

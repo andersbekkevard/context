@@ -102,11 +102,11 @@ Per [[scope]]: *"Detailed PLS history and chemometrics-specific tuning"*, explic
 - **Treating PLS as a variable-selection method.** It isn't, like PCR, all back-transformed $\hat\beta_j$ are typically nonzero.
 - **Memorizing the deflation algorithm in detail.** Out of scope; the high-level "regress each $X$ on $Y$ for $\phi_{j1}$, deflate, repeat" is enough.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the PLS pipeline (same as PCR but supervised); the contrast with PCR (uses $Y$ → maximizes $\text{Cov}(X, Y)$ instead of $\text{Var}(X)$); the algorithm at the level "regress each $X_j$ on $Y$ to get $\phi_{j1}$, then deflate"; the prof's verdict ("often no better than ridge or PCR, but supervised").
-- **Look up in ISLR:** §6.3.2 (pp. 286–288). Brief, ISLR doesn't dwell on PLS either.
-- **Skip in ISLR / out of scope:** detailed deflation algebra; chemometrics tuning; the various PLS variants (PLS-1, PLS-2, kernel PLS); history beyond "Wold, 1970s, chemometrics." Per [[L15-modelsel-4]] and [[scope]].
+- **Look up in ISLP:** §6.3.2 (pp. 286–288). Brief, ISLP doesn't dwell on PLS either.
+- **Skip in ISLP / out of scope:** detailed deflation algebra; chemometrics tuning; the various PLS variants (PLS-1, PLS-2, kernel PLS); history beyond "Wold, 1970s, chemometrics." Per [[L15-modelsel-4]] and [[scope]].
 
 ## Exercise instances
 

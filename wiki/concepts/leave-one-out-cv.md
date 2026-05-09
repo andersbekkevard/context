@@ -90,12 +90,12 @@ CE1 problem 4b runs the comparison as true/false:
 
 - **Mixing up the bias and variance directions.** LOOCV: low bias, high variance. The wrong-direction trap is on CE1 problem 4b, easy to flip.
 - **Using LOOCV under temporal/spatial correlation.** Worse than k-fold here, see independence trap above.
-- **Forgetting the OLS-only restriction on the shortcut.** Eq. (5.2) in ISLR works only for linear models fit by least squares (or with the appropriate generalization for other linear-projection methods). For trees, KNN, GAMs, neural nets, etc., you have to actually do the $n$ refits.
+- **Forgetting the OLS-only restriction on the shortcut.** Eq. (5.2) in ISLP works only for linear models fit by least squares (or with the appropriate generalization for other linear-projection methods). For trees, KNN, GAMs, neural nets, etc., you have to actually do the $n$ refits.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the algorithm, the bias/variance comparison with k-fold (CE1 4b), the hat-matrix shortcut (CE1 derives it), the independence trap.
-- **Look up in ISLR:** §5.1.2 (pp. 200–202), equation 5.2 is the shortcut. The footnote on the multiple-regression generalization of leverage is also there.
+- **Look up in ISLP:** §5.1.2 (pp. 200–202), equation 5.2 is the shortcut. The footnote on the multiple-regression generalization of leverage is also there.
 
 ## Exercise instances
 

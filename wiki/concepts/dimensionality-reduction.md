@@ -110,11 +110,11 @@ So *the same idea* connects an unsupervised classical algorithm (PCA), a supervi
 - **Picking $M$ unsupervised when there's a supervised task.** Cross-validate $M$ against the downstream model , much more principled than the elbow on a scree plot.
 - **Treating "low-dim" as "interpretable."** PCs are linear combinations of all original variables; loadings *help* interpretation but don't give clean attribution to single $X$'s.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the unified frame (build $Z$ from $X$, fit, back out $\beta$); the supervised/unsupervised axis; the four/five canonical methods (PCA, PCR, PLS, LDA-as-projection, NN feature extractor); when to use which; standardization mandate; visualization use case; collinearity / high-dim motivation.
-- **Look up in ISLR:** §6.3 (the dimensionality-reduction frame for regression , PCR + PLS); §12.2 (PCA in the unsupervised-learning chapter); §4.4 (LDA, with the projection viewpoint).
-- **Skip in ISLR:**
+- **Look up in ISLP:** §6.3 (the dimensionality-reduction frame for regression , PCR + PLS); §12.2 (PCA in the unsupervised-learning chapter); §4.4 (LDA, with the projection viewpoint).
+- **Skip in ISLP:**
   - Spectral / eigen decomposition derivations of $\Sigma$ , out per [[L04-statlearn-3]].
   - Kernel PCA, ICA, manifold learning (t-SNE, UMAP, MDS) , none lectured. Out.
   - Detailed PLS history & chemometrics tuning , [[L15-modelsel-4]]: PCR is the workhorse; PLS gets the one-liner.

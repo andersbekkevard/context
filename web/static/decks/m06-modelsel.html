@@ -82,7 +82,7 @@
       <header class="exam-q__head">
         <span class="exam-q__num">Question 2</span>
         <span class="exam-q__points">4 points</span>
-        <span class="exam-q__src">ISLR §6 Q1</span>
+        <span class="exam-q__src">ISLP §6 Q1</span>
       </header>
       <p class="q-text">Best-subset, forward stepwise, and backward stepwise selection are run on the same dataset and produce a model of each size $k = 0, 1, \dots, p$. Mark each statement as true or false.</p>
       <ul class="exam-q__tf">
@@ -190,12 +190,12 @@
       </details>
     </article>
 
-    <!-- ─────── Q5: lasso vs LS (single-MC, ISLR §6 Q2 lift) — L27 Q3a anchor ─────── -->
+    <!-- ─────── Q5: lasso vs LS (single-MC, ISLP §6 Q2 lift) — L27 Q3a anchor ─────── -->
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 5</span>
         <span class="exam-q__points">3 points</span>
-        <span class="exam-q__src">ISLR §6 Q2</span>
+        <span class="exam-q__src">ISLP §6 Q2</span>
       </header>
       <p class="q-text">Relative to ordinary least squares, the lasso is:</p>
       <ul class="exam-q__opts">
@@ -221,7 +221,7 @@
         <span class="exam-q__num">Question 6</span>
         <span class="exam-q__points">4 points</span>
       </header>
-      <p class="q-text">In the simple-special case $n = p$ with $X = I$, lasso has the closed-form solution $\hat\beta_j^L = \mathrm{sign}(\hat\beta_j^{\text{OLS}}) \cdot (|\hat\beta_j^{\text{OLS}}| - \lambda/2)_+$ (ISLR eq. 6.15). Suppose $\hat\beta_1^{\text{OLS}} = 0.6$, $\hat\beta_2^{\text{OLS}} = -0.3$, $\hat\beta_3^{\text{OLS}} = 0.8$, and $\lambda = 1.0$. What are the soft-thresholded lasso estimates $(\hat\beta_1^L, \hat\beta_2^L, \hat\beta_3^L)$?</p>
+      <p class="q-text">In the simple-special case $n = p$ with $X = I$, lasso has the closed-form solution $\hat\beta_j^L = \mathrm{sign}(\hat\beta_j^{\text{OLS}}) \cdot (|\hat\beta_j^{\text{OLS}}| - \lambda/2)_+$ (ISLP eq. 6.15). Suppose $\hat\beta_1^{\text{OLS}} = 0.6$, $\hat\beta_2^{\text{OLS}} = -0.3$, $\hat\beta_3^{\text{OLS}} = 0.8$, and $\lambda = 1.0$. What are the soft-thresholded lasso estimates $(\hat\beta_1^L, \hat\beta_2^L, \hat\beta_3^L)$?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> $(0.10,\ 0,\ 0.30)$</li>
         <li><span class="opt-label">B</span> $(0.6,\ -0.3,\ 0.8)$</li>
@@ -647,12 +647,12 @@
       </details>
     </article>
 
-    <!-- ─────── Q21: ISLR §6 Q3 lift — increasing s in lasso constraint (T/F multi) ─────── -->
+    <!-- ─────── Q21: ISLP §6 Q3 lift — increasing s in lasso constraint (T/F multi) ─────── -->
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 21</span>
         <span class="exam-q__points">4 points</span>
-        <span class="exam-q__src">ISLR §6 Q3</span>
+        <span class="exam-q__src">ISLP §6 Q3</span>
       </header>
       <p class="q-text">Estimate $\beta$ by minimising $\sum_i (y_i - \beta_0 - \sum_j \beta_j x_{ij})^2$ subject to $\sum_j |\beta_j| \le s$ (the constraint form of lasso). As $s$ increases from $0$ toward $\infty$, mark each statement as true or false.</p>
       <ul class="exam-q__tf">
@@ -740,7 +740,7 @@
       </details>
     </article>
 
-    <!-- ─────── Q24: stepwise vs best-subset diverging (scenario, ISLR-Q1 style) ─────── -->
+    <!-- ─────── Q24: stepwise vs best-subset diverging (scenario, ISLP-Q1 style) ─────── -->
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 24</span>
@@ -859,7 +859,7 @@
       </details>
     </article>
 
-    <!-- ─────── Q28: lasso correlated predictors (ISLR §6 Q5 conceptual / scenario) ─────── -->
+    <!-- ─────── Q28: lasso correlated predictors (ISLP §6 Q5 conceptual / scenario) ─────── -->
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 28</span>
@@ -883,12 +883,12 @@
       </details>
     </article>
 
-    <!-- ─────── Q29: ISLR §6 Q4 ridge λ direction-of-effect (T/F multi) ─────── -->
+    <!-- ─────── Q29: ISLP §6 Q4 ridge λ direction-of-effect (T/F multi) ─────── -->
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 29</span>
         <span class="exam-q__points">4 points</span>
-        <span class="exam-q__src">ISLR §6 Q4</span>
+        <span class="exam-q__src">ISLP §6 Q4</span>
       </header>
       <p class="q-text">Estimate $\beta$ by minimising $\sum_i (y_i - \beta_0 - \sum_j \beta_j x_{ij})^2 + \lambda \sum_j \beta_j^2$ for a particular $\lambda \ge 0$. As $\lambda$ increases from $0$, mark each statement as true or false.</p>
       <ul class="exam-q__tf">

@@ -112,11 +112,11 @@ Boosting losses are in the slides + lecture L20, so they're in scope. The prof d
 - **Confusing "deviance" with "exponential loss".** Binomial deviance = logistic NLL (gradient boosting). Exponential loss = AdaBoost's implicit objective. Both are binary-classification losses, but they're not the same function.
 - **Forgetting Huber's $\delta$ as a hyperparameter.** Pick badly and you lose the smooth-stitch property; the slides note "stitches together smoothly if you pick $\delta$ well."
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the menu (quadratic, absolute, Huber, binomial deviance, multinomial deviance, exponential loss); the gradient for squared error = residual; the gradient for multinomial deviance = $\mathbb{1}(y_i = k) - p_k(x_i)$; "fits $K$ trees per round for $K$-class"; the robust-vs-non-robust intuition; the connection to AdaBoost via exponential loss; the connection to logistic regression via binomial deviance.
-- **Look up in ISLR:** §8.2.3 covers the squared-error case only; for the deeper general loss treatment, the slide deck refers to **Elements of Statistical Learning ch. 10** (reference, not exam material). Anders does **not** need this for the exam.
-- **Skip in ISLR (book-only / out of scope):**
+- **Look up in ISLP:** §8.2.3 covers the squared-error case only; for the deeper general loss treatment, the slide deck refers to **Elements of Statistical Learning ch. 10** (reference, not exam material). Anders does **not** need this for the exam.
+- **Skip in ISLP (book-only / out of scope):**
   - **Detailed Hessian computations for each loss**: out per the prof's "no fancy proofs."
   - **Advanced robust losses (Tukey biweight, etc.)**: never lectured.
   - **Quantile loss for quantile regression boosting**: not lectured.

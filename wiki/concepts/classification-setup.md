@@ -89,11 +89,11 @@ Plus [[naive-bayes]] as a variant of LDA/QDA when $p$ is large.
 - **Multi-class OLS on numeric labels imposes an ordering**: categorical means dummy code, not 1/2/3.
 - **Confusion matrices on training data are misleading.** "In-sample on the data you actually train on. So you're going to do really well because you have all the noise in the data. That doesn't mean you're going to do well out of sample." - [[L09-classif-3]]
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** Categorical response, 0/1 loss, training vs test misclassification rate, Bayes classifier definition + optimality, Bayes error rate as the irreducible-error analogue.
-- **Look up in ISLR:** §4.1, §4.2, §4.4 (Bayes classifier definition); §2.2.3 for the original Bayes-classifier presentation.
-- **Skip in ISLR (book-only, prof excluded):** Multi-class logistic regression beyond the high-level "use LDA instead" comment , [[L07-classif-1]] / slide deck. Probit / complementary-log-log link functions , [[L07-classif-1]]: "outside the scope of this course."
+- **Look up in ISLP:** §4.1, §4.2, §4.4 (Bayes classifier definition); §2.2.3 for the original Bayes-classifier presentation.
+- **Skip in ISLP (book-only, prof excluded):** Multi-class logistic regression beyond the high-level "use LDA instead" comment , [[L07-classif-1]] / slide deck. Probit / complementary-log-log link functions , [[L07-classif-1]]: "outside the scope of this course."
 
 ## Exercise instances
 

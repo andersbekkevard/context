@@ -27,7 +27,7 @@ The atom is **not a textbook recreation.** It captures:
 - **What's in scope** (from slides + lectures + exercises, the prof's curriculum)
 - **The prof-specific framing** (definitions he uses, traps he flagged, his emphasis, his insights)
 
-The book (`book/`) holds the **deep treatment** of any in-scope idea. The atom carries an `isl-ref:` pointer so Claude can tell Anders "for the full derivation, see ISLR §6.2.1." Atoms intentionally don't recreate textbook content, as Claude already knows it from training, and the book is on the exam table for lookup.
+The book (`book/`) holds the **deep treatment** of any in-scope idea. The atom carries an `isl-ref:` pointer so Claude can tell Anders "for the full derivation, see ISLP §6.2.1." Atoms intentionally don't recreate textbook content, as Claude already knows it from training, and the book is on the exam table for lookup.
 
 ## Standard contents
 
@@ -39,8 +39,8 @@ A typical atom contains (per `docs/templates/concepts.md`):
 - **Insights & mental models**: the prof's angles, verbatim where wording carries
 - **Exam signals**: verbatim prof quotes flagging exam relevance, anchored to the lecture wikilink
 - **Pitfalls**: inline, verbatim where prof flagged them
-- **Scope vs ISLR**: what's IN, ISLR pointer for full treatment, what's in the book but the prof skipped (so Anders knows what to skip in his ISLR look-ups)
-- **Exercise instances**: one line per exercise problem touching this concept (`exercises/Exercise<N>/` plus the two compulsory exercises). ISLR end-of-chapter exercises are NOT in scope and are not referenced.
+- **Scope vs ISLP**: what's IN, ISLP pointer for full treatment, what's in the book but the prof skipped (so Anders knows what to skip in his ISLP look-ups)
+- **Exercise instances**: one line per exercise problem touching this concept (`exercises/Exercise<N>/` plus the two compulsory exercises). ISLP end-of-chapter exercises are NOT in scope and are not referenced.
 - **Exam-appearance patterns**: how it might show up on the exam, drawing on past papers and prof's preferences
 - **Related**: wikilinks to related concept atoms
 

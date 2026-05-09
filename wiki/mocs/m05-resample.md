@@ -47,5 +47,5 @@ The prof's "fewer-assumptions" alternative to AIC/BIC for model selection and as
 - **Cp / AIC / BIC / adjusted-R² derivations and formulas** - *"I'm not going to ask you to use these. I'm not going to ask you to derive them."* - [[L10-resample-1]]; the [[aic-bic-conceptual]] atom keeps only "they exist, here's why, prof distrusts them"
 - **Fancy resampling-shortcut algebra beyond the LOOCV hat-matrix formula**: the prof shows the (yᵢ − ŷᵢ)/(1−hᵢᵢ) shortcut and stops there; no jackknife / .632 / .632+ derivations
 
-## ISLR pointer
+## ISLP pointer
 Chapter 5: Resampling Methods. The deep treatment of in-scope concepts in this module is in `book/05-resample.md`. Specific atoms carry section-level `isl-ref:` pointers; for full algebra of any in-scope concept (LOOCV shortcut derivation, k-fold bias-variance argument, bootstrap CI variants), route Anders to `book/05-resample.md`.

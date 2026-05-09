@@ -98,11 +98,11 @@ The prof's "danger" framing is a likely T/F question stem ("unsupervised methods
 - **Reporting p-values from a clustering result on the same data you used to find the clustering.** Classic dishonest-statistics move; the prof flagged it twice. Honest version: cluster on one dataset, validate the clusters on a held-out dataset (or supervised downstream task).
 - **Confusing "no $y$" with "no structure."** Unsupervised methods *do* find real structure in many cases; the danger is in claiming statistical significance, not in the existence of the structure itself.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the supervised/unsupervised distinction, recognizing it in real-world descriptions, the LLM "supervised in disguise" reframing trick, the danger / subjectivity of unsupervised inference, when unsupervised is OK (downstream supervised validation).
-- **Look up in ISLR:** §2.1.4 ("The Trade-Off Between Prediction Accuracy and Model Interpretability" → §2.1.4 / §2.1.5 introduce supervised vs unsupervised). For unsupervised methods themselves, §12 (clustering, PCA). ISLR is brief on the danger framing; the prof's L21 transcript is the better source for the "subjective / unsupervised methods are dangerous" angle.
-- **Skip in ISLR:** the historical name-checks and the long list of supervised methods in §2.1; the supervised-vs-unsupervised dichotomy itself is one paragraph.
+- **Look up in ISLP:** §2.1.4 ("The Trade-Off Between Prediction Accuracy and Model Interpretability" → §2.1.4 / §2.1.5 introduce supervised vs unsupervised). For unsupervised methods themselves, §12 (clustering, PCA). ISLP is brief on the danger framing; the prof's L21 transcript is the better source for the "subjective / unsupervised methods are dangerous" angle.
+- **Skip in ISLP:** the historical name-checks and the long list of supervised methods in §2.1; the supervised-vs-unsupervised dichotomy itself is one paragraph.
 
 ## Exercise instances
 

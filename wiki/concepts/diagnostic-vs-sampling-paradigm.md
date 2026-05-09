@@ -96,11 +96,11 @@ A standard MCQ pattern: **classify a method into the right paradigm** , fair-gam
 - **Confusing the **Bayes classifier** (the optimal abstract decision rule) with **naive Bayes** (one specific generative model).** The Bayes classifier uses the *true* $\Pr(Y \mid X)$; naive Bayes is a specific generative classifier with the conditional-independence assumption. The "Bayes" in both refers to Bayes' theorem flipping conditioning.
 - **Treating the paradigm choice as a choice between paradigms.** It's really a choice between **which assumptions you want to make on the $X$ distribution.** None → diagnostic. Gaussian → LDA. Class-specific Gaussian → QDA. Diagonal Gaussian → naive Bayes.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** Definition of both paradigms, the Bayes-flip formula, which methods belong to which side, when to prefer which (assumption-driven argument).
-- **Look up in ISLR:** §4.4 introduction (pp. 144–145) for the Bayes-theorem framing; §4.5.1 for the formal LDA-vs-logistic-vs-naive-Bayes analytical comparison.
-- **Skip in ISLR:** Discriminative-vs-generative literature outside ISLR's framing , never covered.
+- **Look up in ISLP:** §4.4 introduction (pp. 144–145) for the Bayes-theorem framing; §4.5.1 for the formal LDA-vs-logistic-vs-naive-Bayes analytical comparison.
+- **Skip in ISLP:** Discriminative-vs-generative literature outside ISLP's framing , never covered.
 
 ## Exercise instances
 

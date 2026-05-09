@@ -95,11 +95,11 @@ The two known special cases that fall out of this scheme:
 - **Treating boosting as variance reduction.** Boosting attacks bias (with weak learners that individually have low variance anyway). Variance reduction comes back in via [[stochastic-gradient-boosting]] and [[xgboost]] regularization, not the core algorithm.
 - **Quoting the wrong number of hyperparameters.** Plain GBM has **4** (depth, min-obs-per-node, $M$, $\nu$). XGBoost adds more (L1/L2 leaf penalties, pruning $\gamma$, dropout). The exercise drills this.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the concept of boosting (sequential weak learners, forward stagewise, sum-of-trees model), bagging-vs-boosting contrast, the **three ingredients** + **four hyperparameters**, why $M$ matters here but not in RF, "use CV / early stopping to tune", AdaBoost as historical predecessor, gradient boosting as the unifying framework, partial dependence plots for interpretability.
-- **Look up in ISLR:** §8.2.3 (concise treatment) and Algorithm 8.2 , pp. 343–348. Elements of Statistical Learning ch. 10 has the deep general treatment with the forward-stagewise framing; you don't need it for the exam.
-- **Skip in ISLR (book-only, prof excluded):**
+- **Look up in ISLP:** §8.2.3 (concise treatment) and Algorithm 8.2 , pp. 343–348. Elements of Statistical Learning ch. 10 has the deep general treatment with the forward-stagewise framing; you don't need it for the exam.
+- **Skip in ISLP (book-only, prof excluded):**
   - **Detailed boosting pseudocode line by line** - [[L27-summary]]: "you should know what tree boosting is" but not memorize pseudocode.
   - **CatBoost / LightGBM internals** - [[L20-boosting-2]] / [[L21-unsupervised-1]]: name-checked only.
   - **BART (Bayesian additive regression trees)**: book §8.2.4 not covered in lectures.

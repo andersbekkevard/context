@@ -170,11 +170,11 @@ The 2025 exam Q3a (lasso vs least squares) was solved via direct bias-variance r
 - **In high-noise settings ($\sigma^2$ large), you do NOT want a more flexible model** (CE1 1d (iv) is FALSE). The opposite: you want low-variance methods because the noise floor is high regardless, and flexibility just adds variance on top.
 - **Don't confuse "bias-variance trade-off" with "overfitting"**: they're related but distinct. Overfitting describes the *symptom* (good train, bad test); bias-variance is the *mechanism* (variance > bias-improvement-from-flexibility past the U-minimum).
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the 3-term decomposition, the U-shape, why "trade-off" is a misleading label, applications across every method (regression, KNN, ridge/lasso, trees, RF, boosting, splines, NNs, [[double-descent]]).
-- **Look up in ISLR:** §2.2.2 (the original derivation); §5.1.4 (bias-variance trade-off for k-fold CV); §6.2 introduction (regularization framed via bias-variance).
-- **Skip in ISLR (book-only, prof excluded):** the formal derivation of "variance scales with $p$" - [[L13-modelsel-2]]: *"In the other book, written by the same authors, they go through a more formal decomposition of this to show that this variance term depends heavily on the number of parameters. We're not going to go through that because it's left out of this course."*
+- **Look up in ISLP:** §2.2.2 (the original derivation); §5.1.4 (bias-variance trade-off for k-fold CV); §6.2 introduction (regularization framed via bias-variance).
+- **Skip in ISLP (book-only, prof excluded):** the formal derivation of "variance scales with $p$" - [[L13-modelsel-2]]: *"In the other book, written by the same authors, they go through a more formal decomposition of this to show that this variance term depends heavily on the number of parameters. We're not going to go through that because it's left out of this course."*
 
 ## Exercise instances
 

@@ -138,11 +138,11 @@ The 2025 exam's biggest problem (Q7) was a multi-part logistic-regression walkth
 - **Don't use OLS on a 0/1 response with class imbalance.** Predictions stick at 0; never crosses 0.5. (Slides hammer this.)
 - **Trusting tiny $p$-values literally.** $p = 10^{-200}$ is "more likely we don't exist", some assumption is wrong.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** Bernoulli GLM, sigmoid/logit link, MLE objective + Newton-Raphson (high-level), coefficient = log odds-ratio, GLM output table, prediction formula, comparison with LDA/QDA/KNN, ROC/AUC for model comparison.
-- **Look up in ISLR:** §4.3, pp. 130–143. The MLE derivation (4.5) and the Default-data tables (4.1, 4.2, 4.3) are the canonical reference.
-- **Skip in ISLR (book-only or excluded):**
+- **Look up in ISLP:** §4.3, pp. 130–143. The MLE derivation (4.5) and the Default-data tables (4.1, 4.2, 4.3) are the canonical reference.
+- **Skip in ISLP (book-only or excluded):**
   - **Multinomial logistic regression** (§4.3.5) - [[L07-classif-1]]: "we're not going to talk about it."
   - **Probit / complementary log-log link functions** - [[L07-classif-1]]: "outside the scope of this course."
   - **Poisson regression / GLMs in greater generality** (§4.6), never covered.

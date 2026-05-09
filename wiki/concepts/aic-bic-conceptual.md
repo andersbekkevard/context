@@ -83,11 +83,11 @@ The conceptual one-liner , "they exist, they penalize complexity, prof distrusts
 - **Forgetting BIC penalizes more than AIC.** This is the one comparison that might appear conceptually (BIC favors smaller models).
 - **Confusing Cp with the OLS test-error formula.** Cp is a training-set quantity adjusted to estimate test error; not the same as the actual test error.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** they exist, they penalize complexity, prof distrusts them, prefers CV.
-- **Look up in ISLR:** §6.1.3 (pp. 244–246) for definitions and the formulas , only if you're curious, **not for the exam**.
-- **Skip in ISLR (book-only, prof excluded):** all derivations of AIC (information theory), BIC (Bayesian), Cp (unbiased estimator of test MSE under Gaussian errors), and adjusted $R^2$. The prof was emphatic.
+- **Look up in ISLP:** §6.1.3 (pp. 244–246) for definitions and the formulas , only if you're curious, **not for the exam**.
+- **Skip in ISLP (book-only, prof excluded):** all derivations of AIC (information theory), BIC (Bayesian), Cp (unbiased estimator of test MSE under Gaussian errors), and adjusted $R^2$. The prof was emphatic.
 
 ## Exercise instances
 

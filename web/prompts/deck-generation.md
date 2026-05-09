@@ -56,15 +56,15 @@ T/F multi-statement should bias toward **direction-of-effect** questions — eac
 
 Run these in order. Phases A–C source from existing materials with provenance flags; phase D fills the rest with synthesised questions; D.5 is the per-question discipline; E is the quality pass.
 
-### Phase A — ISLR conceptual sweep (soft cap ~5 lifts)
+### Phase A — ISLP conceptual sweep (soft cap ~5 lifts)
 
 Open `book/<NN>-<slug>.md` → `## X.<Y> Exercises` → `### Conceptual` only. **Skip `### Applied` (R coding) entirely.**
 
 For each conceptual problem:
 
-1. **In-scope per `docs/scope.md`?** If no → DROP. Do not adapt and re-flag — once the OOS mechanic is replaced, it's no longer the ISLR exercise, so the flag would lie.
-2. **MC-ifies cleanly?** Some ISLR conceptual problems are essentially MC already; others convert to T/F multi-statement; some don't fit either shape and should be dropped.
-3. If yes → lift the question stem verbatim, flag `<span class="exam-q__src">ISLR §<X> Q<n></span>`. **Soft cap ~5 ISLR-direct per deck.** Stop early if cap hit; quality > quantity.
+1. **In-scope per `docs/scope.md`?** If no → DROP. Do not adapt and re-flag — once the OOS mechanic is replaced, it's no longer the ISLP exercise, so the flag would lie.
+2. **MC-ifies cleanly?** Some ISLP conceptual problems are essentially MC already; others convert to T/F multi-statement; some don't fit either shape and should be dropped.
+3. If yes → lift the question stem verbatim, flag `<span class="exam-q__src">ISLP §<X> Q<n></span>`. **Soft cap ~5 ISLP-direct per deck.** Stop early if cap hit; quality > quantity.
 
 Distractor reformulation: if the source's distractors are mutations of the correct answer rather than misconception-anchored, **rewrite the distractors** per [[../templates/deck]] §4.5 and **keep the flag**. The flag means "the question stem came from there", not "the option set is identical to the source's."
 
@@ -120,10 +120,10 @@ Distractors selected (3 strongest, mapped to letters):
   - A or B or C or D: <misconception name>
   - …
   - …
-Source flag (if any): <ISLR §X Qn / Exam YYYY Pn / CEn Pm / Ex<i>.<j> / none>
+Source flag (if any): <ISLP §X Qn / Exam YYYY Pn / CEn Pm / Ex<i>.<j> / none>
 ```
 
-For ISLR/exam/CE-direct lifts: audit the source's distractors against this ledger. If they don't pass [[../templates/deck]] §4.5, **rewrite them and keep the flag**.
+For ISLP/exam/CE-direct lifts: audit the source's distractors against this ledger. If they don't pass [[../templates/deck]] §4.5, **rewrite them and keep the flag**.
 
 The ledger drives the explanation block: each `<p>` dismissing a distractor names the misconception. "B forgets the bias term in the NN parameter count," not "B is just wrong because it gives 11."
 
@@ -170,7 +170,7 @@ Every question's `<p class="ref">…</p>` block carries at least one `<a href="/
 - **DO NOT modify** the wiki, the manifest, atoms, lectures, MOCs, or `docs/scope.md`. You only write `web/static/decks/m<NN>-<slug>.html`.
 - **DO NOT read `notes/`**, off-limits per CLAUDE.md.
 - **DO NOT replicate past-exam questions verbatim.** Translate, change numbers, vary the angle. Treat past exams as *style references*, not answer keys.
-- **DO NOT write questions on out-of-scope material.** `docs/scope.md` is canonical. If a topic is out, no question, even if the topic is in ISLR.
+- **DO NOT write questions on out-of-scope material.** `docs/scope.md` is canonical. If a topic is out, no question, even if the topic is in ISLP.
 - **DO NOT exceed 30 questions**, if you have more good content than fits, save the surplus for a future revision or for an eventual mock-exam set.
 
 ## What you're not doing

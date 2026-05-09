@@ -174,11 +174,11 @@ Pick via validation set or [[cross-validation]]. Beware of **overfitting your va
 - **Forgetting that mini-batch SGD is itself regularization.** Don't list it only under "optimization", it lives on the regularization menu too.
 - **Treating regularization as optional in the over-parameterized regime.** The prof's iron rule: *never* train without it.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the full menu (L1, L2, mini-batch SGD as implicit, data augmentation, label smoothing, early stopping, dropout, transfer learning), the "never train without regularization" rule, dropout rate range (20–50%), the bias-variance framing.
-- **Look up in ISLR:** §10.7.2 (regularization + SGD), §10.7.3 (dropout), §10.7.4 (network tuning).
-- **Skip in ISLR (book-only / not lectured):**
+- **Look up in ISLP:** §10.7.2 (regularization + SGD), §10.7.3 (dropout), §10.7.4 (network tuning).
+- **Skip in ISLP (book-only / not lectured):**
   - **Batch normalization**: [[scope]] NN exclusions: explicitly out.
   - **Weight initialization (Xavier / He)** - [[L24-nnet-2]] / [[scope]]: not discussed.
   - **Vanishing / exploding gradients**: [[scope]]: out.

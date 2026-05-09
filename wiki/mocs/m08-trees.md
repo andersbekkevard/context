@@ -42,5 +42,5 @@ The prof's first algorithmic (vs data-modelling) module: CART recursive binary s
 - **NP-completeness proof / computational complexity of trees** - mentioned in passing only as NP-hard, not exam-relevant - [[L17-trees-1]]
 - **R/Python package syntax** (`tree()`, `randomForest()`, `cv.tree()`, `prune.misclass`, `importance()`) - "no language-specific coding" - [[L27-summary]]
 
-## ISLR pointer
-Chapter 8: Tree-Based Methods. Deep treatment of every in-scope concept lives in `book/08-trees.md`; specific atoms carry section-level `isl-ref:` pointers. Note ISLR ch. 8 also covers boosting, which is module 09's territory, not this MOC's.
+## ISLP pointer
+Chapter 8: Tree-Based Methods. Deep treatment of every in-scope concept lives in `book/08-trees.md`; specific atoms carry section-level `isl-ref:` pointers. Note ISLP ch. 8 also covers boosting, which is module 09's territory, not this MOC's.

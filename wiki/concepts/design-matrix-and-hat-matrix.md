@@ -108,11 +108,11 @@ Recommended exercise: show that the matrix formula reduces to the simple-LR form
 - **$\mathbf{H}$ depends only on $\mathbf{X}$.** Useful: leverage is a property of the design, *not* of the response. Detect high-leverage points before you even look at $\mathbf{y}$.
 - **The inverse may not exist.** Rank deficiency (perfect [[collinearity]] or $n < p+1$) breaks the closed form. Without "tricks" (regularization, pseudoinverse), OLS literally has no unique solution.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the design-matrix structure, the normal-equations derivation, definition of the hat matrix, leverage as $h_{ii}$, and the LOOCV shortcut formula.
-- **Look up in ISLR:** §3.2.1 (estimating coefficients) , the matrix formulation is mostly in equation form, light on derivation. §3.3.3 covers leverage briefly (pp. 97–98). §5.1.2 covers LOOCV with the shortcut formula.
-- **Skip in ISLR (book-only / prof excluded):** Moore–Penrose pseudoinverse details , [[L08-classif-2]]: "explicitly bracketed off." Spectral / eigen-decomposition theory of $\mathbf{X}^\top\mathbf{X}$ , [[L04-statlearn-3]] deferred to Linear Statistical Models.
+- **Look up in ISLP:** §3.2.1 (estimating coefficients) , the matrix formulation is mostly in equation form, light on derivation. §3.3.3 covers leverage briefly (pp. 97–98). §5.1.2 covers LOOCV with the shortcut formula.
+- **Skip in ISLP (book-only / prof excluded):** Moore–Penrose pseudoinverse details , [[L08-classif-2]]: "explicitly bracketed off." Spectral / eigen-decomposition theory of $\mathbf{X}^\top\mathbf{X}$ , [[L04-statlearn-3]] deferred to Linear Statistical Models.
 
 ## Exercise instances
 

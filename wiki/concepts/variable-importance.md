@@ -104,11 +104,11 @@ The 2023 exam asked students to identify "which three variables are most importa
 - **"Mean decrease accuracy" is for classification; "%IncMSE" is its regression analogue.** Both are randomization-based.
 - **Reporting:** the bigger the bar, the more important. Don't reverse the axis.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** Both flavors (impurity-based and randomization-based); the OOB-based permutation procedure; the prof's preference for randomization; reading a `varImpPlot` and identifying top / bottom predictors; using importance plots for tree ensembles (bagging, RF, and boosting).
-- **Look up in ISLR:** §8.2.1 ("Variable Importance Measures" subsection); Figure 8.9 (Heart data importance plot).
-- **Skip in ISLR (book-only, prof excluded):** SHAP / Shapley values for tree ensembles ([[L26-nnet-3]] mentions in passing as part of explainable AI; not exam material). Conditional importance / impurity-correction methods (research literature; not lectures or exercises).
+- **Look up in ISLP:** §8.2.1 ("Variable Importance Measures" subsection); Figure 8.9 (Heart data importance plot).
+- **Skip in ISLP (book-only, prof excluded):** SHAP / Shapley values for tree ensembles ([[L26-nnet-3]] mentions in passing as part of explainable AI; not exam material). Conditional importance / impurity-correction methods (research literature; not lectures or exercises).
 
 ## Exercise instances
 

@@ -4,7 +4,7 @@ Working document for turning the per-module deck format into full-length mock ex
 
 ## State of play (2026-05-09)
 
-- **Per-module decks**: 11 to be built (`m01-intro` through `m11-nnet`). Spec locked, agents not yet fanned out. Each deck has a ≥50% single-MC floor, ≤50% multi-statement T/F, source-flag pills (ISLR / past-exam / exercise / synthesised), misconception-first distractors.
+- **Per-module decks**: 11 to be built (`m01-intro` through `m11-nnet`). Spec locked, agents not yet fanned out. Each deck has a ≥50% single-MC floor, ≤50% multi-statement T/F, source-flag pills (ISLP / past-exam / exercise / synthesised), misconception-first distractors.
 - **Mock exams**: deferred per `web/templates/deck.md §11`. This file plans that follow-up.
 - **Visual shell already mock-exam-ready**: `web/static/decks/exam.css` ships unused `.exam-part`, `.exam-part h2`, `.exam-part .part-desc` styling for sectioned papers. No CSS work needed for the section structure.
 
@@ -55,7 +55,7 @@ Sibling of `deck-generation.md`. Tells an agent how to assemble one mock exam:
 2. **Module quota**: pick questions per module roughly proportional to atom count + lecture hours. No question repeats from a deck verbatim — change numbers, swap dataset, vary the angle.
 3. **Specials sweep**: bias-variance, regularization, cross-validation, standardization should each appear ≥2× across the paper.
 4. **Past-exam direct lifts**: per the `Exam <year> P<n>` flag rule, lift from 2024 + 2025 after translation. Bias toward L27's walked-through reformatting.
-5. **Synthesise + lift balance**: target ~30% past-exam-direct, ~10% ISLR-direct, ~10% exercise-direct, ~50% synthesised.
+5. **Synthesise + lift balance**: target ~30% past-exam-direct, ~10% ISLP-direct, ~10% exercise-direct, ~50% synthesised.
 6. **Authoring phases A–E** carry over from `deck-generation.md`.
 
 **Effort:** ~1h.
@@ -223,7 +223,7 @@ In priority order:
 3. **L27 walkthrough** (`wiki/lectures/L27-summary.md` § "Walkthrough: 2025 exam, problem-by-problem"): the prof's own re-formattings of 2025 questions for 2026. Highest-fidelity templates per module.
 4. **`exam_analysis.md` §4d worked datasets**: scenario scaffolds — Default + Smarket for m04, Boston Housing for m08, Wage for m07, Hitters for m06, Iris + cork-tree for m10, MNIST for m11.
 5. **`exam_analysis.md` §4g procedural templates G1–G6**: hand-calc question recipes the prof flagged as exam-likely.
-6. **ISLR `### Conceptual` end-of-chapter exercises** (per-chapter): same soft cap ~5 lifts as decks, applied across the whole paper.
+6. **ISLP `### Conceptual` end-of-chapter exercises** (per-chapter): same soft cap ~5 lifts as decks, applied across the whole paper.
 
 ## Out-of-scope reminder
 

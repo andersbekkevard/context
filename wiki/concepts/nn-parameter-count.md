@@ -113,11 +113,11 @@ The 2024 exam also had an architecture-interpretation MC referring to weight cou
 - **Conflating "neurons" with "parameters".** A network with M = 4 hidden neurons does *not* have 4 parameters; it has $(p + 1) \cdot M + (M + 1) \cdot C$. Neurons are the structure; parameters live on the connections + biases.
 - **Off-by-one when reading multilayer formulas.** Trace each summation index back to (input dim, output dim) carefully; missing a layer or miscounting M is easy.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the $(p+1)M + (M+1)C$ formula for one hidden layer, layer-by-layer counting for deeper networks, biases included, dropout doesn't reduce count.
-- **Look up in ISLR:** §10.1 (one hidden layer; the parameter-counting walkthrough is mostly the slides not ISLR).
-- **Skip in ISLR:** parameter-sharing accounting in CNNs (kernel sizes × depth, not on this exam since the prof excluded CNN architecture details, see [[L27-summary]] and the [[convolutional-neural-network]] atom).
+- **Look up in ISLP:** §10.1 (one hidden layer; the parameter-counting walkthrough is mostly the slides not ISLP).
+- **Skip in ISLP:** parameter-sharing accounting in CNNs (kernel sizes × depth, not on this exam since the prof excluded CNN architecture details, see [[L27-summary]] and the [[convolutional-neural-network]] atom).
 
 ## Exercise instances
 

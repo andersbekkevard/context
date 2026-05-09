@@ -115,11 +115,11 @@ Both steps decrease (weakly) the same nonnegative quantity → must converge (on
 - **Squared-vs-plain Euclidean confusion.** The objective uses *squared* distances. "There's no reason to take the square root." Don't introduce extra square roots that aren't in the formula.
 - **Curse of dimensionality.** In high $p$, all pairwise Euclidean distances tend toward equality → K-means can't tell points apart. Dimension-reduce first (PCA, NN feature extractor) or switch to a less-cursed distance.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the partition definition, the within-cluster-variation objective, the iterative algorithm, the local-minimum-and-rerun fix, the no-nesting property vs hierarchical, the standardization mandate, the proof-style monotonicity argument (Exercise 10.2).
-- **Look up in ISLR:** §12.4.1, the canonical treatment, including the (12.17) ↔ (12.18) identity that powers the monotonicity proof, and Figures 12.7–12.9 (algorithm progression + local-optima demo).
-- **Skip in ISLR:**
+- **Look up in ISLP:** §12.4.1, the canonical treatment, including the (12.17) ↔ (12.18) identity that powers the monotonicity proof, and Figures 12.7–12.9 (algorithm progression + local-optima demo).
+- **Skip in ISLP:**
   - **K-means++ initialization** - [[L22-unsupervised-2]]: name-checked as a smarter init scheme, not derived. Out of scope per `docs/scope.md`.
   - **Soft / mixture-model K-means (EM, mixtures of Gaussians)**: book §12.4.3 mentions "mixture models are an attractive approach"; deferred to ESL, never lectured. Skip.
   - **Gap statistic** for choosing $K$, name-checked only.

@@ -117,11 +117,11 @@ CE1 problem 3e is **exactly** this exam pattern in compulsory form: derive $\del
 - **Sign error on the prior term.** $+\log\pi_k$ , bigger prior → bigger $\delta_k$ → more area classified as $k$.
 - **Treating the boundary as $\mu_0 - \mu_1$ in 2D.** No , it's $\Sigma^{-1}(\mu_0 - \mu_1)$ that gives the normal direction. Only when $\Sigma = I$ (or scalar multiple) do they coincide.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** Discriminant-score derivation from $\log(\pi_k f_k(x))$, why LDA is linear and QDA quadratic, decision-boundary derivation, the $\mu_A = (1,1)$ / $\mu_B = (3,3)$ / $\Sigma = 2I$ worked example, prior-shift effect.
-- **Look up in ISLR:** §4.4.1 (1D LDA derivation, eq. 4.18), §4.4.2 (multivariate, eq. 4.24), §4.4.3 (QDA, eq. 4.28). pp. 145–155.
-- **Skip in ISLR:** Fisher's eigenvalue derivation (slide deck "Optional", prof never lectured); detailed naive-Bayes-as-LDA-with-diagonal-Σ algebra (covered abstractly in [[naive-bayes]]).
+- **Look up in ISLP:** §4.4.1 (1D LDA derivation, eq. 4.18), §4.4.2 (multivariate, eq. 4.24), §4.4.3 (QDA, eq. 4.28). pp. 145–155.
+- **Skip in ISLP:** Fisher's eigenvalue derivation (slide deck "Optional", prof never lectured); detailed naive-Bayes-as-LDA-with-diagonal-Σ algebra (covered abstractly in [[naive-bayes]]).
 
 ## Exercise instances
 

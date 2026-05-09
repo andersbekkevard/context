@@ -40,6 +40,6 @@ The recommended-exercise series starts at `exercises/Exercise2/` (module 2). Mod
 - **Course-mechanics trivia** (compulsory-exercise pass marks, group sizes, Rmd vs Python policy, who taught it last year): administrative only; not exam content.
 - **Data-science pipeline steps 1–3** (hypothesis formulation, scraping, structuring) - [[L01-intro]]: explicitly out of scope; statistical learning owns steps 4–6 (modelling, fitting, communication).
 
-## ISLR pointer
+## ISLP pointer
 
 Chapter 1: Introduction. Mostly motivational (Wage / Smarket / NCI60 examples, brief field history). Atoms carry section-level `isl-ref:` pointers: `prediction-vs-inference` → §2.1.1–§2.1.2, `supervised-vs-unsupervised` → §2.1.4. The historical rundown in §1 (least squares 1800s, LDA 1936, GLMs 1970s, trees 1980s, NNs, SVMs) is explicitly out of scope per the no-history-questions rule.

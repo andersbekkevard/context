@@ -114,11 +114,11 @@ The correct definition: "$p$ is the probability to observe a data summary under 
 - **Ignoring correlation among predictors.** Individual t-tests can both be insignificant while the overall F is highly significant; see [[f-test]] and [[collinearity]].
 - **Df off by one.** Simple LR: $n - 2$. Multiple LR: $n - p - 1$ (with $p$ slopes excluding intercept). Ignoring the $-1$ is benign for moderate $n$ but wrong on principle.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the t-statistic formula, what the p-value means and doesn't mean, statistical vs practical significance, why you sequence F-test before t-tests, the danger of relying on p-values alone.
-- **Look up in ISLR:** §3.1.2 (pp. 67–68) for the simple-LR t-test; §3.2.2 (pp. 75–77, *Is There a Relationship?*) for the multiple-LR setup including the F-statistic.
-- **Skip in ISLR:** formal multiple-testing correction theory (ISLR ch. 13), entirely out of scope. Permutation / bootstrap-based p-values for regression, not covered until module 5 (and only conceptually).
+- **Look up in ISLP:** §3.1.2 (pp. 67–68) for the simple-LR t-test; §3.2.2 (pp. 75–77, *Is There a Relationship?*) for the multiple-LR setup including the F-statistic.
+- **Skip in ISLP:** formal multiple-testing correction theory (ISLP ch. 13), entirely out of scope. Permutation / bootstrap-based p-values for regression, not covered until module 5 (and only conceptually).
 
 ## Exercise instances
 

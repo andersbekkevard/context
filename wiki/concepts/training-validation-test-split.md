@@ -53,10 +53,10 @@ The prof followed with the anecdote about a paper that committed exactly this si
 - **Tuning on the test set "just a little"** still counts. Even one peek invalidates the assessment.
 - If you go to the test set and the result disappoints, you cannot go back, change the model, and re-test. That's the moment of truth for the chosen model, see [[nested-cv-and-cv-pitfalls]].
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the three-partition framing, the data-reuse principle, the motivation for k-fold CV as an efficient validation-set substitute when data is limited.
-- **Look up in ISLR:** §5.1 (intro paragraphs to chapter 5) gives the same framing more compactly. The whole of ch. 5 is the operationalization via CV.
+- **Look up in ISLP:** §5.1 (intro paragraphs to chapter 5) gives the same framing more compactly. The whole of ch. 5 is the operationalization via CV.
 
 ## Exercise instances
 

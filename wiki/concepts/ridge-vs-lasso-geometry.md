@@ -105,11 +105,11 @@ This is one of the **few** module-6 slide figures the prof explicitly told the c
 - **Reading "the diamond's corner is on the axis" as "lasso always zeros at least one $\beta$."** It typically does, but if $\hat\beta_\text{OLS}$ happens to lie along the diamond's edge perpendicular to one axis, you can land at an interior point with no zeros. Likely on the exam: the *typical* behaviour, not edge cases.
 - **Believing the ellipse always grows from $\hat\beta_\text{OLS}$, which is true for the constraint formulation but the picture mixes both.** Don't get tangled. The picture's job is to show "diamond corners → sparsity" and that's it.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the figure (ISL Fig 6.7); reading it correctly; the verbal account ("lasso corners → sparsity, ridge smooth → no sparsity"); the constraint-form formulation; the correlated-variable interpretation.
-- **Look up in ISLR:** §6.2.2 pp. 256–264 ("Another Formulation for Ridge Regression and the Lasso" + "The Variable Selection Property of the Lasso" + "Comparing the Lasso and Ridge Regression"). Fig 6.7 is the canonical version of the picture.
-- **Skip in ISLR:** the formal $\ell_p$-ball discussion / convex-analysis derivation. The prof gestured at the geometry and stopped.
+- **Look up in ISLP:** §6.2.2 pp. 256–264 ("Another Formulation for Ridge Regression and the Lasso" + "The Variable Selection Property of the Lasso" + "Comparing the Lasso and Ridge Regression"). Fig 6.7 is the canonical version of the picture.
+- **Skip in ISLP:** the formal $\ell_p$-ball discussion / convex-analysis derivation. The prof gestured at the geometry and stopped.
 
 ## Exercise instances
 

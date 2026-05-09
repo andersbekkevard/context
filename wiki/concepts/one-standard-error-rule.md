@@ -75,11 +75,11 @@ The prof said *"think about why"* and let it sit as a thought question. Be ready
 - **Confusing the SE formula** with the bootstrap SE or the cross-validation MSE itself. The 1-SE band is built from the per-fold MSE *standard deviation*, not from bootstrapped resamples.
 - **Treating it as a hard rule** rather than a default. In some applications you genuinely want the minimum (e.g. last-mile prediction accuracy contests). The 1-SE rule's bias toward simplicity is a feature for interpretability and generalization, not a free lunch.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the rule itself, the SE formula, the "not quite valid" footnote, the application to k-fold CV, the bias-toward-simplicity rationale.
-- **Look up in ISLR:** §6.1.3 (pp. 246), appears in the model-selection chapter as a tiebreaker for subset selection. Also discussed in §6.2.3 for ridge / lasso $\lambda$ choice. The rule is referenced (less explicitly) for tree pruning in §8.1.
-- **Skip in ISLR (book-only, prof excluded):** detailed theoretical justification of the SE estimate (it's not derived rigorously; the prof's footnote gestures at why it's heuristic).
+- **Look up in ISLP:** §6.1.3 (pp. 246), appears in the model-selection chapter as a tiebreaker for subset selection. Also discussed in §6.2.3 for ridge / lasso $\lambda$ choice. The rule is referenced (less explicitly) for tree pruning in §8.1.
+- **Skip in ISLP (book-only, prof excluded):** detailed theoretical justification of the SE estimate (it's not derived rigorously; the prof's footnote gestures at why it's heuristic).
 
 ## Exercise instances
 

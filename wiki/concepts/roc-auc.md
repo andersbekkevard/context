@@ -86,11 +86,11 @@ The 2025 exam Q7 explicitly asked: explain what the ROC curve illustrates, in pa
 - **Reading AUC = 0.5 as "useless."** It's actually as informative as the prior, just no better than chance. AUC < 0.5 means actively worse, but flippable.
 - **Sweeping the threshold past the data range.** ROC is constructed at thresholds spanning the actual $\hat p$ values produced by the classifier. Going beyond just stays at the corners.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** Construction of the curve (sweep threshold, plot TPR vs FPR), AUC definition + interpretation, reference points (origin, top-right, top-left, diagonal), use for classifier comparison.
-- **Look up in ISLR:** §4.4.2, p. 152, Figure 4.8 (LDA ROC on Default). Table 4.6 for the type-I/II vocabulary if you need it.
-- **Skip in ISLR:** Precision-recall curves, F1 scores, lift/gains charts (information-retrieval-style metrics), never covered.
+- **Look up in ISLP:** §4.4.2, p. 152, Figure 4.8 (LDA ROC on Default). Table 4.6 for the type-I/II vocabulary if you need it.
+- **Skip in ISLP:** Precision-recall curves, F1 scores, lift/gains charts (information-retrieval-style metrics), never covered.
 - **Imbalanced-class asymmetric ROC analysis** - [[L07-classif-1]]: "I don't think the book talks much about that." Out of scope.
 
 ## Exercise instances

@@ -18,7 +18,7 @@ The single most important meta-fact: **this year's exam is fundamentally differe
 | Retake | Possibly **oral** |
 
 ### What you can bring
-- **The textbook (ISLR)**: physical or as the searchable PDF supplied in Inspera. Post-it tabs OK; no writing in the book.
+- **The textbook (ISLP)**: physical or as the searchable PDF supplied in Inspera. Post-it tabs OK; no writing in the book.
 - **One A5 sheet, handwritten notes only**: the instructor was uncertain whether iPad-printed counts; play safe and handwrite.
 - **A calculator**: any normal one. "Won't need anything fancy."
 - **The textbook PDF inside Inspera** is searchable.
@@ -72,7 +72,7 @@ The rule from Apr 28: **"If it was covered in the slides or the exercises, it's 
 
 ### Tier 1: guaranteed / very heavy (study first)
 
-- **Bias-variance tradeoff.** Explicit, repeated guarantee. From Apr 28: *"Definitely going to be a question about bias variance in the test because I think that concept is the kind of the running theme through the course in all the models we looked at."* And **separately confirmed Feb 24** mid-semester: *"this is definitely going to be on the exam. I mean, just this concept... it's deceptively confusing. It seems really simple. It's not."* Read the bias-variance section of ISLR cover-to-cover. Be able to:
+- **Bias-variance tradeoff.** Explicit, repeated guarantee. From Apr 28: *"Definitely going to be a question about bias variance in the test because I think that concept is the kind of the running theme through the course in all the models we looked at."* And **separately confirmed Feb 24** mid-semester: *"this is definitely going to be on the exam. I mean, just this concept... it's deceptively confusing. It seems really simple. It's not."* Read the bias-variance section of ISLP cover-to-cover. Be able to:
   - State and derive the decomposition E[(y − f̂)²] = Bias² + Var + σ².
   - Explain why reducing variance is critical.
   - Connect it to *every* method you know (regression, ridge/lasso, trees, NN, splines).
@@ -377,7 +377,7 @@ The instructor went out of his way to exclude these. Quotes are direct.
 - **Computational complexity of trees.** Mar 10: noted as NP-hard but not exam-relevant.
 - **Elastic Net detailed tuning.** Feb 24: combines L1+L2, concept noted, no worked example.
 - **SVM: confirmed fully out, not just light.** Apr 14 explicit: *"It's another algorithm that we, yeah, I was going to talk about it, but then we didn't, and it's fine. I don't think it's that interesting."* No exam questions on hyperplanes, margins, kernels, slack variables, hinge loss, support vectors. Demote SVM from "Tier 4: light" in your study plan to **skip entirely**.
-- **Survival analysis** (Kaplan-Meier, Cox PH), **multiple-testing corrections** (Bonferroni, FDR), **censored data**, **time series modeling**: none of these (ISLR Ch. 11, 13) appear in lectures.
+- **Survival analysis** (Kaplan-Meier, Cox PH), **multiple-testing corrections** (Bonferroni, FDR), **censored data**, **time series modeling**: none of these (ISLP Ch. 11, 13) appear in lectures.
 - **Weighted KNN, K-means++ initialization, Ward linkage formula, gap statistic.** Mentioned as existing alternatives at most; not derived or examined.
 - **F-statistic for joint hypothesis tests.** Confirmed Jan 26 quote: *"I'm more interested in things that can generalize to other distributions."* Don't memorize the F formula.
 - **Vanishing/exploding gradients, batch normalization, weight initialization schemes (Xavier/He), Adam internals.** Apr 20–21: not discussed in any depth.
@@ -426,7 +426,7 @@ The instructor walked through 2024/2025 questions in the Apr 28 lecture and expl
 
 If you only had one week, do them in this order:
 
-1. **Bias-variance section of ISLR** + every example in lectures Jan 19, Apr 13, Apr 21. Be able to state the decomposition, explain double descent, and apply it to any model.
+1. **Bias-variance section of ISLP** + every example in lectures Jan 19, Apr 13, Apr 21. Be able to state the decomposition, explain double descent, and apply it to any model.
 2. **Re-do every compulsory-exercise problem.** Instructor: *"If you've solved all the exercises, you're generally pretty good."*
 3. **Practice output interpretation**: pull every regression / GLM / boosting / CV / ROC printout from the slides and write a 2-sentence interpretation. Pay attention to interaction-term traps in logistic regression.
 4. **Hand calculations drill**: odds↔probability, degrees of freedom, MSE from confusion matrix, PCA variance from eigenvalues, hierarchical clustering by hand on a 4×4 distance matrix.
@@ -448,7 +448,7 @@ If you only had one week, do them in this order:
 9. **Drill the worked-example datasets** (§4d). Pull the slides for Default, Boston Housing, Wage, Ozone, Brain Injury, and re-do every interpretation prompt.
 
 ### Things to skip or skim
-- Long proofs in ISLR.
+- Long proofs in ISLP.
 - AIC/BIC/Cp algebra.
 - F-test mechanics.
 - RNN/CNN architectures past the high-level idea.
@@ -464,7 +464,7 @@ If you only had one week, do them in this order:
 - Always show work, partial credit is on offer.
 - If a question seems broken: state your interpretation in one line, then answer.
 - Watch the spline λ direction (more λ = smoother, less flexible) and logistic interaction interpretations, both are easy to flip.
-- Bias-variance is showing up. Don't skip it. Read that ISLR section twice.
+- Bias-variance is showing up. Don't skip it. Read that ISLP section twice.
 
 ---
 

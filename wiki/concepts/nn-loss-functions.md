@@ -104,11 +104,11 @@ The L27 walkthrough does not feature a direct loss-function question. But the lo
 - **Cross-entropy ≠ entropy.** Cross-entropy measures the divergence between two distributions (predicted vs. true). The "entropy" in the name is information-theoretic; you don't need to derive it from first principles for the exam.
 - **The loss is on the output**, not on intermediate activations. Hidden states have no targets, they're learned implicitly to minimize the output loss.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the three losses (MSE, BCE, CCE), the pairing table with output activations, the conceptual identification with GLM losses (logistic / linear / multinomial), MLE-as-loss-minimization connection.
-- **Look up in ISLR:** §10.1 (regression NN with MSE), §10.2 (multi-class with softmax + CCE), §10.7 (training).
-- **Skip in ISLR (book-only / not lectured):** focal loss, ranking losses, contrastive / triplet losses, KL-divergence formalism. Boosting losses (quadratic / absolute / Huber / deviance), those live in [[boosting-loss-functions]] (Module 9), separate atom.
+- **Look up in ISLP:** §10.1 (regression NN with MSE), §10.2 (multi-class with softmax + CCE), §10.7 (training).
+- **Skip in ISLP (book-only / not lectured):** focal loss, ranking losses, contrastive / triplet losses, KL-divergence formalism. Boosting losses (quadratic / absolute / Huber / deviance), those live in [[boosting-loss-functions]] (Module 9), separate atom.
 
 ## Exercise instances
 

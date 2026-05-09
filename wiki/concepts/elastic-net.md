@@ -75,11 +75,11 @@ That's it. The prof did not exam-flag elastic net. From [[scope]]: *"Elastic Net
 - **Believing it "always wins."** It often does in practice, but pure lasso or pure ridge can win on CV for problems that are very sparse (lasso wins) or very dense (ridge wins).
 - **Memorizing both prof's parameterization ($\lambda, \gamma$) AND the library ($\lambda, \alpha$) parameterization.** They're equivalent; the prof noted *"often parameterized slightly differently in libraries"*, you don't need both.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the combined L1+L2 objective; the conceptual claim that it inherits sparsity from L1 and correlated-variable averaging from L2; the prof's verdict ("the one people use the most"); the centrist-vs-extremes framing.
-- **Look up in ISLR:** §6.2.2 pp. 263-264 mentions elastic net briefly in the comparing-lasso-and-ridge subsection. Not a deep treatment in ISL either.
-- **Skip in ISLR:** detailed tuning algorithms for the L1/L2 mixing parameter; the original Zou-Hastie 2005 paper machinery. Not on the exam, *"concept noted, no worked example"* per scope notes and [[L13-modelsel-2]].
+- **Look up in ISLP:** §6.2.2 pp. 263-264 mentions elastic net briefly in the comparing-lasso-and-ridge subsection. Not a deep treatment in ISL either.
+- **Skip in ISLP:** detailed tuning algorithms for the L1/L2 mixing parameter; the original Zou-Hastie 2005 paper machinery. Not on the exam, *"concept noted, no worked example"* per scope notes and [[L13-modelsel-2]].
 
 ## Exercise instances
 

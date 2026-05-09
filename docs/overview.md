@@ -16,7 +16,7 @@ The prof was explicit on Apr 28:
 
 Strengthened by his own emphasis: **"especially the exercises."**
 
-[[scope]] is the canonical authority for "is X in scope?". It spells out the source hierarchy (exercises > lectures > slides; ISLR for fleshing out in-scope ideas, not for scoping), the explicit out-of-scope list with verbatim anchors, the programming policy, the 2026 question patterns, and the past-exam translation rules. Atoms apply this rule: include what the prof covered, note where the textbook adds material he didn't, don't atomize anything that lives only in the book.
+[[scope]] is the canonical authority for "is X in scope?". It spells out the source hierarchy (exercises > lectures > slides; ISLP for fleshing out in-scope ideas, not for scoping), the explicit out-of-scope list with verbatim anchors, the programming policy, the 2026 question patterns, and the past-exam translation rules. Atoms apply this rule: include what the prof covered, note where the textbook adds material he didn't, don't atomize anything that lives only in the book.
 
 ## The corpus
 
@@ -26,7 +26,7 @@ Strengthened by his own emphasis: **"especially the exercises."**
 | `modules/` | Slides, the **structure** of the curriculum |
 | `exercises/` | Recommended + compulsory exercises, the **form** of exam-style problems |
 | `exams/` | Past papers (2023, 2024, 2025), the **historical question patterns** |
-| `book/` | ISLR as markdown, one file per chapter (slugs match module slugs). Content reference; available at the exam. Used for citation and look-up, not memorization. |
+| `book/` | ISLP as markdown, one file per chapter (slugs match module slugs). Content reference; available at the exam. Used for citation and look-up, not memorization. |
 
 Each source has a distinct role. We mine each for what only it gives.
 
@@ -83,6 +83,6 @@ The wiki doesn't pre-bake primers, quizzes, or summaries. Those are query-time o
 
 ## What this is not
 
-- Not a textbook. ISLR is the textbook.
+- Not a textbook. ISLP is the textbook.
 - Not a strict spec. Conventions are loose; agents are smart; we instruct ad-hoc.
 - Not a tier-classified knowledge graph. Importance lives in the verbatim signals an atom cites, not in metadata.

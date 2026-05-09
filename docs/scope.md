@@ -25,15 +25,15 @@ In order of weight:
 1. **Exercises** (`exercises/Exercise2/` through `exercises/Exercise11/` plus `compulsory-exercise-1.md` and `compulsory-exercise-2.md`): *highest* signal. If a concept is drilled here, it is exam-bait. Compulsory exercises especially: the prof picked these as required, you've solved them, they are the closest analog to what an exam problem looks like.
 2. **Lectures** (`wiki/lectures/`): what the prof actually said. If he treated a concept as a topic, it's in scope. If he flagged it as exam-relevant, it's load-bearing. His take on ideas, and the concepts he is most interested in or has strong opinions on, are highly relevant.
 3. **Slides** (`modules/`): the deck content. Anything on the slides that he kept (didn't skip in lecture) is in scope, even if he didn't dwell on it.
-4. **ISLR** (`book/`): does **not** determine scope. Material that is *only* in the book and never reached lecture, slides, or exercises is OUT.
+4. **ISLP** (`book/`): does **not** determine scope. Material that is *only* in the book and never reached lecture, slides, or exercises is OUT.
 
 ### For fleshing out IN-SCOPE ideas
 
-Once a concept is filtered as in-scope, **ISLR is the most concise authoritative definition.** Anders will read it himself, and atoms point Claude at the relevant section so it can say "for the full derivation, see ISLR §6.2.1."
+Once a concept is filtered as in-scope, **ISLP is the most concise authoritative definition.** Anders will read it himself, and atoms point Claude at the relevant section so it can say "for the full derivation, see ISLP §6.2.1."
 
-So ISLR's role is the inverse of scope-determination:
-- Lectures + exercises filter *what part of ISLR is relevant.*
-- Within that filtered scope, ISLR is the deep-treatment reference.
+So ISLP's role is the inverse of scope-determination:
+- Lectures + exercises filter *what part of ISLP is relevant.*
+- Within that filtered scope, ISLP is the deep-treatment reference.
 
 Atoms therefore carry an `isl-ref:` pointer per concept, and Claude routes Anders to the book for full mechanics.
 
@@ -41,7 +41,7 @@ Atoms therefore carry an `isl-ref:` pointer per concept, and Claude routes Ander
 
 These do NOT determine scope, but DO inform what kind of questions to expect and practice on:
 
-- **ISLR end-of-chapter exercises**: useful drill material for hand-calculation skills (the conceptual ones; skip the R-coding ones).
+- **ISLP end-of-chapter exercises**: useful drill material for hand-calculation skills (the conceptual ones; skip the R-coding ones).
 - **Past exams** (`exams/TMA4268_2023_Exam.Rmd` etc.): useful with translation. The 2026 exam has been redesigned (open-book, no code, more interpretation), so old papers help mostly for question *style* and which topics recur. The translation table is below.
 
 For both of these: Given that a concept is in scope, these are good sources of exercises for said concept.
@@ -52,9 +52,9 @@ These are concepts the prof verbally excluded or never covered. Sourced to verba
 
 ### Whole topics excluded
 - **R/Python package names, function syntax, executable code** - [[../wiki/lectures/L27-summary]]: "no language, no memorizing package names, no language-specific coding."
-- **SVM (entire ISLR ch. 9)** - [[../wiki/lectures/L22-unsupervised-2]] / [[../wiki/lectures/L27-summary]]: "I was going to talk about it, but then we didn't, and it's fine. I don't think it's that interesting."
-- **Survival analysis** (ISLR ch. 11, Kaplan-Meier, Cox PH): never covered.
-- **Multiple testing corrections** (ISLR ch. 13, Bonferroni / FDR): never covered.
+- **SVM (entire ISLP ch. 9)** - [[../wiki/lectures/L22-unsupervised-2]] / [[../wiki/lectures/L27-summary]]: "I was going to talk about it, but then we didn't, and it's fine. I don't think it's that interesting."
+- **Survival analysis** (ISLP ch. 11, Kaplan-Meier, Cox PH): never covered.
+- **Multiple testing corrections** (ISLP ch. 13, Bonferroni / FDR): never covered.
 - **Time series modeling**: never covered.
 - **Multi-class logistic regression** - [[../wiki/lectures/L07-classif-1]]: "we're not going to talk about... discriminant analysis and KNN can deal with this case."
 - **Probit, complementary log-log, other GLM link functions** - [[../wiki/lectures/L07-classif-1]]: "outside the scope of this course."
@@ -92,7 +92,7 @@ These are concepts the prof verbally excluded or never covered. Sourced to verba
 
 ### General principle
 
-Anything in ISLR but NOT covered in lectures or exercises is OUT. When in doubt: grep `wiki/lectures/` and `exercises/` for the term, and if absent, it's out.
+Anything in ISLP but NOT covered in lectures or exercises is OUT. When in doubt: grep `wiki/lectures/` and `exercises/` for the term, and if absent, it's out.
 
 ## Programming policy
 
@@ -148,9 +148,9 @@ Past papers are at `exams/TMA4268_2023_Exam.Rmd`, `..._2024_Exam.Rmd`, `..._2025
 - Pay attention to bias-variance, regularization, classification metrics, PCA, as these recur every year.
 - Don't memorize the R syntax in the answer keys.
 
-## ISLR end-of-chapter exercises: how to use them
+## ISLP end-of-chapter exercises: how to use them
 
-**Not in scope** per the prof's rule, as ISLR exercises are not the same as `exercises/`. But useful as *practice material* for hand-calculation fluency:
+**Not in scope** per the prof's rule, as ISLP exercises are not the same as `exercises/`. But useful as *practice material* for hand-calculation fluency:
 - The conceptual questions in each chapter end (those not requiring R) drill the same skills you'll need.
 - Skip the `## Applied` sections that require coding.
 
@@ -159,7 +159,7 @@ Past papers are at `exams/TMA4268_2023_Exam.Rmd`, `..._2024_Exam.Rmd`, `..._2025
 - **Date / time**: 2026-05-18, 09:00
 - **Duration**: 4 hours
 - **Format**: Open book, digital (Inspera). Answers written on paper, then scanned.
-- **Allowed**: ISLR (physical or PDF in Inspera), one A5 sheet of handwritten notes, calculator
+- **Allowed**: ISLP (physical or PDF in Inspera), one A5 sheet of handwritten notes, calculator
 - **Forbidden**: computer, R/Python, internet, executable code
 
 ## What this file does NOT cover

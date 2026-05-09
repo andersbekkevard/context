@@ -91,11 +91,11 @@ This computation is the core of the L27-flagged exam question (see "How it might
 - **Unsupervised**: PCs may not align with what predicts $Y$. For supervised dimension reduction, use [[partial-least-squares|PLS]] or LDA.
 - **Computing all $p$ PCs is not dimensionality reduction**: you've just rotated. The reduction comes from chopping at some $M$.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the optimization view (max variance + unit-norm constraint + orthogonality), the eigendecomposition recipe, loadings, scores, the standardization mandate, the USArrests / eigenfaces / ad-spending examples, PCA-as-visualization, PCA inside [[principal-component-regression|PCR]], PCA's failure on curved data.
-- **Look up in ISLR:** §12.2, full chapter. §12.2.2 (closest-hyperplane interpretation), §12.2.3 (PVE derivation in the $R^2 = 1 - \text{RSS}/\text{TSS}$ form), §12.2.4 (scaling discussion + uniqueness up to sign + how-many-PCs).
-- **Skip in ISLR:**
+- **Look up in ISLP:** §12.2, full chapter. §12.2.2 (closest-hyperplane interpretation), §12.2.3 (PVE derivation in the $R^2 = 1 - \text{RSS}/\text{TSS}$ form), §12.2.4 (scaling discussion + uniqueness up to sign + how-many-PCs).
+- **Skip in ISLP:**
   - **Spectral / eigen decomposition derivations of covariance** - [[L04-statlearn-3]]: "we don't talk about spectral decomposition" (deferred to Linear Statistical Models). Use the eigenvalue fact, don't derive it.
   - **§12.3 Missing values / matrix completion**: book-only, never lectured. Skip.
   - **Non-negative matrix factorization (NMF) / "parts" version of eigenfaces**: name-checked in [[L21-unsupervised-1]] only. Out per `docs/scope.md`.

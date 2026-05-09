@@ -69,7 +69,7 @@ Two reasons (the prof flagged the impurity-sensitivity argument as the load-bear
 
 ### "Useless-looking" splits that classify both children the same
 
-A subtle observation also visible in ISLR Figure 8.6: sometimes a split puts class A on both children , the classification doesn't change, but the impurity drops. The example the prof worked through: parent (70A, 30B, Gini ≈ 0.42) → left (40A, 5B, Gini ≈ 0.20) + right (30A, 25B, Gini ≈ 0.50). Both children predict A, but the left one predicts A with much higher confidence. *"It put kind of like the shitty part of the parent node in one side and the more confident version on the left side."* - [[L18-trees-2]]
+A subtle observation also visible in ISLP Figure 8.6: sometimes a split puts class A on both children , the classification doesn't change, but the impurity drops. The example the prof worked through: parent (70A, 30B, Gini ≈ 0.42) → left (40A, 5B, Gini ≈ 0.20) + right (30A, 25B, Gini ≈ 0.50). Both children predict A, but the left one predicts A with much higher confidence. *"It put kind of like the shitty part of the parent node in one side and the more confident version on the left side."* - [[L18-trees-2]]
 
 This is also why early stopping on misclassification breaks: the split looks "useless" by the misclassification criterion but enables a great later split. See [[cost-complexity-pruning]].
 
@@ -98,11 +98,11 @@ The 2025 exam Q7 reformulation in [[L27-summary]]: "If I gave you the [[confusio
 - **Categorical predictors with many levels** are dangerous: $q$ unordered levels → $2^{q-1} - 1$ possible partitions , high variance in tree structure. The slide deck recommends ordering levels by class proportion (binary case) to convert to ordered, then split as continuous. *"Try to avoid predictors with very many levels!"* , slide deck.
 - **Missing values:** drop them, mean-impute, or use **surrogate splits** (next-best split using another variable). Trees handle missing data better than most methods. (Surrogate splits: noted, not exam-detailed.)
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** Gini and cross-entropy formulas; majority-vote prediction; the "train Gini/entropy, prune misclassification" asymmetry; why misclassification fails as split criterion; reading a fitted classification tree; computing test misclassification from a [[confusion-matrix]]; Algorithm 8.1 with impurity replacing RSS.
-- **Look up in ISLR:** §8.1.2 (classification trees, Heart-data example, Figure 8.6).
-- **Skip in ISLR (book-only, prof excluded):** Surrogate-split internals; detailed handling of multi-level categorical predictors beyond the "convert to ordered" trick.
+- **Look up in ISLP:** §8.1.2 (classification trees, Heart-data example, Figure 8.6).
+- **Skip in ISLP (book-only, prof excluded):** Surrogate-split internals; detailed handling of multi-level categorical predictors beyond the "convert to ordered" trick.
 
 ## Exercise instances
 

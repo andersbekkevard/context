@@ -52,10 +52,10 @@ For $K = 3$ knots: $3 + 3 + 1 = 7$ parameters. (Lecture worked example: knots at
 
 Plain cubic splines have wild boundary tails, the cubic pieces in the outermost regions can swing dramatically, inflating CIs. Natural splines kill this by requiring the second derivative to be zero outside the boundary knots, i.e. linearity at both ends.
 
-Two boundary constraints = **two fewer effective parameters**: a natural cubic spline with $K$ interior knots uses $K + 2$ parameters (intercept absorbed → ISLR counts this as $K$ degrees of freedom in some places, $K + 4 - 4 = K$ for the constraint-counting, or as written in ISLR §7.4.4: a natural cubic spline with $K$ knots has $K$ parameters total when intercept is excluded, see the **dof-counting trap** below).
+Two boundary constraints = **two fewer effective parameters**: a natural cubic spline with $K$ interior knots uses $K + 2$ parameters (intercept absorbed → ISLP counts this as $K$ degrees of freedom in some places, $K + 4 - 4 = K$ for the constraint-counting, or as written in ISLP §7.4.4: a natural cubic spline with $K$ knots has $K$ parameters total when intercept is excluded, see the **dof-counting trap** below).
 
 > [!important] Direction-of-effect / dof counting trap
-> ISLR §7.4 / 2024 exam Q2c: "natural cubic spline with **3 cut points** → **4 dof**." The convention: degree-of-freedom count = (intercept) + (one per knot) for a natural cubic spline = $K + 1$ when intercept counts, or $K$ when it doesn't. **A plain cubic spline with $K$ knots = $K + 4$ dof (or $K + 3$ excluding intercept).** Don't mix up the two, natural splines have *fewer* dof than plain cubic splines for the same number of knots because boundary linearity = two constraints.
+> ISLP §7.4 / 2024 exam Q2c: "natural cubic spline with **3 cut points** → **4 dof**." The convention: degree-of-freedom count = (intercept) + (one per knot) for a natural cubic spline = $K + 1$ when intercept counts, or $K$ when it doesn't. **A plain cubic spline with $K$ knots = $K + 4$ dof (or $K + 3$ excluding intercept).** Don't mix up the two, natural splines have *fewer* dof than plain cubic splines for the same number of knots because boundary linearity = two constraints.
 
 The textbook basis (Exercise 7.3):
 $$ b_1(x) = x, \quad b_{k+2}(x) = d_k(x) - d_K(x), \quad k = 0, \ldots, K-1, $$
@@ -77,7 +77,7 @@ So the formula is something to *use*, not something the prof will ask you to *de
 
 > "If I was going to fit this with like a degree five polynomial it's going to get funky... but with a spline I can always just make a smooth function through it and it becomes very natural." - [[L16-beyondlinear-1]]
 
-ISLR §7.4.5 / Figure 7.7 makes the same point: a degree-15 polynomial vs a 15-dof natural cubic spline on the wage data, the polynomial blows up at the boundaries, the spline doesn't. **Splines add flexibility by adding knots, not by raising the degree**, a much more local, controllable form of flexibility.
+ISLP §7.4.5 / Figure 7.7 makes the same point: a degree-15 polynomial vs a 15-dof natural cubic spline on the wage data, the polynomial blows up at the boundaries, the spline doesn't. **Splines add flexibility by adding knots, not by raising the degree**, a much more local, controllable form of flexibility.
 
 ## Insights & mental models
 
@@ -87,7 +87,7 @@ ISLR §7.4.5 / Figure 7.7 makes the same point: a degree-15 polynomial vs a 15-d
   3. *Cubic spline*, second derivative continuous; visually smooth.
 - **The shipbuilding analogy.** Bend a wood plank over knots-as-pegs: the wood naturally enforces derivative continuity. If you "put two points like this and then you pull this one down here and you pull that one like here, it just goes wiggly, wiggly, wiggly", same intuition as fitting a spline through too few knots in a wiggly region.
 - **Natural splines = boundary regularization.** The two boundary constraints are explicitly ridge-like (kill curvature where data is sparse). They reduce variance at the cost of a tiny bit of bias.
-- **Choosing $K$.** The prof recommends "find some visualization tool where they have knots with splines to play with." More principled: pick by [[cross-validation]] (ISLR §7.4.4 / Figure 7.6 shows 10-fold CV on wage data choosing 3–4 dof).
+- **Choosing $K$.** The prof recommends "find some visualization tool where they have knots with splines to play with." More principled: pick by [[cross-validation]] (ISLP §7.4.4 / Figure 7.6 shows 10-fold CV on wage data choosing 3–4 dof).
 
 ## Exam signals
 
@@ -107,12 +107,12 @@ The 2024 and 2025 exams **both** asked degree-of-freedom counting questions for 
 - **High variance at the boundaries** for plain cubic splines is the *only* reason to prefer natural splines for extrapolation; otherwise the two are nearly indistinguishable in the interior.
 - The prof is dismissive of memorising basis-function formulas: don't waste exam time deriving the truncated-cubic-power basis from scratch unless asked.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the truncated-power cubic-spline basis; what natural splines do (linear past boundary knots) and *why* (boundary variance reduction); dof counting for both; the comparison to high-degree polynomials; that fitting is OLS.
-- **Look up in ISLR:** §7.4.1 (piecewise polynomials), §7.4.2 (continuity constraints), §7.4.3 (truncated-power basis derivation), §7.4.4 (knot placement and CV, Figures 7.5–7.6), §7.4.5 (vs polynomials, Figure 7.7).
-- **Skip in ISLR:** the **B-spline (de Boor) basis algorithmic details** are not in the book and not in lecture; the **natural-spline boundary-knot derivation** is explicitly bracketed off by the prof; ISLR's "thin-plate splines" footnote is name-checked only.
-- **Skip in ISLR (Bezier / shipbuilding history):** [[L16-beyondlinear-1]]: "in shipbuilding... Renault... Bézier", pedagogical context only, not exam material.
+- **Look up in ISLP:** §7.4.1 (piecewise polynomials), §7.4.2 (continuity constraints), §7.4.3 (truncated-power basis derivation), §7.4.4 (knot placement and CV, Figures 7.5–7.6), §7.4.5 (vs polynomials, Figure 7.7).
+- **Skip in ISLP:** the **B-spline (de Boor) basis algorithmic details** are not in the book and not in lecture; the **natural-spline boundary-knot derivation** is explicitly bracketed off by the prof; ISLP's "thin-plate splines" footnote is name-checked only.
+- **Skip in ISLP (Bezier / shipbuilding history):** [[L16-beyondlinear-1]]: "in shipbuilding... Renault... Bézier", pedagogical context only, not exam material.
 
 ## Exercise instances
 

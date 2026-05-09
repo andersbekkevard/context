@@ -77,11 +77,11 @@ Two takeaways the prof emphasized:
 - **The Borel-measurable hedge.** Not every function is approximable; you need Borel-measurability (basically: any reasonable function you'd encounter in stat learning). Pathological cases (non-measurable sets) are excluded; nobody cares for the exam.
 - **One hidden layer is enough in theory; depth helps in practice.** Don't claim "deeper means more powerful" in the theoretical sense, they have the same universality property. Depth helps efficiency, not expressivity.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the **statement** of the theorem, the three conditions (linear output, at least one squashing hidden layer, enough width), the high-level intuition that feedforward is enough.
-- **Look up in ISLR:** §10.2 (multilayer NN context, Goodfellow §6.4.1 cited as the source). ISLR mentions UAT as motivation but doesn't prove it.
-- **Skip in ISLR (and everywhere):** the **proof** itself. Per [[L23-nnet-1]] and [[scope]] (NN exclusions): "Universal approximation proof, stated, not proved (measure theory excluded)." Don't read measure-theoretic deep-learning textbooks for this exam.
+- **Look up in ISLP:** §10.2 (multilayer NN context, Goodfellow §6.4.1 cited as the source). ISLP mentions UAT as motivation but doesn't prove it.
+- **Skip in ISLP (and everywhere):** the **proof** itself. Per [[L23-nnet-1]] and [[scope]] (NN exclusions): "Universal approximation proof, stated, not proved (measure theory excluded)." Don't read measure-theoretic deep-learning textbooks for this exam.
 
 ## Exercise instances
 

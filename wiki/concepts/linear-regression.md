@@ -107,11 +107,11 @@ The four canonical "important questions" in multiple regression are slide struct
 - **Confusing residual with error.** Errors $\varepsilon_i$ are random and unobservable; residuals $e_i$ are observed predictions of them.
 - **n vs p.** OLS needs $n > p$ (full rank $\mathbf{X}^\top \mathbf{X}$). $n \le p$ → no unique solution; need regularization (module 6).
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** model statement, both estimators (LS / matrix), Gaussian-error assumptions, sampling distribution of $\hat{\boldsymbol\beta}$, CI/PI, t/F tests, $R^2$, categorical encoding, interactions, polynomial / nonlinear transforms, residual diagnostics, collinearity (qualitative).
-- **Look up in ISLR:** §3.1, §3.2, §3.3 (pp. 59–104), especially §3.2.1 for the matrix derivation and §3.3 for the extensions.
-- **Skip in ISLR (book-only / prof excluded):** F-test mechanics ([[L06-linreg-2]]: "won't ask any questions about an F-test"), VIF formulas ([[L08-classif-2]]: self-study), Moore-Penrose pseudoinverse details, formal Shapiro–Wilk normality tests ([[L08-classif-2]]).
+- **Look up in ISLP:** §3.1, §3.2, §3.3 (pp. 59–104), especially §3.2.1 for the matrix derivation and §3.3 for the extensions.
+- **Skip in ISLP (book-only / prof excluded):** F-test mechanics ([[L06-linreg-2]]: "won't ask any questions about an F-test"), VIF formulas ([[L08-classif-2]]: self-study), Moore-Penrose pseudoinverse details, formal Shapiro–Wilk normality tests ([[L08-classif-2]]).
 
 ## Exercise instances
 

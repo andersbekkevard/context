@@ -51,5 +51,5 @@ The prof's three-lecture run on categorical $Y$ (Jan 27, Feb 2, Feb 3): set up t
 - **GLM link-function theory beyond logit (probit, complementary log-log)** - "outside the scope of this course... if you took the GLM course" - [[L07-classif-1]]
 - **Imbalanced-class detail / asymmetric ROC analysis** - "I don't think the book talks much about that" - [[L07-classif-1]]; sensitivity/specificity in scope, deeper treatment is not
 
-## ISLR pointer
+## ISLP pointer
 Chapter 4: Classification. Deep treatment of in-scope concepts in this module is in `book/04-classif.md`. Atoms carry section-level `isl-ref:` pointers, e.g. logistic regression §4.3, LDA/QDA §4.4.1–4.4.3, Naive Bayes §4.4.4, confusion matrix / sens-spec / ROC §4.4.2.

@@ -65,7 +65,7 @@ I.e. the polynomial example is rigged so the truth is in the function class. In 
 
 > "How well you fit the data versus how well it generalizes is a common theme in the course." - [[L03-statlearn-2]]
 
-This is the *exact same picture* as polynomial degree, just with $K$ as the flexibility knob (and $1/K$ if you want flexibility increasing left-to-right on the x-axis, ISLR Fig 2.17 plots it that way).
+This is the *exact same picture* as polynomial degree, just with $K$ as the flexibility knob (and $1/K$ if you want flexibility increasing left-to-right on the x-axis, ISLP Fig 2.17 plots it that way).
 
 **Why training error doesn't catch overfitting**: a low training error can be a sign of overfitting that *increases* test error. Training error doesn't account for model complexity, that's what AIC/BIC/Cp try to fix (M5/M6, conceptually only, see [[aic-bic-conceptual]]) and what cross-validation fixes properly.
 
@@ -97,11 +97,11 @@ That's [[regularization]], and it's why he keeps resisting the "trade-off" frami
 - **"Fits the truth on average" $\neq$ "good prediction on this dataset."** A high-flexibility model can have low *bias* (correct on average across resamples) but huge *variance* on any single fit. The U is that trade.
 - **Overfitting is method-dependent.** Some models (with built-in regularization, or well-chosen flexibility) overfit much less than others ([[L03-statlearn-2]]: "Some models are *designed* so overfitting isn't such a problem; others have a strong tendency to overfit.").
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the U-shape of test MSE, monotonic decrease of training MSE, what each side of the U represents (bias / variance), polynomial degree and KNN K as flexibility knobs, the train/test discrepancy as the diagnostic for overfitting.
-- **Look up in ISLR:** §2.2.1 (Measuring the Quality of Fit), §2.2.2 (The Bias-Variance Trade-Off), Figures 2.9–2.12 (the U-shape and its bias/variance decomposition for three datasets), Figure 2.17 (KNN training/test error vs $1/K$). For [[double-descent]], ISLR §6.4 has the high-dimensional discussion but the prof's L04 simulation is the better source.
-- **Skip in ISLR:** the *book-only* claim that "more flexible models always have higher variance" is the prof's quoted hobby-horse, true on average but regularization can flatten the variance curve. He'll grumble about this in M6.
+- **Look up in ISLP:** §2.2.1 (Measuring the Quality of Fit), §2.2.2 (The Bias-Variance Trade-Off), Figures 2.9–2.12 (the U-shape and its bias/variance decomposition for three datasets), Figure 2.17 (KNN training/test error vs $1/K$). For [[double-descent]], ISLP §6.4 has the high-dimensional discussion but the prof's L04 simulation is the better source.
+- **Skip in ISLP:** the *book-only* claim that "more flexible models always have higher variance" is the prof's quoted hobby-horse, true on average but regularization can flatten the variance curve. He'll grumble about this in M6.
 
 ## Exercise instances
 

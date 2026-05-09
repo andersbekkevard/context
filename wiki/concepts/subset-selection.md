@@ -130,11 +130,11 @@ The prof drilled the **counts** ($2^p$ vs $1 + p(p+1)/2$) and the **constraint**
 - **Forgetting that forward stepwise is greedy.** Can produce a different 4-variable model than best-subset on the *same* data, see Credit-data example.
 - **Reading "stepwise picked these 5 variables" as a confidence claim about which 5 matter.** Highly sample-dependent under [[collinearity]].
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** all four algorithms (best, forward, backward, hybrid); the model counts; the $n > p$ requirement for backward; CV vs penalty-criterion choice; the Credit-data example (different $k=4$ winners); the $n < p$ option for forward stepwise (slide-flagged).
-- **Look up in ISLR:** §6.1 (pp. ~244–251), Algorithms 6.1–6.3 in the textbook box format.
-- **Skip in ISLR (book-only / prof-excluded):** the algebra of $C_p$, AIC, BIC, adjusted $R^2$ - *"I'm not going to ask you to derive them"* - [[L12-modelsel-1]]. The conceptual claim "they penalize complexity" stays in scope (see [[aic-bic-conceptual]]); the formulas don't.
+- **Look up in ISLP:** §6.1 (pp. ~244–251), Algorithms 6.1–6.3 in the textbook box format.
+- **Skip in ISLP (book-only / prof-excluded):** the algebra of $C_p$, AIC, BIC, adjusted $R^2$ - *"I'm not going to ask you to derive them"* - [[L12-modelsel-1]]. The conceptual claim "they penalize complexity" stays in scope (see [[aic-bic-conceptual]]); the formulas don't.
 
 ## Exercise instances
 

@@ -91,11 +91,11 @@ The book (ISL §12.4.2, Figure 12.15) makes this precise: three observations wit
 - **Curse-of-dimensionality blindness.** In high $p$, all Euclidean distances bunch up , clustering output is pure noise. Dim-reduce first or switch metric.
 - **Treating "distance" formally** when comparing methods. Some "distances" (correlation) aren't true metrics (no triangle inequality). Doesn't matter for clustering, but flag it if asked.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** Euclidean and correlation distances; the *shopper-Euclidean-vs-correlation* example as the canonical "metric matters" demonstration; the rule "pick the metric based on what you want sensitivity to"; standardization mandate; curse-of-dimensionality caveat for Euclidean.
-- **Look up in ISLR:** §12.4.2 "Choice of dissimilarity measure" , Figure 12.15 makes the Euclidean-vs-correlation distinction visual; §12.4.2 also covers when to standardize and the socks-vs-computers example for clustering preprocessing.
-- **Skip in ISLR:**
+- **Look up in ISLP:** §12.4.2 "Choice of dissimilarity measure" , Figure 12.15 makes the Euclidean-vs-correlation distinction visual; §12.4.2 also covers when to standardize and the socks-vs-computers example for clustering preprocessing.
+- **Skip in ISLP:**
   - **Wasserstein, Manhattan, cosine derivations**: name-checked in [[L22-unsupervised-2]] only; out per `docs/scope.md`.
   - **Mahalanobis distance** (the metric defined by $\Sigma^{-1}$) , book mentions in passing for some methods; not on the prof's curriculum.
   - **Triangle-inequality / formal-metric theory**: not relevant to clustering's needs.

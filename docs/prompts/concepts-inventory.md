@@ -20,7 +20,7 @@ Every decision you make about whether something becomes an atom flows from this 
 
 ## Your inputs
 
-Read all of these. **Do not read `notes/`: it is off-limits per `../overview` and `CLAUDE.md`. Do not read `book/`: ISLR is for the fan-out stage, not for inventory. Do not read `exams/`: past exams are not on the table for this exam.**
+Read all of these. **Do not read `notes/`: it is off-limits per `../overview` and `CLAUDE.md`. Do not read `book/`: ISLP is for the fan-out stage, not for inventory. Do not read `exams/`: past exams are not on the table for this exam.**
 
 - All 27 lecture pages: `wiki/lectures/L01-*.md` through `L27-*.md`
 - All 12 slide decks: `modules/*/` (one or more `.md` files per module)
@@ -84,9 +84,9 @@ For every problem in `exercises/Exercise2/` through `exercises/Exercise11/` and 
 
 If a problem doesn't fit any candidate atom, that's a signal: either the atom is missing (add it) or the problem is out of scope (note it). Don't silently drop unmapped problems.
 
-ISLR end-of-chapter exercises are NOT in scope. Don't include them.
+ISLP end-of-chapter exercises are NOT in scope. Don't include them.
 
-(ISLR section pointers are *not* your job. The fan-out agents will fill `isl-ref:` per atom when they read the relevant book chapter to flesh out treatment.)
+(ISLP section pointers are *not* your job. The fan-out agents will fill `isl-ref:` per atom when they read the relevant book chapter to flesh out treatment.)
 
 ## Output spec
 
@@ -97,7 +97,7 @@ Write to `docs/concepts-manifest.md`. Structure:
 
 Deterministic list of concept atoms for the TMA4268 wiki. Source of truth for the concepts fan-out pass — every downstream atom-writing agent reads its module slice from here. Slugs, ownership, and cross-cutting flags are fixed at this layer; do not invent new atoms or rename slugs in the fan-out pass.
 
-Built by reading all 27 lecture pages, 12 slide decks, 13 ISLR chapters (skimmed), the recommended exercises, both compulsory exercises, the three past exams, and `exam_analysis.md` (cross-check, not canonical). The `notes/` folder was not read (off-limits).
+Built by reading all 27 lecture pages, 12 slide decks, 13 ISLP chapters (skimmed), the recommended exercises, both compulsory exercises, the three past exams, and `exam_analysis.md` (cross-check, not canonical). The `notes/` folder was not read (off-limits).
 
 ## Atoms by owning module
 
@@ -157,7 +157,7 @@ These are concepts that genuinely span modules and have no natural home. The fan
 - ...
 
 ### Module 09 — Tree Boosting (...)
-- **SVM (entire ISLR chapter 9).** Prof skipped; L27 confirmed "fully out of scope." MOC notes the absence; no atoms for hyperplanes / margins / kernels / etc.
+- **SVM (entire ISLP chapter 9).** Prof skipped; L27 confirmed "fully out of scope." MOC notes the absence; no atoms for hyperplanes / margins / kernels / etc.
 
 [... continue per module]
 

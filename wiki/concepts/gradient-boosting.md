@@ -128,11 +128,11 @@ So Algorithm 10.3 with squared-error loss reduces *exactly* to the regression-tr
 - **Mistakenly thinking gradient boosting only works for regression.** The same framework works for classification, just plug binomial / multinomial deviance into Algorithm 10.3 (see [[boosting-loss-functions]]).
 - **Forgetting that for $K$-class classification you fit $K$ trees per round** (one per class, see [[boosting-loss-functions]]).
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the conceptual chain residuals → gradient → general gradient boosting; the squared-error sanity check; the four hyperparameters and how $M$/$\nu$ are coupled; CV / early stopping for tuning; the contrast with bagging / RF; the practical demos (Boston, Ames); generalization to any differentiable loss; partial dependence plots for interpretation.
-- **Look up in ISLR:** §8.2.3 (book's Algorithm 8.2, squared-error special case), pp. 343–347. For the general Algorithm 10.3 and the gradient/loss derivations, see Elements ch. 10 (Anders does not need this).
-- **Skip in ISLR (book-only, prof excluded):**
+- **Look up in ISLP:** §8.2.3 (book's Algorithm 8.2, squared-error special case), pp. 343–347. For the general Algorithm 10.3 and the gradient/loss derivations, see Elements ch. 10 (Anders does not need this).
+- **Skip in ISLP (book-only, prof excluded):**
   - **Detailed boosting pseudocode line by line** - [[L27-summary]]: "you should know what tree boosting is" but not the steps verbatim.
   - **BART** (book §8.2.4), never lectured.
   - **Heavy formal derivations of why steepest descent in function space works**: the prof gives the intuition, no proofs.

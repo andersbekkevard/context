@@ -133,11 +133,11 @@ CE1 problem 2f directly asks this. Toolkit:
 - **QQ plot direction.** The convention is theoretical quantiles on x-axis, empirical on y-axis. Some packages flip it; check.
 - **Cook's distance threshold.** 0.5 = "give attention," > 1 = "examine." Not a hard rule.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** all four `autoplot` panels and what each checks; the QQ plot interpretation; leverage formula in simple LR; the leverage-residual plot's dangerous corner; standardized vs studentized residuals; what to do when assumptions fail.
-- **Look up in ISLR:** §3.3.3 (pp. 92–104, *Potential Problems*), covers the same six diagnostic patterns. Figure 3.9 (residuals-vs-fitted), figure 3.13 (leverage), figure 3.14 (Cook's distance).
-- **Skip in ISLR (book-only / prof excluded):** Shapiro–Wilk and other formal normality tests - [[L08-classif-2]]: "we're not going to talk about it." Variance inflation factor (VIF) details - [[L08-classif-2]]: marked self-study, not exam material.
+- **Look up in ISLP:** §3.3.3 (pp. 92–104, *Potential Problems*), covers the same six diagnostic patterns. Figure 3.9 (residuals-vs-fitted), figure 3.13 (leverage), figure 3.14 (Cook's distance).
+- **Skip in ISLP (book-only / prof excluded):** Shapiro–Wilk and other formal normality tests - [[L08-classif-2]]: "we're not going to talk about it." Variance inflation factor (VIF) details - [[L08-classif-2]]: marked self-study, not exam material.
 
 ## Exercise instances
 

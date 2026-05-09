@@ -87,11 +87,11 @@ Same warning as KNN classification: Euclidean distance is scale-sensitive. **Sta
 - **K must be an integer.** Doesn't matter for the math, but a candidate sweep is over $K = 1, 2, 3, \dots$.
 - **Tie-breaking for "the K nearest"**: if multiple points are equidistant, libraries vary; doesn't affect exam-style hand calculations.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the formula, $K$ as flexibility, bias-variance interpretation, picking $K$ by CV, the use of KNN regression as the running model-selection example in M5.
-- **Look up in ISLR:** §3.5 ("Comparison of Linear Regression with K-Nearest Neighbors"), the KNN regression formula, comparison with linear regression, the curse-of-dimensionality discussion. Equation (3.39) is the formula above; Figures 3.16–3.20 show the contrast with linear models in 1D and as $p$ grows.
-- **Skip in ISLR:** weighted KNN ([[scope|out of scope]]). Distance metrics other than Euclidean (M10 [[distance-metrics]] discusses options for clustering, but KNN here is Euclidean only).
+- **Look up in ISLP:** §3.5 ("Comparison of Linear Regression with K-Nearest Neighbors"), the KNN regression formula, comparison with linear regression, the curse-of-dimensionality discussion. Equation (3.39) is the formula above; Figures 3.16–3.20 show the contrast with linear models in 1D and as $p$ grows.
+- **Skip in ISLP:** weighted KNN ([[scope|out of scope]]). Distance metrics other than Euclidean (M10 [[distance-metrics]] discusses options for clustering, but KNN here is Euclidean only).
 
 ## Exercise instances
 

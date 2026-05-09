@@ -92,11 +92,11 @@ The prof's menu:
 - **High correlation ≠ collinearity.** Two predictors can be highly correlated without breaking $\mathbf{X}^\top\mathbf{X}$ irreparably. The threshold for "trouble" depends on $n$ and $\sigma^2$; rule of thumb VIF > 5 or 10 (but VIF is *self-study* per the prof).
 - **Standardize before diagnosing.** Numerical near-singularity can come from scale differences across columns. Standardize first when investigating.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the qualitative story , what collinearity is, how it shows up in the SE, why it makes coefficients unstable, the connection to $\mathbf{X}^\top\mathbf{X}$ inverse, and the menu of fixes (drop, combine, PCR, ridge).
-- **Look up in ISLR:** §3.3.3 (pp. 99–102, *Collinearity*) , Credit-card example with `limit` and `rating`, the VIF formula. The book's level of detail matches the prof's coverage.
-- **Skip in ISLR (book-only / prof excluded):** the VIF formula and computation , [[L08-classif-2]] explicit "read it as self-study"; not exam material. Condition number, eigen-decomposition diagnostics , [[L04-statlearn-3]] deferred. Bayesian interpretation of ridge-as-prior , [[L14-modelsel-3]] explicit "I really don't think I'd put this on the test."
+- **Look up in ISLP:** §3.3.3 (pp. 99–102, *Collinearity*) , Credit-card example with `limit` and `rating`, the VIF formula. The book's level of detail matches the prof's coverage.
+- **Skip in ISLP (book-only / prof excluded):** the VIF formula and computation , [[L08-classif-2]] explicit "read it as self-study"; not exam material. Condition number, eigen-decomposition diagnostics , [[L04-statlearn-3]] deferred. Bayesian interpretation of ridge-as-prior , [[L14-modelsel-3]] explicit "I really don't think I'd put this on the test."
 
 ## Exercise instances
 

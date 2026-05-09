@@ -93,11 +93,11 @@ What *can* be tested at this conceptual level (per [[L27-summary]] Q1 walkthroug
 - **Misspecification is the default assumption.** Anything you read in classical-stats mode (assume the model is right, derive analytically) needs translation into "what if the model is wrong, what if I have noise on the predictors I care about." This is why CV and held-out evaluation pervade the course.
 - **"Independent variables"** is a loaded term the prof avoids, most predictors are *not* independent. Use **predictors / regressors / covariates / features** instead. He flagged this in [[L02-statlearn-1]] as a vocabulary tic worth dropping.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the conceptual framing, what statistical learning is, how it differs from ML / classical stats / data science, why the misspecified-model regime matters, the orthogonal axes (supervised/unsupervised, prediction/inference) that organize the field.
-- **Look up in ISLR:** Chapter 1 (Introduction), the Wage / Smarket / NCI60 examples and the brief history of stat learning. ISLR §1 is short, mostly motivational, and Anders has it on the exam table for any look-up.
-- **Skip in ISLR:** the historical rundown (least squares 1800s, LDA 1936, GLMs 1970s, trees 1980s, NNs, SVMs), proper-noun history is explicitly out per [[L22-unsupervised-2]] and [[L27-summary]].
+- **Look up in ISLP:** Chapter 1 (Introduction), the Wage / Smarket / NCI60 examples and the brief history of stat learning. ISLP §1 is short, mostly motivational, and Anders has it on the exam table for any look-up.
+- **Skip in ISLP:** the historical rundown (least squares 1800s, LDA 1936, GLMs 1970s, trees 1980s, NNs, SVMs), proper-noun history is explicitly out per [[L22-unsupervised-2]] and [[L27-summary]].
 
 ## Exercise instances
 

@@ -133,11 +133,11 @@ The prof did not flag a specific backprop derivation as a likely exam question. 
 - **Sign convention.** $\delta^{\text{out}} = -(y - f)$ for squared-error loss; the negative comes from $\frac{d}{df}\tfrac12(y-f)^2 = -(y-f)$. Watch signs on the exam.
 - **One sample at a time vs. mini-batch.** The prof's worked example is per-sample; in practice you sum / average across the mini-batch before the SGD update.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the chain-rule story, forward-pass-stores-intermediates / backward-pass-reuses-them, the $\delta$ recursion, the formulas above for the single-hidden-layer worked example, why feedforward matters (no loops).
-- **Look up in ISLR:** §10.7.1 , *Backpropagation*. Per slides: "ISLR Chapter 10.7 (this is part of the compulsory course material , study yourself)." Goodfellow §6.5 for the matrix form.
-- **Skip in ISLR:** the matrix / vectorized form of backprop (notation-heavy, same content). Backpropagation through time (BPTT) for RNNs, explicitly out of scope per [[L26-nnet-3]] / [[scope]]. Vanishing/exploding-gradient analysis, out per [[L24-nnet-2]].
+- **Look up in ISLP:** §10.7.1 , *Backpropagation*. Per slides: "ISLP Chapter 10.7 (this is part of the compulsory course material , study yourself)." Goodfellow §6.5 for the matrix form.
+- **Skip in ISLP:** the matrix / vectorized form of backprop (notation-heavy, same content). Backpropagation through time (BPTT) for RNNs, explicitly out of scope per [[L26-nnet-3]] / [[scope]]. Vanishing/exploding-gradient analysis, out per [[L24-nnet-2]].
 
 ## Exercise instances
 

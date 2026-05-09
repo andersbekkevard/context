@@ -99,11 +99,11 @@ The prof did **not** flag AdaBoost as having its own dedicated exam question, bu
 - **Forgetting to normalize weights.** In practice, weights are renormalized to sum to 1 after each update; the algorithm-as-stated drops this step but `ada()` does it under the hood.
 - **Treating AdaBoost as parallel.** It's sequential , round $m+1$ depends on which points $G_m$ missed.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the algorithm structure (sequential weak classifiers, sample re-weighting, $\alpha$-weighted voting), the role of ±1 labels and the sign of the sum, the exponential-loss connection, why stumps work, the Boston-data result vs. RF.
-- **Look up in ISLR:** §8.2.3 covers boosting generally but does **not** spell out AdaBoost as its own algorithm. For the explicit AdaBoost.M1 algorithm and the equivalence-with-exponential-loss derivation, the prof points to **Elements of Statistical Learning ch. 10.1** (not on the exam table , this is reference, not study material).
-- **Skip in ISLR (book-only):**
+- **Look up in ISLP:** §8.2.3 covers boosting generally but does **not** spell out AdaBoost as its own algorithm. For the explicit AdaBoost.M1 algorithm and the equivalence-with-exponential-loss derivation, the prof points to **Elements of Statistical Learning ch. 10.1** (not on the exam table , this is reference, not study material).
+- **Skip in ISLP (book-only):**
   - The full proof that AdaBoost = forward stagewise additive modeling under exponential loss , [[L20-boosting-2]] notes the result, doesn't derive it.
 
 ## Exercise instances

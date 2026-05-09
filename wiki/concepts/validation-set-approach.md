@@ -56,10 +56,10 @@ In bias-variance terms (per [[L11-resample-2]] recap): high bias (small training
 - **Confusing it with cross-validation.** The prof was deliberate: "not strictly a cross-validation approach"; there's no rotation of the validation role across the data.
 - **Spatial / temporal correlation** breaks the "random" partition: nearby points leak between train and validation. *"Two points right next to each other, one in your training, one in your validation, it's the same damn thing."* - [[L10-resample-1]]. Same independence trap as for k-fold and LOOCV.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** definition, the two drawbacks, when to use it ("plenty of data, don't want to think hard"), how it differs from k-fold/LOOCV, the independence trap.
-- **Look up in ISLR:** §5.1.1, pp. 198–200; Figure 5.2 (the right panel showing the 10 rerun curves) is the slide image. ISLR labs in §5.3.1.
+- **Look up in ISLP:** §5.1.1, pp. 198–200; Figure 5.2 (the right panel showing the 10 rerun curves) is the slide image. ISLP labs in §5.3.1.
 
 ## Exercise instances
 

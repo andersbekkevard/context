@@ -116,11 +116,11 @@ Strictly, the SE you can compute uses $\hat\sigma$ in place of the unknown $\sig
 - **Bias is a function of the model, not the estimator.** $\hat{\boldsymbol\beta}$ is unbiased *for the true $\boldsymbol\beta$ in the assumed model.* If the true model is non-linear, the LS slope is unbiased for the *best linear approximation*, not for the curve.
 - **Inflation under collinearity.** A coefficient estimate may be near-zero with a huge SE, looks "insignificant" but the joint test (F) over the correlated set may still be highly significant. See [[t-test-and-significance]] and [[f-test]].
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the multivariate normal sampling distribution, derivation of mean and covariance, the simple-regression SE formulas, residual standard error.
-- **Look up in ISLR:** §3.1.2 (pp. 63–66, simple LR SE), §3.2.1 (matrix-form result, lighter derivation).
-- **Skip in ISLR:** specifics of the t- and F-distributions are referenced but not derived; ISLR is light here. Walpole is the prof's recommended classical reference for the $\chi^2_{n-p-1}$ distribution of $\hat\sigma^2$.
+- **Look up in ISLP:** §3.1.2 (pp. 63–66, simple LR SE), §3.2.1 (matrix-form result, lighter derivation).
+- **Skip in ISLP:** specifics of the t- and F-distributions are referenced but not derived; ISLP is light here. Walpole is the prof's recommended classical reference for the $\chi^2_{n-p-1}$ distribution of $\hat\sigma^2$.
 
 ## Exercise instances
 

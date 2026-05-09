@@ -96,11 +96,11 @@ QDA fits training slightly better (it must, strictly more flexible) but **double
 - **Estimating $\Sigma_k$ with too few samples per class.** When $n_k < p$, $\hat\Sigma_k$ is singular and the classifier breaks. (Naive Bayes' diagonal-$\Sigma$ assumption is the standard rescue when $p$ is large.)
 - **Reading too much into "QDA is more flexible."** Slide deck: "if the covariance matrices in theory are equal, will they not be estimated equal? Should we not always prefer QDA to LDA?" Answer: no, because of variance.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** QDA model assumptions, $\delta_k(x)$ formula, where the quadratic comes from, parameter-count comparison vs LDA, LDA-vs-QDA bias-variance trade-off.
-- **Look up in ISLR:** §4.4.3, pp. 152–155. Equation (4.28) is the canonical $\delta_k(x)$.
-- **Skip in ISLR:** Detailed simulation scenarios in §4.5.2 (where QDA wins / loses), useful for intuition but not exam-relevant beyond "QDA wins when $\Sigma_k$ truly differ and $n$ is adequate."
+- **Look up in ISLP:** §4.4.3, pp. 152–155. Equation (4.28) is the canonical $\delta_k(x)$.
+- **Skip in ISLP:** Detailed simulation scenarios in §4.5.2 (where QDA wins / loses), useful for intuition but not exam-relevant beyond "QDA wins when $\Sigma_k$ truly differ and $n$ is adequate."
 
 ## Exercise instances
 

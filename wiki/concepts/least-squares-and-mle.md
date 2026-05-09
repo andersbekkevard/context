@@ -85,11 +85,11 @@ The MLE for OLS is solvable in one matrix inversion; almost no other model has t
 - **Constants don't matter.** $-(n/2)\log(2\pi\sigma^2)$ doesn't depend on $\boldsymbol\beta$, so it drops out of the optimization. Also true for the $1/(2\sigma^2)$ factor.
 - **Uniqueness.** The closed form requires $\mathbf{X}^\top\mathbf{X}$ invertible, needs $n \ge p+1$ and no [[collinearity|collinearity]]. With perfect collinearity, infinitely many minimizers exist.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the derivation of $\hat{\boldsymbol\beta}$ and the LS = MLE argument under Gaussian errors. Do them by hand at least once (Exercise 6.1).
-- **Look up in ISLR:** §3.2.1 (pp. 71–75), multiple regression LS estimator (matrix form is in the appendix-style boxed equation; the textbook is light on the explicit derivation).
-- **Skip in ISLR:** Bayesian / shrinkage interpretations of the likelihood are deferred, the L14 prof excluded the Gaussian/Laplace prior interpretation of ridge/lasso ("really don't think I'd put this on the test").
+- **Look up in ISLP:** §3.2.1 (pp. 71–75), multiple regression LS estimator (matrix form is in the appendix-style boxed equation; the textbook is light on the explicit derivation).
+- **Skip in ISLP:** Bayesian / shrinkage interpretations of the likelihood are deferred, the L14 prof excluded the Gaussian/Laplace prior interpretation of ridge/lasso ("really don't think I'd put this on the test").
 
 ## Exercise instances
 

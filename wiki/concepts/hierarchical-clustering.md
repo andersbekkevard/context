@@ -130,11 +130,11 @@ There are $2^{n-1}$ valid horizontal orderings of the same dendrogram (you can s
 - **Centroid-linkage inversions.** A fusion can occur *below* the height of one of its children, the dendrogram looks visually broken. Avoid centroid linkage unless you have a domain reason.
 - **Hierarchical on non-hierarchical data.** If the true groupings don't nest, K-means may beat hierarchical for any given $K$.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the agglomerative algorithm, the linkage menu (complete / single / average, centroid mentioned but not the prof's focus), the dendrogram-reading rules (height = info, x-axis = arbitrary), the nested-cuts property, when hierarchical is wrong (non-nested data), the standardization mandate, and the **hand-computation procedure** (the L27-flagged exam question).
-- **Look up in ISLR:** §12.4.2, full algorithm + Table 12.3 (linkage definitions) + Figures 12.10–12.16 (dendrogram interpretation, linkage comparison, scaling effects, correlation vs Euclidean shopper example).
-- **Skip in ISLR:**
+- **Look up in ISLP:** §12.4.2, full algorithm + Table 12.3 (linkage definitions) + Figures 12.10–12.16 (dendrogram interpretation, linkage comparison, scaling effects, correlation vs Euclidean shopper example).
+- **Skip in ISLP:**
   - **Ward linkage formula**: name-checked in [[L22-unsupervised-2]] only; out per `docs/scope.md`.
   - **Centroid-linkage inversion mathematics**: book mentions, prof doesn't dwell.
   - **Divisive (top-down) clustering**: book mentions briefly; prof doesn't cover.

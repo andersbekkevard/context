@@ -88,11 +88,11 @@ The PVE-as-$R^2$ identity (ISL 12.11): the variance of the data decomposes as th
 - **PVE and "$R^2$ of the approximation" are the same number** (ISL 12.11). Don't be surprised if the cumulative PVE at $M=p$ equals 1, that's just "100% of the variance reconstructed when you keep all components."
 - **Cumulative PVE is monotone non-decreasing.** A drop signals a coding bug.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the PVE formula and its scree-plot / cumulative reading; the chop-here heuristic; the contrast with supervised CV-based selection of $M$ in [[principal-component-regression|PCR]].
-- **Look up in ISLR:** §12.2.3 (the PVE derivation, including the $R^2 = 1 - \text{RSS}/\text{TSS}$ identity); §12.2.4 ("Deciding how many principal components to use", the elbow + the supervised-CV alternative).
-- **Skip in ISLR:** spectral-decomposition theory of why the eigenvalues are the variances. [[L04-statlearn-3]]: "we don't talk about spectral decomposition" (deferred to Linear Statistical Models). Use the fact, don't derive it.
+- **Look up in ISLP:** §12.2.3 (the PVE derivation, including the $R^2 = 1 - \text{RSS}/\text{TSS}$ identity); §12.2.4 ("Deciding how many principal components to use", the elbow + the supervised-CV alternative).
+- **Skip in ISLP:** spectral-decomposition theory of why the eigenvalues are the variances. [[L04-statlearn-3]]: "we don't talk about spectral decomposition" (deferred to Linear Statistical Models). Use the fact, don't derive it.
 
 ## Exercise instances
 

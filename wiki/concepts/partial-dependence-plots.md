@@ -89,11 +89,11 @@ The same logic the prof applied to importance plots applies to PDPs: in scope (s
 - **Treating one PDP as a global model summary.** A PDP shows one variable; the model's behavior also depends on interactions and on combinations of other variables. PDPs are point summaries, not the whole picture.
 - **Confusing PDP with the marginal distribution of $\hat y$ at $X_j = x_j$.** PDP averages over training $X_{-j}$; the marginal averages over the joint $(X_j, X_{-j})$ at the data's natural distribution. Different objects.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the empirical estimator $\bar f_j(x_j) = \tfrac1N \sum_i f(x_j, x_{i, -j})$; the marginalization-over-$X_{-j}$ idea; what a PDP shows (qualitative effect of $X_j$ on $\hat y$, after accounting for others); the contrast with "$X$ if everything else were not there" (causal); pairing with [[variable-importance]] for tree-ensemble interpretation.
-- **Look up in ISLR:** PDPs aren't deeply covered in ISLR's chapter 8; the slide deck refers to **Elements of Statistical Learning §10.13.2** for the full treatment. Anders does not need this depth, the empirical formula and the marginalization framing are enough.
-- **Skip in ISLR (book-only / out of scope):**
+- **Look up in ISLP:** PDPs aren't deeply covered in ISLP's chapter 8; the slide deck refers to **Elements of Statistical Learning §10.13.2** for the full treatment. Anders does not need this depth, the empirical formula and the marginalization framing are enough.
+- **Skip in ISLP (book-only / out of scope):**
   - **ICE plots (individual conditional expectation)**: not lectured.
   - **Shapley / SHAP values** - [[L21-unsupervised-1]] mentions interpretability machinery in passing, never derives.
   - **Two-variable / interaction PDPs**: not lectured.

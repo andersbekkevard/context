@@ -72,11 +72,11 @@ Step functions are introduced as a pedagogical bridge from polynomial regression
 - **Step function ≠ ordered factor.** When $X$ is genuinely ordinal, a step function throws away the ordering (each level gets its own coefficient, no monotonicity). Sometimes that's what you want, sometimes not.
 - The discontinuities are a feature, not a bug, but if you need a smooth fit you should be using a [[regression-splines|spline]] instead.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** definition, the indicator basis, design matrix construction, the wage-vs-education and wage-vs-age examples, the link to dummy-coding factors.
-- **Look up in ISLR:** §7.2 (Figure 7.2, wage vs age step-function fit and its logistic counterpart).
-- **Skip in ISLR:** nothing specific; the book's treatment is short and matches the slides.
+- **Look up in ISLP:** §7.2 (Figure 7.2, wage vs age step-function fit and its logistic counterpart).
+- **Skip in ISLP:** nothing specific; the book's treatment is short and matches the slides.
 
 ## Exercise instances
 

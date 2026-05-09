@@ -84,11 +84,11 @@ The 2025 exam Q3c was *exactly* the Exercise 4.3 conversion: given odds 0.37 →
 - **Reporting odds-ratio for an interaction without specifying the level of the interacting variable.** See the trap above.
 - **Computing odds-ratio for a non-unit change.** For a 100-unit change in $x_j$, the odds multiply by $e^{100 \beta_j}$, not $100 \cdot e^{\beta_j}$.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** Odds definition, log-odds = logit, odds-ratio interpretation of $\beta_j$, the multiplicative form of the logistic model, the interaction-trap caveat.
-- **Look up in ISLR:** §4.3.1 (logistic model + odds), pp. 134–135. Equation (4.4) is the canonical odds-ratio statement.
-- **Skip in ISLR:** Nothing relevant excluded, odds is a small, self-contained piece.
+- **Look up in ISLP:** §4.3.1 (logistic model + odds), pp. 134–135. Equation (4.4) is the canonical odds-ratio statement.
+- **Skip in ISLP:** Nothing relevant excluded, odds is a small, self-contained piece.
 
 ## Exercise instances
 

@@ -122,11 +122,11 @@ This is the conceptual leap from regression: the $z_m$'s are themselves *learned
 - **Standardize inputs first.** Boston housing exercise: "always, you don't want one variable to basically suck up all the variance, just like in the PCA." See [[standardization]].
 - **Don't use a NN if you don't have enough data or you need interpretability.** "If you don't have a lot of data and need interpretability, probably don't use neural networks at all. Use trees." - [[L24-nnet-2]] / [[L26-nnet-3]] (Hitters Comparison).
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** anatomy (input/hidden/output, weights, biases), the nested equation, multi-layer extension, parameter counting, the linear-activation collapse, comparisons to GAM/logistic/PCR, why feedforward matters for backprop.
-- **Look up in ISLR:** §10.1-10.2, pp. 399-408: single-layer + multilayer feedforward, MNIST example, output encoding (one-hot), the cross-entropy / MSE loss table.
-- **Skip in ISLR (book-only, prof excluded):** advanced architectures (skip connections, intra-layer connections, explicitly called out as ambiguous-but-out, [[L27-summary]]). Vanishing/exploding gradients and weight initialization (Xavier/He), "not discussed in any depth" - [[L24-nnet-2]]. Adam optimizer internals - [[L23-nnet-1]] / [[L27-summary]]. Detailed architecture-tuning recipes from §10.7.4.
+- **Look up in ISLP:** §10.1-10.2, pp. 399-408: single-layer + multilayer feedforward, MNIST example, output encoding (one-hot), the cross-entropy / MSE loss table.
+- **Skip in ISLP (book-only, prof excluded):** advanced architectures (skip connections, intra-layer connections, explicitly called out as ambiguous-but-out, [[L27-summary]]). Vanishing/exploding gradients and weight initialization (Xavier/He), "not discussed in any depth" - [[L24-nnet-2]]. Adam optimizer internals - [[L23-nnet-1]] / [[L27-summary]]. Detailed architecture-tuning recipes from §10.7.4.
 
 ## Exercise instances
 

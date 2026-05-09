@@ -138,11 +138,11 @@ The 2024 exam fill-in-the-blank had: *"Ridge regression is possible even if $p >
 - **Reading "this regression has high $R^2$" in high dim as evidence of model quality.** $R^2 = 1$ is automatic when $p \geq n$. Always evaluate on held-out / CV error.
 - **Identifying "the best $k$ features" from a high-dim regularized fit as confidently predictive.** Per the prof's quote, at most you've identified features *correlated with* the truly predictive ones. Many "suitable predictive models" exist.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the high-dim setting and why it exists; the four failure modes (perfect fit / singular $X^\top X$ / unreliable penalty criteria / pathological multicollinearity); the noise-features-always-hurt result; the toolset that does work ([[subset-selection|forward stepwise]] capped, [[ridge-regression|ridge]], [[lasso]], [[elastic-net]], [[principal-component-regression|PCR]], [[partial-least-squares|PLS]]); the exploratory-vs-confirmatory framing; the connection to [[curse-of-dimensionality]] and [[double-descent]].
-- **Look up in ISLR:** §6.4 (pp. 290–294), High-Dimensional Data, What Goes Wrong, Regression in High Dimensions, Interpreting Results in High Dimensions. Short and focused.
-- **Skip in ISLR:** none, §6.4 is short and the prof covered most of it. The detailed derivation of why $\hat\sigma^2$ breaks (which lives in linear-models theory) is not needed; the conceptual claim is.
+- **Look up in ISLP:** §6.4 (pp. 290–294), High-Dimensional Data, What Goes Wrong, Regression in High Dimensions, Interpreting Results in High Dimensions. Short and focused.
+- **Skip in ISLP:** none, §6.4 is short and the prof covered most of it. The detailed derivation of why $\hat\sigma^2$ breaks (which lives in linear-models theory) is not needed; the conceptual claim is.
 
 ## Exercise instances
 

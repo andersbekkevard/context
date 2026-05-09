@@ -10,7 +10,7 @@ A deck is *not* a mock exam (those are deferred). It is a focused MC drill for o
 
 ## 1. Frame
 
-- **Course context:** TMA4268 *Statistisk læring*. Final exam **2026-05-18**, 4 hours, open-book, no code, ISLR + handwritten A5 + calculator allowed (per `project_exam_logistics`).
+- **Course context:** TMA4268 *Statistisk læring*. Final exam **2026-05-18**, 4 hours, open-book, no code, ISLP + handwritten A5 + calculator allowed (per `project_exam_logistics`).
 - **Format of every deck question:** multiple choice. No drawing, no free-text, no "write SQL/code." Long-form past-exam problems get translated to MC per the rules in `docs/scope.md`.
 - **Interactive:** the page is one HTML file linking shared `exam.css` + `exam.js`. Clicking an option locks the question, colors right/wrong, and auto-opens the explanation. The fixed score-tracker FAB keeps a running points/percent count.
 - **Length per deck:** **20–30 questions**, totalling **100 points**. Bigger modules (03 linreg, 04 classif, 06 modelsel, 09 boosting, 11 nnet) lean toward 28–30; lighter modules (07 beyondlinear, 08 trees, 10 unsuper) toward 20–24.
@@ -205,7 +205,7 @@ Four cases. Only the first three render a flag.
 
 | Case | Flag rendered | When to use |
 |---|---|---|
-| ISLR Conceptual end-of-chapter exercise, in-scope, MC-ifies cleanly | `ISLR §6 Q3` | Lift verbatim from `book/<NN>-<slug>.md` → `## X.<Y> Exercises` → `### Conceptual` only. Skip `### Applied` entirely. **Soft cap ~5 ISLR-direct per deck.** |
+| ISLP Conceptual end-of-chapter exercise, in-scope, MC-ifies cleanly | `ISLP §6 Q3` | Lift verbatim from `book/<NN>-<slug>.md` → `## X.<Y> Exercises` → `### Conceptual` only. Skip `### Applied` entirely. **Soft cap ~5 ISLP-direct per deck.** |
 | TMA4268 past exam, in-scope after translation per `docs/scope.md` | `Exam 2024 P3` | Translate per the past-exam translation table in `docs/scope.md`; preserve the conceptual core, change numbers. |
 | Compulsory or recommended exercise verbatim lift | `CE1 P4` or `Ex5.3` | Verbatim or near-verbatim only. Number-changed mirrors of an exercise count as synthesised — *no flag*. |
 | Synthesised from atoms + lectures + exercise patterns | (no flag) | Default. Most of the deck. |
@@ -216,7 +216,7 @@ HTML pattern (sits inside `.exam-q__head`, after `.exam-q__points`):
 <header class="exam-q__head">
   <span class="exam-q__num">Question 7</span>
   <span class="exam-q__points">4 points</span>
-  <span class="exam-q__src">ISLR §6 Q3</span>
+  <span class="exam-q__src">ISLP §6 Q3</span>
 </header>
 ```
 
@@ -225,8 +225,8 @@ The flag pill is parser-inert: `exam.js` does not read it. CSS in `exam.css` ren
 > [!important] Distractor reformulation overrides source verbatim
 > Even on flagged lifts, the *distractors* must satisfy §4.5 and §5. If the source's distractors are mutations of the correct answer rather than misconception-anchored, **rewrite the distractors and keep the flag** — the question stem is what's verbatim, the distractor reformulation is policy-driven.
 
-> [!important] Drop OOS-adjacent ISLR exercises entirely
-> If an ISLR Conceptual exercise tests something out-of-scope per `docs/scope.md` (F-test mechanics, AIC algebra, multi-class logistic, Bonferroni etc.), **drop it**. Do not adapt and re-flag — once the mechanic is replaced, it's no longer the ISLR exercise, so the flag would lie.
+> [!important] Drop OOS-adjacent ISLP exercises entirely
+> If an ISLP Conceptual exercise tests something out-of-scope per `docs/scope.md` (F-test mechanics, AIC algebra, multi-class logistic, Bonferroni etc.), **drop it**. Do not adapt and re-flag — once the mechanic is replaced, it's no longer the ISLP exercise, so the flag would lie.
 
 ---
 

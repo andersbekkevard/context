@@ -82,11 +82,11 @@ Imagine drawing the line, then sampling points around it with $N(0, \sigma^2)$ n
 - **Non-normal errors.** Symptom on the QQ plot, S-shape or fat tails. Inferential statements (t-tests, CIs) are the most affected; point estimates still unbiased.
 - **Errors vs residuals confusion.** Errors $\varepsilon_i$ are random and unobservable; residuals $e_i$ are observed predictions of them. Raw residuals have $\mathrm{Cov}(\mathbf{e}) = \sigma^2(\mathbf{I} - \mathbf{H})$, slightly correlated and unequal variance. Standardize / studentize them to make diagnostics behave (see [[residual-diagnostics]]).
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** all five assumptions, the prof's tier list (independence ≫ rest), the recurring "you can't escape it" theme, what each diagnostic checks.
-- **Look up in ISLR:** §3.1.2 for the Gaussian assumption; §3.3.3 for the "potential problems" enumeration (pp. 92-104): the book lists the same six symptoms (non-linearity, error correlation, non-constant variance, outliers, high-leverage, collinearity).
-- **Skip in ISLR (book-only / prof excluded):** formal hypothesis tests for normality (Shapiro–Wilk etc.) - [[L08-classif-2]]: "we're not going to talk about it." VIF formula (self-study).
+- **Look up in ISLP:** §3.1.2 for the Gaussian assumption; §3.3.3 for the "potential problems" enumeration (pp. 92-104): the book lists the same six symptoms (non-linearity, error correlation, non-constant variance, outliers, high-leverage, collinearity).
+- **Skip in ISLP (book-only / prof excluded):** formal hypothesis tests for normality (Shapiro–Wilk etc.) - [[L08-classif-2]]: "we're not going to talk about it." VIF formula (self-study).
 
 ## Exercise instances
 

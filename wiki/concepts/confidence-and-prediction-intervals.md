@@ -96,11 +96,11 @@ The CI is for the *mean* , the expected response. The PI is for an *individual* 
 - **PI fails if assumptions fail.** Both rely on Gaussian errors; PI especially relies on the residual variance estimate being valid. Heteroscedasticity → PI is wrong.
 - **Always wider for PI.** A common slip: PI ⊃ CI strictly. If you draw a band that has CI > PI, you've swapped them.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** difference between CI and PI; their derivation in matrix form; the t-distribution-based formulas; the band shape; the frequentist interpretation.
-- **Look up in ISLR:** §3.2.2 (pp. 81–82, *Predictions*) , concise treatment with the +1 in the PI; figure 3.6 shows the band shape.
-- **Skip in ISLR:** Bayesian credible intervals , out of scope. Bonferroni / multiple-testing corrections to the CI , never covered.
+- **Look up in ISLP:** §3.2.2 (pp. 81–82, *Predictions*) , concise treatment with the +1 in the PI; figure 3.6 shows the band shape.
+- **Skip in ISLP:** Bayesian credible intervals , out of scope. Bonferroni / multiple-testing corrections to the CI , never covered.
 
 ## Exercise instances
 

@@ -197,11 +197,11 @@ The 2025 Q3a (lasso vs least squares) was solved via direct bias-variance reason
 - **Early stopping** can over-tune your validation set: each epoch you peek you've effectively used validation as training. Use a separate test set, or [[nested-cv-and-cv-pitfalls|nested CV]].
 - **Bayesian interpretation of ridge/lasso (Gaussian/Laplace priors) is OUT of scope**: *"I really don't think I'd put this on the test, just because it kind of assumes a lot of knowledge that maybe you don't have."* ([[L14-modelsel-3]]). Cool framing only.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** L1/L2 formulation, geometric picture (Fig 6.7), how to choose $\lambda$ via CV, why standardize first, $p > n$ as the headline use case, the shape of CV vs $\lambda$ curve, ridge ↔ PCR analogy, smoothing spline penalty $\int g''^2$, cost-complexity pruning $|T|$, NN regularization menu (L1/L2/dropout/augmentation/early stopping/transfer learning), implicit regularization via mini-batch SGD (concept).
-- **Look up in ISLR:** §6.2 (full ridge + lasso treatment, including Fig 6.7 geometry); §6.3 (PCR + PLS as dimensionality-reduction regularizers); §7.5.2 (smoothing-spline $\lambda$ selection); §8.1.1 / §8.2.5 (cost-complexity pruning); §10.7 (regularization for NNs).
-- **Skip in ISLR (book-only, prof excluded):**
+- **Look up in ISLP:** §6.2 (full ridge + lasso treatment, including Fig 6.7 geometry); §6.3 (PCR + PLS as dimensionality-reduction regularizers); §7.5.2 (smoothing-spline $\lambda$ selection); §8.1.1 / §8.2.5 (cost-complexity pruning); §10.7 (regularization for NNs).
+- **Skip in ISLP (book-only, prof excluded):**
   - **Bayesian interpretation of ridge/lasso (Gaussian / Laplace priors)** - [[L14-modelsel-3]]: *"I really don't think I'd put this on the test."*
   - **L0 norm / "Optimal Brain Damage"** - [[L14-modelsel-3]]: *"we won't go into it because it's not used in practice."*
   - **Detailed elastic-net tuning**: concept only, no worked example expected.

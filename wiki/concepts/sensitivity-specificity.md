@@ -90,11 +90,11 @@ The 2025 exam Q7 explicitly asked: define sensitivity/specificity for the defaul
 - **Forgetting to define what "positive" means** in domain terms. "Sensitivity = ability to identify defaulters" makes the formula meaningful; "$TP/(TP+FN)$" alone leaves the grader wondering whether you understand.
 - **Convention clash.** Some sources call sensitivity "recall." Statisticians prefer sensitivity.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** Definitions, formulas, trade-off, threshold-dependence, justice-system intuition, class-imbalance interpretation, role in ROC.
-- **Look up in ISLR:** §4.4.2, pp. 149–151, Table 4.6 (the full type-I/type-II + sensitivity/specificity vocabulary cross-reference).
-- **Skip in ISLR:** Detailed type-I/type-II error connections (knowing sensitivity = 1 − Type II = power is enough); precision/recall/F1 from the information-retrieval tradition (never covered).
+- **Look up in ISLP:** §4.4.2, pp. 149–151, Table 4.6 (the full type-I/type-II + sensitivity/specificity vocabulary cross-reference).
+- **Skip in ISLP:** Detailed type-I/type-II error connections (knowing sensitivity = 1 − Type II = power is enough); precision/recall/F1 from the information-retrieval tradition (never covered).
 - **Imbalanced-class asymmetric ROC analysis**: [[L07-classif-1]]: "I don't think the book talks much about that." Out of scope.
 
 ## Exercise instances

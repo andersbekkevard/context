@@ -51,8 +51,8 @@ This is just **QDA with $\Sigma_k$ restricted to be diagonal**.
 
 ## Insights & mental models
 
-- **Naive Bayes = LDA/QDA with diagonal $\Sigma$.** That's the cleanest mental file for it. ISLR §4.5.1 makes this precise: with Gaussian marginals it's QDA-with-diagonal-$\Sigma_k$; if you further pool across classes, it's LDA-with-diagonal-$\Sigma$.
-- **The independence assumption is generally false.** "Do we really believe the naive Bayes assumption that the $p$ covariates are independent within each class? In most settings, we do not." (ISLR §4.4.4) But the resulting bias is often offset by the dramatic variance reduction, bias-variance argument in the simplest form.
+- **Naive Bayes = LDA/QDA with diagonal $\Sigma$.** That's the cleanest mental file for it. ISLP §4.5.1 makes this precise: with Gaussian marginals it's QDA-with-diagonal-$\Sigma_k$; if you further pool across classes, it's LDA-with-diagonal-$\Sigma$.
+- **The independence assumption is generally false.** "Do we really believe the naive Bayes assumption that the $p$ covariates are independent within each class? In most settings, we do not." (ISLP §4.4.4) But the resulting bias is often offset by the dramatic variance reduction, bias-variance argument in the simplest form.
 - **Why it's "naive":** assuming $p$ predictors are conditionally independent given the class is a strong, usually-wrong assumption. It's "idiotic" hence the alternate name.
 - **Why it works anyway:** for *classification* (vs density estimation), what matters is which class wins the argmax, not whether the densities are accurately estimated. Even rough-and-wrong densities often rank classes correctly.
 - **Mixed predictor types are easy.** Continuous $X_j$ → Gaussian or kernel-smoothed marginal. Categorical $X_j$ → multinomial. They factor cleanly because of the independence assumption.
@@ -73,11 +73,11 @@ The prof dedicated only one slide stretch to it (toward end of L09); no exam-fla
 - **Treating naive Bayes as a strict subset of LDA.** Strictly: with Gaussian marginals + pooled $\Sigma$, naive Bayes ⊂ LDA (LDA with diagonal $\Sigma$). With Gaussian marginals + class-specific $\Sigma_k$, naive Bayes ⊂ QDA. With non-Gaussian marginals, naive Bayes is its own thing.
 - **Standardization concerns.** Same as for LDA/QDA, if predictors are on wildly different scales, the marginals' sds get badly estimated. Standardize.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** The conditional-independence assumption, $f_k(x) = \prod_j f_{kj}(x_j)$, why it's used (large $p$, parameter-count win), bias-variance trade-off justification.
-- **Look up in ISLR:** §4.4.4, pp. 156–158. The toy example ($p = 3$, $K = 2$) illustrates the multiplicative posterior. §4.5.1 shows the formal connection to LDA (eq. 4.34), useful for the "naive Bayes ⊂ LDA with diagonal Σ" insight.
-- **Skip in ISLR:**
+- **Look up in ISLP:** §4.4.4, pp. 156–158. The toy example ($p = 3$, $K = 2$) illustrates the multiplicative posterior. §4.5.1 shows the formal connection to LDA (eq. 4.34), useful for the "naive Bayes ⊂ LDA with diagonal Σ" insight.
+- **Skip in ISLP:**
   - Detailed mixed-predictor naive-Bayes implementations (§4.4.4 final paragraphs), concept matters, mechanics don't.
   - Smoothing parameter / Laplace correction for zero-frequency categorical cells, never covered.
 

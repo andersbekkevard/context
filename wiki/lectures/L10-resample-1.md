@@ -80,7 +80,7 @@ The diagonal (AUC = 0.5) is **chance level**, area of a triangle in the unit squ
 
 The first project is posted (homework-style; groups of 1–3). The remaining material needed to complete it is today and tomorrow. Next week is project work, no slides, no lecture. Brief admin aside: do the work even though "you could probably find the solutions if you wanted to" - *"everything I've learned is by like through sweat… you'll learn more."*
 
-Module 5 is **bootstrap and cross-validation** (ISLR ch. 5; some additional material in Elements of Statistical Learning). Two goals: **model assessment** (how good is the final model?) and **model selection** (which of these candidates do I pick?).
+Module 5 is **bootstrap and cross-validation** (ISLP ch. 5; some additional material in Elements of Statistical Learning). Two goals: **model assessment** (how good is the final model?) and **model selection** (which of these candidates do I pick?).
 
 ### Why not just AIC/BIC?
 

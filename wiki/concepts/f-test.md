@@ -92,11 +92,11 @@ The prof noted F is the workhorse of **AN**alysis **O**f **VA**riance, heavily u
 - **Generalizing to GLMs.** Doesn't transfer; use likelihood-ratio tests in module 4 onward.
 - **F-statistic ≈ 1 under H₀.** A common conceptual checkpoint: if the model explains nothing, numerator and denominator are both estimating the noise, so $F \approx 1$. Big F → real signal.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the null hypothesis of the global F-test, the conceptual reason to use it (avoid the t-test trap under collinearity / many predictors), the partial F for testing categorical predictors, the equivalence with t when $p = 1$.
-- **Look up in ISLR:** §3.2.2 (pp. 75-77, *Is There a Relationship?*): concise treatment with the formula and the partial F via `anova()`.
-- **Skip in ISLR (book-only / prof excluded):** F-test mechanics, p-value computation from the F-distribution, ANOVA tables in detail. Walpole's "good for classic statistics" reference is what the prof points at if you want the full classical treatment.
+- **Look up in ISLP:** §3.2.2 (pp. 75-77, *Is There a Relationship?*): concise treatment with the formula and the partial F via `anova()`.
+- **Skip in ISLP (book-only / prof excluded):** F-test mechanics, p-value computation from the F-distribution, ANOVA tables in detail. Walpole's "good for classic statistics" reference is what the prof points at if you want the full classical treatment.
 
 ## Exercise instances
 

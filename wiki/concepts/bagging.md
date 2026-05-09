@@ -88,11 +88,11 @@ The variance formula $\rho\sigma^2 + \frac{1-\rho}{B}\sigma^2$ , the prof derive
 - **Bagging a low-variance model.** Bagging linear regression doesn't help much , the model is already low variance, so the average doesn't reduce error. Bagging is for high-variance learners (trees, KNN with small K, deep nets in some regimes).
 - **Forgetting interpretability cost.** Single trees are interpretable; bagged ensembles aren't. Use [[variable-importance]] plots to recover some of it.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the algorithm, the variance formula and its floor, the bias-reduction footnote, the OOB connection, the compute-is-cheap framing, the worked examples, the interpretability cost, the connection to random forests as the variance-floor fix.
-- **Look up in ISLR:** §8.2.1 (pp. 343–345) for the algorithm. Module 5 also previews bagging in §5 and §8.2 of the slides; full treatment in module 8.
-- **Skip in ISLR (book-only, prof excluded):** detailed convergence analysis of $B \to \infty$, BART (Bayesian Additive Regression Trees, §8.2.4) , the prof skipped BART entirely.
+- **Look up in ISLP:** §8.2.1 (pp. 343–345) for the algorithm. Module 5 also previews bagging in §5 and §8.2 of the slides; full treatment in module 8.
+- **Skip in ISLP (book-only, prof excluded):** detailed convergence analysis of $B \to \infty$, BART (Bayesian Additive Regression Trees, §8.2.4) , the prof skipped BART entirely.
 
 ## Exercise instances
 

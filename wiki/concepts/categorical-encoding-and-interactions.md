@@ -78,7 +78,7 @@ So interactions allow **different intercepts AND different slopes** per group.
 > [!important] Main-effects rule , verbatim
 > "If you do include interactions… whenever you include an interaction, you want to include what is referred to as the main effects. So if you want to look at A times B, then you also want to include A and B." - [[L06-linreg-2]]
 
-ISLR calls this the **hierarchical principle**. Generalizes: works for two continuous variables (product), one continuous × one categorical, more than two levels, factor × factor, etc.
+ISLP calls this the **hierarchical principle**. Generalizes: works for two continuous variables (product), one continuous × one categorical, more than two levels, factor × factor, etc.
 
 > "Creativity is up to you. You can go crazy with this. It's good and bad , you have so many ways you can change this model that at the end you want to be careful what you're doing." - [[L06-linreg-2]]
 
@@ -134,11 +134,11 @@ For "is this 3-level factor relevant?" you can't just look at the individual t-t
 - **Df accounting.** A $K$-level factor consumes $K - 1$ df, not $K$ and not $1$.
 - **"Significant interaction" means…?** Slopes for different groups *truly differ*; not "just different point estimates." Look at the p-value on the product term.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** dummy coding, reference category, identifiability, main-effects rule, interactions (continuous × categorical, continuous × continuous), three-group equation writing.
-- **Look up in ISLR:** §3.3.1 (pp. 84–88, *Qualitative Predictors*); §3.3.2 (pp. 88–92, *Extensions of the Linear Model* , additive vs interaction).
-- **Skip in ISLR (book-only / prof excluded):** sum-to-zero / contrast coding alternatives , beyond R's default treatment coding. Three-way interactions and higher , not covered. ANCOVA-specific terminology , not covered.
+- **Look up in ISLP:** §3.3.1 (pp. 84–88, *Qualitative Predictors*); §3.3.2 (pp. 88–92, *Extensions of the Linear Model* , additive vs interaction).
+- **Skip in ISLP (book-only / prof excluded):** sum-to-zero / contrast coding alternatives , beyond R's default treatment coding. Three-way interactions and higher , not covered. ANCOVA-specific terminology , not covered.
 
 ## Exercise instances
 

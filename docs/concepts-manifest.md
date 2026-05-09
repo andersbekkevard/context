@@ -818,7 +818,7 @@ These concepts genuinely span multiple modules and have no natural single owning
 
 ## Out of scope (per module)
 
-The atoms below are *not* getting written. Each is something covered in ISLR or in the slides only in passing, that the prof explicitly excluded — mostly via L27's scope rule and the verbatim quotes from earlier lectures. These belong in each module's MOC under `## Out of scope`, sourced to a verbatim prof signal.
+The atoms below are *not* getting written. Each is something covered in ISLP or in the slides only in passing, that the prof explicitly excluded — mostly via L27's scope rule and the verbatim quotes from earlier lectures. These belong in each module's MOC under `## Out of scope`, sourced to a verbatim prof signal.
 
 ### Module 02: Statistical Learning
 
@@ -881,7 +881,7 @@ The atoms below are *not* getting written. Each is something covered in ISLR or 
 
 ### Whole-course exclusions
 
-- **Support Vector Machines (SVM, ISLR ch. 9 entirely).** L22 verbatim: "I was going to talk about it, but then we didn't, and it's fine. I don't think it's that interesting." Confirmed in `exam_analysis.md` §5. No SVM atoms anywhere — no hyperplanes, margins, kernels, slack variables, hinge loss, support vectors. The `modules/9SVM` folder is dead.
+- **Support Vector Machines (SVM, ISLP ch. 9 entirely).** L22 verbatim: "I was going to talk about it, but then we didn't, and it's fine. I don't think it's that interesting." Confirmed in `exam_analysis.md` §5. No SVM atoms anywhere — no hyperplanes, margins, kernels, slack variables, hinge loss, support vectors. The `modules/9SVM` folder is dead.
 - **Survival analysis (Kaplan-Meier, Cox PH, censored data).** Not in any lecture or exercise.
 - **Multiple-testing corrections (Bonferroni, FDR).** Not in any lecture or exercise.
 - **Time-series modeling (ARIMA etc.).** The L26 NYSE example uses RNNs and treats time-series structure conceptually only.

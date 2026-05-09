@@ -36,7 +36,7 @@ The atom is a **briefing for a knowledgeable peer**, imagine handing it to anoth
 - Which exercises drill this concept
 - How *this* exam might ask about it
 
-That gap is the atom's job to fill. **Skip generic stat learning content**: Claude knows it from training, and ISLR holds the deep treatment. The atom's value is everything specific to *this* course.
+That gap is the atom's job to fill. **Skip generic stat learning content**: Claude knows it from training, and ISLP holds the deep treatment. The atom's value is everything specific to *this* course.
 
 ## Atom depth scales with prof's treatment
 
@@ -44,7 +44,7 @@ There is no external tier ranking. Read the lectures + slides for your atom's co
 
 - Heavy treatment + multiple exam-flag quotes + recurring across lectures → richly developed atom (toward 200–250 lines)
 - Standard treatment, one solid lecture pass → standard atom (~120 lines)
-- Brief mention or "you can read about this in the book" → stub (40–80 lines: definition + ISLR pointer + scope note)
+- Brief mention or "you can read about this in the book" → stub (40–80 lines: definition + ISLP pointer + scope note)
 
 Length bound: **80–250 lines** (cross-cutting atoms can exceed). Don't pad to hit a number; don't over-compress to hit a number.
 
@@ -98,7 +98,7 @@ For each concept, **think like an ISLP-trained stat learning expert** about what
 
 3. If yes → include with a lecture/slide anchor.
 
-4. If no → either omit (if peripheral) or note explicitly in `## Scope vs ISLR` as "Skip in ISLR" so Anders knows the textbook covers it but it's not on this exam.
+4. If no → either omit (if peripheral) or note explicitly in `## Scope vs ISLP` as "Skip in ISLP" so Anders knows the textbook covers it but it's not on this exam.
 
 This catches concepts the prof mentioned briefly that matter, and tells Anders what to skip in the textbook.
 

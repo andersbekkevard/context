@@ -81,11 +81,11 @@ The prof did not flag stochastic GBM as having a dedicated exam question, but it
 - **Calling it "boosting + bootstrapping."** Subsampling here is **without replacement**, not bootstrapping. Friedman 2002's distinction.
 - **Setting `bag.fraction = 1` and expecting variance reduction.** With `bag.fraction = 1`, every tree sees all the data → no diversity from this knob → you've turned off this regularizer. (The slide deck's "regular" `gbm()` baseline has `bag.fraction = 1`.)
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the concept (subsample rows / columns before each tree → diversity → variance reduction), the bag-fraction parameter, the three variant subsample patterns, the bagging-logic-applied-inside-boosting framing.
-- **Look up in ISLR:** §8.2.3 doesn't really cover stochastic GBM as a separate variant; the slides reference Boehmke & Greenwell's HOML chapter (https://bradleyboehmke.github.io/HOML/gbm.html) for the deeper treatment. Anders does **not** need this for the exam.
-- **Skip in ISLR (book-only / out of scope):**
+- **Look up in ISLP:** §8.2.3 doesn't really cover stochastic GBM as a separate variant; the slides reference Boehmke & Greenwell's HOML chapter (https://bradleyboehmke.github.io/HOML/gbm.html) for the deeper treatment. Anders does **not** need this for the exam.
+- **Skip in ISLP (book-only / out of scope):**
   - **Friedman 2002 derivations** of why subsampling specifically helps: out of scope per [[L20-boosting-2]].
   - **Subsampling-fraction tuning with grids**: exercise material, not exam material.
   - **LightGBM's gradient-based row sampling**: name-checked only ([[L20-boosting-2]] / [[L21-unsupervised-1]]); out.

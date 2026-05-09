@@ -45,5 +45,5 @@ The vocabulary-and-decomposition module: Y = f(X) + ε, supervised vs unsupervis
 - **Spectral / eigen-decomposition derivations of covariance** - "we don't talk about spectral decomposition" - deferred to Linear Statistical Models - [[L04-statlearn-3]]. Eigenvalue-as-PC-variance is captured later in [[principal-component-analysis]] / [[explained-variance-and-scree-plot]]; the full spectral theory is out.
 - **Pseudo-inverse / Moore-Penrose mathematics** - used in L04 to demonstrate over-parameterized fits but never formally derived; the *concept* (minimum-norm interpolator) is captured in [[double-descent]], the algebra is out - [[L04-statlearn-3]]; reinforced "explicitly bracketed off" in [[L08-classif-2]]
 
-## ISLR pointer
+## ISLP pointer
 Chapter 2: Statistical Learning. The deep treatment of in-scope concepts in this module is in `book/02-statlearn.md`; the prof said "it's well written… it's the right source." Specific atoms carry section-level `isl-ref:` pointers (e.g. 2.1.1 reducible/irreducible, 2.1.2 parametric/nonparametric, 2.2.1 flexibility, 2.2.2 bias-variance, 2.2.3 KNN).

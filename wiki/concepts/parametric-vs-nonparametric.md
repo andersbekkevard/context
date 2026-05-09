@@ -82,11 +82,11 @@ This is foreshadowing of [[regularization]], ridge / lasso / shrinkage (M6), and
 - **Parametric extrapolation is a trap.** A linear model will happily predict at $x_0$ far outside the training range, with no warning that it's nonsense. Nonparametric methods at least fail loudly there (they have nothing to interpolate from).
 - **Choice depends on your goal** (the [[prediction-vs-inference]] split): parametric usually wins when you need an interpretable coefficient story; nonparametric wins when you only care about prediction accuracy and have enough data.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the parametric-vs-nonparametric distinction, the two-step parametric recipe, the K-as-flexibility story for KNN, the prediction-vs-extrapolation contrast, the inflexible / flexible classification of course methods.
-- **Look up in ISLR:** §2.1.2 (Parametric vs Non-Parametric Methods) and §2.1.3 (The Trade-Off Between Prediction Accuracy and Model Interpretability). Figures 2.4–2.6 (linear vs thin-plate spline on the Income data) are the canonical visual.
-- **Skip in ISLR:** thin-plate spline mechanics, covered conceptually only, splines proper come back in M7.
+- **Look up in ISLP:** §2.1.2 (Parametric vs Non-Parametric Methods) and §2.1.3 (The Trade-Off Between Prediction Accuracy and Model Interpretability). Figures 2.4–2.6 (linear vs thin-plate spline on the Income data) are the canonical visual.
+- **Skip in ISLP:** thin-plate spline mechanics, covered conceptually only, splines proper come back in M7.
 
 ## How it might appear on the exam
 

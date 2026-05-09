@@ -127,11 +127,11 @@ The prof spent significant lecture time on this on both L17 and L18 , algorithmi
 - **CV picks $\alpha$ on the training data.** You then refit the chosen $\alpha$ on the *full* training data, not on a held-out fold. Same logic as CV-tuned ridge / lasso.
 - **`cv.tree`'s `dev` field reports deviance** for regression and **number of misclassifications** when you pass `FUN = prune.misclass`. Don't get tripped up reading the output.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** The cost-complexity formula $C_\alpha(T) = Q(T) + \alpha|T|$; the build-out-then-prune pipeline (Algorithm 8.1); CV-based $\alpha$ selection; the early-stopping-is-wrong rule; the train-Gini-prune-misclass asymmetry for classification; reading a CV-error-vs-tree-size plot.
-- **Look up in ISLR:** §8.1.1 (Tree Pruning subsection), Algorithm 8.1 box, Figures 8.4–8.5 (Hitters worked example).
-- **Skip in ISLR (book-only, prof excluded):** Detailed formal proof that the weakest-link sequence is the same as the $\alpha$-optimal sequence (the slide deck links a Bo Lindqvist note for those who want it; not exam material). Bayesian-prior interpretations of $\alpha$.
+- **Look up in ISLP:** §8.1.1 (Tree Pruning subsection), Algorithm 8.1 box, Figures 8.4–8.5 (Hitters worked example).
+- **Skip in ISLP (book-only, prof excluded):** Detailed formal proof that the weakest-link sequence is the same as the $\alpha$-optimal sequence (the slide deck links a Bo Lindqvist note for those who want it; not exam material). Bayesian-prior interpretations of $\alpha$.
 
 ## Exercise instances
 

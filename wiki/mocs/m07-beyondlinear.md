@@ -42,5 +42,5 @@ One-and-a-half lectures (Mar 9 plus the first half of Mar 10) on a single trick:
 - **B-spline basis machinery (the `bs` label)** - "I don't know why they call it BS"; cosmetic, not on the exam - [[L16-beyondlinear-1]]
 - **Bezier / shipbuilding history of splines**: pedagogical context only - [[L16-beyondlinear-1]]
 
-## ISLR pointer
+## ISLP pointer
 Chapter 7: Moving Beyond Linearity. Deep treatment of in-scope concepts (polynomial, step, splines, smoothing splines, LOESS, GAM) is in `book/07-beyondlinear.md`. Atoms carry section-level `isl-ref:` pointers (7.2 step, 7.3 basis, 7.4 splines, 7.5 smoothing splines, 7.6 LOESS, 7.7 GAM).

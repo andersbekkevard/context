@@ -153,11 +153,11 @@ The PCR ↔ ridge analogy is the headline conceptual point. The PCR-as-not-varia
 - **Confusing $M$ with $p$.** $M$ is the number of PCs *kept*; $p$ is the total number of original predictors. PCR's appeal is when $M \ll p$.
 - **Reading PCR coefficients as variable importance.** They're back-projected from the $\theta$'s, they describe the regression but are not interpretable as "predictor X matters this much."
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the PCR pipeline (standardize → PCA → fit → back-transform); the back-transform formula $\beta_j = \sum_m \theta_m \phi_{jm}$; choosing $M$ by CV; the two key assumptions and their failure modes; the PCR-as-discretized-ridge analogy; the Credit-data result; the contrast with [[lasso]] (PCR does not select variables); the $R^2_\text{PCA}$ formula via eigenvalues.
-- **Look up in ISLR:** §6.3.1 (pp. 281–286) for the PCR algorithm and the simulated PCR-vs-ridge-vs-lasso comparison figure. §10 for full PCA treatment.
-- **Skip in ISLR:** the SVD derivation of PCA (the prof noted full PCA mechanics live in chapter 10; he didn't redo them in module 6); detailed ridge-shrinkage-per-PC algebra (slide gave the $\lambda_j^2/(\lambda_j^2 + \lambda)$ factor, the prof noted *"this is a confusing figure, I'll try to make another one for next time"* - [[L15-modelsel-4]]).
+- **Look up in ISLP:** §6.3.1 (pp. 281–286) for the PCR algorithm and the simulated PCR-vs-ridge-vs-lasso comparison figure. §10 for full PCA treatment.
+- **Skip in ISLP:** the SVD derivation of PCA (the prof noted full PCA mechanics live in chapter 10; he didn't redo them in module 6); detailed ridge-shrinkage-per-PC algebra (slide gave the $\lambda_j^2/(\lambda_j^2 + \lambda)$ factor, the prof noted *"this is a confusing figure, I'll try to make another one for next time"* - [[L15-modelsel-4]]).
 
 ## Exercise instances
 

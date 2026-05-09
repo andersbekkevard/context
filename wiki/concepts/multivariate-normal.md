@@ -175,11 +175,11 @@ CE1 problem 1g (matching contour plot to covariance matrix) is the **direct exam
 - **The MVN assumption is a *modeling* assumption, not a fact about your data**, flagged for LDA/QDA in [[L09-classif-3]]: *"Maybe it's not a good idea to pretend that the X's are well modeled by a Gaussian, that's a good way to break a model."*
 - **Contour shapes are about $\Sigma$, not $\mu$**: the mean vector just shifts the center of the ellipsoid; the shape and orientation are pure $\Sigma$.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the density formula, what each piece means, contour-matching, the role in LDA/QDA discriminants (with the where-does-the-quadratic-come-from derivation), zero-covariance ⇒ independence under normality, the basic properties (linear combos / marginals / conditionals stay normal).
-- **Look up in ISLR:** §4.4.2 (LDA for $p > 1$, with the MVN density); §4.4.3 (QDA, where $\Sigma$ becomes $\Sigma_k$); §4.4.4 (Naive Bayes, where $\Sigma_k$ becomes diagonal).
-- **Skip in ISLR (book-only, prof excluded):** spectral decomposition / eigenanalysis of $\Sigma$ - [[L04-statlearn-3]]: *"we don't talk about spectral decomposition"*, deferred to Linear Statistical Models. The eigenvalue-as-PC-variance fact comes back in PCA ([[principal-component-analysis]]) but the full spectral theory of $\Sigma$ doesn't.
+- **Look up in ISLP:** §4.4.2 (LDA for $p > 1$, with the MVN density); §4.4.3 (QDA, where $\Sigma$ becomes $\Sigma_k$); §4.4.4 (Naive Bayes, where $\Sigma_k$ becomes diagonal).
+- **Skip in ISLP (book-only, prof excluded):** spectral decomposition / eigenanalysis of $\Sigma$ - [[L04-statlearn-3]]: *"we don't talk about spectral decomposition"*, deferred to Linear Statistical Models. The eigenvalue-as-PC-variance fact comes back in PCA ([[principal-component-analysis]]) but the full spectral theory of $\Sigma$ doesn't.
 
 ## Exercise instances
 

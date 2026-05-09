@@ -128,11 +128,11 @@ This is the canonical exam-style ReLU forward-pass calculation. ReLU = max(0, z)
 - **Forgetting the bias** when computing pre-activation: $z = \sum w_j x_j + b$, not just the dot product. (Same trap as in [[nn-parameter-count]].)
 - **Activation choice for output ≠ activation choice for hidden.** They are independent design decisions and serve different purposes.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** linear / sigmoid / ReLU / GELU / softmax definitions; *why* nonlinearity is needed; pairing of output activation with loss; ReLU forward-pass calculation; sigmoid as historical, ReLU/GELU as modern.
-- **Look up in ISLR:** §10.1 (single-layer), §10.2 (multilayer + softmax), §10.3.1 (ReLU in CNNs).
-- **Skip in ISLR (book-only, prof excluded):** detailed derivative properties of activations (vanishing-gradient analysis), softmax temperature, exotic activations beyond the four named here. Vanishing/exploding gradients explicitly out of scope per [[L24-nnet-2]].
+- **Look up in ISLP:** §10.1 (single-layer), §10.2 (multilayer + softmax), §10.3.1 (ReLU in CNNs).
+- **Skip in ISLP (book-only, prof excluded):** detailed derivative properties of activations (vanishing-gradient analysis), softmax temperature, exotic activations beyond the four named here. Vanishing/exploding gradients explicitly out of scope per [[L24-nnet-2]].
 
 ## Exercise instances
 

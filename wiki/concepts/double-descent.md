@@ -156,11 +156,11 @@ The prof restated the bias-variance exam guarantee in [[L26-nnet-3]] **immediate
 - **Don't memorize the precise location of the interpolation peak**: it's "around $p \approx n$" but the precise location depends on regularization, optimizer, model class. Just know it's there.
 - **Most things in the course don't exhibit double descent.** It's specific to: (i) high-SNR data, (ii) over-parameterized models trained without strong explicit regularization, (iii) optimization that implicitly controls a norm. Trees, GAMs, lasso/ridge with CV-chosen $\lambda$ , none go past the interpolation point.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the phenomenon (test error has a second descent past the interpolation point), the explanation (minimum-norm interpolator among infinitely many), the bias-variance reconciliation (decomposition still holds, just non-U), why it matters for modern ML, when it does and doesn't help.
-- **Look up in ISLR:** §10.8 (the deep-learning chapter's "What does double descent really mean?" section, with Figs 10.20–10.21).
-- **Skip in ISLR (book-only, prof excluded):** formal proofs of when minimum-norm solutions generalize (high-dimensional statistics literature); precise interpolation-point characterization for specific model classes. The prof's L04 / L26 simulations are the in-scope working knowledge.
+- **Look up in ISLP:** §10.8 (the deep-learning chapter's "What does double descent really mean?" section, with Figs 10.20–10.21).
+- **Skip in ISLP (book-only, prof excluded):** formal proofs of when minimum-norm solutions generalize (high-dimensional statistics literature); precise interpolation-point characterization for specific model classes. The prof's L04 / L26 simulations are the in-scope working knowledge.
 
 ## Exercise instances
 

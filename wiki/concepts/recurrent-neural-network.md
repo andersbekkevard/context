@@ -100,11 +100,11 @@ The L27 walkthrough does not feature an RNN-specific question. RNNs are likely t
 - **Time-series autocorrelation matters.** Successive observations are not independent, has implications for both the fit and the uncertainty quantification. The prof flagged this for the NYSE example.
 - **Output activation depends on the goal.** Linear for regression-style $O_t$, sigmoid / softmax for classification, exactly the same logic as in [[feedforward-network]] / [[activation-functions]].
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the basic RNN architecture (input, hidden state with carry-over, output), weight sharing, the conceptual statement that information propagates along the sequence, NYSE time-series motivation, "RNN is precursor to LLMs."
-- **Look up in ISLR:** §10.5, *Recurrent Neural Networks*, specifically §10.5.1 (sequential models) and §10.5.2 (time series forecasting). The book describes the basic RNN at exactly the depth lectured.
-- **Skip in ISLR (book-only / explicitly out):**
+- **Look up in ISLP:** §10.5, *Recurrent Neural Networks*, specifically §10.5.1 (sequential models) and §10.5.2 (time series forecasting). The book describes the basic RNN at exactly the depth lectured.
+- **Skip in ISLP (book-only / explicitly out):**
   - **LSTM / GRU gates and detailed cell math** - [[L26-nnet-3]] / [[scope]]: out.
   - **Backpropagation through time (BPTT) algorithm**: [[scope]] / [[L26-nnet-3]]: out.
   - **Attention, Transformer, Seq2Seq architectures**: out.

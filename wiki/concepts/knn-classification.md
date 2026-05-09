@@ -105,11 +105,11 @@ Because KNN uses Euclidean distance, predictors on different scales bias the met
 - **No extrapolation**: at a $x_0$ far from any training point, KNN's "nearest neighbors" are still its nearest neighbors, but they're far. Predictions are essentially the majority class of distant points; not meaningful.
 - **K = 7 with 7 training points and $K=7$** (Exercise 4.1b): you're using *every* training point, the prediction is just the global majority class regardless of $x_0$. Pure underfit. The exam-trap framing of "why is K=7 bad?" in that exercise.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the algorithm, $K$ as flexibility knob, hand-computation of distances and votes, contrast with the parametric / generative paradigms, curse of dimensionality, picking $K$ by CV.
-- **Look up in ISLR:** §2.2.3 (Bayes / KNN setup, Figs 2.14–2.17 for the geometry and the U-shape in $1/K$); §4.7.6 (KNN as classifier alongside logistic / LDA / QDA in the comparison setting).
-- **Skip in ISLR:** weighted KNN ([[scope|out of scope]]: name-checked only), distance metrics other than Euclidean (mentioned in M10 [[distance-metrics]] but not exam-tested for KNN).
+- **Look up in ISLP:** §2.2.3 (Bayes / KNN setup, Figs 2.14–2.17 for the geometry and the U-shape in $1/K$); §4.7.6 (KNN as classifier alongside logistic / LDA / QDA in the comparison setting).
+- **Skip in ISLP:** weighted KNN ([[scope|out of scope]]: name-checked only), distance metrics other than Euclidean (mentioned in M10 [[distance-metrics]] but not exam-tested for KNN).
 
 ## Exercise instances
 

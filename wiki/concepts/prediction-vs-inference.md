@@ -102,11 +102,11 @@ Recurring framing: a question that gives you a real-world scenario, you tag it a
 - **Black-box prediction with calibrated uncertainty is still prediction**, not inference. Quant-style "predict + confidence interval on the prediction" is prediction; inferring β's is something else.
 - **Inference does not require causality.** The prof is explicit: inference is "trying to understand the structure, ideally causal, more often correlational" ([[L01-intro]]). Don't overclaim cause from a regression coefficient.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the prediction vs inference distinction itself, the design-choice consequences, recognizing it in a real-world description, and using the dichotomy to choose between flexible vs interpretable methods (this returns in module 2's bias-variance and modules 6–9 when picking regularization / boosting vs simple linear models).
-- **Look up in ISLR:** §2.1.1 ("Why Estimate $f$?"), ISL splits this exactly into Prediction (§2.1.1) and Inference (§2.1.2). Short, well-written, on the exam table for the canonical reference if Anders needs to look up the formal statement.
-- **Skip in ISLR:** none, §2.1.1–§2.1.2 is short and entirely in scope.
+- **Look up in ISLP:** §2.1.1 ("Why Estimate $f$?"), ISL splits this exactly into Prediction (§2.1.1) and Inference (§2.1.2). Short, well-written, on the exam table for the canonical reference if Anders needs to look up the formal statement.
+- **Skip in ISLP:** none, §2.1.1–§2.1.2 is short and entirely in scope.
 
 ## Exercise instances
 

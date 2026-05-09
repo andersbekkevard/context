@@ -24,7 +24,7 @@ The prof's first **algorithmic model** of the course (Breiman's two-cultures fra
 
 > "We're going to chunk up our X's with rectangles such that the mean of the points within that rectangle predicts the activity well." - [[L17-trees-1]]
 
-Two-step recipe (slide deck and ISLR Algorithm 8.1):
+Two-step recipe (slide deck and ISLP Algorithm 8.1):
 
 1. Divide the predictor space into $J$ non-overlapping regions $R_1, \ldots, R_J$.
 2. For every observation falling in $R_j$, predict the **mean of the training $y$'s** in that region.
@@ -86,7 +86,7 @@ That "another way" is [[cost-complexity-pruning]].
 - **Linear regression**: $f(X) = \beta_0 + \sum_j X_j \beta_j$, one global functional form, smooth boundaries.
 - **Regression tree**: $f(X) = \sum_{m=1}^{M} c_m \cdot \mathbf{1}(X \in R_m)$, piecewise constant on axis-aligned boxes.
 
-Picture (ISLR Figure 8.7 / slides): a linear true boundary kills the tree (it has to step-function it), a rectangular true boundary kills linear regression. Each shines where its inductive bias matches.
+Picture (ISLP Figure 8.7 / slides): a linear true boundary kills the tree (it has to step-function it), a rectangular true boundary kills linear regression. Each shines where its inductive bias matches.
 
 ## Exam signals
 
@@ -106,11 +106,11 @@ The 2024 exam (3d, 1P) gave students `argmin_{R_1,R_2}[ Σ(y_i − ŷ_{R_1})² +
 - **Number of regions $J$.** When asked "what is $J$?" given a tree, count *terminal nodes* (leaves), not internal nodes.
 - **Prediction is the region mean.** Not the median, not the conditional expectation under some model, just the empirical mean of training $y$'s in that leaf.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** Recursive binary splitting algorithm; the RSS split criterion; the "build out then prune" pipeline; reading a fitted tree (region rectangles + tree diagram both); interaction-capturing intuition; greedy nature; CART name.
-- **Look up in ISLR:** §8.1.1 (regression trees); §8.1.4 (advantages/disadvantages); Algorithm 8.1 box.
-- **Skip in ISLR (book-only, prof excluded):** Detailed NP-completeness proofs / computational-complexity discussion ([[L17-trees-1]]: noted only in passing). Bayesian Additive Regression Trees (BART, ISLR §8.2.4, never covered in lectures).
+- **Look up in ISLP:** §8.1.1 (regression trees); §8.1.4 (advantages/disadvantages); Algorithm 8.1 box.
+- **Skip in ISLP (book-only, prof excluded):** Detailed NP-completeness proofs / computational-complexity discussion ([[L17-trees-1]]: noted only in passing). Bayesian Additive Regression Trees (BART, ISLP §8.2.4, never covered in lectures).
 
 ## Exercise instances
 

@@ -7,7 +7,7 @@ title: TMA4268 - Statistical Learning
 Exam-prep notes for **TMA4268 *Statistisk læring*** at NTNU.
 
 > **Final exam · 2026-05-18 · 4 hours · open-book · Inspera**
-> ISLR + handwritten A5 + calculator allowed. No code.
+> ISLP + handwritten A5 + calculator allowed. No code.
 
 Pick a module to start, or jump straight to a practice deck.
 
@@ -30,7 +30,7 @@ Each module page lists the lectures it covers, the concepts it touches, and what
 
 ## Practice decks
 
-Per-module multiple-choice drills, ~25 questions each. Click an option to lock your answer; correct turns green, wrong turns red, and the explanation opens automatically. The score panel at the bottom-left tracks your running points. Source flags on questions: `ISLR §X Qn` = ISLR end-of-chapter conceptual exercise; `Exam YYYY Pn` = past TMA4268 exam (translated for 2026 format); `CEn Pm` / `Ex<i>.<j>` = compulsory or recommended exercise.
+Per-module multiple-choice drills, ~25 questions each. Click an option to lock your answer; correct turns green, wrong turns red, and the explanation opens automatically. The score panel at the bottom-left tracks your running points. Source flags on questions: `ISLP §X Qn` = ISLP end-of-chapter conceptual exercise; `Exam YYYY Pn` = past TMA4268 exam (translated for 2026 format); `CEn Pm` / `Ex<i>.<j>` = compulsory or recommended exercise.
 
 - <a href="/decks/m01-intro.html" target="_blank" rel="noopener">01: Introduction</a>
 - <a href="/decks/m02-statlearn.html" target="_blank" rel="noopener">02: Statistical learning</a>
@@ -85,7 +85,7 @@ Slide decks (annotated where available) and exercise PDFs from the original cour
 
 ## Concepts and lectures
 
-Every named idea (ridge regression, LDA, cross-validation, …) has its own page with the definition, the formulas to know, the traps the prof flagged, and a pointer to ISLR for the deeper treatment. Every lecture is compressed into a page that preserves the prof's voice where it matters.
+Every named idea (ridge regression, LDA, cross-validation, …) has its own page with the definition, the formulas to know, the traps the prof flagged, and a pointer to ISLP for the deeper treatment. Every lecture is compressed into a page that preserves the prof's voice where it matters.
 
 You'll usually land on these through a module page above, but the **search bar (left)** and the **graph view (right)** work too.
 

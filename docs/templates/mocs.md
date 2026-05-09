@@ -11,7 +11,7 @@ A MOC is a **pure router**, it tells Claude which atom to load for a given quest
 moc: <NN-slug>                      # e.g. 06-modelsel
 title: <Module Title>               # e.g. Model Selection and Regularization
 lectures: [L<NN>, L<NN>, ...]       # lecture wikilinks for this module
-isl-ch: <chapter>                   # ISLR chapter, e.g. 6
+isl-ch: <chapter>                   # ISLP chapter, e.g. 6
 slides: [<path>, ...]               # path(s) to slide deck(s), e.g. modules/6ModelSel/...
 exercises:                          # exercise files that drill this module
   - exercises/Exercise<N>/
@@ -54,7 +54,7 @@ tags:
 - **<Topic>** — <prof's verbatim signal> — [[L<NN>-<slug>]]
 - **<Topic>** — <reason> — [[L<NN>-<slug>]]
 
-## ISLR pointer
+## ISLP pointer
 Chapter <N>: <title>. The deep treatment of in-scope concepts in this module is in `book/<NN>-<slug>.md`. Specific atoms carry section-level `isl-ref:` pointers.
 ```
 
@@ -125,6 +125,6 @@ The prof's "central trick of statistical learning" module. Heavy ridge / lasso /
 - **PLS history and detailed mechanics** — PCR is the workhorse — [[L15-modelsel-4]]
 - **Elastic Net detailed tuning** — concept noted, no worked example
 
-## ISLR pointer
+## ISLP pointer
 Chapter 6: Linear Model Selection and Regularization. Atoms carry section-level `isl-ref:` pointers; for full algebra of any in-scope concept, route Anders to `book/06-modelsel.md`.
 ```

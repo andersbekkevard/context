@@ -135,12 +135,12 @@ So **memorize**: penalty integrand is $g''(t)^2$, second derivative squared.
 - **$\lambda \to \infty$ goes to the OLS straight line, not zero.** When the curvature penalty kills everything wiggly, you don't get the constant-mean fit, you get the *least-squares line*: that's the smoothest function that can still respond to data trend.
 - The optional smoother-matrix derivation (Reinsch matrix, eigendecomposition, the long algebra in slide §7.5.3 and Exercise 7.6) is **explicitly not on the exam**.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the loss + curvature-penalty objective; behaviour at the two extremes; effective df = $\mathrm{tr}(\mathbf S)$; LOOCV shortcut; the analogy to ridge.
-- **Look up in ISLR:** §7.5.1 (objective and the "natural cubic spline at every $x_i$" claim), §7.5.2 (effective df, LOOCV formula). Both quite short.
-- **Skip in ISLR (and slides):** the **optional Section "Computing $\mathbf S$"** in the slide deck (Reinsch matrix construction, eigendecomposition trick), explicitly optional and not lectured. The proof that the minimiser of $\sum(y_i - g(x_i))^2 + \lambda \int g''^2$ is a natural cubic spline with knots at $x_1, \ldots, x_n$ is stated but not derived in either source.
-- **Skip in ISLR (book-only material):** the "ridge connection" optional section in the slide deck is informative but not lectured; same conceptual point that the smoothing spline is "ridge in function space" *is* lectured, just not the algebra.
+- **Look up in ISLP:** §7.5.1 (objective and the "natural cubic spline at every $x_i$" claim), §7.5.2 (effective df, LOOCV formula). Both quite short.
+- **Skip in ISLP (and slides):** the **optional Section "Computing $\mathbf S$"** in the slide deck (Reinsch matrix construction, eigendecomposition trick), explicitly optional and not lectured. The proof that the minimiser of $\sum(y_i - g(x_i))^2 + \lambda \int g''^2$ is a natural cubic spline with knots at $x_1, \ldots, x_n$ is stated but not derived in either source.
+- **Skip in ISLP (book-only material):** the "ridge connection" optional section in the slide deck is informative but not lectured; same conceptual point that the smoothing spline is "ridge in function space" *is* lectured, just not the algebra.
 
 ## Exercise instances
 

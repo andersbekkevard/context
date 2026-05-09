@@ -44,7 +44,7 @@ The final class before the exam. The prof skipped the wrap-up slides and instead
 > [!important] The scope rule (verbatim)
 > "If it was covered either in the slides or in the exercises, then I would say fair game. If it's only in the book and we didn't talk about it in class or in the exercises, then it's not going to be in the test."
 
-- **Exam: May 18, 09:00, 4 hours, open book.** Bring ISLR (your own copy or the provided PDF), one A5 sheet of handwritten notes, a calculator. Post-it tabs in the book are fine; don't write on them.
+- **Exam: May 18, 09:00, 4 hours, open book.** Bring ISLP (your own copy or the provided PDF), one A5 sheet of handwritten notes, a calculator. Post-it tabs in the book are fine; don't write on them.
 - **No language-specific code.** No R/Python package names to memorize. He may ask for **pseudocode** or math, and he'll **give you the regression output / table / plot** instead of making you generate it.
 - **There will be a question on the bias-variance decomposition.** Said multiple times in the course. "If you haven't learned anything in the course, I recommend reading that part of the book."
 - **Format mix:** mostly multiple choice + true/false + short interpretation, plus at least one mathy/derivation question, plus data-analysis style questions where output is provided. Probably uses paper-with-PDF (write "Q1: A" on paper); may try Inspera buttons but probably won't.
@@ -59,7 +59,7 @@ May 18 at 09:00, 4-hour exam. He emphasized that his exams are usually shorter t
 
 ### Aids
 
-- **The course book (ISLR 2nd ed).** Bring your own physical copy or use the PDF provided on the testing computers ("standard PDF … you can search with it"). Post-it tabs marking chapters/sections are allowed; don't write on the post-its.
+- **The course book (ISLP 2nd ed).** Bring your own physical copy or use the PDF provided on the testing computers ("standard PDF … you can search with it"). Post-it tabs marking chapters/sections are allowed; don't write on the post-its.
 - **One A5 sheet, handwritten.** On whether iPad-handwritten then printed counts: "the safest thing is always just write it actually on paper … the ones who decide that are the old people at the testing center."
 - **Calculator.** "Pretty much any calculator is fine … you won't need anything fancy." Bring one: "no one wants to do long division by hand."
 
@@ -74,7 +74,7 @@ So expect: write all answers on paper, including MC. Easy to grade either way.
 
 ### What's on the curriculum
 
-Lectures + recommended/compulsory exercises + relevant ISLR chapters noted in the slides. "In general, as you probably noticed, the slides and the material largely are mirroring the book, so most everything is in the book." But the scope rule is the canonical filter (see callout above). Sources of inspiration for questions: exercises (most important), questions asked in class, book end-of-chapter exercises, old exams.
+Lectures + recommended/compulsory exercises + relevant ISLP chapters noted in the slides. "In general, as you probably noticed, the slides and the material largely are mirroring the book, so most everything is in the book." But the scope rule is the canonical filter (see callout above). Sources of inspiration for questions: exercises (most important), questions asked in class, book end-of-chapter exercises, old exams.
 
 ### Format mix
 

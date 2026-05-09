@@ -128,11 +128,11 @@ The prof flagged **decision-boundary derivation** twice, in two different lectur
 - **Gaussian assumption violated.** "Maybe it's not a good idea to pretend that the X's are well modeled by a Gaussian, that's a good way to break a model." - [[L09-classif-3]]
 - **Pooling assumption violated** when class covariances genuinely differ, bias goes up.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** Bayes' rule for class probabilities, Gaussian class-conditionals, pooled covariance, derivation of $\delta_k(x)$ (1D and multivariate), decision-boundary derivation, parameter estimation (plug-in MLEs), softmax recovery of posterior, comparison with logistic regression, LDA-as-dimensionality-reduction.
-- **Look up in ISLR:** §4.4.1 (LDA for $p = 1$), §4.4.2 (LDA for $p > 1$), pp. 145–155. Equations (4.18) and (4.24) are the canonical $\delta_k$ formulas; Figure 4.6 is the 3-class decision-boundary picture.
-- **Skip in ISLR:**
+- **Look up in ISLP:** §4.4.1 (LDA for $p = 1$), §4.4.2 (LDA for $p > 1$), pp. 145–155. Equations (4.18) and (4.24) are the canonical $\delta_k$ formulas; Figure 4.6 is the 3-class decision-boundary picture.
+- **Skip in ISLP:**
   - **Fisher's discriminant derivation** (within-class vs between-class variance ratio, eigenvectors of $\Sigma^{-1} B$), slide deck section is marked "Optional" and the prof never lectured on it.
   - **Multinomial-logistic-vs-LDA detailed mapping**: prof skipped multinomial logistic.
 

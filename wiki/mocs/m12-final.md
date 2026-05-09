@@ -20,7 +20,7 @@ Meta-router. Module 12 has **no atoms of its own**, it is the exam-review sessio
 - [[L27-summary]]: Apr 28 dedicated exam Q&A: logistics, the scope rule (verbatim), problem-by-problem walkthrough of the 2025 paper showing how each question is reformatted for the 2026 open-book exam, plus the "mathy question" template (MLE = LS under Gaussian errors)
 
 ## Scope authority
-- [[scope]]: the canonical "is X in scope?" reference: source hierarchy (exercises > lectures > slides; ISLR for fleshing out, not for scoping), explicit exclusions with verbatim anchors, programming policy, 2026 question patterns, past-exam translation table, exam logistics
+- [[scope]]: the canonical "is X in scope?" reference: source hierarchy (exercises > lectures > slides; ISLP for fleshing out, not for scoping), explicit exclusions with verbatim anchors, programming policy, 2026 question patterns, past-exam translation table, exam logistics
 
 ## Cross-cutting concepts touched (Specials)
 
@@ -51,8 +51,8 @@ Drawn from [[L27-summary]]'s walkthrough plus the signals catalogued in [[scope]
 
 ## Out of scope
 
-This module inherits the whole course's exclusion list. See [[scope]] §"Explicit out-of-scope" for the full catalogue with verbatim anchors. Highlights include: SVM (entire ISLR ch. 9), survival analysis, multiple-testing corrections, AIC/BIC/Cp derivations, F-test mechanics, Bayesian-prior interpretation of ridge/lasso, natural-spline basis math, detailed boosting pseudocode, advanced NN internals (skip connections, Adam, BatchNorm, LSTM/GRU gates, universal-approximation proof), and **all R/Python package names and executable code**.
+This module inherits the whole course's exclusion list. See [[scope]] §"Explicit out-of-scope" for the full catalogue with verbatim anchors. Highlights include: SVM (entire ISLP ch. 9), survival analysis, multiple-testing corrections, AIC/BIC/Cp derivations, F-test mechanics, Bayesian-prior interpretation of ridge/lasso, natural-spline basis math, detailed boosting pseudocode, advanced NN internals (skip connections, Adam, BatchNorm, LSTM/GRU gates, universal-approximation proof), and **all R/Python package names and executable code**.
 
-## ISLR pointer
+## ISLP pointer
 
-No single chapter, as module 12 is integrative. For deep treatment of any in-scope topic, route to the chapter owned by the relevant earlier module. ISLR is open-book on the exam; the A5 sheet should hold what ISLR's index doesn't get you to fast (interaction-trap reminders, direction-of-effect cheats, parameter-count formulas).
+No single chapter, as module 12 is integrative. For deep treatment of any in-scope topic, route to the chapter owned by the relevant earlier module. ISLP is open-book on the exam; the A5 sheet should hold what ISLP's index doesn't get you to fast (interaction-trap reminders, direction-of-effect cheats, parameter-count formulas).

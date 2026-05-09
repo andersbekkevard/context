@@ -13,8 +13,8 @@ There are two variants depending on whether the atom belongs to one module or sp
 concept: <hyphen-case-slug>           # e.g. ridge-regression
 module: <NN-slug>                     # singular — the one owning module, e.g. 06-modelsel
 lectures: [L<NN>, L<NN>, ...]         # every lecture this atom draws from
-isl-ref: <chapter>.<section>          # ISLR pointer for full treatment, e.g. 6.2.1
-                                      # leave null if no clean ISLR home
+isl-ref: <chapter>.<section>          # ISLP pointer for full treatment, e.g. 6.2.1
+                                      # leave null if no clean ISLP home
 exercises:                            # exercises this atom touches; one entry per relevant problem
   - Exercise<N>.<sub> — <one-line>    # e.g. Exercise6.3 — apply ridge to credit data
   - CE<N> problem <P> — <one-line>    # e.g. CE1 problem 4 — k-fold CV for λ
@@ -77,10 +77,10 @@ Key differences for Specials: plural `modules:` instead of singular `module:`; `
 ## Pitfalls
 - [inline; verbatim where prof flagged it as a common mistake]
 
-## Scope vs ISLR
+## Scope vs ISLP
 - **In scope:** [the parts the prof covered]
-- **Look up in ISLR:** §X.Y, pp. ZZ–ZZ — use this for full derivations / extra worked examples
-- **Skip in ISLR (book-only, prof excluded):** [list, with — [[L<NN>-slug]] anchor where prof verbalized exclusion]
+- **Look up in ISLP:** §X.Y, pp. ZZ–ZZ — use this for full derivations / extra worked examples
+- **Skip in ISLP (book-only, prof excluded):** [list, with — [[L<NN>-slug]] anchor where prof verbalized exclusion]
 
 ## Exercise instances
 - Exercise<N>.<sub> — [one-line description of what the exercise asks]

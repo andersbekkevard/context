@@ -92,14 +92,14 @@ So **zero covariance does not mean independent** in general. It just means "no l
 - **Forgetting the square root in $\rho_{ij} = \sigma_{ij} / \sqrt{\sigma_i^2 \sigma_j^2}$**: that's how the CE1.1f distractors are designed.
 - **Symmetric proof for $\mathrm{Cov}(C\mathbf X) = C \boldsymbol\Sigma C^\top$, not $C^\top \boldsymbol\Sigma C$.** Order matters; transpose goes on the right.
 - **Singular $\boldsymbol\Sigma$ (det = 0) means at least one variable is a perfect linear combination of the others**: multivariate normal density doesn't exist; LDA's $\Sigma^{-1}$ blows up; PCA has zero eigenvalue.
-- **Be careful with row-vs-column conventions for the data matrix.** ISLR uses rows = observations, columns = variables. The prof's L02 notes the book convention and flags that other books transpose it.
+- **Be careful with row-vs-column conventions for the data matrix.** ISLP uses rows = observations, columns = variables. The prof's L02 notes the book convention and flags that other books transpose it.
 - **Pearson correlation is *linear* correlation only.** A perfect quadratic relationship can have $\rho = 0$.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** definition of random vector, mean vector, $\boldsymbol\Sigma$, $\boldsymbol\rho$, the two expectation rules, $\mathrm{Cov}(C\mathbf X) = C \boldsymbol\Sigma C^\top$, the linear-vs-independence distinction, $\Sigma \to \rho$ hand calculation.
-- **Look up in ISLR:** §2.1 (introduction to notation), §3.2.4 (sampling distributions of regression coefficients) and §4.4 (LDA/QDA's use of $\boldsymbol\Sigma$). Hardle / Simar or Johnson & Wichern would be the deeper references; ISLR keeps the matrix algebra light.
-- **Skip in ISLR:** spectral / eigen-decomposition theory of $\boldsymbol\Sigma$. The prof verbatim ([[L04-statlearn-3]]): "we don't talk about spectral decomposition", deferred to TMA4267 Linear Statistical Models. Eigenvalues come back as PC variances in M10, but the full spectral machinery is out.
+- **Look up in ISLP:** §2.1 (introduction to notation), §3.2.4 (sampling distributions of regression coefficients) and §4.4 (LDA/QDA's use of $\boldsymbol\Sigma$). Hardle / Simar or Johnson & Wichern would be the deeper references; ISLP keeps the matrix algebra light.
+- **Skip in ISLP:** spectral / eigen-decomposition theory of $\boldsymbol\Sigma$. The prof verbatim ([[L04-statlearn-3]]): "we don't talk about spectral decomposition", deferred to TMA4267 Linear Statistical Models. Eigenvalues come back as PC variances in M10, but the full spectral machinery is out.
 
 ## Exercise instances
 

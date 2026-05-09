@@ -75,7 +75,7 @@ The selling point that the prof emphasized hardest:
 
 > "You could throw away all the ones that are zero and rerun the model with just the two parameters. You wouldn't need any regularization, because it would be well-behaved. And you'd get exactly the same solution as if you'd done forward / backward subset selection, but instead of trying many, many, many models, you just run lasso once. Boom, same place." - [[L13-modelsel-2]]
 
-This is the practical pitch: you get the variable-selection effect of [[subset-selection]] from a *single* convex optimization, not $2^p$ of them. ISLR §6.2.2 echoes: lasso "performs variable selection."
+This is the practical pitch: you get the variable-selection effect of [[subset-selection]] from a *single* convex optimization, not $2^p$ of them. ISLP §6.2.2 echoes: lasso "performs variable selection."
 
 ### Simulated example: $p = 45$, $n = 50$, only 2 truly nonzero (slide-flagged)
 
@@ -124,11 +124,11 @@ The 2023 / 2024 exams asked direct lasso questions: fit it, choose $\lambda$, co
 - **Penalizing the intercept.** Don't.
 - **Direction of $\lambda$ confusion.** Same as ridge: $\lambda \uparrow$ → more shrinkage and more zeros; $\lambda \downarrow 0$ → recover OLS.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the L1 objective and constraint forms; the all-zero-at-finite-$\lambda$ behaviour; the geometric picture (corners → sparsity, see [[ridge-vs-lasso-geometry]]); standardization requirement; the $p=45, n=50$ simulated example; "capitalist" personality and when to prefer lasso over ridge; refit-on-active-set workflow; the conceptual claim that lasso = subset selection without combinatorial cost.
-- **Look up in ISLR:** §6.2.2 (pp. 256–264) for the orthonormal-design closed-form (lasso's per-coefficient soft-thresholding $\text{sign}(\hat\beta_j)(|\hat\beta_j| - \lambda/2)_+$ vs ridge's $\hat\beta_j/(1+\lambda)$, §6.2.2 "Simple Special Case" pp. 269–270, the cleanest formal contrast). §6.2.3 (pp. 274–279) for CV tuning workflow.
-- **Skip in ISLR (prof-excluded):**
+- **Look up in ISLP:** §6.2.2 (pp. 256–264) for the orthonormal-design closed-form (lasso's per-coefficient soft-thresholding $\text{sign}(\hat\beta_j)(|\hat\beta_j| - \lambda/2)_+$ vs ridge's $\hat\beta_j/(1+\lambda)$, §6.2.2 "Simple Special Case" pp. 269–270, the cleanest formal contrast). §6.2.3 (pp. 274–279) for CV tuning workflow.
+- **Skip in ISLP (prof-excluded):**
   - **Bayesian (Laplace prior) interpretation of lasso**: §6.2.2 pp. 271–273. *"I really don't think I'd put this on the test, just because it kind of assumes a lot of knowledge that maybe you don't have."* - [[L14-modelsel-3]].
   - **L0 norm / "Optimal Brain Damage."** - [[L14-modelsel-3]]: *"It's actually related to the model selection stuff, but again, we won't go into it because it's not used in practice."*
   - Full coordinate-descent / LARS algorithm details.

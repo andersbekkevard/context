@@ -60,7 +60,7 @@ That's the reducible part. The $\mathrm{Var}(\varepsilon)$ piece is the noise fl
 
 **What the irreducible error actually represents** ([[L03-statlearn-2]]): "stuff that has nothing to do with the thing you're trying to model", measurement noise, unobserved fluctuations, stuff orthogonal to your predictors. You attack it only by getting better data (lower-noise sensors, or measuring the missing variables and turning them into predictors).
 
-**The deterministic-relationship case** ([[L03-statlearn-2]] Q&A): if $Y$ is fully determined by the predictors (e.g. unit conversion feet → cm), there's no noise → no irreducible error. Almost never the case in practice. ISLR §2.1.1 makes the same point: in real data the unobserved variables and the inherent randomness combine to give a positive $\mathrm{Var}(\varepsilon)$.
+**The deterministic-relationship case** ([[L03-statlearn-2]] Q&A): if $Y$ is fully determined by the predictors (e.g. unit conversion feet → cm), there's no noise → no irreducible error. Almost never the case in practice. ISLP §2.1.1 makes the same point: in real data the unobserved variables and the inherent randomness combine to give a positive $\mathrm{Var}(\varepsilon)$.
 
 **In the classification setting**, the irreducible-error analogue is the **Bayes error rate**, see [[classification-setup]].
 
@@ -71,11 +71,11 @@ That's the reducible part. The $\mathrm{Var}(\varepsilon)$ piece is the noise fl
 - **The irreducible error is fixed by the data-generating process, not by your sample size.** More data lowers the *variance* of $\hat f$ (it makes the reducible part smaller), but $\mathrm{Var}(\varepsilon)$ doesn't budge, that's the whole point of the word "irreducible."
 - **Pointwise vs aggregate.** The decomposition above is pointwise at $x$. To get an MSE-like average you take a further expectation over $x$ from the test distribution; the same split holds.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the two-term split, the cross-term-vanishes derivation, the noise-floor interpretation, what each piece represents physically.
-- **Look up in ISLR:** §2.1.1 ("Why Estimate $f$?") for the verbal exposition and Equation (2.3); §2.2.2 for the bias-variance refinement that takes the reducible piece further. CE1 problem 1 walks the same derivation in writing.
-- **Skip in ISLR:** none specifically excluded, this is foundational, the prof endorses the textbook treatment.
+- **Look up in ISLP:** §2.1.1 ("Why Estimate $f$?") for the verbal exposition and Equation (2.3); §2.2.2 for the bias-variance refinement that takes the reducible piece further. CE1 problem 1 walks the same derivation in writing.
+- **Skip in ISLP:** none specifically excluded, this is foundational, the prof endorses the textbook treatment.
 
 ## Exercise instances
 
@@ -86,7 +86,7 @@ That's the reducible part. The $\mathrm{Var}(\varepsilon)$ piece is the noise fl
 
 - **Derivation question** (the prof's flagged "mathy theory question"): start from $\mathbb{E}[(Y - \hat Y)^2]$, show why the cross term is zero, identify the two pieces. This is the warm-up step inside the full [[bias-variance-tradeoff]] derivation that he repeatedly flagged as exam-likely.
 - **Conceptual T/F.** "As $n \to \infty$, the expected test MSE goes to zero" → **false**, because $\mathrm{Var}(\varepsilon)$ remains. Direct exam-style trap from CE1.1d.
-- **Identify the noise floor.** Given a bias-variance plot like ISLR Fig 2.12, point to the dashed horizontal line and explain it's $\mathrm{Var}(\varepsilon)$, the asymptote no method can cross.
+- **Identify the noise floor.** Given a bias-variance plot like ISLP Fig 2.12, point to the dashed horizontal line and explain it's $\mathrm{Var}(\varepsilon)$, the asymptote no method can cross.
 - **Verbal interpretation.** "Why is $\mathrm{Var}(\varepsilon)$ called irreducible?", because it's outside the modeler's control: it captures unobserved variables and measurement noise; only better data (more / cleaner predictors) can lower it, never a better fit.
 
 ## Related

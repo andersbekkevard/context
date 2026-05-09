@@ -92,11 +92,11 @@ The bias-variance answer the prof gave himself: shallow trees are weak learners 
 - **Confusing $\nu$ in boosting with $\eta$ in stochastic GBM.** The prof uses $\eta$ for both the learning rate (in some lectures) and for the row-subsample fraction (Friedman 2002 notation). Here $\nu$ = learning rate, $\eta$ depends on context; check the deck.
 - **Ignoring the seed.** Stochastic-flavored boosting (subsampled rows / cols) can give visibly different results across seeds, set one and report it.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the *concept* of weak learners (small trees), the role of tree depth as interaction-order control, the empirical rule $4 \le J \le 8$, the role of $\nu$ as a step-size / shrinkage regularizer, the rule $\nu \le 0.1$, the $M$–$\nu$ coupling, the early-stopping recipe, the connection to gradient descent.
-- **Look up in ISLR:** §8.2.3 spells out shrinkage $\lambda$ (book's notation for what the slides call $\nu$) and tree depth $d$, pp. 343–347. The empirical rule and the deeper "interaction order = depth" framing live in Elements ch. 10 (reference, not exam material).
-- **Skip in ISLR (book-only, prof excluded):**
+- **Look up in ISLP:** §8.2.3 spells out shrinkage $\lambda$ (book's notation for what the slides call $\nu$) and tree depth $d$, pp. 343–347. The empirical rule and the deeper "interaction order = depth" framing live in Elements ch. 10 (reference, not exam material).
+- **Skip in ISLP (book-only, prof excluded):**
   - **Detailed pseudocode of where exactly $\nu$ multiplies in**: [[L27-summary]] / [[L20-boosting-2]]: concept matters, line-by-line doesn't.
   - **Heavy theory of step-size choice / convergence rates**: out per the prof's "no fancy proofs" comment.
 

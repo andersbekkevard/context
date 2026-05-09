@@ -131,11 +131,11 @@ The optimizer story shows up as backdrop in the [[double-descent]] discussion (t
 - **Don't confuse epochs with iterations.** One *epoch* = one pass through all $N$ samples. With mini-batch size $m$, that's $N / m$ iterations per epoch.
 - **Gradient computed via [[backpropagation]]**, not by manual differentiation per parameter. SGD describes the *update*; backprop describes how the gradient is *computed*.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the update rule $\boldsymbol\theta \leftarrow \boldsymbol\theta - \lambda \nabla L$, the three flavors (full / true SGD / mini-batch), why mini-batch is the standard, the speed and regularization payoffs, **implicit L2 regularization (headline fact)**, learning rate as a hyperparameter, the shifting-loss-landscape intuition.
-- **Look up in ISLR:** §10.7, fitting a neural network. §10.7.2 covers regularization + SGD.
-- **Skip in ISLR (book-only, prof excluded):**
+- **Look up in ISLP:** §10.7, fitting a neural network. §10.7.2 covers regularization + SGD.
+- **Skip in ISLP (book-only, prof excluded):**
   - **Adam, RMSProp, momentum** internals - [[L23-nnet-1]] / [[L27-summary]]: "Advanced optimizers, out of scope."
   - **Learning-rate schedulers, warmup, cosine annealing**: not lectured.
   - **Vanishing / exploding gradients, weight initialization (Xavier / He)** - [[L24-nnet-2]]: "not discussed in any depth." Per [[scope]] explicitly out.

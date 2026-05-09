@@ -30,7 +30,7 @@ The MOC carries:
 4. **Cross-cutting concepts touched (Specials)**: wikilinks to any Specials atoms whose `modules:` list includes your module, with a one-line note on how this module touches them (and which lecture revisits)
 5. **Exercises**: pointers to recommended exercise folders + relevant compulsory exercise problems
 6. **Out of scope (this module)**: bullet list of topics excluded, each sourced to the relevant verbatim prof signal with a lecture wikilink. Pull from `docs/scope.md` filtered to your module's content.
-7. **ISLR pointer**: chapter reference for deep treatment lookup at exam time
+7. **ISLP pointer**: chapter reference for deep treatment lookup at exam time
 
 ## Length
 

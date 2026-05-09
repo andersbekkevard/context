@@ -93,11 +93,11 @@ This is exactly the motivation for [[regression-splines]], same "basis function"
 - **Choosing the degree by training error.** Always picks the highest degree → overfit. Use CV.
 - **Stacking too many predictors.** A degree-$d$ fit on $p$ predictors needs $\binom{p+d}{d}$ terms, explodes fast in multi-predictor regression. Module 7 (GAMs) handles this additively.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the model, that it's linear in parameters, the train-vs-test U-shape via degree, choosing degree by CV, the bridge to basis functions / splines.
-- **Look up in ISLR:** §3.3.2 (pp. 90–92, *Non-linear Relationships*), short subsection; §7.1 (pp. 290–291, *Polynomial Regression*), module 7's deeper treatment.
-- **Skip in ISLR:** orthogonal polynomial construction details, used by `poly()` but not exam material. Local polynomial regression (LOESS), owned by the [[local-regression]] atom (module 7).
+- **Look up in ISLP:** §3.3.2 (pp. 90–92, *Non-linear Relationships*), short subsection; §7.1 (pp. 290–291, *Polynomial Regression*), module 7's deeper treatment.
+- **Skip in ISLP:** orthogonal polynomial construction details, used by `poly()` but not exam material. Local polynomial regression (LOESS), owned by the [[local-regression]] atom (module 7).
 
 ## Exercise instances
 

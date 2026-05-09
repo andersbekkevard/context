@@ -162,7 +162,7 @@
           <ol>
             <li><strong>True</strong> — smaller per-tree contribution means each step is a smaller move toward the minimum, so more steps are needed. $M$ and $\nu$ are coupled.</li>
             <li><strong>False</strong> — boosting overfits if $M$ is too large because residuals eventually become noise. The "use enough" rule applies to bagging/RF, not boosting.</li>
-            <li><strong>True</strong> — a tree of depth $d$ uses at most $d$ predictors on any path, so it captures up to $d$-way interactions. Stumps (depth 1) → at most one variable per term → additive model (cf. ISLR §8.4 Q2).</li>
+            <li><strong>True</strong> — a tree of depth $d$ uses at most $d$ predictors on any path, so it captures up to $d$-way interactions. Stumps (depth 1) → at most one variable per term → additive model (cf. ISLP §8.4 Q2).</li>
             <li><strong>True</strong> — common practice puts $\nu$ at $0.1, 0.05, 0.01,$ or $0.001$, never near $1$ (which would kill the "small step" property).</li>
           </ol>
           <p class="ref">Atoms: <a href="/concepts/weak-learner-and-learning-rate">weak-learner-and-learning-rate</a>, <a href="/concepts/gradient-boosting">gradient-boosting</a>. Lecture: <a href="/lectures/L20-boosting-2">L20-boosting-2</a>.</p>
@@ -560,7 +560,7 @@
       <header class="exam-q__head">
         <span class="exam-q__num">Question 18</span>
         <span class="exam-q__points">3 points</span>
-        <span class="exam-q__src">ISLR §8 Q2</span>
+        <span class="exam-q__src">ISLP §8 Q2</span>
       </header>
       <p class="q-text">Boosting with depth-one trees (stumps) leads to an additive model $f(X) = \sum_{j=1}^p f_j(X_j)$. Why?</p>
       <ul class="exam-q__opts">
@@ -573,7 +573,7 @@
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: C</span>
-          <p>A depth-1 tree picks one split on one predictor and outputs two leaf values — that is, its contribution depends on a single $X_j$. Summing $M$ such trees gives $\sum_j f_j(X_j)$, where $f_j$ collects the contributions of all stumps split on $X_j$. (ISLR §8.4 Q2.)</p>
+          <p>A depth-1 tree picks one split on one predictor and outputs two leaf values — that is, its contribution depends on a single $X_j$. Summing $M$ such trees gives $\sum_j f_j(X_j)$, where $f_j$ collects the contributions of all stumps split on $X_j$. (ISLP §8.4 Q2.)</p>
           <p>A overstates: stumps are non-linear (step functions). The point isn't linearity, it's that no interaction terms appear. B is irrelevant — $\nu$ scales each tree but does not change which variables the tree uses. D mis-counts: a stump has <em>two</em> terminal nodes (one split = two regions), and the additivity comes from "one variable per term," not from leaf count.</p>
           <p class="ref">Atoms: <a href="/concepts/boosting">boosting</a>, <a href="/concepts/weak-learner-and-learning-rate">weak-learner-and-learning-rate</a>.</p>
         </div>

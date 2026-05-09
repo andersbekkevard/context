@@ -10,3 +10,4 @@ notes/
 
 # Legacy reference repo (deletable when web/ is fully self-sufficient)
 databaser/
+outputs/

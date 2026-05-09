@@ -189,11 +189,11 @@ The CV-minimum is itself a noisy estimator. Many models within ±1 SE of the min
 - **Reusing the validation set too many times** ([[L24-nnet-2]] flag): if you tweak hyperparameters by repeatedly checking validation error, you've effectively trained on it. Defense: nested CV, or hold out a fresh test set.
 - **Don't compare CV errors across models with completely different scales of loss**: the loss has to be the same metric.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** validation set, LOOCV, k-fold (definitions, pros/cons, bias-variance trade), choosing hyperparameters via CV, the OLS LOOCV shortcut, the one-SE rule, [[nested-cv-and-cv-pitfalls|nested CV]] for selection + assessment, the wrong-vs-right way trap, the independence-violation pitfall.
-- **Look up in ISLR:** §5.1 (full CV chapter, §5.1.1–5.1.5); §5.1.4 specifically for the bias-variance trade in CV variants.
-- **Skip in ISLR (book-only, prof excluded):** AIC/BIC/Cp algebra and derivations , *"I really don't think I'm going to ask any questions about this."* - [[L12-modelsel-1]]. Concept stays in scope (penalize complexity); formulas don't.
+- **Look up in ISLP:** §5.1 (full CV chapter, §5.1.1–5.1.5); §5.1.4 specifically for the bias-variance trade in CV variants.
+- **Skip in ISLP (book-only, prof excluded):** AIC/BIC/Cp algebra and derivations , *"I really don't think I'm going to ask any questions about this."* - [[L12-modelsel-1]]. Concept stays in scope (penalize complexity); formulas don't.
 
 ## Exercise instances
 

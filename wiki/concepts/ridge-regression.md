@@ -49,7 +49,7 @@ Two extremes:
 - $\lambda = 0$ → recover OLS.
 - $\lambda \to \infty$ → all $\hat\beta_j \to 0$ (intercept stays).
 
-The prof gestures at the closed form $\hat\beta^R = (X^\top X + \lambda I)^{-1} X^\top y$ (the $\lambda I$ regularizes the inverse, works even when $X^\top X$ is singular) but doesn't push the derivation. ISLR §6.2.1 gives it.
+The prof gestures at the closed form $\hat\beta^R = (X^\top X + \lambda I)^{-1} X^\top y$ (the $\lambda I$ regularizes the inverse, works even when $X^\top X$ is singular) but doesn't push the derivation. ISLP §6.2.1 gives it.
 
 ## Insights & mental models
 
@@ -142,11 +142,11 @@ The prof returned to ridge in lecture after lecture (L04 implicit, L12–L15 exp
 - **Confusing direction of $\lambda$.** $\lambda \uparrow$ → more shrinkage → simpler model → less variance, more bias. $\lambda \downarrow 0$ → recover OLS. (Easy MC trap: which direction does $\lambda$ shrink?)
 - **Reading "ridge requires $p < n$"**: false. Ridge works fine when $p > n$. *"Lasso requires that $p < n$"* was a wrong-answer option on the 2024 exam; ridge being possible at $p > n$ was the right one.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** the L2 objective formula; the tug-of-war intuition; standardization requirement; intercept not penalized; "doesn't go to zero, no variable selection"; works when $p \geq n$; $\lambda$ chosen by CV; bias-variance behaviour across $\lambda$; the geometric picture and the socialist/capitalist framing (see [[ridge-vs-lasso-geometry]]); the PCR-as-discretized-ridge analogy.
-- **Look up in ISLR:** §6.2.1 (pp. 252–256) for the closed-form derivation $\hat\beta^R = (X^\top X + \lambda I)^{-1} X^\top y$ and the special-case orthonormal design where ridge's per-coefficient shrinkage factor is $\hat\beta_j / (1 + \lambda)$ (§6.2.2 "Simple Special Case", pp. 269–270). Use ISLR for full derivations and the simulated bias-variance figure.
-- **Skip in ISLR (prof-excluded):** the **Bayesian interpretation** of ridge as the posterior mode under a Gaussian prior (§6.2.2 pp. 271–273). *"I really don't think I'd put this on the test, just because it kind of assumes a lot of knowledge that maybe you don't have."* - [[L14-modelsel-3]]. The conceptual analogy ("ridge ↔ Gaussian prior, lasso ↔ Laplace prior") is OK to know; the algebra is not.
+- **Look up in ISLP:** §6.2.1 (pp. 252–256) for the closed-form derivation $\hat\beta^R = (X^\top X + \lambda I)^{-1} X^\top y$ and the special-case orthonormal design where ridge's per-coefficient shrinkage factor is $\hat\beta_j / (1 + \lambda)$ (§6.2.2 "Simple Special Case", pp. 269–270). Use ISLP for full derivations and the simulated bias-variance figure.
+- **Skip in ISLP (prof-excluded):** the **Bayesian interpretation** of ridge as the posterior mode under a Gaussian prior (§6.2.2 pp. 271–273). *"I really don't think I'd put this on the test, just because it kind of assumes a lot of knowledge that maybe you don't have."* - [[L14-modelsel-3]]. The conceptual analogy ("ridge ↔ Gaussian prior, lasso ↔ Laplace prior") is OK to know; the algebra is not.
 
 ## Exercise instances
 

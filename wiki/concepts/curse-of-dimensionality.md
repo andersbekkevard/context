@@ -69,11 +69,11 @@ The prof returned to it three times across module 4 and module 6 ([[high-dimensi
 - **Confusing curse-of-dimensionality with multicollinearity.** Related, but distinct. Multicollinearity is about correlated predictors; CoD is about geometric distance concentration. In high $p$, both happen and reinforce.
 - **Believing "all methods break in high $p$."** [[lasso]], LDA, PCA-based methods are designed exactly for this regime.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** Definition (geometric concentration of distances), the KNN failure mode, why parametric methods are more robust, what the standard fixes are (dimensionality reduction, regularization).
-- **Look up in ISLR:** §4.5.1, p. 161 (KNN-CoD discussion); §6.4 for the full high-dim regression story (modules 6 territory).
-- **Skip in ISLR:** Detailed concentration-of-measure proofs (measure-theoretic). Specific bounds on the rate of collapse.
+- **Look up in ISLP:** §4.5.1, p. 161 (KNN-CoD discussion); §6.4 for the full high-dim regression story (modules 6 territory).
+- **Skip in ISLP:** Detailed concentration-of-measure proofs (measure-theoretic). Specific bounds on the rate of collapse.
 
 ## Exercise instances
 

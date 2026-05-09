@@ -53,5 +53,5 @@ The prof's framing: "regularization is constraint" and the most important varian
 - **Elastic Net detailed tuning**: concept named in [[L13-modelsel-2]], no worked example
 - **Spectral / eigen-decomposition derivations** - "we don't talk about spectral decomposition" - deferred to Linear Statistical Models - [[L04-statlearn-3]] (eigenvalue = PC variance is in [[explained-variance-and-scree-plot]]; full theory is out)
 
-## ISLR pointer
+## ISLP pointer
 Chapter 6: Linear Model Selection and Regularization. The deep treatment of in-scope concepts in this module lives in `book/06-modelsel.md`. Atoms carry section-level `isl-ref:` pointers, e.g. ridge §6.2.1, lasso §6.2.2, PCR §6.3.1, PLS §6.3.2, high-dim §6.4.

@@ -69,11 +69,11 @@ So while the M2 atom is light, the *machinery* (covariance of a linear transform
 - **If $C$ has linearly dependent rows, $\mathrm{Cov}(\mathbf Z)$ will be singular** even if $\boldsymbol\Sigma$ wasn't , the contrasts you defined aren't truly $k$-dimensional.
 - **Mean-centering vs not**: since $\mathrm{Cov}$ uses $\mathbf X - \boldsymbol\mu$, the constant intercept term doesn't appear in $\mathrm{Cov}(\mathbf Z)$ , but $E(\mathbf Z) = C\boldsymbol\mu$ does carry the means.
 
-## Scope vs ISLR
+## Scope vs ISLP
 
 - **In scope:** writing down a contrast matrix $C$, computing $E(C\mathbf X)$ and $\mathrm{Cov}(C\mathbf X)$ by hand, the cork example.
-- **Look up in ISLR:** ISLR doesn't have a dedicated "contrasts" section in chapter 2 , the closest treatment is the categorical-encoding discussion in §3.3.1 (and the implicit contrast-matrix view of dummy coding). For the matrix-algebra theory, ISLR is light; Johnson & Wichern or any multivariate-stats text covers it formally.
-- **Skip in ISLR:** none , this is a matrix-algebra fact, not a textbook topic.
+- **Look up in ISLP:** ISLP doesn't have a dedicated "contrasts" section in chapter 2 , the closest treatment is the categorical-encoding discussion in §3.3.1 (and the implicit contrast-matrix view of dummy coding). For the matrix-algebra theory, ISLP is light; Johnson & Wichern or any multivariate-stats text covers it formally.
+- **Skip in ISLP:** none , this is a matrix-algebra fact, not a textbook topic.
 
 ## Exercise instances
 
