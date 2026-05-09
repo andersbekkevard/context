@@ -17,16 +17,20 @@ Constraints we held to:
 - The site is **fully static**. No server, no API. Anyone with the URL gets the same experience locally or on Vercel.
 - `web/` is **deletable in one move**: `trash web/` removes the entire web layer; nothing outside it depends on it.
 
-## Two pipelines, one output
+## Three pipelines, one output
 
 | Pipeline | Source | Tool | Output |
 |---|---|---|---|
 | Wiki rendering | `wiki/**/*.md` | Quartz `ContentPage` + transformers | `web/public/<path>.html` |
 | Deck passthrough | `web/static/decks/*.html` | Custom `WebStatic` emitter | `web/public/decks/*.html` |
+| Course PDF passthrough | `pdfs/*.pdf` (repo root) | Custom `CoursePdfs` emitter | `web/public/pdfs/*.pdf` |
 
-Both pipelines run inside the same `pnpm run build` invocation and write into the same `public/` folder. Quartz emits HTML from markdown; `WebStatic` copies hand-authored deck HTML through unchanged.
+All three run inside the same `pnpm run build` invocation and write into the same `public/` folder. Quartz emits HTML from markdown; `WebStatic` copies hand-authored deck HTML through unchanged; `CoursePdfs` copies the curated, standardized-filename slide-deck and exercise PDFs into the build output.
 
-This is intentional separation: the wiki uses markdown so Anders can edit it in Obsidian; decks use HTML directly because they need precise control over per-question structure that markdown can't express, and because Claude generates them via the brief at [[../web/prompts/deck-generation]] following [[../web/templates/deck]].
+This is intentional separation:
+- The wiki uses markdown so Anders can edit it in Obsidian.
+- Decks use HTML directly because they need precise control over per-question structure markdown can't express, and Claude generates them via the brief at [[../web/prompts/deck-generation]] following [[../web/templates/deck]].
+- PDFs live outside `wiki/` (so LLMs don't try to read binary content as context) and outside `web/` (so the deletable web layer rule still holds), as a sibling `pdfs/` folder. They're original course materials with standardized filenames; the emitter pulls them in.
 
 ## Folder layout (web/)
 
@@ -38,6 +42,7 @@ web/
   quartz/                   ← Quartz engine source (cloned, .git stripped)
   plugins/
     WebStatic.ts            ← custom emitter: copies static/* → public/* (build + partial-emit on dev)
+    CoursePdfs.ts           ← custom emitter: copies ../pdfs/*.pdf → public/pdfs/*.pdf
   static/decks/
     _example.html           ← stub deck (cats placeholder; verifies infra)
     exam.css                ← English port of databaser styles, Quartz tokens, light + dark
@@ -67,14 +72,14 @@ baked into both `dev` and `build` scripts in `package.json`. The wiki stays at t
 
 Decks do **not** inherit this. They're not Quartz-rendered. Each deck must include the three KaTeX CDN tags in its `<head>` (see [[../web/templates/deck]] §2). `_example.html` is the canonical reference.
 
-### `WebStatic` custom emitter
+### `WebStatic` and `CoursePdfs` custom emitters
 
-`Plugin.Static()` in Quartz copies *engine-internal* `quartz/static/` (icons, og-image) — not user passthrough assets. We added [[../web/plugins/WebStatic]] (~40 lines) that:
+`Plugin.Static()` in Quartz copies *engine-internal* `quartz/static/` (icons, og-image) — not user passthrough assets. We added two sibling emitters:
 
-- On full `emit`: globs `web/static/**`, copies each file to `public/<path>` (preserving subfolders).
-- On `partialEmit` (dev mode incremental): listens for change events under `web/static/`, copies/deletes individual files.
+- [[../web/plugins/WebStatic]] (~40 lines): globs `web/static/**`, copies each file to `public/<path>` (preserving subfolders). On `partialEmit` (dev incremental): listens for change events under `web/static/`, copies/deletes individual files. Result: editing a deck in dev mode triggers a hot-reload of the deck page.
+- [[../web/plugins/CoursePdfs]] (~50 lines): same pattern but reads from `../pdfs/` (sibling of `web/` at the repo root) and emits into `public/pdfs/`. Holds the curated, standardized-filename slide decks + exercise PDFs.
 
-Result: editing a deck in dev mode triggers a hot-reload of the deck page. The emitter is registered in `quartz.config.ts` right after `Plugin.Static()`.
+Both emitters are registered in `quartz.config.ts` right after `Plugin.Static()`.
 
 We considered three alternatives before this:
 
@@ -207,4 +212,20 @@ Things that surprised us during the build, recorded so we don't relearn:
 - **No multi-correct MC.** `exam.js` doesn't support it. Use multi-statement T/F (`.exam-q__tf-field`) for "select all that apply"-style questions.
 - **No numeric input.** MCQ-over-candidate-values handles this.
 - **No flashcards.** Considered during design; ruled out in favour of one mechanic (the exam-page format).
-- **No render of `book/`, `exercises/`, `exams/`, `transcripts/`, `archive/`, `modules/`, `notes/`.** All outside `wiki/`, none on the deployed site. Source repo is the only place they exist; keep it private.
+- **No render of `book/`, `exercises/`, `exams/`, `transcripts/`, `archive/`, `modules/`, `notes/`.** All outside `wiki/`, none on the deployed site. Source repo is the only place they exist; keep it private. Exception: course PDFs are deliberately surfaced through `pdfs/` (sibling folder, copied by `CoursePdfs` emitter) — those *are* on the live site.
+
+## The `pdfs/` folder
+
+A sibling of `wiki/` and `web/` at the repo root. Holds the curated, standardized-filename copies of:
+
+- 12 slide decks: `m{NN}-{slug}-slides.pdf` — annotated lecture slides where available, plain slides otherwise.
+- 10 recommended exercises: `m{NN}-{slug}-exercise.pdf` — un-solved exercise statements (no solutions PDFs).
+- 2 compulsory exercises: `compulsory-1.pdf`, `compulsory-2.pdf`.
+
+Filenames mirror the MOC + deck slug convention. Sources came from `archive/modules/<NN><Name>/` and `archive/exercises/Exercise<N>/` via a one-time fan-out of 24 Opus subagents (each picked the right PDF and `cp`-ed it). Anders won't re-run that — `pdfs/` is now canonical and `archive/` can be deleted whenever.
+
+Why a sibling folder rather than `web/static/pdfs/`?
+
+- **LLMs don't read it.** Agents working on the wiki, the atoms, the decks should never load a binary PDF as context. Keeping PDFs outside `wiki/` and `web/` makes that clear architecturally — there's no path that would pull them in. Compare to atoms (read), lectures (read), templates (read), prompts (read) — none of those touch `pdfs/`.
+- **`web/` stays deletable.** If `web/` were ever scrapped, the PDFs would survive.
+- **Symmetry with `wiki/`.** Both are content sources the build pulls from. `wiki/` for markdown rendering, `pdfs/` for binary passthrough.

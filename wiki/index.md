@@ -1,58 +1,81 @@
 ---
-title: TMA4268 — Statistical Learning
+title: TMA4268 - Statistical Learning
 ---
 
 # TMA4268 — Statistical Learning
 
-Exam-prep wiki for TMA4268 *Statistisk læring* at NTNU. Final exam: **2026-05-18**, open-book, 4 hours, on Inspera.
+Exam-prep notes for **TMA4268 *Statistisk læring*** at NTNU.
 
-This site is the rendered view of `wiki/`. Concept atoms, lecture compressions, and module routers (MOCs) live here as Obsidian-flavoured markdown and are served via [Quartz](https://quartz.jzhao.xyz/) — full-text search, backlinks, math, and graph view all work.
+> **Final exam · 2026-05-18 · 4 hours · open-book · Inspera**
+> ISLR + handwritten A5 + calculator allowed. No code.
+
+Pick a module to start, or jump straight to a practice deck.
 
 ## Modules
 
-- [[mocs/m01-intro|Module 01 — Introduction]]
-- [[mocs/m02-statlearn|Module 02 — Statistical learning]]
-- [[mocs/m03-linreg|Module 03 — Linear regression]]
-- [[mocs/m04-classif|Module 04 — Classification]]
-- [[mocs/m05-resample|Module 05 — Resampling]]
-- [[mocs/m06-modelsel|Module 06 — Model selection & regularisation]]
-- [[mocs/m07-beyondlinear|Module 07 — Beyond linearity]]
-- [[mocs/m08-trees|Module 08 — Tree-based methods]]
-- [[mocs/m09-boosting|Module 09 — Boosting]]
-- [[mocs/m10-unsuper|Module 10 — Unsupervised learning]]
-- [[mocs/m11-nnet|Module 11 — Neural networks]]
-- [[mocs/m12-final|Module 12 — Final / exam review]]
+Each module page lists the lectures it covers, the concepts it touches, and what's flagged as in or out of scope.
+
+- [[mocs/m01-intro|01 — Introduction]]
+- [[mocs/m02-statlearn|02 — Statistical learning]]
+- [[mocs/m03-linreg|03 — Linear regression]]
+- [[mocs/m04-classif|04 — Classification]]
+- [[mocs/m05-resample|05 — Resampling]]
+- [[mocs/m06-modelsel|06 — Model selection & regularisation]]
+- [[mocs/m07-beyondlinear|07 — Beyond linearity]]
+- [[mocs/m08-trees|08 — Tree-based methods]]
+- [[mocs/m09-boosting|09 — Boosting]]
+- [[mocs/m10-unsuper|10 — Unsupervised learning]]
+- [[mocs/m11-nnet|11 — Neural networks]]
+- [[mocs/m12-final|12 — Final / exam review]]
 
 ## Practice decks
 
-Per-module MCQ practice. Each deck = 20–30 questions, 100 points, ~30–45 min, click-to-lock with rapid feedback. The example file is a placeholder until real decks are generated. Deck links open in a new tab — they're static pages outside Quartz's SPA, and in-tab navigation leaves them unstyled until refresh.
+Per-module multiple-choice drills, ~25 questions each. Click an option to lock your answer; correct turns green, wrong turns red, and the explanation opens automatically. The score panel at the bottom-left tracks your running points.
 
-- <a href="/decks/_example.html" target="_blank" rel="noopener">Example deck (placeholder)</a>
-- *m02-statlearn — pending*
-- *m03-linreg — pending*
-- *m04-classif — pending*
-- *m05-resample — pending*
-- *m06-modelsel — pending*
-- *m07-beyondlinear — pending*
-- *m08-trees — pending*
-- *m09-boosting — pending*
-- *m10-unsuper — pending*
-- *m11-nnet — pending*
+- <a href="/decks/_example.html" target="_blank" rel="noopener">Example deck</a> — placeholder, demonstrates the UI
+- *Module decks (m02 – m11) are being generated.*
 
-## Layers
+Decks open in a new tab.
 
-- [[lectures/L01-intro|Lectures]] — compressed transcripts, one per class session.
-- Concepts — atomic briefings on named ideas. Browse via the [[mocs/m01-intro|module router]] for any module.
-- MOCs — pure routers (concept lists + lecture pointers + scope notes per module).
+## Course PDFs
 
-## Canonical authority
+Slide decks (annotated where available) and exercise PDFs from the original course. Solutions are not included.
 
-- [[../docs/scope|docs/scope]] — what's in vs out (source hierarchy, out-of-scope list with verbatim prof anchors, past-exam translation rules).
-- [[../exam_analysis|exam_analysis]] — synthesis: tier rankings, direction-of-effect traps, dataset templates. Useful but **not** canonical for scope.
-- [[../CLAUDE|CLAUDE]] — project orientation and the wiki design rationale.
+### Slide decks
 
-## Reading order for a typical query
+- <a href="/pdfs/m01-intro-slides.pdf" target="_blank" rel="noopener">01 — Introduction</a>
+- <a href="/pdfs/m02-statlearn-slides.pdf" target="_blank" rel="noopener">02 — Statistical learning</a>
+- <a href="/pdfs/m03-linreg-slides.pdf" target="_blank" rel="noopener">03 — Linear regression</a>
+- <a href="/pdfs/m04-classif-slides.pdf" target="_blank" rel="noopener">04 — Classification</a>
+- <a href="/pdfs/m05-resample-slides.pdf" target="_blank" rel="noopener">05 — Resampling</a>
+- <a href="/pdfs/m06-modelsel-slides.pdf" target="_blank" rel="noopener">06 — Model selection & regularisation</a>
+- <a href="/pdfs/m07-beyondlinear-slides.pdf" target="_blank" rel="noopener">07 — Beyond linearity</a>
+- <a href="/pdfs/m08-trees-slides.pdf" target="_blank" rel="noopener">08 — Tree-based methods</a>
+- <a href="/pdfs/m09-boosting-slides.pdf" target="_blank" rel="noopener">09 — Boosting</a>
+- <a href="/pdfs/m10-unsuper-slides.pdf" target="_blank" rel="noopener">10 — Unsupervised learning</a>
+- <a href="/pdfs/m11-nnet-slides.pdf" target="_blank" rel="noopener">11 — Neural networks</a>
+- <a href="/pdfs/m12-final-slides.pdf" target="_blank" rel="noopener">12 — Final / exam review</a>
 
-1. [[../docs/scope|scope]] when scope is in question.
-2. The relevant MOC (`mocs/m<NN>-…`).
-3. The relevant atom(s) and lecture(s) the MOC points to.
+### Recommended exercises
+
+- <a href="/pdfs/m02-statlearn-exercise.pdf" target="_blank" rel="noopener">Exercise 2 — Statistical learning</a>
+- <a href="/pdfs/m03-linreg-exercise.pdf" target="_blank" rel="noopener">Exercise 3 — Linear regression</a>
+- <a href="/pdfs/m04-classif-exercise.pdf" target="_blank" rel="noopener">Exercise 4 — Classification</a>
+- <a href="/pdfs/m05-resample-exercise.pdf" target="_blank" rel="noopener">Exercise 5 — Resampling</a>
+- <a href="/pdfs/m06-modelsel-exercise.pdf" target="_blank" rel="noopener">Exercise 6 — Model selection</a>
+- <a href="/pdfs/m07-beyondlinear-exercise.pdf" target="_blank" rel="noopener">Exercise 7 — Beyond linearity</a>
+- <a href="/pdfs/m08-trees-exercise.pdf" target="_blank" rel="noopener">Exercise 8 — Trees</a>
+- <a href="/pdfs/m09-boosting-exercise.pdf" target="_blank" rel="noopener">Exercise 9 — Boosting</a>
+- <a href="/pdfs/m10-unsuper-exercise.pdf" target="_blank" rel="noopener">Exercise 10 — Unsupervised</a>
+- <a href="/pdfs/m11-nnet-exercise.pdf" target="_blank" rel="noopener">Exercise 11 — Neural networks</a>
+
+### Compulsory exercises
+
+- <a href="/pdfs/compulsory-1.pdf" target="_blank" rel="noopener">Compulsory exercise 1</a>
+- <a href="/pdfs/compulsory-2.pdf" target="_blank" rel="noopener">Compulsory exercise 2</a>
+
+## Concepts and lectures
+
+Every named idea (ridge regression, LDA, cross-validation, …) has its own page with the definition, the formulas to know, the traps the prof flagged, and a pointer to ISLR for the deeper treatment. Every lecture is compressed into a page that preserves the prof's voice where it matters.
+
+You'll usually land on these through a module page above, but the **search bar (left)** and the **graph view (right)** work too.

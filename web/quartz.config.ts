@@ -1,6 +1,7 @@
 import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
 import { WebStatic } from "./plugins/WebStatic"
+import { CoursePdfs } from "./plugins/CoursePdfs"
 
 const config: QuartzConfig = {
   configuration: {
@@ -89,6 +90,7 @@ const config: QuartzConfig = {
       Plugin.Assets(),
       Plugin.Static(),
       WebStatic(),
+      CoursePdfs(),
       Plugin.Favicon(),
       Plugin.NotFoundPage(),
     ],
