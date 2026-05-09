@@ -35,9 +35,15 @@ One file: `web/static/decks/m<NN>-<your-slug>.html`. Self-contained HTML, links 
 
 ## Difficulty mix (target)
 
-- ~⅓ recall (definition / formula / "which of these is true").
-- ~⅓ application or computation (plug numbers, read a table, decode a coefficient, follow an algorithm one step).
-- ~⅓ scenario synthesis (small data + interpretation, cross-atom comparison, "pick the right method given $X$", trap recognition).
+> **Hard floor: ≥50% single-select MC per deck.** Single-MC (4 options pick one — §3.1 / §3.3 / §3.4 in [[../templates/deck]]) is the consolidation backbone. The remaining ≤50% goes to multi-statement T/F. See [[../templates/deck]] §6 for the per-size table.
+
+Within the single-MC budget, aim for ~⅓ each of:
+
+- **Recall** (definition / formula / "which of these is true").
+- **Application or computation** (plug numbers, read a table, decode a coefficient, follow an algorithm one step).
+- **Scenario / output interpretation** (small data + interpretation, cross-atom comparison, "pick the right method given $X$", trap recognition). The prof's heaviest 2026 shape — `exam_analysis.md` §3 + §4d (worked-example datasets) give ready scaffolds.
+
+T/F multi-statement should bias toward **direction-of-effect** questions — each row of `exam_analysis.md` §4b is a candidate sub-statement.
 
 ## Question types you may use
 
@@ -46,37 +52,108 @@ One file: `web/static/decks/m<NN>-<your-slug>.html`. Self-contained HTML, links 
 3. **Computation question**: single-MC mechanic, body sets up a numerical scenario, options are candidate values. Distractors encode named arithmetic mistakes (the explanation must name them).
 4. **Scenario question**: single-MC mechanic, body is a paragraph or small data, options are candidate interpretations. Distractors are typical wrong readings flagged by the prof in lecture.
 
-## Active expert-eye search (do this before finalizing)
+## Authoring phases
 
-For each atom in your slice, **think like a stat-learning professor designing an exam** about what's testable:
+Run these in order. Phases A–C source from existing materials with provenance flags; phase D fills the rest with synthesised questions; D.5 is the per-question discipline; E is the quality pass.
 
-1. List what an exam-writer would naturally ask (definitions, derivations, direction of an effect, pick-the-trap, decode-a-formula, interpret-this-output, what-changes-when-X). Use `exam_analysis.md` §3 for canonical TMA4268 question patterns.
-2. For each item: search the atom + the lectures to confirm the prof addressed it.
-3. If yes → write a question, anchor the explanation in the prof's framing. Cite verbatim quote where wording carries.
-4. If no → either omit (if peripheral) or, if the missing piece is non-trivial, flag it in your final report as a possible gap in the wiki rather than fabricating a question.
+### Phase A — ISLR conceptual sweep (soft cap ~5 lifts)
 
-This catches the exam-likely ideas the prof flagged but you'd otherwise miss.
+Open `book/<NN>-<slug>.md` → `## X.<Y> Exercises` → `### Conceptual` only. **Skip `### Applied` (R coding) entirely.**
+
+For each conceptual problem:
+
+1. **In-scope per `docs/scope.md`?** If no → DROP. Do not adapt and re-flag — once the OOS mechanic is replaced, it's no longer the ISLR exercise, so the flag would lie.
+2. **MC-ifies cleanly?** Some ISLR conceptual problems are essentially MC already; others convert to T/F multi-statement; some don't fit either shape and should be dropped.
+3. If yes → lift the question stem verbatim, flag `<span class="exam-q__src">ISLR §<X> Q<n></span>`. **Soft cap ~5 ISLR-direct per deck.** Stop early if cap hit; quality > quantity.
+
+Distractor reformulation: if the source's distractors are mutations of the correct answer rather than misconception-anchored, **rewrite the distractors** per [[../templates/deck]] §4.5 and **keep the flag**. The flag means "the question stem came from there", not "the option set is identical to the source's."
+
+### Phase B — past-exam sweep
+
+Open `exams/TMA4268_2023_Exam.Rmd`, `..._2024_Exam.Rmd`, `..._2025_Exam.Rmd`. Bias toward 2024/2025 since the prof walked through those in [[../wiki/lectures/L27-summary]] and explicitly described his 2026 reformatting.
+
+For each question on this module's atoms:
+
+1. **In-scope per `docs/scope.md`?** Drop OOS (SVM, F-test mechanics, AIC algebra, multi-class logistic regression, Bonferroni etc.).
+2. **Translatable per `docs/scope.md`'s "Past exam style → 2026 translation" table?** Coding questions become output-interpretation; if the original is pure coding with no conceptual core, drop.
+3. If kept → MC-ify (change numbers, vary the angle), flag `<span class="exam-q__src">Exam <year> P<n></span>`.
+
+L27 already enumerates the prof's preferred 2026 reformatting for many 2025 problems — these are the highest-fidelity templates and should anchor several questions in the deck.
+
+### Phase C — exercise sweep (CE1, CE2, recommended)
+
+Open `exercises/Exercise<N>/` and the relevant problems in `exercises/compulsory-exercise-1.md` and `exercises/compulsory-exercise-2.md`.
+
+For each problem on an in-scope atom:
+
+1. If verbatim or near-verbatim lift → flag `<span class="exam-q__src">CE1 P4</span>` or `<span class="exam-q__src">Ex5.3</span>` (whichever applies).
+2. If number-changed mirror of an exercise → no flag (counts as synthesised, but the prof's "especially the exercises" rule still applies).
+
+### Phase D — synthesised fill
+
+Hit [[../templates/deck]] §6 difficulty mix (≥50% single-MC floor) and §7 atom coverage with synthesised questions. For each atom in your slice:
+
+- Mine the atom's `Pitfalls` and `Exam signals` sections.
+- Mine `exam_analysis.md`:
+  - **§4b** for direction-of-effect T/F seeds (22 rows, each a candidate sub-statement).
+  - **§4d** for module-mapped worked-example datasets — re-use the names: Default + Smarket + South African heart for m04 logistic, Boston Housing + Brain Injury + Ozone for m08 trees, Wage for m07 GAMs, Hitters for m06 subset selection, Iris + cork-tree for m10 LDA/PCA, MNIST for m11 NNs.
+  - **§4f** for the 12 common-mistake traps as distractor seeds.
+  - **§4g** for procedural templates G1–G6 — flagged by the prof as exam-likely. G1 hierarchical clustering by hand → m10; G2 LDA boundary derivation → m04; G3 logistic-coefficient odds → m04; G4 NN parameter count → m11; G5 bootstrap SE → m05; G6 k-fold CV with one-SE rule → m05/m06.
+- Cross-check against the L27 walkthrough — for each module the prof showed a 2025-question reformatting that constitutes his **stated** preferred shape; mirror that shape for at least one question.
+
+Active expert-eye search: for each atom, ask "what would an exam-writer naturally test? definitions, derivations, direction of an effect, decode-a-formula, interpret-this-output, what-changes-when-X." Use `exam_analysis.md` §3's seven question patterns as the menu. If the prof addressed it → write a question; if not → either omit (peripheral) or flag the wiki gap in your final report rather than fabricating.
+
+### Phase D.5 — per-question misconception ledger (mandatory)
+
+Before finalising each question, write a short ledger in your scratch (NOT in the output HTML):
+
+```
+Concept tested:    <atom slug + sub-claim>
+Correct answer:    <one sentence>
+Misconceptions considered (5):
+  1. <bullet>
+  2. <bullet>
+  3. <bullet>
+  4. <bullet>
+  5. <bullet>
+Distractors selected (3 strongest, mapped to letters):
+  - A or B or C or D: <misconception name>
+  - …
+  - …
+Source flag (if any): <ISLR §X Qn / Exam YYYY Pn / CEn Pm / Ex<i>.<j> / none>
+```
+
+For ISLR/exam/CE-direct lifts: audit the source's distractors against this ledger. If they don't pass [[../templates/deck]] §4.5, **rewrite them and keep the flag**.
+
+The ledger drives the explanation block: each `<p>` dismissing a distractor names the misconception. "B forgets the bias term in the NN parameter count," not "B is just wrong because it gives 11."
+
+### Phase E — quality pass
+
+Run [[../templates/deck]] §10 checklist line by line. Specifically:
+
+1. **Atom coverage**: every atom in your module slice has ≥1 question; every Special whose `modules:` includes you has ≥1 question framed in your module's context.
+2. **Exercise coverage**: every recommended exercise problem in your `Exercise<N>/` folder and the relevant CE1/CE2 problems is mirrored by at least one question (flagged or synthesised number-changed mirror).
+3. **Single-MC floor**: ≥50% single-MC per deck size table in [[../templates/deck]] §6.
+4. **Total points = 100.**
+5. **Length parity, position rotation, form-only test, no tell-tale words, no mere-negation distractors, no trivial-wording falsification** — see [[../templates/deck]] §5.
+6. **Out-of-scope material**: confirm the deck has none. `docs/scope.md` is canonical.
+7. **Source-flag rendering**: each flagged question's `.exam-q__src` span is in `.exam-q__head` after `.exam-q__points`.
+
+Report results in your final summary, including a count of questions per source-flag variant.
 
 ## Option-quality rules: the gold
 
-The single most important section. Read [[../templates/deck]] §5 in full. Summary:
+The single most important section. Read [[../templates/deck]] §5 in full *and* [[../templates/deck]] §4.5 (misconception-first distractor generation, the upstream discipline). Summary:
 
+- **Misconception-first** (§4.5): each distractor encodes a *named* student misconception, not a mutation of the correct answer. Brainstorm 5, pick 3.
 - **Length parity:** correct option is NOT systematically the longest. Across the deck, "longest", "middle", "shortest" each correct ~equal often.
 - **Position rotation:** A/B/C/D distribution roughly even.
 - **No tell-tale words.** Avoid *always/never/only* in correct options; avoid *typically/usually* in obvious-correct options.
+- **No mere negations.** A distractor cannot be a syntactic flip of the correct answer.
+- **No trivial-wording falsification.** Distractor falsity comes from the misconception, not from a stray *always*/*never*.
 - **Distractors are plausible**, typical wrong reasonings the explanation can name. No filler.
 - **Same form, same detail level** across all four options.
 - **Form-only test** before publishing each question: hide the question text, can you still pick correct? If yes, rewrite.
-
-## Exercise coverage sweep (end of deck batch)
-
-After writing all questions, run an explicit coverage check:
-
-1. List every atom in your module slice + every Special touching your module → confirm each has ≥ 1 question.
-2. List every recommended exercise problem in your module's `Exercise<N>/` folder + the relevant CE1 problems → confirm at least one question mirrors each major problem (numbers changed). Out-of-scope problems are skipped silently.
-3. Run the §10 checklist from [[../templates/deck]] line by line. Especially: total points = 100, length parity, position rotation, form-only test passed.
-
-Report results in your final summary.
 
 ## Quote anchors
 

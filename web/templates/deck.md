@@ -197,6 +197,37 @@ A single-MC question whose body sets up a small scenario (a paragraph, small tab
 
 Distractors should be **typical wrong interpretations** (e.g. confusing log-odds with probability; reading a coefficient as a marginal effect; matching the wrong direction of the bias-variance trade-off). Cite a verbatim prof signal in the explanation when the trap was flagged in lecture.
 
+### 3.5 Source flags (provenance, not topic)
+
+A small monospace pill at the right of the question header that says *where the question came from*. Distinct from the topic tag banned in §3: a topic tag would name the testable atom and leak the answer space; a source flag names the *source*, which is uncorrelated with what the question tests.
+
+Four cases. Only the first three render a flag.
+
+| Case | Flag rendered | When to use |
+|---|---|---|
+| ISLR Conceptual end-of-chapter exercise, in-scope, MC-ifies cleanly | `ISLR §6 Q3` | Lift verbatim from `book/<NN>-<slug>.md` → `## X.<Y> Exercises` → `### Conceptual` only. Skip `### Applied` entirely. **Soft cap ~5 ISLR-direct per deck.** |
+| TMA4268 past exam, in-scope after translation per `docs/scope.md` | `Exam 2024 P3` | Translate per the past-exam translation table in `docs/scope.md`; preserve the conceptual core, change numbers. |
+| Compulsory or recommended exercise verbatim lift | `CE1 P4` or `Ex5.3` | Verbatim or near-verbatim only. Number-changed mirrors of an exercise count as synthesised — *no flag*. |
+| Synthesised from atoms + lectures + exercise patterns | (no flag) | Default. Most of the deck. |
+
+HTML pattern (sits inside `.exam-q__head`, after `.exam-q__points`):
+
+```html
+<header class="exam-q__head">
+  <span class="exam-q__num">Question 7</span>
+  <span class="exam-q__points">4 points</span>
+  <span class="exam-q__src">ISLR §6 Q3</span>
+</header>
+```
+
+The flag pill is parser-inert: `exam.js` does not read it. CSS in `exam.css` renders it as a small monospace pill, neutral colour, pushed to the right of the header.
+
+> [!important] Distractor reformulation overrides source verbatim
+> Even on flagged lifts, the *distractors* must satisfy §4.5 and §5. If the source's distractors are mutations of the correct answer rather than misconception-anchored, **rewrite the distractors and keep the flag** — the question stem is what's verbatim, the distractor reformulation is policy-driven.
+
+> [!important] Drop OOS-adjacent ISLR exercises entirely
+> If an ISLR Conceptual exercise tests something out-of-scope per `docs/scope.md` (F-test mechanics, AIC algebra, multi-class logistic, Bonferroni etc.), **drop it**. Do not adapt and re-flag — once the mechanic is replaced, it's no longer the ISLR exercise, so the flag would lie.
+
 ---
 
 ## 4. Behavior contract (what `exam.js` does)
@@ -212,6 +243,38 @@ You don't write any JS in a deck. You write HTML and the parser does the rest.
 
 ---
 
+## 4.5 Distractor generation: misconception-first
+
+Distractors are not mutations of the correct answer. They are crystallised student errors. For every question follow this workflow *before* applying §5's quality bar — §5 catches form-only leaks, §4.5 makes sure the question has substance for §5 to operate on.
+
+1. **Identify the tested concept.** Which atom, which sub-claim. If you can't name it in one sentence, the question isn't ready.
+2. **Write the correct answer first.** One sentence, in the deck's voice.
+3. **Brainstorm 5 plausible misconceptions** a student who has skimmed the atom might genuinely hold. Sources of misconceptions:
+   - `exam_analysis.md` §4f (12 common-mistake exam traps the prof flagged — interaction-term misreadings, train/test keyword traps, smoothing-spline λ direction flips, default-coding sign errors, etc.)
+   - `exam_analysis.md` §4b (direction-of-effect cheat sheet — flip a row to get a wrong-direction distractor)
+   - the atom's own `Pitfalls` and `Exam signals` sections
+   - lecture verbatim quotes where the prof said "students always..." or "this is a common mistake"
+4. **Write a candidate distractor for each misconception** — one a student holding that misconception would find attractive.
+5. **Select the 3 strongest.** Drop the weakest two; never pad with filler.
+6. **Rewrite all four options for parallelism** — same grammar, same length-band, same specificity, same jargon density. (This feeds §5's length-parity check.)
+7. **Remove form clues** (this enforces §5):
+   - no systematically-longer correct answer
+   - no "all of the above" / "none of the above" overuse
+   - no joke / sarcastic / impossible options
+   - no options whose falsity comes from a stray *always* / *never* / *only* tucked into otherwise-correct phrasing — falsity must come from the misconception, not from the wording
+   - no distractor that is a mere negation of the correct answer (the "X is true" / "X is false" pair shrinks the answer space to two)
+8. **Name each distractor's misconception in the explanation.** "B forgets the bias term in the parameter count," not "B is wrong because it gives 11."
+
+### For multi-statement T/F (§3.2)
+
+Misconception-first applies per statement. Each False statement encodes one named misconception; each True statement tests a non-trivial recall point. Don't pad the T/F ratio with trivially-true filler (e.g. "LOOCV uses cross-validation" — true but tests nothing).
+
+### What the ledger produces in output
+
+The 5-misconception brainstorm is **scratch work** — it does not appear in the deck HTML. What does appear is its consequence: each distractor-dismissal `<p>` in the explanation block names the misconception that distractor encodes. That naming, plus the source-flag pill (§3.5) where applicable, is how the deck pays back the discipline.
+
+---
+
 ## 5. Option-quality rules: the single most important section
 
 The most common leakage is that the correct answer is silently *recognisable from form*, student doesn't read the question, just the options, and still picks right. Catch this before publishing:
@@ -222,6 +285,8 @@ The most common leakage is that the correct answer is silently *recognisable fro
 - **Same grammatical form, same detail level.** If one option starts with a number, all do. If one is a full sentence, all are. If one uses jargon (e.g. "conflict-serializable", "irreducible error"), all do.
 - **Distractors must be plausible.** Each wrong option = a real misunderstanding the explanation can name ("forgets the 2/3 fill factor", "uses $n$ instead of $n-1$"). No filler. A student who doesn't know the material should not be able to eliminate any option on form alone.
 - **Independence of options.** No "A and B but not C". No two distractors that are nearly identical (effectively reduces it to a 3-choice). No four-options-all-variations-on-one-theme (student eliminates them as a group).
+- **No mere negations.** A distractor that just negates the correct answer ("the coefficient is positive" vs "the coefficient is negative") leaks when the rest of the options are unrelated — the student picks the negated pair as the answer space and 50-50s. Each distractor must encode a *distinct misconception* per §4.5, not a syntactic flip.
+- **No trivial-wording falsification.** A distractor's falsity must come from the misconception, not from a stray *always* / *never* / *only* word tucked into otherwise-correct phrasing. The student should be able to verify the distractor is wrong only by understanding the concept, not by spotting the absolute word.
 - **"None of the above" is correct in at most 1 of every 10 questions**, overuse weakens it as a concept check.
 
 > [!check] Form-only test (do this for every question before publishing)
@@ -231,13 +296,33 @@ The most common leakage is that the correct answer is silently *recognisable fro
 
 ## 6. Difficulty mix per deck
 
-Aim for a smooth distribution. Concrete target for a 25-question deck:
+> [!important] Hard floor: ≥50% single-select MC per deck
+> Single-select MC (the §3.1 / §3.3 / §3.4 mechanic — four options, pick one) is the consolidation backbone. Even though the prof leans toward T/F multi-statement on the actual exam, the four-options-pick-one shape is the most useful drilling format for cementing module knowledge. Single-MC must be **at least 50%** of the deck's question count. The remaining ≤50% goes to T/F multi-statement (§3.2).
 
-| Tier | Count | What it looks like |
+Concrete per deck size:
+
+| Deck size | Single-MC ≥ | T/F multi-statement ≤ |
 |---|---|---|
-| **Easy / recall** | 6–8 | Definition, formula, "which is true": should be answerable directly from the atom. |
-| **Application / computation** | 8–10 | Plug numbers into a formula, evaluate a small expression, read a confusion matrix, decode a coefficient. |
-| **Scenario / synthesis** | 7–9 | Small data + interpretation; cross-concept (atom A vs atom B); identify the trap; pick the right method for a stated goal. |
+| 20 Q | 10 | 10 |
+| 25 Q | 13 | 12 |
+| 30 Q | 15 | 15 |
+
+### Within the single-MC budget
+
+Aim for a smooth ⅓–⅓–⅓ split:
+
+| Tier | Approx share of single-MC | What it looks like |
+|---|---|---|
+| **Easy / recall** | ⅓ | Definition, formula, "which is true": should be answerable directly from the atom. |
+| **Application / computation** | ⅓ | Plug numbers into a formula, evaluate a small expression, read a confusion matrix, decode a coefficient. |
+| **Scenario / output interpretation** | ⅓ | Small data + interpretation; cross-concept (atom A vs atom B); identify the trap; pick the right method for a stated goal. The prof's heaviest 2026 shape — see `exam_analysis.md` §3 and §4d (worked-example datasets) for ready-made scaffolds. |
+
+### T/F multi-statement budget
+
+Bias toward two prof-endorsed shapes:
+
+- **Direction-of-effect** questions — `exam_analysis.md` §4b is a 22-row goldmine. Each row is a candidate sub-statement (e.g. "Ridge λ ↑ → coefficients hit exactly zero" — *False*).
+- **Interaction / inference traps** — `exam_analysis.md` §4f's 12 common-mistake traps each MC-ify into a T/F statement.
 
 Triviality test: ask "could a student who has only skimmed the atom headlines pass this?" If yes for more than ~25% of the deck, push toward harder.
 

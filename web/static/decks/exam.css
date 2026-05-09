@@ -166,6 +166,23 @@ body {
   color: var(--gray);
 }
 
+/* Source-provenance flag (ISLR §X Qn / Exam YYYY Pn / CEn Pm / Ex<i>.<j>).
+   Inert: parser ignores it. Pushed to the right of the header via margin-left:auto
+   on the flex container. Says where the question came from — NOT what concept it
+   tests, so it doesn't leak the answer space. See deck.md §3.5. */
+.exam-q__src {
+  margin-left: auto;
+  font-family: var(--codeFont);
+  font-size: 0.78rem;
+  color: var(--darkgray);
+  background: var(--highlight);
+  border: 1px solid var(--lightgray);
+  border-radius: 4px;
+  padding: 0.1rem 0.45rem;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
 .q-text {
   margin: 0 0 1.1rem;
   line-height: 1.6;
