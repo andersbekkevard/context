@@ -5,7 +5,7 @@ import { CoursePdfs } from "./plugins/CoursePdfs"
 
 const config: QuartzConfig = {
   configuration: {
-    pageTitle: "TMA4268 Statistical Learning",
+    pageTitle: "statistical.dog",
     pageTitleSuffix: "",
     enableSPA: true,
     enablePopovers: true,
