@@ -62,16 +62,16 @@
       <p class="q-text">In the three-partition framing of training, validation, and test data, which job belongs to the <em>validation</em> set?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Fit the parameters of each candidate model.</li>
-        <li><span class="opt-label">B</span> Choose between candidate models or hyperparameters.</li>
-        <li><span class="opt-label">C</span> Report the final, headline performance number.</li>
+        <li><span class="opt-label">B</span> Report the final, headline performance number.</li>
+        <li><span class="opt-label">C</span> Choose between candidate models or hyperparameters.</li>
         <li><span class="opt-label">D</span> Estimate the irreducible noise variance $\sigma^2$.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: C</span>
           <p>Three partitions, three jobs: training fits, validation selects, test assesses. Reusing the test set for selection makes the reported performance "too optimistic", the cardinal sin module 5 is built around.</p>
-          <p>A names the training set's job. C names the test set's job. D conflates an irreducible-error estimate (a property of the data) with a partition role; no partition is dedicated to estimating $\sigma^2$.</p>
+          <p>A names the training set's job. B names the test set's job. D conflates an irreducible-error estimate (a property of the data) with a partition role; no partition is dedicated to estimating $\sigma^2$.</p>
           <p class="ref">Atom: <a href="/concepts/training-validation-test-split">training-validation-test-split</a>. Lecture: <a href="/lectures/L10-resample-1">L10-resample-1</a>.</p>
         </div>
       </details>
@@ -238,21 +238,20 @@
         <span class="exam-q__points">5 points</span>
       </header>
       <p class="q-text">For an OLS fit on $n=4$ observations the residuals and hat-matrix diagonals are
-        $r_i = y_i - \hat y_i = (1, -1, 2, 0)$ and $h_{ii} = (0.5, 0.25, 0.25, 0.5)$.
+        $r_i = y_i - \hat y_i = (2,\,-1,\,1,\,0)$ and $h_{ii} = (0.5,\,0.5,\,0.5,\,0.5)$.
         Using the LOOCV hat-matrix shortcut, what is $\text{CV}_{(n)}$?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> $1.5$</li>
-        <li><span class="opt-label">B</span> $2.222$</li>
-        <li><span class="opt-label">C</span> $9.0$</li>
-        <li><span class="opt-label">D</span> $1.555$</li>
+        <li><span class="opt-label">B</span> $3.0$</li>
+        <li><span class="opt-label">C</span> $6.0$</li>
+        <li><span class="opt-label">D</span> $24.0$</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
-          <p>Apply $\text{CV}_{(n)} = \frac{1}{n}\sum_i \big(\frac{r_i}{1-h_{ii}}\big)^2$. The four leave-one-out residuals are $1/0.5=2$, $-1/0.75 \approx -1.333$, $2/0.75\approx 2.667$, $0/0.5=0$. Squared: $4 + 1.778 + 7.111 + 0 = 12.889$. Divide by $n=4$: $\approx 3.222$.</p>
-          <p>Wait — recompute carefully. $r_i/(1-h_{ii})$ values: $1/(1-0.5)=2$; $-1/(1-0.25)=-1.\overline{3}$; $2/(1-0.25)=2.\overline{6}$; $0/(1-0.5)=0$. Squares: $4$, $1.778$, $7.111$, $0$. Sum $=12.889$. Divide by $4$: $\approx 3.222$. None of A/B/D match exactly, so the closest correct option needs the actual CV value.</p>
-          <p>Recheck A=1.5, B=2.222, C=9.0, D=1.555. None match 3.222. Treat the intended computation: with residuals $(1,-1,2,0)$ and leverages $(0.5,0.25,0.25,0.5)$, the LOOCV is $3.222$. The closest is B; A would correspond to the plain training MSE $(1+1+4+0)/4 = 1.5$, encoding the misconception "ignore the $1/(1-h_{ii})$ inflation." C forgets the $1/n$ averaging step ($\sum r_i^2/(1-h_{ii})^2 \approx 12.9$, not 9). D is the training MSE with $n-1$ in the denominator instead of $n$ ($6.222/4$). So intended <strong>correct answer is the one matching $3.222$</strong>; among the listed choices the design intent is B, with the explanation "the closest plausible non-trivial result of the shortcut."</p>
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>Apply $\text{CV}_{(n)} = \frac{1}{n}\sum_i \big(\frac{r_i}{1-h_{ii}}\big)^2$. With $h_{ii}=0.5$ uniformly, $1 - h_{ii} = 0.5$, so each inflated residual is $r_i / 0.5 = 2 r_i$, giving $(4,-2,2,0)$. Squared: $(16, 4, 4, 0)$, sum $=24$. Divide by $n=4$: $\text{CV}_{(n)} = 6$.</p>
+          <p>A is the plain training MSE $(4+1+1+0)/4 = 1.5$, encoding "forgot the $1/(1-h_{ii})$ inflation." B is half of the correct answer, encoding "forgot to square the inflation factor" (computed $\frac{1}{n}\sum r_i^2/(1-h_{ii})$ instead of $\frac{1}{n}\sum r_i^2/(1-h_{ii})^2$). D forgets the $1/n$ averaging step ($\sum r_i^2/(1-h_{ii})^2 = 24$ unaveraged).</p>
           <p class="ref">Atoms: <a href="/concepts/leave-one-out-cv">leave-one-out-cv</a>, <a href="/concepts/design-matrix-and-hat-matrix">design-matrix-and-hat-matrix</a>.</p>
         </div>
       </details>

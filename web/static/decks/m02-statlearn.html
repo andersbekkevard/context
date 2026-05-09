@@ -86,16 +86,16 @@
       <p class="q-text">Assume $Y = f(X) + \varepsilon$ with $\mathbb E[\varepsilon] = 0$, $\mathrm{Var}(\varepsilon) = \sigma^2$, and $\varepsilon \perp X$. Predict $\hat Y = \hat f(X)$ at a fixed $x$. Which expression equals $\mathbb E[(Y - \hat Y)^2 \mid X = x]$ before taking any further expectation over the training set?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> $(f(x) - \hat f(x))^2$</li>
-        <li><span class="opt-label">B</span> $(f(x) - \hat f(x))^2 + \sigma^2$</li>
-        <li><span class="opt-label">C</span> $(f(x) - \hat f(x))^2 - \sigma^2$</li>
-        <li><span class="opt-label">D</span> $(f(x) - \hat f(x))^2 + 2\sigma^2$</li>
+        <li><span class="opt-label">B</span> $(f(x) - \hat f(x))^2 - \sigma^2$</li>
+        <li><span class="opt-label">C</span> $(f(x) - \hat f(x))^2 + 2\sigma^2$</li>
+        <li><span class="opt-label">D</span> $(f(x) - \hat f(x))^2 + \sigma^2$</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>Substitute $Y = f(x) + \varepsilon$ and expand the square: the cross term $-2(f(x)-\hat f(x))\varepsilon$ vanishes under expectation because $\mathbb E[\varepsilon] = 0$, and $\mathbb E[\varepsilon^2] = \mathrm{Var}(\varepsilon) = \sigma^2$. So the pointwise error splits into a reducible $(f - \hat f)^2$ and an irreducible $\sigma^2$.</p>
-          <p>A drops the noise floor entirely; the irreducible term never goes away. C subtracts the variance, which sign-flips the noise contribution. D double-counts $\sigma^2$, the standard mistake when students confuse $\mathbb E[\varepsilon^2]$ with $2\,\mathrm{Var}(\varepsilon)$.</p>
+          <p>A drops the noise floor entirely; the irreducible term never goes away. B subtracts the variance, which sign-flips the noise contribution. C double-counts $\sigma^2$, the standard mistake when students confuse $\mathbb E[\varepsilon^2]$ with $2\,\mathrm{Var}(\varepsilon)$.</p>
           <p class="ref">Atoms: <a href="/concepts/reducible-vs-irreducible-error">reducible-vs-irreducible-error</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>.</p>
         </div>
       </details>
@@ -479,15 +479,15 @@
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> The training MSE at the optimal flexibility.</li>
         <li><span class="opt-label">B</span> The squared bias at infinite flexibility.</li>
-        <li><span class="opt-label">C</span> The irreducible error $\mathrm{Var}(\varepsilon)$.</li>
-        <li><span class="opt-label">D</span> The cross-validated standard error of the optimal model.</li>
+        <li><span class="opt-label">C</span> The cross-validated standard error of the optimal model.</li>
+        <li><span class="opt-label">D</span> The irreducible error $\mathrm{Var}(\varepsilon)$.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: C</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>The horizontal asymptote is $\sigma^2 = \mathrm{Var}(\varepsilon)$. No estimator $\hat f$ can drive expected squared error below it because it captures noise that is, by assumption, independent of the predictors.</p>
-          <p>A is wrong: training MSE is on a different curve (always falling) and isn't an asymptote of the test curve. B confuses bias-at-infinite-flexibility with the noise floor — a fully flexible model can drive bias to zero, but $\sigma^2$ remains. D is a CV bookkeeping quantity, not a feature of the bias-variance plot.</p>
+          <p>A is wrong: training MSE is on a different curve (always falling) and isn't an asymptote of the test curve. B confuses bias-at-infinite-flexibility with the noise floor — a fully flexible model can drive bias to zero, but $\sigma^2$ remains. C is a CV bookkeeping quantity, not a feature of the bias-variance plot.</p>
           <p class="ref">Atoms: <a href="/concepts/reducible-vs-irreducible-error">reducible-vs-irreducible-error</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>.</p>
         </div>
       </details>
@@ -503,10 +503,10 @@
         A linear regression and a KNN regression are both fit to the same training set on $[0, 5]$. You then predict at $x_0 = 12$, far outside the training range. Which behaviour best describes the two predictions?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Linear regression extrapolates along its fitted slope; KNN returns an average of the rightmost training points and stops tracking any trend.</li>
-        <li><span class="opt-label">B</span> Both methods extrapolate along the local trend implied by the rightmost training points.</li>
-        <li><span class="opt-label">C</span> KNN extrapolates more accurately because it makes fewer assumptions about $f$.</li>
-        <li><span class="opt-label">D</span> Linear regression refuses to predict outside the training range; KNN gives the global mean.</li>
+        <li><span class="opt-label">A</span> Linear regression extrapolates along its fitted slope; KNN averages the rightmost training points and tracks no trend.</li>
+        <li><span class="opt-label">B</span> Both methods extrapolate along the local slope implied by the rightmost training points.</li>
+        <li><span class="opt-label">C</span> KNN extrapolates more accurately because it assumes nothing about the global form of $f$.</li>
+        <li><span class="opt-label">D</span> Linear regression refuses to predict outside the training range; KNN returns the global mean of the training $y$'s.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -599,16 +599,16 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> $K = 1$, because it has the lowest bias and tracks every wiggle.</li>
-        <li><span class="opt-label">B</span> $K = 7$, because a small-but-not-tiny $K$ tracks the wiggly truth without chasing every noisy point.</li>
-        <li><span class="opt-label">C</span> $K = 50$, because larger $K$ always wins by reducing variance.</li>
-        <li><span class="opt-label">D</span> All three should give roughly the same test error; the Bayes boundary's shape doesn't matter to KNN.</li>
+        <li><span class="opt-label">B</span> $K = 50$, because larger $K$ wins by reducing variance.</li>
+        <li><span class="opt-label">C</span> All three should give roughly the same test error; the Bayes boundary's shape doesn't matter to KNN.</li>
+        <li><span class="opt-label">D</span> $K = 7$, because a small-but-not-tiny $K$ tracks the wiggly truth without chasing every noisy point.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>A wiggly Bayes boundary needs a flexible classifier — small $K$ — but $K = 1$ over-commits to individual points and inflates variance. The intermediate $K \approx 7$ trades a little bias for much less variance and is typically near the U's minimum.</p>
-          <p>A confuses "low bias" with "low test error" — variance dominates at $K = 1$. C ignores the bias side: $K = 50$ on a wiggly boundary smooths the truth away. D is wrong: KNN's optimal $K$ depends on how complex the boundary is (small $K$ for wiggly, large $K$ for nearly-linear).</p>
+          <p>A confuses "low bias" with "low test error" — variance dominates at $K = 1$. B ignores the bias side: $K = 50$ on a wiggly boundary smooths the truth away. C is wrong: KNN's optimal $K$ depends on how complex the boundary is (small $K$ for wiggly, large $K$ for nearly-linear).</p>
           <p class="ref">Atoms: <a href="/concepts/knn-classification">knn-classification</a>, <a href="/concepts/flexibility-overfitting-underfitting">flexibility-overfitting-underfitting</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>.</p>
         </div>
       </details>
@@ -773,16 +773,16 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> KNN's bias scales with $p$, so each new predictor mechanically adds bias.</li>
-        <li><span class="opt-label">B</span> In high dimensions, pairwise Euclidean distances become more concentrated, so "nearest neighbour" stops carrying meaningful local information.</li>
-        <li><span class="opt-label">C</span> KNN's training error rises with $p$; this matches the decline in test performance.</li>
-        <li><span class="opt-label">D</span> Adding predictors changes the Bayes error rate, raising the irreducible classification floor.</li>
+        <li><span class="opt-label">B</span> KNN's training error rises with $p$; this matches the decline in test performance.</li>
+        <li><span class="opt-label">C</span> Adding predictors changes the Bayes error rate, raising the irreducible classification floor.</li>
+        <li><span class="opt-label">D</span> In high dimensions, pairwise Euclidean distances become more concentrated, so "nearest neighbour" stops carrying meaningful local information.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>The curse of dimensionality: as $p$ grows, the distribution of pairwise distances collapses around its mean, so the "$K$ nearest" set is barely closer than a random sample. KNN's mechanism (locality) breaks down.</p>
-          <p>A invents a direct $p$-bias relationship that doesn't exist; bias depends on the truth and on $K$, not on $p$ alone. C reverses the standard pattern (training error need not rise with $p$ for KNN). D conflates the curse with the Bayes error rate; the Bayes floor depends on overlap of class densities, not on the metric's behaviour.</p>
+          <p>A invents a direct $p$-bias relationship that doesn't exist; bias depends on the truth and on $K$, not on $p$ alone. B reverses the standard pattern (training error need not rise with $p$ for KNN). C conflates the curse with the Bayes error rate; the Bayes floor depends on overlap of class densities, not on the metric's behaviour.</p>
           <p class="ref">Atoms: <a href="/concepts/curse-of-dimensionality">curse-of-dimensionality</a>, <a href="/concepts/knn-classification">knn-classification</a>.</p>
         </div>
       </details>

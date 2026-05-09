@@ -1,0 +1,823 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 08 — Tree-based methods · TMA4268</title>
+
+  <!-- Sync theme with the Quartz wiki (reads same localStorage key, falls back to OS) -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var theme = saved || (prefersDark ? "dark" : "light");
+        document.documentElement.setAttribute("saved-theme", theme);
+      } catch (e) {
+        document.documentElement.setAttribute("saved-theme", "light");
+      }
+    })();
+  </script>
+
+  <!-- Quartz fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+
+  <link rel="stylesheet" href="exam.css">
+
+  <!-- KaTeX for inline math -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$',  right: '$',  display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });"></script>
+</head>
+<body>
+  <main class="exam-shell">
+    <header class="exam-head">
+      <a href="/" class="back-link">← Back to wiki</a>
+      <h1>Module 08 — Tree-based methods</h1>
+      <p class="meta">22 questions · 100 points · ~35 min</p>
+      <p class="meta">
+        Trees, pruning, bagging, random forests, OOB, variable importance. Boosting lives in m09.
+        Click an option to lock the answer; the explanation auto-opens. Score tracker bottom-left.
+      </p>
+    </header>
+
+    <!-- Q1 — Single MC, recall, regression-tree split criterion -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 1</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Exam 2024 P3d</span>
+      </header>
+      <p class="q-text">
+        At each internal node, a CART regression tree picks $(j, s)$ to minimise which quantity?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $\sum_{i \in R_1(j,s)} (y_i - \hat y_{R_1})^2 + \sum_{i \in R_2(j,s)} (y_i - \hat y_{R_2})^2$, where $\hat y_{R_m}$ is the in-region mean of $y$.</li>
+        <li><span class="opt-label">B</span> $\sum_{i \in R_1(j,s)} (y_i - \bar y)^2 + \sum_{i \in R_2(j,s)} (y_i - \bar y)^2$, where $\bar y$ is the global mean of $y$.</li>
+        <li><span class="opt-label">C</span> The mean of $(y_i - \hat y_{R_m})^2$ across all training observations, taken over both regions $R_1$ and $R_2$.</li>
+        <li><span class="opt-label">D</span> $\sum_m |R_m|$, the total number of observations sitting in each candidate region.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Each candidate split partitions the parent region into $R_1$ and $R_2$; the predictions in each are the in-region means. The criterion is the <em>sum</em> of squared deviations, computed region-by-region against the in-region mean. The prof: <em>"we're summing up the squared difference between each point and the average of all the shit in its region"</em>.</p>
+          <p>B measures deviations against the global mean — wrong reference; that's the total RSS, which the split can't change. C uses the mean of squared residuals (averages instead of sums), the prof flagged this verbatim as a different algorithm that "wouldn't behave very well". D ranks splits by region size, which has nothing to do with residual reduction.</p>
+          <p class="ref">Atoms: <a href="/concepts/regression-tree">regression-tree</a>. Lecture: <a href="/lectures/L17-trees-1">L17-trees-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q2 — T/F, regression trees vs GAMs -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 2</span>
+        <span class="exam-q__points">5 points</span>
+      </header>
+      <p class="q-text">Mark each statement about regression trees as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Regression trees automatically capture interactions between predictors via the split path.</span>
+          <label><input type="radio" name="q2-a" value="true"> True</label>
+          <label><input type="radio" name="q2-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Predicting the median (instead of the mean) of training $y$'s in each region is the textbook regression-tree rule.</span>
+          <label><input type="radio" name="q2-b" value="true"> True</label>
+          <label><input type="radio" name="q2-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Regression trees are equivalent to a GAM with one additive component per predictor.</span>
+          <label><input type="radio" name="q2-c" value="true"> True</label>
+          <label><input type="radio" name="q2-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) The number of regions $J$ in a fitted tree equals the number of terminal nodes (leaves), not the number of internal split nodes.</span>
+          <label><input type="radio" name="q2-d" value="true"> True</label>
+          <label><input type="radio" name="q2-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — a leaf is reached only by satisfying every split condition along its path, so leaf membership encodes a logical conjunction over predictors. That's the prof's "older than X <em>and</em> hit more than Y" framing — the headline reason trees are not additive.</li>
+            <li><strong>False</strong> — the textbook prediction is the in-region <em>mean</em>. Median is a robust variant the prof mentioned in passing, but the algorithm and its analysis use the mean (squared-error loss).</li>
+            <li><strong>False</strong> — GAMs are additive ($f_1(x_1) + f_2(x_2) + \cdots$); a tree is a sum over indicators of region membership, $\sum_m c_m \mathbf{1}(x \in R_m)$, which can encode interactions but cannot be decomposed back to a per-predictor additive form.</li>
+            <li><strong>True</strong> — $|T|$ in the cost-complexity formula and "tree size" in CV plots both count terminal nodes (leaves), not internal split nodes.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/regression-tree">regression-tree</a>, <a href="/concepts/generalized-additive-models">generalized-additive-models</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q3 — Computation: prediction at a leaf from training data -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 3</span>
+        <span class="exam-q__points">5 points</span>
+      </header>
+      <p class="q-text">
+        A regression tree assigns six training observations to a single leaf $R$, with response values
+        $\{ 12,\ 14,\ 15,\ 18,\ 20,\ 25 \}$. A new test point lands in this leaf. What does the tree predict for it?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $16.5$ (the median of the leaf's training $y$ values).</li>
+        <li><span class="opt-label">B</span> $25$ (the largest training $y$ in the leaf — the bound that decides the partition).</li>
+        <li><span class="opt-label">C</span> $17.33$ (the mean of the training $y$ values in the leaf).</li>
+        <li><span class="opt-label">D</span> $104$ (the sum of the training $y$ values in the leaf, which is what the splitter optimises).</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>The CART regression-tree prediction in region $R_m$ is $\hat y_{R_m} = \frac{1}{|R_m|}\sum_{i \in R_m} y_i$. Here $\hat y_R = (12+14+15+18+20+25)/6 = 104/6 \approx 17.33$.</p>
+          <p>A picks the median, which is a robust alternative the prof named but not the textbook rule. B confuses the leaf prediction with an extreme order statistic. D forgets to divide by $|R_m|$ — the splitter minimises a sum of squared deviations, but the prediction itself is still the in-region mean.</p>
+          <p class="ref">Atoms: <a href="/concepts/regression-tree">regression-tree</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q4 — T/F, greedy / CART -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 4</span>
+        <span class="exam-q__points">5 points</span>
+      </header>
+      <p class="q-text">Mark each statement about CART recursive binary splitting as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) The algorithm is greedy: it picks the locally best split at each node and never revisits earlier splits.</span>
+          <label><input type="radio" name="q4-a" value="true"> True</label>
+          <label><input type="radio" name="q4-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Each split considers only one predictor and one threshold at a time.</span>
+          <label><input type="radio" name="q4-b" value="true"> True</label>
+          <label><input type="radio" name="q4-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) When a region is split, the cut extends across the entire predictor space, including regions that are not the parent.</span>
+          <label><input type="radio" name="q4-c" value="true"> True</label>
+          <label><input type="radio" name="q4-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Greedy recursive binary splitting produces the partition that globally minimises training RSS over all possible partitions of the predictor space.</span>
+          <label><input type="radio" name="q4-d" value="true"> True</label>
+          <label><input type="radio" name="q4-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — the prof: <em>"trees don't go and change their mind and reconnect"</em>. Each split is locked once made.</li>
+            <li><strong>True</strong> — splits are univariate axis-aligned, "very easy" per the lectures. Multi-variable oblique splits exist as a research variant but aren't CART.</li>
+            <li><strong>False</strong> — a split only partitions the parent region. If cuts extended across the whole space, you'd recover the additive grid of GAMs. This is exactly why a tree can encode interactions while a GAM cannot.</li>
+            <li><strong>False</strong> — exhaustive optimal partitioning is computationally intractable; CART is greedy and only locally optimal. The prof: <em>"we can't try every possible combination. It's just too much."</em></li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/regression-tree">regression-tree</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q5 — Scenario, read a fitted tree -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 5</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Exam 2024 P2d</span>
+      </header>
+      <p class="q-text">
+        A regression tree predicting daily bike rentals has the following structure:
+      </p>
+      <pre class="q-text" style="font-family: var(--codeFont); margin: 0.5em 0;">
+              temp &lt; 10
+              /        \
+           50         humidity &lt; 70
+                       /         \
+                    weekend?    300
+                   /        \
+                 200         420
+      </pre>
+      <p class="q-text">
+        Predict the number of bikes rented on a day with <code>temp = 18</code>,
+        <code>humidity = 60</code>, <code>weekend = no</code>.
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 50 — the cold-day branch caught by the very first split on temperature.</li>
+        <li><span class="opt-label">B</span> 200 — temp $\geq 10$, humidity $&lt; 70$, weekend = no, so reach the leftmost leaf of that subtree.</li>
+        <li><span class="opt-label">C</span> 300 — temp $\geq 10$, humidity $\geq 70$, so the right branch of the humidity split.</li>
+        <li><span class="opt-label">D</span> 420 — temp $\geq 10$, humidity $&lt; 70$, weekend = yes, so the rightmost leaf of that subtree.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Walk the splits with the test row: $\text{temp} = 18 \not&lt; 10$ so go right; $\text{humidity} = 60 &lt; 70$ so go left; $\text{weekend} = \text{no}$ so go left again. Leaf value = 200.</p>
+          <p>A misreads the first split direction (forces the cold branch). C ignores that 60 &lt; 70 and takes the wrong humidity branch. D answers for a weekend day, getting the leaf for "yes" instead of "no".</p>
+          <p class="ref">Atoms: <a href="/concepts/regression-tree">regression-tree</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q6 — Single MC, why grow then prune (recall) -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 6</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        Why do CART implementations grow the tree out fully and only then prune backwards, rather than stop growing early when a split's RSS reduction falls below a threshold?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Early stopping is computationally infeasible because evaluating the RSS-reduction threshold is NP-hard at every node.</li>
+        <li><span class="opt-label">B</span> A locally weak-looking split can enable a much stronger split deeper in that branch, and you only see the gain by letting the tree grow.</li>
+        <li><span class="opt-label">C</span> Pruning gives the tree more parameters than early stopping, which lowers bias.</li>
+        <li><span class="opt-label">D</span> Early stopping always produces a tree that is too large, while pruning guarantees the globally optimal partition.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The prof verbatim: <em>"Sometimes you actually do a seemingly worthless split, but then it's followed by a very good one. Because again, sometimes you need to cut one way and then cut the other way until you really get the benefit … these interactions are not super obvious."</em> Build out, then prune.</p>
+          <p>A misuses the NP-hard fact (which applies to optimal global partitioning, not to evaluating a stopping threshold). C is direction-confused: more parameters means lower bias but higher variance, and the prune-after step removes parameters. D inverts the problem: early stopping yields trees that are too small, and weakest-link pruning is locally optimal over the nested sequence, not globally optimal over all subtrees.</p>
+          <p class="ref">Atoms: <a href="/concepts/cost-complexity-pruning">cost-complexity-pruning</a>. Lecture: <a href="/lectures/L18-trees-2">L18-trees-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q7 — T/F, cost-complexity pruning -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 7</span>
+        <span class="exam-q__points">5 points</span>
+      </header>
+      <p class="q-text">
+        Mark each statement about cost-complexity pruning $C_\alpha(T) = \sum_{m=1}^{|T|}\sum_{i \in R_m}(y_i - \hat y_{R_m})^2 + \alpha |T|$ as true or false.
+      </p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) The penalty $\alpha |T|$ has the same shape as a lasso/ridge penalty applied to the number of leaves.</span>
+          <label><input type="radio" name="q7-a" value="true"> True</label>
+          <label><input type="radio" name="q7-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) $|T|$ in the formula denotes the absolute value of the training RSS, hence the bars.</span>
+          <label><input type="radio" name="q7-b" value="true"> True</label>
+          <label><input type="radio" name="q7-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) The pruning sequence $T_0 \supset T_1 \supset \cdots$ is nested: once a node is collapsed by weakest-link pruning, it stays collapsed at all larger $\alpha$.</span>
+          <label><input type="radio" name="q7-c" value="true"> True</label>
+          <label><input type="radio" name="q7-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) The complexity hyperparameter $\alpha$ is selected by minimising training RSS at each candidate value of $\alpha$.</span>
+          <label><input type="radio" name="q7-d" value="true"> True</label>
+          <label><input type="radio" name="q7-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — the slide deck explicitly draws this analogy ("Equation 8.4 is reminiscent of the lasso"). $|T|$ acts like an $L_0$ norm on the leaf count.</li>
+            <li><strong>False</strong> — $|T|$ is the <em>cardinality</em> (count of terminal nodes), not absolute value. The prof flagged this notation explicitly: it's "the zeroth norm".</li>
+            <li><strong>True</strong> — weakest-link pruning at increasing $\alpha$ produces a hierarchical sequence of subtrees. Once a leaf is collapsed it remains collapsed.</li>
+            <li><strong>False</strong> — minimising training RSS just selects the unpruned tree $T_0$ (more leaves always means lower training RSS). $\alpha$ is selected by $K$-fold cross-validation on held-out data.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/cost-complexity-pruning">cost-complexity-pruning</a>, <a href="/concepts/cross-validation">cross-validation</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q8 — Single MC, direction of α (computation/scenario) -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 8</span>
+        <span class="exam-q__points">5 points</span>
+      </header>
+      <p class="q-text">
+        You run <code>cv.tree</code> on a regression tree and get the CV deviance vs tree size curve below. The minimum sits at size 5; sizes 4 and 6 are within one standard error of size 5; sizes 1, 2 and 3 are clearly worse, and size 12 (the unpruned tree) is much worse. Which subtree should you select, given the prof's preference, and what does the choice imply about the cost-complexity penalty $\alpha$?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Size 12 — using the largest tree minimises training RSS, which corresponds to $\alpha = 0$.</li>
+        <li><span class="opt-label">B</span> Size 5 — the global CV minimum, with a moderate $\alpha &gt; 0$.</li>
+        <li><span class="opt-label">C</span> Size 4 — the smallest tree within one SE of the CV minimum (one-SE rule), with a slightly larger $\alpha$ than at size 5.</li>
+        <li><span class="opt-label">D</span> Size 1 — the simplest tree always wins under the one-SE rule, regardless of where the CV minimum lies.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>The prof's preferred selection rule is the one-SE rule: among models within one SE of the CV minimum, pick the simplest. Sizes 4, 5, 6 are all within one SE of the minimum at 5, so 4 wins. A larger $\alpha$ corresponds to a smaller tree, so size 4 sits at a slightly larger $\alpha$ than size 5. From [[L18-trees-2]]: <em>"we picked 7 because that was the smallest model with that level of misclassification error."</em></p>
+          <p>A picks the unpruned tree, which overfits — exactly the regime CV is supposed to avoid. B is the bare CV minimum (correct without the one-SE rule, but the prof's stated preference is the simpler tree within one SE). D ignores the CV curve entirely and always picks the root-only tree, which the curve shows is well outside the one-SE band.</p>
+          <p class="ref">Atoms: <a href="/concepts/cost-complexity-pruning">cost-complexity-pruning</a>, <a href="/concepts/one-standard-error-rule">one-standard-error-rule</a>, <a href="/concepts/cross-validation">cross-validation</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q9 — T/F, direction of effect for α and tree size -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 9</span>
+        <span class="exam-q__points">5 points</span>
+      </header>
+      <p class="q-text">Mark each direction-of-effect claim as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Increasing $\alpha$ in cost-complexity pruning leads to a smaller tree (fewer terminal nodes).</span>
+          <label><input type="radio" name="q9-a" value="true"> True</label>
+          <label><input type="radio" name="q9-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) At $\alpha = 0$ the cost-complexity criterion is minimised by the fully grown tree $T_0$.</span>
+          <label><input type="radio" name="q9-b" value="true"> True</label>
+          <label><input type="radio" name="q9-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) As you prune from $T_0$ toward the root, training RSS decreases at every step.</span>
+          <label><input type="radio" name="q9-c" value="true"> True</label>
+          <label><input type="radio" name="q9-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Pruning trades a small increase in bias for a (typically larger) decrease in variance.</span>
+          <label><input type="radio" name="q9-d" value="true"> True</label>
+          <label><input type="radio" name="q9-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — larger $\alpha$ pays a heavier penalty per leaf, so the optimum drifts toward fewer leaves. Same direction as $\lambda$ in lasso/ridge: more regularisation, simpler model.</li>
+            <li><strong>True</strong> — with no penalty, more leaves always means lower training RSS, so the unpruned tree $T_0$ wins.</li>
+            <li><strong>False</strong> — pruning <em>increases</em> training RSS at every step (you remove flexibility). The held-out / CV error first decreases (overfitting reduced), then increases past the optimal size — but training RSS only ever goes up as you prune.</li>
+            <li><strong>True</strong> — fewer parameters means less data-set sensitivity (lower variance) at the cost of coarser in-region fits (higher bias). The prof: <em>"how little bias you need to get a lot of reduction in variance."</em></li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/cost-complexity-pruning">cost-complexity-pruning</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q10 — Computation: Gini index by hand -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 10</span>
+        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__src">ISLR §8 Q3</span>
+      </header>
+      <p class="q-text">
+        A binary classification region $R_m$ contains 70 class-A observations and 30 class-B observations. Compute the Gini index for this region.
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $0.21$, computed as $0.7 \cdot 0.3 = 0.21$.</li>
+        <li><span class="opt-label">B</span> $0.30$, the proportion of the minority class.</li>
+        <li><span class="opt-label">C</span> $0.42$, computed as $0.7 \cdot 0.3 + 0.3 \cdot 0.7$.</li>
+        <li><span class="opt-label">D</span> $0.61$, computed as $-(0.7\log 0.7 + 0.3 \log 0.3)$ (cross-entropy in nats).</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>$G = \sum_{k=1}^K \hat p_{mk}(1 - \hat p_{mk}) = 0.7 \cdot 0.3 + 0.3 \cdot 0.7 = 0.21 + 0.21 = 0.42$. Equivalently, $1 - \sum_k \hat p_{mk}^2 = 1 - (0.49 + 0.09) = 0.42$.</p>
+          <p>A drops one of the two terms in the sum (binary classification still has two classes, both contribute). B reports $1 - \max_k \hat p_{mk} = 0.3$ — that's <em>misclassification error</em>, the criterion the prof flagged as too coarse for splitting. D is the cross-entropy (a different, also valid impurity measure) — close-but-different to Gini, and Gini is what the question asked for.</p>
+          <p class="ref">Atoms: <a href="/concepts/classification-tree">classification-tree</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q11 — T/F, classification-tree splitting criteria -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 11</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement about classification-tree splitting and pruning criteria as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Both Gini index and cross-entropy are zero on a pure node and strictly positive on an impure one.</span>
+          <label><input type="radio" name="q11-a" value="true"> True</label>
+          <label><input type="radio" name="q11-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) The standard recipe is to grow the tree using Gini or cross-entropy and prune using misclassification error.</span>
+          <label><input type="radio" name="q11-b" value="true"> True</label>
+          <label><input type="radio" name="q11-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) A split where both children predict the same majority class is necessarily a useless split that the algorithm should not have made.</span>
+          <label><input type="radio" name="q11-c" value="true"> True</label>
+          <label><input type="radio" name="q11-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Misclassification error is preferred for growing because it directly minimises the test error each split is supposed to reduce.</span>
+          <label><input type="radio" name="q11-d" value="true"> True</label>
+          <label><input type="radio" name="q11-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — both impurity measures vanish exactly when one class has $\hat p = 1$ and are positive otherwise. This is what makes them sensible "node purity" scores.</li>
+            <li><strong>True</strong> — the prof's flagged asymmetry: <em>"you build out the tree using deviance or Gini index but then you actually prune it using misclassification criteria … because that's ultimately what you care about."</em></li>
+            <li><strong>False</strong> — both children predicting the same class while one is much purer than the other reduces impurity, even though the labels don't change. The split also enables a strong follow-up split that early-stopping on misclassification would miss.</li>
+            <li><strong>False</strong> — misclassification is too coarse: it can't distinguish between two splits with the same overall error rate but very different node purities. The prof: <em>"the misclassification error is not sufficiently sensitive for tree growing."</em></li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/classification-tree">classification-tree</a>, <a href="/concepts/cost-complexity-pruning">cost-complexity-pruning</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q12 — Single MC, why not split on misclassification (recall) -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 12</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        Consider a parent node with 400 of class A and 400 of class B. Two candidate splits both yield 25% misclassification error overall. Split 1 produces children $(100\text{A}, 300\text{B})$ and $(300\text{A}, 100\text{B})$. Split 2 produces children $(200\text{A}, 0\text{B})$ and $(200\text{A}, 400\text{B})$. Which is the strongest single reason the prof gave for preferring Gini over misclassification at the growth step?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Misclassification error scales worse with the number of classes than Gini does.</li>
+        <li><span class="opt-label">B</span> Gini rewards Split 2 because one child is fully pure, while misclassification cannot tell Split 1 from Split 2.</li>
+        <li><span class="opt-label">C</span> Gini is computationally cheaper to evaluate than misclassification at each candidate split.</li>
+        <li><span class="opt-label">D</span> Misclassification error penalises imbalanced parent nodes more than balanced ones, biasing the splits.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Both splits have the same misclassification rate (25%), so misclassification can't choose between them. Gini sees the difference: Split 2's pure $(200\text{A}, 0\text{B})$ child has Gini 0, which is much purer than any node from Split 1. The prof's load-bearing argument: <em>"the misclassification error is not sufficiently sensitive for tree growing"</em> — it is the impurity-sensitivity argument, not differentiability.</p>
+          <p>A is unrelated — both criteria generalise straightforwardly to $K &gt; 2$ classes. C is wrong: all three impurity measures are cheap to evaluate. D inverts the argument: misclassification is class-balanced in its definition; it is impurity-insensitive, not imbalance-biased.</p>
+          <p class="ref">Atoms: <a href="/concepts/classification-tree">classification-tree</a>. Lecture: <a href="/lectures/L18-trees-2">L18-trees-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q13 — T/F, bagging vs boosting/RF -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 13</span>
+        <span class="exam-q__points">5 points</span>
+      </header>
+      <p class="q-text">Mark each statement about bagging as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Bagging fits $B$ trees in parallel on independent bootstrap samples and then averages their predictions for regression.</span>
+          <label><input type="radio" name="q13-a" value="true"> True</label>
+          <label><input type="radio" name="q13-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Increasing $B$ in bagging will eventually drive the variance of the bagged predictor to zero.</span>
+          <label><input type="radio" name="q13-b" value="true"> True</label>
+          <label><input type="radio" name="q13-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Bagging the trees in a CART ensemble destroys single-tree interpretability, which is partly recovered by variable-importance plots.</span>
+          <label><input type="radio" name="q13-c" value="true"> True</label>
+          <label><input type="radio" name="q13-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Bagging is most useful for low-variance, high-bias base learners such as linear regression.</span>
+          <label><input type="radio" name="q13-d" value="true"> True</label>
+          <label><input type="radio" name="q13-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — that's the textbook recipe: $B$ bootstrap samples, fit a tree on each, average predictions for regression (or majority vote for classification). Compare boosting, which is sequential.</li>
+            <li><strong>False</strong> — the variance floor is $\rho \sigma^2$, where $\rho$ is the pairwise correlation between bootstrap-trained predictors. Adding more trees collapses the $(1-\rho)\sigma^2/B$ term but never the $\rho\sigma^2$ floor. This is precisely why random forests decorrelate trees via mtry.</li>
+            <li><strong>True</strong> — averaging 500 trees produces a model that you can no longer read off as a flow chart. The prof's "explainable AI" framing: importance plots give you which variables matter, even if not how they combine.</li>
+            <li><strong>False</strong> — bagging shines on <em>high-variance, low-bias</em> learners (deep trees, KNN with small $K$). Bagging linear regression barely helps because OLS is already low variance; the average of nearly-identical fits is the same fit.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/bagging">bagging</a>, <a href="/concepts/random-forest">random-forest</a>, <a href="/concepts/variable-importance">variable-importance</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q14 — Single MC, mtry defaults (recall) -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 14</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        On the South African heart-disease dataset with $p = 9$ predictors you fit a random forest classifier. Which value of mtry matches the textbook default?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $m = p = 9$ — every predictor available at every split.</li>
+        <li><span class="opt-label">B</span> $m = \lfloor \sqrt p \rfloor = 3$ — the classification default.</li>
+        <li><span class="opt-label">C</span> $m = \lfloor p/3 \rfloor = 3$ — the regression default applied here.</li>
+        <li><span class="opt-label">D</span> $m = \log_2 p \approx 3.2$ — the entropy-based default.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Classification: $m \approx \sqrt p$. Regression: $m = p/3$. With $p = 9$ and a binary classifier, $\sqrt 9 = 3$, so mtry = 3 is the textbook classification default.</p>
+          <p>A picks $m = p$, which is plain bagging — no decorrelation, the variance floor stays at $\rho\sigma^2$. C uses the regression default ($p/3$); it happens to land on 3 here, but the rule for the wrong task type — easy way to lose a point on a question with $p = 12$ where the two defaults give different numbers (4 for regression, $\approx 3$ for classification). D invents a $\log_2 p$ rule that isn't textbook.</p>
+          <p class="ref">Atoms: <a href="/concepts/random-forest">random-forest</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q15 — T/F, RF hyperparameters -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 15</span>
+        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__src">Exam 2025 P7</span>
+      </header>
+      <p class="q-text">Mark each statement about random-forest hyperparameters as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) The number of trees $B$ is a tuning parameter that should be optimised by cross-validation.</span>
+          <label><input type="radio" name="q15-a" value="true"> True</label>
+          <label><input type="radio" name="q15-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Increasing $B$ past the point where OOB error has stabilised will cause the random forest to overfit.</span>
+          <label><input type="radio" name="q15-b" value="true"> True</label>
+          <label><input type="radio" name="q15-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) A fresh random subset of $m$ predictors is drawn at <em>every internal node</em>, not once per tree.</span>
+          <label><input type="radio" name="q15-c" value="true"> True</label>
+          <label><input type="radio" name="q15-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Trees inside a random forest are typically grown deep and unpruned; ensemble averaging plays the role of regularisation.</span>
+          <label><input type="radio" name="q15-d" value="true"> True</label>
+          <label><input type="radio" name="q15-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>False</strong> — $B$ is "use enough", not tuned. The 2025 exam key: <em>"the number of trees is not a tuning parameter, but the students should mention that it should be chosen large enough."</em> The 2023 exam deducts marks for treating $B$ as a tuning parameter.</li>
+            <li><strong>False</strong> — adding more trees never makes a random forest worse on test error; the variance just keeps shrinking until it hits the $\rho\sigma^2$ floor. Compare boosting, where too many trees does overfit.</li>
+            <li><strong>True</strong> — per-split, not per-tree. This maximises diversity even within a single tree, where different splits see different predictor pools.</li>
+            <li><strong>True</strong> — pruning individual RF trees is unnecessary because the ensemble average is already the regulariser. Each individual tree is allowed to overfit; the average doesn't.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/random-forest">random-forest</a>, <a href="/concepts/out-of-bag-error">out-of-bag-error</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q16 — Computation, OOB fraction -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 16</span>
+        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__src">Ex8.1d</span>
+      </header>
+      <p class="q-text">
+        For a bootstrap sample of size $n$ drawn with replacement from $n$ training observations, what fraction of the original observations is left out (out-of-bag) for that sample, in the limit $n \to \infty$?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> About $0.5$, since on average half the indices are sampled and half are not.</li>
+        <li><span class="opt-label">B</span> About $0.368 \approx 1/e$, since $P(\text{not drawn in } n \text{ tries}) = (1 - 1/n)^n \to 1/e$.</li>
+        <li><span class="opt-label">C</span> About $0.632$, since the in-bag fraction is $1 - 1/e$ and that is the OOB fraction.</li>
+        <li><span class="opt-label">D</span> Exactly $1/n$, the probability of any single observation being drawn on a given draw.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Each of the $n$ draws independently fails to pick observation $i$ with probability $1 - 1/n$, so $P(i \text{ never drawn}) = (1 - 1/n)^n \to 1/e \approx 0.368$. So about 37% are out-of-bag for each tree, and about 63% are in-bag.</p>
+          <p>A guesses 50/50 with no derivation. C swaps in-bag and OOB — $1 - 1/e \approx 0.632$ is the in-bag fraction; OOB is the complement. D confuses the per-draw selection probability with the all-draws-fail probability, missing the exponentiation.</p>
+          <p class="ref">Atoms: <a href="/concepts/out-of-bag-error">out-of-bag-error</a>, <a href="/concepts/bootstrap">bootstrap</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q17 — Single MC, why RF beats bagging (variance floor reasoning) -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 17</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        Bagged tree predictions $\hat f^{*1}, \ldots, \hat f^{*B}$ have common variance $\sigma^2$ and pairwise correlation $\rho$. The variance of their average is $\rho \sigma^2 + (1-\rho)\sigma^2/B$. Why does a random forest outperform plain bagging when there is one strong predictor in the data?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> RF reduces $\sigma^2$ by considering only $m$ predictors per split, so each individual tree has lower variance.</li>
+        <li><span class="opt-label">B</span> RF reduces $\rho$ — different trees pick different root splits because the strong predictor isn't always available — which lowers the $\rho\sigma^2$ floor of the variance.</li>
+        <li><span class="opt-label">C</span> RF reduces $B$ to a smaller value, which makes the variance term $\sigma^2/B$ shrink faster.</li>
+        <li><span class="opt-label">D</span> RF eliminates the bootstrap step, which removes the dependence between trees entirely.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The $\rho \sigma^2$ floor doesn't shrink with $B$. To beat it you have to reduce $\rho$ — the per-tree pairwise correlation. RF does exactly this by hiding the strong predictor from a fraction of the splits; trees diverge from the very first split. The prof: <em>"if you want to have a lot of opinions, don't clone the same person 50 times … figure out a way to add diversity into your pool."</em></p>
+          <p>A gets the mechanism wrong: per-tree variance $\sigma^2$ is roughly unchanged (RF trees can be even higher variance individually); the gain is decorrelation. C inverts the direction of $B$ (and treats $B$ as a tuning parameter, which it isn't). D ignores that RF still uses bootstrap aggregation — it's bagging plus per-split predictor restriction, not an alternative to bootstrapping.</p>
+          <p class="ref">Atoms: <a href="/concepts/random-forest">random-forest</a>, <a href="/concepts/bagging">bagging</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q18 — T/F, OOB error -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 18</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement about out-of-bag (OOB) error as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) For each observation $i$, the OOB prediction averages only over the trees that did not see $i$ in their bootstrap sample.</span>
+          <label><input type="radio" name="q18-a" value="true"> True</label>
+          <label><input type="radio" name="q18-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) For a bagged ensemble of $B$ trees, OOB error replaces the need for a separate held-out test set.</span>
+          <label><input type="radio" name="q18-b" value="true"> True</label>
+          <label><input type="radio" name="q18-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Boosted ensembles (e.g. gradient boosting) report OOB error in the same way bagging and RF do.</span>
+          <label><input type="radio" name="q18-c" value="true"> True</label>
+          <label><input type="radio" name="q18-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) The randomisation-based variable-importance procedure is computed on the OOB observations, not on the in-bag training data.</span>
+          <label><input type="radio" name="q18-d" value="true"> True</label>
+          <label><input type="radio" name="q18-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — that's the OOB construction: each observation is held out by roughly a third of the trees, so its prediction is unbiased w.r.t. those trees.</li>
+            <li><strong>True</strong> — with mild caveats. OOB gives an honest test-error proxy without needing a dedicated test set or a separate $k$-fold CV pass; the prof flagged the slight dependence on bootstrap structure but endorsed it for tree ensembles.</li>
+            <li><strong>False</strong> — boosting fits trees sequentially on a single re-weighted/residualised training set; there is no per-tree bootstrap and no per-tree OOB sample. OOB is a bagging-family construct.</li>
+            <li><strong>True</strong> — permutation importance permutes predictor $j$ on the OOB sample and measures the drop in OOB performance, exactly the OOB-vs-permuted-OOB comparison.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/out-of-bag-error">out-of-bag-error</a>, <a href="/concepts/variable-importance">variable-importance</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q19 — Computation: bagging variance with ρ floor -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 19</span>
+        <span class="exam-q__points">5 points</span>
+      </header>
+      <p class="q-text">
+        Suppose individual bagged-tree predictions at a fixed test point have common variance $\sigma^2 = 1$ and pairwise correlation $\rho = 0.4$. Using $\operatorname{Var}\!\left(\frac{1}{B}\sum_b \hat f^{*b}\right) = \rho\sigma^2 + (1-\rho)\sigma^2 / B$, what is the variance of the bagged predictor when $B = 100$, and what does it converge to as $B \to \infty$?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $0.406$ at $B=100$; $\to 0$ as $B \to \infty$.</li>
+        <li><span class="opt-label">B</span> $0.406$ at $B=100$; $\to 0.4$ as $B \to \infty$.</li>
+        <li><span class="opt-label">C</span> $0.010$ at $B=100$; $\to 0$ as $B \to \infty$.</li>
+        <li><span class="opt-label">D</span> $0.600$ at $B=100$; $\to 0.6$ as $B \to \infty$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>$0.4 \cdot 1 + (1 - 0.4)\cdot 1 / 100 = 0.4 + 0.006 = 0.406$. As $B \to \infty$, the second term vanishes and the variance approaches the floor $\rho\sigma^2 = 0.4$. This is the very reason RF decorrelates trees via mtry — to push $\rho$ (and hence the floor) down.</p>
+          <p>A applies the standard $\sigma^2/B$ formula at finite $B$ but forgets the floor at infinity, claiming it goes to zero (the IID reasoning, which doesn't apply when bootstrap samples share data). C uses $\sigma^2/B$ alone (the IID variance, $0.01$), missing the $\rho\sigma^2$ contribution entirely. D inverts the role of $\rho$: it computes $(1-\rho) + \rho/B = 0.604$ at $B=100$ and converges to $1 - \rho = 0.6$ — wrong direction.</p>
+          <p class="ref">Atoms: <a href="/concepts/bagging">bagging</a>, <a href="/concepts/random-forest">random-forest</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q20 — T/F, variable importance -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 20</span>
+        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__src">Exam 2023</span>
+      </header>
+      <p class="q-text">Mark each statement about variable-importance plots from a tree ensemble as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Impurity-based importance for each predictor sums the decrease in Gini (or RSS) across all splits using that predictor, averaged over trees.</span>
+          <label><input type="radio" name="q20-a" value="true"> True</label>
+          <label><input type="radio" name="q20-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Permutation-based importance shuffles the values of one predictor across the OOB sample and measures the resulting drop in performance.</span>
+          <label><input type="radio" name="q20-b" value="true"> True</label>
+          <label><input type="radio" name="q20-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Variable-importance plots tell you the sign of each predictor's effect (positively or negatively associated with the response).</span>
+          <label><input type="radio" name="q20-c" value="true"> True</label>
+          <label><input type="radio" name="q20-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Variable importance is best used as a variable-selection device: drop the bottom predictors and refit the model.</span>
+          <label><input type="radio" name="q20-d" value="true"> True</label>
+          <label><input type="radio" name="q20-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — that is the impurity-based ("MeanDecreaseGini" / RSS-based) definition. The 2023 exam key: <em>"which three variables are most important to predict default, according to an importance measure based on node purity?"</em></li>
+            <li><strong>True</strong> — permutation importance permutes predictor $j$ on OOB observations and measures the drop in MSE / accuracy. The prof prefers it: <em>"I would generally go with randomization one because it makes more sense."</em></li>
+            <li><strong>False</strong> — importance only ranks predictors by how much they matter; it doesn't say in which direction they push the response. For direction-of-effect, use partial dependence plots (m09).</li>
+            <li><strong>False</strong> — importance is for interpretation, not selection. Rankings are conditional on the fitted model; dropping low-importance predictors and refitting can break interactions and is a common mistake.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/variable-importance">variable-importance</a>, <a href="/concepts/out-of-bag-error">out-of-bag-error</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q21 — Single MC, prof's preference for permutation importance -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 21</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        A teammate fits a random forest on a mix of continuous and many-level categorical predictors and asks whether to read off variable importance from MeanDecreaseGini or MeanDecreaseAccuracy. Which is the textbook reason to prefer the permutation-based version (MeanDecreaseAccuracy) here?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Permutation importance uses fewer trees, so it is more reliable on small ensembles.</li>
+        <li><span class="opt-label">B</span> Impurity-based importance is biased toward predictors with many possible split points (continuous and high-cardinality categoricals), inflating their apparent importance.</li>
+        <li><span class="opt-label">C</span> MeanDecreaseAccuracy is the only valid importance measure for classification trees.</li>
+        <li><span class="opt-label">D</span> Permutation importance is computed on the in-bag training data, which is more representative of the model's typical inputs.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Many-level / continuous predictors get more chances to reduce impurity by chance, so impurity-based ranks them artificially high. Permutation importance directly tests whether knowing the predictor's value helps prediction on held-out data, so it sidesteps this bias. The prof on his preference: <em>"I would generally go with randomization one because it makes more sense."</em></p>
+          <p>A invents an unrelated efficiency claim. C wrongly excludes Gini-based importance, which is also valid (the 2023 exam key explicitly asked about it). D inverts the OOB construction: permutation importance uses <em>OOB</em> observations, not in-bag, exactly so the corruption test is honest.</p>
+          <p class="ref">Atoms: <a href="/concepts/variable-importance">variable-importance</a>. Lecture: <a href="/lectures/L19-boosting-1">L19-boosting-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q22 — T/F, scope / standardization / method choice -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 22</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Tree-based methods are scale-invariant, so standardising the predictors before fitting is unnecessary.</span>
+          <label><input type="radio" name="q22-a" value="true"> True</label>
+          <label><input type="radio" name="q22-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) On the Boston Housing benchmark, the prof's worked example shows test MSE ranking $\text{(single tree)} &gt; \text{(bagging)} &gt; \text{(random forest)}$ — RF wins, with bagging in between.</span>
+          <label><input type="radio" name="q22-b" value="true"> True</label>
+          <label><input type="radio" name="q22-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) For a regression tree benchmark in Compulsory Exercise 2 you would prune by cross-validating against AIC, since AIC is the standard tree-pruning criterion.</span>
+          <label><input type="radio" name="q22-c" value="true"> True</label>
+          <label><input type="radio" name="q22-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) On a brain-injury-style classification dataset where one predictor dominates, plain bagging often delivers little improvement over a single classification tree, while RF still helps.</span>
+          <label><input type="radio" name="q22-d" value="true"> True</label>
+          <label><input type="radio" name="q22-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — splits depend only on the relative ordering of values along each axis, so monotone rescaling can't change the tree. The Specials atom on standardisation flags trees as the canonical "doesn't need it" example, in contrast to ridge / lasso / PCA / k-means / KNN / NNs.</li>
+            <li><strong>True</strong> — the slide-deck Boston example: single tree test MSE $\approx 35$, bagging $\approx 23.7$, RF with $m = p/3 \approx 18.9$. The expected ordering, and a canonical scenario answer.</li>
+            <li><strong>False</strong> — tree pruning is selected by $K$-fold CV on held-out data, not by AIC. AIC mechanics are explicitly out of scope per the prof; the textbook tool is <code>cv.tree</code>.</li>
+            <li><strong>True</strong> — when one predictor is dominant, every bootstrap tree picks it for the root split, so $\rho$ stays high and the bagging variance floor dominates. RF breaks the dominance by withholding the strong predictor at random splits, so trees actually decorrelate and the ensemble improves.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/standardization">standardization</a>, <a href="/concepts/random-forest">random-forest</a>, <a href="/concepts/bagging">bagging</a>, <a href="/concepts/cost-complexity-pruning">cost-complexity-pruning</a>.</p>
+        </div>
+      </details>
+    </article>
+
+  </main>
+  <script src="exam.js"></script>
+</body>
+</html>

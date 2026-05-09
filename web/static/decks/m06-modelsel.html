@@ -1,0 +1,958 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 06 — Model selection &amp; regularisation · TMA4268</title>
+
+  <!-- Sync theme with Quartz wiki (reads same localStorage key, falls back to OS) -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var theme = saved || (prefersDark ? "dark" : "light");
+        document.documentElement.setAttribute("saved-theme", theme);
+      } catch (e) {
+        document.documentElement.setAttribute("saved-theme", "light");
+      }
+    })();
+  </script>
+
+  <!-- Match Quartz typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+
+  <link rel="stylesheet" href="exam.css">
+
+  <!-- KaTeX for inline math -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$',  right: '$',  display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });"></script>
+</head>
+<body>
+  <main class="exam-shell">
+    <header class="exam-head">
+      <a href="/" class="back-link">← Back to wiki</a>
+      <h1>Module 06 — Model selection &amp; regularisation</h1>
+      <p class="meta">30 questions · 100 points · ~45 min</p>
+      <p class="meta">
+        Click an option to lock the answer; correct turns green, wrong turns red,
+        and the explanation auto-opens. The score panel at the bottom-left tracks running points.
+      </p>
+    </header>
+
+    <!-- ─────── Q1: subset-selection — model count (computation) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 1</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">A dataset has $p = 10$ candidate predictors. How many distinct linear models must best-subset selection fit and compare across all subset sizes (excluding the null model from the count, or including it — same answer either way)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $1 + p(p+1)/2 = 56$</li>
+        <li><span class="opt-label">B</span> $2^p = 1024$</li>
+        <li><span class="opt-label">C</span> $p! = 3{,}628{,}800$</li>
+        <li><span class="opt-label">D</span> $p^2 = 100$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Best-subset enumerates every subset of $\{1,\dots,p\}$, including the empty (intercept-only) model. The count is $\sum_{k=0}^{p} \binom{p}{k} = 2^p$. With $p = 10$ that's $1024$. The prof flagged the formula on slide and added: <em>"Slow as shit for $p$ big, or even like impossibly slow."</em></p>
+          <p>A is the count for forward / backward / hybrid stepwise ($1 + p(p+1)/2$) — same as the C-line of the algorithms but a different one. C confuses subsets with permutations of predictors. D is a wrong combinatorial guess.</p>
+          <p class="ref">Atoms: <a href="/concepts/subset-selection">subset-selection</a>. Lecture: <a href="/lectures/L12-modelsel-1">L12-modelsel-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q2: subset-selection — properties of forward / backward / best-subset (T/F multi) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 2</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">ISLR §6 Q1</span>
+      </header>
+      <p class="q-text">Best-subset, forward stepwise, and backward stepwise selection are run on the same dataset and produce a model of each size $k = 0, 1, \dots, p$. Mark each statement as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) The $k$-predictor model from forward stepwise is always a subset of its $(k+1)$-predictor model.</span>
+          <label><input type="radio" name="q2-a" value="true"> True</label>
+          <label><input type="radio" name="q2-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) The $k$-predictor model from backward stepwise is always a subset of its $(k+1)$-predictor model.</span>
+          <label><input type="radio" name="q2-b" value="true"> True</label>
+          <label><input type="radio" name="q2-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) The $k$-predictor model from best-subset is always a subset of its $(k+1)$-predictor model.</span>
+          <label><input type="radio" name="q2-c" value="true"> True</label>
+          <label><input type="radio" name="q2-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Backward stepwise can be applied when $p > n$.</span>
+          <label><input type="radio" name="q2-d" value="true"> True</label>
+          <label><input type="radio" name="q2-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — forward stepwise can only add, never drop, so each step's set strictly contains the previous.</li>
+            <li><strong>True</strong> — backward stepwise only drops; the smaller model is a subset of the larger.</li>
+            <li><strong>False</strong> — best-subset minimises RSS at each $k$ independently. The Credit dataset showed this: at $k=4$ best-subset drops <code>rating</code> and adds <code>cards</code>, so $\mathcal{M}_3 \not\subset \mathcal{M}_4$.</li>
+            <li><strong>False</strong> — backward starts from the full $p$-predictor OLS fit, which requires $X^\top X$ invertible, i.e. $n > p$. Forward stepwise has no such requirement.</li>
+          </ol>
+          <p>Each sub-statement scores $4/4 = 1$ point.</p>
+          <p class="ref">Atoms: <a href="/concepts/subset-selection">subset-selection</a>, <a href="/concepts/high-dimensional-regression">high-dimensional-regression</a>. Lecture: <a href="/lectures/L12-modelsel-1">L12-modelsel-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q3: ridge — penalised objective (recall MC) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 3</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">Which optimisation problem defines the ridge regression coefficients $\hat\beta^R_\lambda$?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $\arg\min_\beta \big\{\text{RSS} + \lambda \sum_{j=1}^p |\beta_j|\big\}$</li>
+        <li><span class="opt-label">B</span> $\arg\min_\beta \big\{\text{RSS} + \lambda \sum_{j=0}^p \beta_j^2\big\}$</li>
+        <li><span class="opt-label">C</span> $\arg\min_\beta \big\{\text{RSS} + \lambda \sum_{j=1}^p \beta_j^2\big\}$</li>
+        <li><span class="opt-label">D</span> $\arg\min_\beta \big\{\text{RSS} - \lambda \sum_{j=1}^p \beta_j^2\big\}$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>Ridge minimises RSS plus the $L^2$ penalty $\lambda \sum_{j=1}^p \beta_j^2$, where the sum runs over slope coefficients only — the intercept $\beta_0$ is <strong>not</strong> penalised (slide-flagged: <em>"if we included the intercept, $\beta^R$ would depend on the average of the response"</em>).</p>
+          <p>A is the lasso ($L^1$). B mistakenly penalises the intercept, which makes the fit depend on the response mean. D subtracts the penalty, so the optimiser would push $\|\beta\|$ to infinity — the wrong sign.</p>
+          <p class="ref">Atoms: <a href="/concepts/ridge-regression">ridge-regression</a>. Lecture: <a href="/lectures/L12-modelsel-1">L12-modelsel-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q4: ridge λ direction-of-effect (T/F multi) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 4</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement about ridge regression and its tuning parameter $\lambda$ as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) As $\lambda \to \infty$, all penalised coefficients $\hat\beta_j^R$ shrink toward $0$ but reach exactly zero only in the limit.</span>
+          <label><input type="radio" name="q4-a" value="true"> True</label>
+          <label><input type="radio" name="q4-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Increasing $\lambda$ from $0$ raises the model's variance and lowers its squared bias.</span>
+          <label><input type="radio" name="q4-b" value="true"> True</label>
+          <label><input type="radio" name="q4-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Ridge regression is scale-invariant: standardising the predictors does not change the fit.</span>
+          <label><input type="radio" name="q4-c" value="true"> True</label>
+          <label><input type="radio" name="q4-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Ridge regression has a unique solution even when $p > n$.</span>
+          <label><input type="radio" name="q4-d" value="true"> True</label>
+          <label><input type="radio" name="q4-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — ridge shrinks smoothly to zero only asymptotically (the squared penalty has zero gradient at $\beta=0$, so there's nothing pulling coefficients <em>onto</em> zero, only <em>toward</em> it).</li>
+            <li><strong>False</strong> — direction is reversed: more penalty $\Rightarrow$ less flexible $\Rightarrow$ <em>variance down, (squared) bias up</em>. Classic direction-of-effect trap.</li>
+            <li><strong>False</strong> — verbatim from the prof: <em>"Importantly, ridge regression is not scale-invariant."</em> Different units for $X_j$ change which coefficient the penalty hits hardest. Standardise first.</li>
+            <li><strong>True</strong> — adding $\lambda I$ to $X^\top X$ regularises the inverse, so $\hat\beta^R = (X^\top X + \lambda I)^{-1} X^\top y$ is unique even when $X^\top X$ is singular. The flagship reason ridge survives high-dimensional regression.</li>
+          </ol>
+          <p>Each sub-statement scores $1$ point.</p>
+          <p class="ref">Atoms: <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/standardization">standardization</a>, <a href="/concepts/high-dimensional-regression">high-dimensional-regression</a>. Lecture: <a href="/lectures/L12-modelsel-1">L12-modelsel-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q5: lasso vs LS (single-MC, ISLR §6 Q2 lift) — L27 Q3a anchor ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 5</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">ISLR §6 Q2</span>
+      </header>
+      <p class="q-text">Relative to ordinary least squares, the lasso is:</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> More flexible; gives improved prediction accuracy when its increase in variance is less than its decrease in bias.</li>
+        <li><span class="opt-label">B</span> More flexible; gives improved prediction accuracy when its increase in bias is less than its decrease in variance.</li>
+        <li><span class="opt-label">C</span> Less flexible; gives improved prediction accuracy when its increase in variance is less than its decrease in bias.</li>
+        <li><span class="opt-label">D</span> Less flexible; gives improved prediction accuracy when its increase in bias is less than its decrease in variance.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: D</span>
+          <p>Lasso shrinks coefficients (and zeros some), so it is <strong>less flexible</strong> than unconstrained OLS. It improves prediction accuracy precisely when the bias bump from shrinkage is outweighed by the variance reduction. Verbatim L27 framing of the prof's preferred 2025 Q3a answer: <em>"less flexible than LS, improved accuracy when the increase in bias is less than the decrease in variance."</em></p>
+          <p>A and B mis-classify lasso as <em>more</em> flexible — the canonical bias-variance flip. C swaps the bias/variance roles in the inequality. The pair (A,B) and (C,D) split the answer space on flexibility; only the bias-variance inequality in D matches the bias-variance hammer.</p>
+          <p class="ref">Atoms: <a href="/concepts/lasso">lasso</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>, <a href="/concepts/regularization">regularization</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q6: lasso soft-thresholding computation ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 6</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">In the simple-special case $n = p$ with $X = I$, lasso has the closed-form solution $\hat\beta_j^L = \mathrm{sign}(\hat\beta_j^{\text{OLS}}) \cdot (|\hat\beta_j^{\text{OLS}}| - \lambda/2)_+$ (ISLR eq. 6.15). Suppose $\hat\beta_1^{\text{OLS}} = 0.6$, $\hat\beta_2^{\text{OLS}} = -0.3$, $\hat\beta_3^{\text{OLS}} = 0.8$, and $\lambda = 1.0$. What are the soft-thresholded lasso estimates $(\hat\beta_1^L, \hat\beta_2^L, \hat\beta_3^L)$?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $(0.10,\ 0,\ 0.30)$</li>
+        <li><span class="opt-label">B</span> $(0.6,\ -0.3,\ 0.8)$</li>
+        <li><span class="opt-label">C</span> $(-0.10,\ 0.20,\ -0.30)$</li>
+        <li><span class="opt-label">D</span> $(0,\ 0,\ 0)$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Soft-threshold: subtract $\lambda/2 = 0.5$ from $|\hat\beta_j|$, clip negatives to zero, restore the sign.</p>
+          <ul>
+            <li>$j=1$: $|0.6| - 0.5 = 0.10 > 0$, keep sign $+$ $\Rightarrow 0.10$.</li>
+            <li>$j=2$: $|-0.3| - 0.5 = -0.20 < 0$, clip to $0$.</li>
+            <li>$j=3$: $|0.8| - 0.5 = 0.30 > 0$, keep sign $+$ $\Rightarrow 0.30$.</li>
+          </ul>
+          <p>So $(0.10, 0, 0.30)$. B forgets the penalty entirely (returns OLS). C uses ridge-style proportional shrinkage with the wrong direction of sign. D forgets that the threshold is $\lambda/2$, not $\lambda$, and zeros everything.</p>
+          <p class="ref">Atoms: <a href="/concepts/lasso">lasso</a>, <a href="/concepts/ridge-vs-lasso-geometry">ridge-vs-lasso-geometry</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q7: ridge vs lasso geometry / sparsity (scenario MC) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 7</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">In the constrained-optimisation picture (ISL Fig 6.7), the RSS contours are concentric ellipses centred at $\hat\beta^{\text{OLS}}$, and the regularisation constraint defines a region centred at the origin. Which statement best explains why lasso produces sparse solutions but ridge does not?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> The lasso constraint region is smaller than the ridge region for the same $\lambda$, so it always lies on a coordinate axis.</li>
+        <li><span class="opt-label">B</span> The ridge constraint region is a circle whose interior never touches the axes, while the lasso region is a diamond with corners on the axes that the expanding RSS ellipse tends to first contact.</li>
+        <li><span class="opt-label">C</span> Lasso uses cross-validation to select variables; ridge does not.</li>
+        <li><span class="opt-label">D</span> Ridge is convex and lasso is non-convex, so only lasso can settle on coordinate corners.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Geometric story: the $L^1$ ball is a diamond with sharp corners on the axes; the $L^2$ ball is smooth. The smallest RSS ellipse that touches the constraint region tends to land on a diamond corner (which forces some $\beta_j = 0$) but at a generic interior-direction point on the circle.</p>
+          <p>A is wrong: nothing about the diamond <em>always</em> sits on an axis — it just typically does. C confuses fitting (the penalty itself produces sparsity) with hyperparameter tuning. D inverts convexity: <em>both</em> the $L^1$ and $L^2$ penalties define convex problems; convexity isn't the discriminator. The corners-vs-smooth distinction is.</p>
+          <p class="ref">Atoms: <a href="/concepts/ridge-vs-lasso-geometry">ridge-vs-lasso-geometry</a>, <a href="/concepts/lasso">lasso</a>, <a href="/concepts/ridge-regression">ridge-regression</a>. Lecture: <a href="/lectures/L13-modelsel-2">L13-modelsel-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q8: trace plot reading — scenario MC ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 8</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">You are shown two coefficient-trace plots from the Credit dataset. In <strong>plot X</strong>, every coefficient curve approaches but never crosses the zero line as $\lambda$ grows. In <strong>plot Y</strong>, several coefficient curves drop to exactly zero at finite $\lambda$ values and stay there. Which method produced which plot?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> X = lasso, Y = ridge.</li>
+        <li><span class="opt-label">B</span> X = ridge, Y = lasso.</li>
+        <li><span class="opt-label">C</span> Both are ridge at different $\lambda$ resolutions.</li>
+        <li><span class="opt-label">D</span> Both are lasso; the difference is just the standardisation choice.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The defining visual difference: ridge paths approach zero asymptotically but never touch (no kink in the $\beta^2$ penalty at zero); lasso paths drop to exactly zero and stay (the $|\beta|$ kink at zero is what produces sparsity).</p>
+          <p>A swaps the methods. C ignores the plot's distinguishing feature (zeros vs no zeros). D blames standardisation, which affects scale of the trace but not whether paths reach zero.</p>
+          <p class="ref">Atoms: <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/lasso">lasso</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q9: elastic-net (T/F multi) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 9</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">Mark each statement about elastic net as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Elastic net combines an $L^1$ and an $L^2$ penalty in a single objective.</span>
+          <label><input type="radio" name="q9-a" value="true"> True</label>
+          <label><input type="radio" name="q9-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Because elastic net averages two methods, none of its coefficient estimates can be exactly zero.</span>
+          <label><input type="radio" name="q9-b" value="true"> True</label>
+          <label><input type="radio" name="q9-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Under heavy collinearity, elastic net can keep correlated predictors together at moderate values, where pure lasso would arbitrarily drop one.</span>
+          <label><input type="radio" name="q9-c" value="true"> True</label>
+          <label><input type="radio" name="q9-c" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — that's the definition: $\text{RSS} + \lambda \sum \beta_j^2 + \gamma \sum |\beta_j|$.</li>
+            <li><strong>False</strong> — the $L^1$ component still gives sparsity. Some coefficients are zeroed, just less aggressively than with pure lasso.</li>
+            <li><strong>True</strong> — that's the practical pitch: <em>"this is probably the one that people use the most"</em>, because the $L^2$ part rescues lasso's instability under correlated predictors.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/elastic-net">elastic-net</a>, <a href="/concepts/lasso">lasso</a>, <a href="/concepts/ridge-regression">ridge-regression</a>. Lecture: <a href="/lectures/L13-modelsel-2">L13-modelsel-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q10: PCR pipeline (recall MC) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 10</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">Which of the following best describes the canonical PCR procedure?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Choose components by maximising $\mathrm{Cov}(X\phi, Y)$, regress $Y$ on the first $M$ such components, pick $M$ by cross-validation.</li>
+        <li><span class="opt-label">B</span> Standardise $X$, run PCA on $X$ alone, regress $Y$ on the first $M$ principal components, pick $M$ by cross-validation.</li>
+        <li><span class="opt-label">C</span> Standardise $X$, drop the components of $X$ with smallest $\mathrm{Cor}(X_j, Y)$, refit OLS on the survivors.</li>
+        <li><span class="opt-label">D</span> Apply a lasso penalty inside a PCA decomposition so some loadings $\phi_{jm}$ are exactly zero.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>PCR: standardise $X$, run PCA on $X$ (unsupervised — does not look at $Y$), regress $Y$ on the first $M$ PCs, sweep $M$ by CV.</p>
+          <p>A is partial least squares — it uses $Y$ via covariance maximisation. C is variable filtering by marginal correlation, a different (and cruder) idea. D mixes lasso onto the loadings — not a method covered.</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/partial-least-squares">partial-least-squares</a>, <a href="/concepts/standardization">standardization</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q11: PVE computation ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 11</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">PCA on a standardised design matrix returns five eigenvalues $\lambda_1 = 2.5,\ \lambda_2 = 1.2,\ \lambda_3 = 0.7,\ \lambda_4 = 0.4,\ \lambda_5 = 0.2$. What fraction of the total variance is explained by the first three principal components?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $0.50$</li>
+        <li><span class="opt-label">B</span> $0.74$</li>
+        <li><span class="opt-label">C</span> $0.88$</li>
+        <li><span class="opt-label">D</span> $0.94$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>Total variance $\sum_j \lambda_j = 2.5 + 1.2 + 0.7 + 0.4 + 0.2 = 5.0$. First three: $2.5 + 1.2 + 0.7 = 4.4$. PVE $= 4.4 / 5.0 = 0.88$.</p>
+          <p>A returns just $\lambda_1 / \sum \lambda_j = 2.5/5 = 0.50$ — only the first PC. B returns the first two PCs ($3.7/5$). D returns the first four PCs ($4.8/5$).</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/principal-component-analysis">principal-component-analysis</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q12: PCR vs ridge (scenario MC) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 12</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">The prof framed PCR as a "discretised ridge regression." Which sentence best captures the analogy?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Both methods perform variable selection by zeroing the small-magnitude coefficients.</li>
+        <li><span class="opt-label">B</span> PCR shrinks coefficient estimates by the same factor as ridge for every $\lambda$ value.</li>
+        <li><span class="opt-label">C</span> Both shrink the small-eigenvalue directions of the predictor space; PCR truncates them abruptly, ridge shrinks them smoothly.</li>
+        <li><span class="opt-label">D</span> Ridge is a special case of PCR with $M = p$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>PCR drops the $p - M$ smallest-eigenvalue components outright (hard threshold). Ridge applies a smooth per-PC shrinkage factor $\lambda_j^2/(\lambda_j^2 + \lambda)$ that hits the small-eigenvalue directions hardest. Same target, different shape.</p>
+          <p>A is wrong on both counts: neither method does variable selection (that's lasso). B confuses "discretised analogue" with "identical fits." D is the reverse implication: PCR with $M = p$ recovers OLS, not ridge.</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/ridge-regression">ridge-regression</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q13: PLS vs PCR (T/F multi) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 13</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">Mark each statement about partial least squares (PLS) as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) PLS chooses its components to maximise the variance of $X$, ignoring $Y$.</span>
+          <label><input type="radio" name="q13-a" value="true"> True</label>
+          <label><input type="radio" name="q13-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) PLS is a supervised dimensionality-reduction method.</span>
+          <label><input type="radio" name="q13-b" value="true"> True</label>
+          <label><input type="radio" name="q13-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Like PCR, PLS performs variable selection: each back-transformed $\hat\beta_j$ in original-$X$ space is exactly zero or exactly one.</span>
+          <label><input type="radio" name="q13-c" value="true"> True</label>
+          <label><input type="radio" name="q13-c" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>False</strong> — that's PCR. PLS maximises $\mathrm{Cov}(X\phi, Y)$, which uses $Y$.</li>
+            <li><strong>True</strong> — supervised because $Y$ enters the choice of directions.</li>
+            <li><strong>False</strong> — neither PCR nor PLS does variable selection. After back-transformation, all original-$X$ coefficients are typically nonzero (because each component is a linear combination of all predictors).</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/partial-least-squares">partial-least-squares</a>, <a href="/concepts/principal-component-regression">principal-component-regression</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q14: high-dimensional regression — what breaks (T/F multi) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 14</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Exam 2024 P2</span>
+      </header>
+      <p class="q-text">For each method, decide whether it can in principle be fit when $p > n$.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Plain ordinary least squares can be fit when $p > n$.</span>
+          <label><input type="radio" name="q14-a" value="true"> True</label>
+          <label><input type="radio" name="q14-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Ridge regression can be fit when $p > n$.</span>
+          <label><input type="radio" name="q14-b" value="true"> True</label>
+          <label><input type="radio" name="q14-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Lasso requires $p < n$ and cannot be applied when $p > n$.</span>
+          <label><input type="radio" name="q14-c" value="true"> True</label>
+          <label><input type="radio" name="q14-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Forward stepwise selection can be applied when $p > n$ (capped at submodels of size $\le n - 1$).</span>
+          <label><input type="radio" name="q14-d" value="true"> True</label>
+          <label><input type="radio" name="q14-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>False</strong> — $X^\top X$ is singular, infinitely many zero-RSS solutions, training $R^2 = 1$ for any random labels.</li>
+            <li><strong>True</strong> — $\lambda I$ regularises the inverse: $(X^\top X + \lambda I)^{-1}$ is well-defined and the solution is unique.</li>
+            <li><strong>False</strong> — this was the canonical wrong-answer trap on the 2024 exam. Lasso fits fine at $p > n$; the active set is just bounded by $\min(n, p)$.</li>
+            <li><strong>True</strong> — slide-flagged: forward stepwise survives high-dim by capping at $\mathcal{M}_{n-1}$. Backward stepwise does <em>not</em> (it needs the full OLS fit).</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/high-dimensional-regression">high-dimensional-regression</a>, <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/lasso">lasso</a>, <a href="/concepts/subset-selection">subset-selection</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q15: high-dim multicollinearity (single MC scenario) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 15</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">A regularised regression on $n = 200$ patients with $p = 5000$ candidate gene-expression predictors picks an "active set" of 30 features. What is the most defensible interpretation?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> These 30 are the truly causally predictive features; the other 4970 have no relationship to the response.</li>
+        <li><span class="opt-label">B</span> These 30 — or features correlated with the truly predictive ones — make up one of many possibly-suitable predictive models; we cannot identify the true causal set in this regime.</li>
+        <li><span class="opt-label">C</span> Because $p \gg n$, no inference is possible at all and the active set should be ignored.</li>
+        <li><span class="opt-label">D</span> The model has training $R^2 \approx 1$, which proves these 30 are the right features.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Slide-flagged verbatim: <em>"In the high-dimensional setting, the multicollinearity problem is extreme. We can never know exactly which variables, if any, truly are predictive of the outcome … At most, we can hope to assign large regression coefficients to variables that are correlated with the variables that truly are predictive."</em> The active set is one of many suitable predictive models; "fishing around," not confirmation.</p>
+          <p>A overclaims causality and exclusivity. C overcorrects; the active set is informative even if not definitive. D mistakes a near-1 training $R^2$ (automatic at $p \gg n$) for evidence.</p>
+          <p class="ref">Atoms: <a href="/concepts/high-dimensional-regression">high-dimensional-regression</a>, <a href="/concepts/lasso">lasso</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q16: regularization (Special) — central trick ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 16</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">The prof calls regularisation "the most important variant of model selection that we talk about throughout." Which sentence best captures <em>why</em> regularisation typically improves test error in module 6?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> It eliminates the irreducible noise term $\sigma^2$ from the test-MSE decomposition.</li>
+        <li><span class="opt-label">B</span> It accepts a small increase in bias in exchange for a larger decrease in variance.</li>
+        <li><span class="opt-label">C</span> It guarantees that training MSE matches test MSE, so overfitting is impossible.</li>
+        <li><span class="opt-label">D</span> It increases the model's flexibility, lowering both bias and variance simultaneously.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Verbatim: <em>"Often we can substantially reduce the variance at the cost of a negligible increase in bias."</em> That bias-for-variance trade is the universal sales pitch behind ridge, lasso, smoothing splines, cost-complexity pruning, dropout, weight decay, and bagging.</p>
+          <p>A is wrong: $\sigma^2$ is irreducible by definition; no method removes it. C confuses regularisation with infinite data. D inverts the direction: regularisation makes the model <em>less</em> flexible (more constrained).</p>
+          <p class="ref">Atoms: <a href="/concepts/regularization">regularization</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>. Lecture: <a href="/lectures/L14-modelsel-3">L14-modelsel-3</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q17: cross-validation for picking λ — pseudocode (MC scenario) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 17</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">You want to tune $\lambda$ for ridge regression on a training set $\mathcal{D}$ via $k$-fold CV. Which procedure is correct?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Refit ridge on $\mathcal{D}$ at many $\lambda$ values, pick the $\lambda$ that gives the smallest <em>training</em> RSS, refit on $\mathcal{D}$.</li>
+        <li><span class="opt-label">B</span> For each $\lambda$ in a grid, partition $\mathcal{D}$ into $k$ folds, average the held-out MSE across folds, pick $\lambda$ minimising the averaged CV-MSE, refit ridge on $\mathcal{D}$ at that $\lambda$.</li>
+        <li><span class="opt-label">C</span> Pick $\lambda$ analytically using $C_p$ or BIC computed on $\mathcal{D}$, then refit ridge on $\mathcal{D}$ at that $\lambda$.</li>
+        <li><span class="opt-label">D</span> Run lasso first to identify nonzero coefficients, then run ridge with $\lambda$ chosen so all those coefficients are retained.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Standard recipe: grid of $\lambda$, $k$-fold CV per grid point, pick $\hat\lambda$ minimising mean CV-MSE (or one-SE rule), refit on full training data with $\hat\lambda$.</p>
+          <p>A picks the unregularised end ($\lambda = 0$) every time — training RSS strictly decreases as $\lambda$ shrinks. C uses penalty criteria the prof distrusts: <em>"their assumptions are always wrong, and they're typically always wrong."</em> D conflates two methods and breaks the bias-variance balance ridge is supposed to achieve.</p>
+          <p class="ref">Atoms: <a href="/concepts/cross-validation">cross-validation</a>, <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/regularization">regularization</a>. Lecture: <a href="/lectures/L14-modelsel-3">L14-modelsel-3</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q18: CV-λ plot reading — L27 Q6b anchor (scenario MC) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 18</span>
+        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__src">Exam 2025 P6b</span>
+      </header>
+      <p class="q-text">A 10-fold CV plot of MSE versus $\log(\lambda)$ for lasso on a regression problem shows the minimum CV-MSE at $\lambda_{\min}$ corresponding to lasso test MSE $\approx 50.80$. The unregularised OLS test MSE on the same hold-out is $\approx 50.78$. Which conclusion is best supported?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Lasso has decisively beaten OLS; switch to lasso for prediction.</li>
+        <li><span class="opt-label">B</span> The CV plot is broken; an MSE difference this small must be a numerical bug.</li>
+        <li><span class="opt-label">C</span> Lasso did not improve on OLS, suggesting the variance reduction from regularisation does not offset the bias bump — keep all parameters (use OLS).</li>
+        <li><span class="opt-label">D</span> Increasing $\lambda$ further would reduce the test MSE more, so $\lambda_{\min}$ is a local rather than a global minimum.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>Verbatim L27 framing: <em>"normally with regularization … you trade off — by including it, you trade off between an increase in bias by getting a reduction in variance. But in this case, the reduction in variance is not offset by the increase in bias. So you don't want to add a regularizer, meaning you want to keep all the parameters."</em></p>
+          <p>A overclaims given the 0.02 gap (in lasso's <em>disfavour</em>). B is unfounded; both numbers can sit that close. D is internally inconsistent: $\lambda_{\min}$ is by construction the CV minimum across the grid; you don't pick $\lambda$ "further" without re-doing the CV.</p>
+          <p class="ref">Atoms: <a href="/concepts/lasso">lasso</a>, <a href="/concepts/cross-validation">cross-validation</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>, <a href="/concepts/regularization">regularization</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q19: one-SE rule (recall MC) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 19</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">Among the candidate $\lambda$ values along the CV grid, the one-standard-error rule selects:</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> The $\lambda$ closest to the median of the grid.</li>
+        <li><span class="opt-label">B</span> The $\lambda$ at which CV-MSE is minimised.</li>
+        <li><span class="opt-label">C</span> The largest $\lambda$ whose mean CV-MSE is within one standard error of the minimum.</li>
+        <li><span class="opt-label">D</span> The $\lambda$ that minimises training MSE on the full data.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>Largest $\lambda$ (= simplest model) whose mean CV-MSE is within one SE of the minimum. The 2024 and 2025 past exams both demanded this rule. Picks the simplest model that's statistically indistinguishable from the best.</p>
+          <p>A is unrelated. B is the standard <code>lambda.min</code> rule — fine, but not the one-SE rule (which is more conservative). D drops cross-validation entirely; training MSE picks $\lambda = 0$.</p>
+          <p class="ref">Atoms: <a href="/concepts/cross-validation">cross-validation</a>, <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/lasso">lasso</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q20: standardization (Special) — which methods need it (T/F multi) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 20</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">For each method, mark whether it requires standardising the predictors before fitting.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Ridge regression requires standardisation.</span>
+          <label><input type="radio" name="q20-a" value="true"> True</label>
+          <label><input type="radio" name="q20-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Lasso requires standardisation.</span>
+          <label><input type="radio" name="q20-b" value="true"> True</label>
+          <label><input type="radio" name="q20-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) PCR requires standardisation.</span>
+          <label><input type="radio" name="q20-c" value="true"> True</label>
+          <label><input type="radio" name="q20-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Plain OLS requires standardisation; otherwise the fitted predictions change.</span>
+          <label><input type="radio" name="q20-d" value="true"> True</label>
+          <label><input type="radio" name="q20-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — the $L^2$ penalty treats all $\beta_j$ symmetrically, so the $X_j$ must be on a common scale; otherwise small-unit predictors get crushed.</li>
+            <li><strong>True</strong> — same logic for $L^1$.</li>
+            <li><strong>True</strong> — PCA (the workhorse of PCR) is not scale-invariant: a kilometre vs centimetre column would dominate the first PC. Slide-flagged: <em>"Standardize all the $p$ variables before applying PCA."</em></li>
+            <li><strong>False</strong> — OLS is scale-invariant in fit. The $\hat\beta_j$ rescale to compensate, but predictions are unchanged. Standardisation for OLS is a cosmetic / interpretation choice, not a correctness requirement.</li>
+          </ol>
+          <p>Each sub-statement scores $1$ point.</p>
+          <p class="ref">Atoms: <a href="/concepts/standardization">standardization</a>, <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/lasso">lasso</a>, <a href="/concepts/principal-component-regression">principal-component-regression</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q21: ISLR §6 Q3 lift — increasing s in lasso constraint (T/F multi) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 21</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">ISLR §6 Q3</span>
+      </header>
+      <p class="q-text">Estimate $\beta$ by minimising $\sum_i (y_i - \beta_0 - \sum_j \beta_j x_{ij})^2$ subject to $\sum_j |\beta_j| \le s$ (the constraint form of lasso). As $s$ increases from $0$ toward $\infty$, mark each statement as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Training RSS steadily decreases.</span>
+          <label><input type="radio" name="q21-a" value="true"> True</label>
+          <label><input type="radio" name="q21-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Test RSS steadily decreases.</span>
+          <label><input type="radio" name="q21-b" value="true"> True</label>
+          <label><input type="radio" name="q21-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Variance of the fitted function steadily increases.</span>
+          <label><input type="radio" name="q21-c" value="true"> True</label>
+          <label><input type="radio" name="q21-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Squared bias of the fitted function steadily decreases.</span>
+          <label><input type="radio" name="q21-d" value="true"> True</label>
+          <label><input type="radio" name="q21-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — relaxing the constraint $s$ enlarges the feasible region, so the optimiser can only do as well or better on training RSS.</li>
+            <li><strong>False</strong> — test RSS is U-shaped (initially decreases, then increases). At $s = 0$ all coefficients are zero (high bias, useless model); at $s = \infty$ you recover OLS, which can overfit.</li>
+            <li><strong>True</strong> — at $s = 0$ the model is constant (zero variance); as $s$ grows, the fitted function becomes more sensitive to data, variance grows.</li>
+            <li><strong>True</strong> — at $s = 0$ the model is maximally biased (constant); as $s$ grows toward OLS, bias shrinks toward the OLS bias.</li>
+          </ol>
+          <p>Each sub-statement scores $1$ point.</p>
+          <p class="ref">Atoms: <a href="/concepts/lasso">lasso</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q22: bias-variance — direction of effect under λ (single MC, recall) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 22</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">As the ridge penalty $\lambda$ is increased from $0$, in what direction do the squared bias and variance of the ridge estimator typically move?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Squared bias goes up; variance goes down.</li>
+        <li><span class="opt-label">B</span> Squared bias goes down; variance goes down.</li>
+        <li><span class="opt-label">C</span> Squared bias goes down; variance goes up.</li>
+        <li><span class="opt-label">D</span> Squared bias goes up; variance goes up.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Increasing $\lambda$ shrinks coefficients toward zero, biasing the estimator (squared bias goes up) but stabilising it across resamples (variance goes down). The U-shape of test MSE is what you see when these two trends cross.</p>
+          <p>B is "free lunch" — both go down — which would defeat the whole bias-variance trade-off framing. C is the wrong-direction trap (this is what happens for the unregularised polynomial degree, not for $\lambda$). D contradicts the variance-reduction reason regularisation exists.</p>
+          <p class="ref">Atoms: <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>, <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/regularization">regularization</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q23: double-descent (MC) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 23</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">"Double descent" / benign overfitting refers to the empirical observation that:</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Test error always goes down monotonically with the number of parameters.</li>
+        <li><span class="opt-label">B</span> Past the interpolation point ($p \approx n$) the bias-variance decomposition no longer holds.</li>
+        <li><span class="opt-label">C</span> Past the interpolation point, test error can come back down because the optimisation effectively picks a minimum-norm interpolator among infinitely many.</li>
+        <li><span class="opt-label">D</span> Cross-validation error is always U-shaped in the model's degree of flexibility.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>The prof's headline framing: <em>"the optimisation changes from 'fit + penalty' to 'min penalty subject to fitting'."</em> Past $p \approx n$, infinitely many zero-training-error solutions exist; the pseudoinverse / SGD picks the smallest-norm one, which is implicit ridge. That's the "benign" in benign overfitting.</p>
+          <p>A is too strong — there's still the U-shape <em>before</em> the interpolation point. B is wrong: the decomposition stays exact at every $p$; double descent is just a non-U profile of test MSE = $\sigma^2$ + bias² + variance. D ignores the second descent entirely — that's the whole point of the phenomenon.</p>
+          <p class="ref">Atoms: <a href="/concepts/double-descent">double-descent</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>, <a href="/concepts/ridge-regression">ridge-regression</a>. Lecture: <a href="/lectures/L13-modelsel-2">L13-modelsel-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q24: stepwise vs best-subset diverging (scenario, ISLR-Q1 style) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 24</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">On the Credit dataset, best-subset and forward stepwise both pick the same 3-variable model, but at $k = 4$ best-subset drops <code>rating</code> and adds <code>cards</code>, while forward stepwise keeps <code>rating</code> and adds <code>limit</code>. The most accurate explanation is:</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Forward stepwise is greedy and cannot drop a previously-added predictor, so it locks in early choices that best-subset is free to revisit.</li>
+        <li><span class="opt-label">B</span> Best-subset is biased toward smaller models because it uses Cp / BIC.</li>
+        <li><span class="opt-label">C</span> Best-subset always finds the model with the smallest test RSS at each $k$.</li>
+        <li><span class="opt-label">D</span> Forward stepwise produced a wrong answer because the predictors are correlated; the best-subset answer is the unique correct one.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Forward stepwise can only add. Once <code>rating</code> is in $\mathcal{M}_3$, it stays in $\mathcal{M}_4, \mathcal{M}_5, \dots$. Best-subset re-evaluates every $k$-subset independently, so it can swap variables between sizes. Hybrid / sequential-replacement stepwise was designed precisely to recover this flexibility.</p>
+          <p>B is wrong on direction: Cp/BIC penalise complexity but don't bias selection of <em>which</em> variables enter at fixed $k$. C confuses training RSS with test RSS — best-subset minimises training RSS at each $k$, not test RSS. D claims a uniqueness that doesn't exist: under collinearity, multiple "best" subsets are essentially indistinguishable on the data.</p>
+          <p class="ref">Atoms: <a href="/concepts/subset-selection">subset-selection</a>, <a href="/concepts/lasso">lasso</a>. Lecture: <a href="/lectures/L12-modelsel-1">L12-modelsel-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q25: coefficient table interpretation (scenario, MC) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 25</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Exam 2024 P3v</span>
+      </header>
+      <p class="q-text">Three columns of estimated coefficients on the same standardised predictors are reported:</p>
+      <p class="q-text" style="font-family: var(--codeFont, monospace); font-size: 0.95em;">
+        Predictor &nbsp;&nbsp; OLS &nbsp;&nbsp;&nbsp;&nbsp; Method P &nbsp;&nbsp;&nbsp;&nbsp; Method Q<br>
+        Income &nbsp;&nbsp;&nbsp;&nbsp; -7.80 &nbsp;&nbsp;&nbsp; -5.84 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -7.07<br>
+        Limit &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0.19 &nbsp;&nbsp;&nbsp;&nbsp; 0.14 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0.16<br>
+        Rating &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.14 &nbsp;&nbsp;&nbsp;&nbsp; 0.86 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0.00<br>
+        Cards &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 17.7 &nbsp;&nbsp;&nbsp;&nbsp; 13.2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 16.8<br>
+        Age &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -0.61 &nbsp;&nbsp;&nbsp; -0.45 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0.00
+      </p>
+      <p class="q-text">Which assignment is most consistent with the patterns?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> P = lasso, Q = ridge.</li>
+        <li><span class="opt-label">B</span> P = ridge, Q = lasso.</li>
+        <li><span class="opt-label">C</span> P = OLS on a smaller training set, Q = lasso.</li>
+        <li><span class="opt-label">D</span> P = elastic net with $\alpha = 0$, Q = elastic net with $\alpha = 1$ — but the column patterns would be reversed.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Method P shrinks <em>every</em> coefficient toward zero but no coefficient is exactly zero — that's ridge. Method Q has two coefficients exactly at $0.00$ (<code>Rating</code>, <code>Age</code>) and the rest near OLS — that's lasso's variable-selection signature.</p>
+          <p>A swaps them. C ignores that ridge-style uniform shrinkage on a single training fit is precisely what column P shows. D's parenthetical is internally contradictory: $\alpha = 0$ in the standard glmnet parameterisation is ridge (no sparsity), $\alpha = 1$ is lasso (sparsity) — that matches B, not D's claim.</p>
+          <p class="ref">Atoms: <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/lasso">lasso</a>, <a href="/concepts/elastic-net">elastic-net</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q26: choose method given a goal (scenario MC) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 26</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">A genomics study has $n = 80$ patients, $p = 2000$ gene expressions, and the analyst expects fewer than $\sim 20$ genes to actually drive the response. Interpretability of which genes matter is essential. Which method is most appropriate?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Plain OLS on all $p = 2000$ predictors.</li>
+        <li><span class="opt-label">B</span> Ridge regression with $\lambda$ chosen by 10-fold CV.</li>
+        <li><span class="opt-label">C</span> Lasso with $\lambda$ chosen by 10-fold CV.</li>
+        <li><span class="opt-label">D</span> Backward stepwise selection from the full $p = 2000$ model.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>Sparse truth + interpretability + $p > n$ is the canonical lasso use case. Lasso fits at $p > n$ (active set bounded by $n$), zeros most coefficients, leaves a small interpretable subset.</p>
+          <p>A: OLS at $p > n$ is degenerate (singular $X^\top X$). B: ridge fits but never zeros, so doesn't deliver interpretability. D: backward stepwise needs the full OLS fit and so fails at $p > n$.</p>
+          <p class="ref">Atoms: <a href="/concepts/lasso">lasso</a>, <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/high-dimensional-regression">high-dimensional-regression</a>, <a href="/concepts/subset-selection">subset-selection</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q27: noise features always (eventually) hurt (T/F multi) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 27</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">A simulation has $n = 100$ training observations with $20$ truly predictive features. The analyst pads the design matrix with random noise features and watches test MSE. Mark each statement as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Test MSE generally rises as more pure-noise features are added, even with regularisation.</span>
+          <label><input type="radio" name="q27-a" value="true"> True</label>
+          <label><input type="radio" name="q27-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) A regularised lasso fit at $p = 2000$ noise-padded features can underperform the unregularised fit on the original $20$.</span>
+          <label><input type="radio" name="q27-b" value="true"> True</label>
+          <label><input type="radio" name="q27-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Training $R^2$ in the high-dim regime is reliable evidence that the model has captured the truth.</span>
+          <label><input type="radio" name="q27-c" value="true"> True</label>
+          <label><input type="radio" name="q27-c" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — slide-flagged: <em>"adding noise features that are not associated with the response increases test error."</em> Regularisation slows the climb but doesn't eliminate it.</li>
+            <li><strong>True</strong> — verbatim from L15: <em>"When $p = 2000$ the lasso performed poorly regardless of the amount of regularization."</em> Regularisation helps but cannot rescue an arbitrarily noise-padded design.</li>
+            <li><strong>False</strong> — at $p \ge n$, training $R^2 = 1$ for any random labels and any random design. It says nothing about generalisation.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/high-dimensional-regression">high-dimensional-regression</a>, <a href="/concepts/lasso">lasso</a>, <a href="/concepts/regularization">regularization</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q28: lasso correlated predictors (ISLR §6 Q5 conceptual / scenario) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 28</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">Two predictors $X_1, X_2$ are nearly perfectly correlated. Each method is fit at a moderate penalty / constraint level. Which row best describes the typical behaviour?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Ridge zeros one of the two; lasso averages them at moderate values.</li>
+        <li><span class="opt-label">B</span> Lasso zeros one of the two; ridge averages them at moderate values.</li>
+        <li><span class="opt-label">C</span> Both methods average them; the only difference is the magnitude of the joint coefficient.</li>
+        <li><span class="opt-label">D</span> Both methods zero both; only OLS keeps them at non-zero values.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The prof's "capitalist vs socialist" framing: lasso picks one and zeros the other (corner of the diamond on an axis); ridge averages them at moderate values (smooth circle, no corners). The choice of which coefficient lasso zeros is data-dependent and unstable across resamples — this is the failure mode elastic net was designed to fix.</p>
+          <p>A swaps the methods (the canonical exam trap). C misses lasso's sparsity. D zeros both, which neither method does at moderate $\lambda$.</p>
+          <p class="ref">Atoms: <a href="/concepts/lasso">lasso</a>, <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/ridge-vs-lasso-geometry">ridge-vs-lasso-geometry</a>, <a href="/concepts/elastic-net">elastic-net</a>. Lecture: <a href="/lectures/L13-modelsel-2">L13-modelsel-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q29: ISLR §6 Q4 ridge λ direction-of-effect (T/F multi) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 29</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">ISLR §6 Q4</span>
+      </header>
+      <p class="q-text">Estimate $\beta$ by minimising $\sum_i (y_i - \beta_0 - \sum_j \beta_j x_{ij})^2 + \lambda \sum_j \beta_j^2$ for a particular $\lambda \ge 0$. As $\lambda$ increases from $0$, mark each statement as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Training RSS steadily increases.</span>
+          <label><input type="radio" name="q29-a" value="true"> True</label>
+          <label><input type="radio" name="q29-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Test RSS follows a U-shape: first decreases, then increases.</span>
+          <label><input type="radio" name="q29-b" value="true"> True</label>
+          <label><input type="radio" name="q29-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Variance of the fitted function steadily decreases.</span>
+          <label><input type="radio" name="q29-c" value="true"> True</label>
+          <label><input type="radio" name="q29-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) The irreducible error $\sigma^2$ steadily decreases.</span>
+          <label><input type="radio" name="q29-d" value="true"> True</label>
+          <label><input type="radio" name="q29-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — increasing $\lambda$ tightens the constraint; the fit can only get worse on training data.</li>
+            <li><strong>True</strong> — at $\lambda = 0$ you have OLS (high variance); at $\lambda = \infty$ you have the all-zero model (high bias). The CV-MSE-vs-$\lambda$ curve dips through a minimum in between.</li>
+            <li><strong>True</strong> — bigger penalty ⇒ smaller coefficients ⇒ less wobble across resamples.</li>
+            <li><strong>False</strong> — irreducible error $\sigma^2$ is a property of the data-generating noise, not the model. No method changes it.</li>
+          </ol>
+          <p>Each sub-statement scores $1$ point.</p>
+          <p class="ref">Atoms: <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>, <a href="/concepts/regularization">regularization</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q30: lasso vs subset selection (single MC, scenario) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 30</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">The prof framed lasso as "subset selection without the combinatorial cost." Which sentence best captures the practical pitch?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Lasso always finds exactly the same model as best-subset selection at every dataset and every $\lambda$.</li>
+        <li><span class="opt-label">B</span> A single convex optimisation produces a sparse coefficient vector; the nonzero entries pick the active set without enumerating $2^p$ candidates.</li>
+        <li><span class="opt-label">C</span> Lasso runs forward stepwise and backward stepwise in parallel and returns whichever gives smaller training RSS.</li>
+        <li><span class="opt-label">D</span> Lasso prunes the design matrix beforehand and then runs ordinary least squares — there is no penalty in the actual fit.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The selling point: one convex optimisation, sparsity for free. Verbatim: <em>"Instead of trying many, many, many models, you just run lasso once. Boom, same place."</em> A small caveat the prof notes: lasso's active set may differ from best-subset under collinearity, but for variable-selection purposes you get a comparable answer at far lower computational cost.</p>
+          <p>A overclaims equivalence — they often agree but aren't guaranteed to. C misdescribes the algorithm entirely. D is the optional refit-on-active-set step, which happens <em>after</em> lasso, not <em>instead of</em> it.</p>
+          <p class="ref">Atoms: <a href="/concepts/lasso">lasso</a>, <a href="/concepts/subset-selection">subset-selection</a>, <a href="/concepts/regularization">regularization</a>. Lecture: <a href="/lectures/L13-modelsel-2">L13-modelsel-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+  </main>
+  <script src="exam.js"></script>
+</body>
+</html>

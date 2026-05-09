@@ -62,16 +62,16 @@
       <p class="q-text">In the classification setup, what is the <em>Bayes error rate</em>?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> The training error of a fitted Bayes-network classifier on the data at hand.</li>
-        <li><span class="opt-label">B</span> The expected $0/1$ loss of the classifier $\hat y(x) = \arg\max_k \Pr(Y=k\mid X=x)$ that uses the true posterior, i.e. $1 - E[\max_k \Pr(Y=k\mid X)]$.</li>
-        <li><span class="opt-label">C</span> The classification analogue of the residual sum of squares: $\sum_i \mathbf 1(y_i \neq \hat y_i)$ on the training set.</li>
+        <li><span class="opt-label">B</span> The classification analogue of the residual sum of squares: $\sum_i \mathbf 1(y_i \neq \hat y_i)$ on the training set.</li>
+        <li><span class="opt-label">C</span> The expected $0/1$ loss of the classifier $\hat y(x) = \arg\max_k \Pr(Y=k\mid X=x)$ that uses the true posterior, i.e. $1 - E[\max_k \Pr(Y=k\mid X)]$.</li>
         <li><span class="opt-label">D</span> The misclassification rate of naive Bayes when its conditional-independence assumption holds exactly.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: C</span>
           <p>The Bayes classifier picks $\arg\max_k \Pr(Y=k\mid X)$ using the <em>true</em> posterior; its expected $0/1$ loss is the irreducible floor, the classification analogue of $\sigma^2$ in regression.</p>
-          <p>A confuses the abstract Bayes classifier with a fitted Bayes-network model. C is the empirical training error, not the population-level rate. D conflates the Bayes classifier with naive Bayes — same word, different objects (one is the optimal abstraction, the other a specific generative model).</p>
+          <p>A confuses the abstract Bayes classifier with a fitted Bayes-network model. B is the empirical training error, not the population-level rate. D conflates the Bayes classifier with naive Bayes — same word, different objects (one is the optimal abstraction, the other a specific generative model).</p>
           <p class="ref">Atoms: <a href="/concepts/classification-setup">classification-setup</a>, <a href="/concepts/diagnostic-vs-sampling-paradigm">diagnostic-vs-sampling-paradigm</a>. Lecture: <a href="/lectures/L07-classif-1">L07-classif-1</a>.</p>
         </div>
       </details>
@@ -131,7 +131,7 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 4</span>
-        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__points">4 points</span>
         <span class="exam-q__src">Ex4.4</span>
       </header>
       <p class="q-text">A logistic model for $Y = I(\text{student gets an A})$ has $\hat\beta_0 = -6$, $\hat\beta_1 = 0.05$ (study hours), $\hat\beta_2 = 1$ (GPA). For a student with $40$ hours and GPA $3.5$, what is $\hat p$?</p>
@@ -278,7 +278,7 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 9</span>
-        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__points">3 points</span>
       </header>
       <p class="q-text">Mark each statement about sensitivity and specificity as true or false.</p>
       <ul class="exam-q__tf">
@@ -389,15 +389,15 @@
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> In LDA the priors $\pi_k$ are equal; in QDA they differ, which adds a quadratic correction.</li>
         <li><span class="opt-label">B</span> LDA assumes Gaussian class-conditionals; QDA drops the Gaussian assumption and uses a kernel density, which is locally quadratic.</li>
-        <li><span class="opt-label">C</span> Pooling $\Sigma$ in LDA makes the term $-\tfrac12 x^\top\Sigma^{-1}x$ independent of $k$ and it cancels in $\arg\max_k$; QDA keeps a class-specific $\Sigma_k$, so $-\tfrac12 x^\top\Sigma_k^{-1}x$ depends on $k$ and survives.</li>
-        <li><span class="opt-label">D</span> LDA uses $\Sigma$ directly while QDA uses $\Sigma^{-1}$, and squaring the inverse introduces the quadratic term.</li>
+        <li><span class="opt-label">C</span> LDA uses $\Sigma$ directly while QDA uses $\Sigma^{-1}$, and squaring the inverse introduces the quadratic term.</li>
+        <li><span class="opt-label">D</span> Pooling $\Sigma$ in LDA makes the term $-\tfrac12 x^\top\Sigma^{-1}x$ independent of $k$ and it cancels in $\arg\max_k$; QDA keeps a class-specific $\Sigma_k$, so $-\tfrac12 x^\top\Sigma_k^{-1}x$ depends on $k$ and survives.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: C</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>Take the log of $\pi_k f_k(x)$. The exponent contains $-\tfrac12 x^\top\Sigma_k^{-1}x$. With pooled $\Sigma$ this term has no $k$ — drop it. With class-specific $\Sigma_k$ the term depends on $k$ and stays, making $\delta_k(x)$ quadratic. The prof flagged "where does the quadratic come from?" as a typical exam question.</p>
-          <p>A is irrelevant — both methods take general priors. B misstates QDA: QDA also assumes Gaussian class-conditionals, just with class-specific $\Sigma_k$. D garbles the algebra (both methods use $\Sigma_k^{-1}$ in the discriminant; squaring the inverse is not the mechanism).</p>
+          <p>A is irrelevant — both methods take general priors. B misstates QDA: QDA also assumes Gaussian class-conditionals, just with class-specific $\Sigma_k$. C garbles the algebra (both methods use $\Sigma_k^{-1}$ in the discriminant; squaring the inverse is not the mechanism).</p>
           <p class="ref">Atoms: <a href="/concepts/quadratic-discriminant-analysis">quadratic-discriminant-analysis</a>, <a href="/concepts/linear-discriminant-analysis">linear-discriminant-analysis</a>, <a href="/concepts/discriminant-score-and-decision-boundary">discriminant-score-and-decision-boundary</a>. Lecture: <a href="/lectures/L09-classif-3">L09-classif-3</a>.</p>
         </div>
       </details>
@@ -407,7 +407,7 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 13</span>
-        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__points">4 points</span>
       </header>
       <p class="q-text">Two-class LDA with $\mu_A = (1,1)^\top$, $\mu_B = (3,3)^\top$, shared covariance $\Sigma = 2I$, equal priors $\pi_A = \pi_B = 0.5$. The decision boundary is:</p>
       <ul class="exam-q__opts">
@@ -479,7 +479,7 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 16</span>
-        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__points">3 points</span>
         <span class="exam-q__src">ISLR §4 Q5</span>
       </header>
       <p class="q-text">Mark each statement comparing LDA and QDA as true or false.</p>
@@ -529,15 +529,15 @@
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> $55$</li>
         <li><span class="opt-label">B</span> $100$</li>
-        <li><span class="opt-label">C</span> $165$</li>
-        <li><span class="opt-label">D</span> $300$</li>
+        <li><span class="opt-label">C</span> $300$</li>
+        <li><span class="opt-label">D</span> $165$</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: C</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>Each $\Sigma_k$ is $p\times p$ symmetric → $p(p+1)/2 = 10 \cdot 11/2 = 55$ free parameters. With $K = 3$ class-specific covariances: $3 \cdot 55 = 165$.</p>
-          <p>A is one $\Sigma$ alone — that's the LDA pooled-covariance count. B forgets symmetry and reports $p^2 = 100$ for one matrix. D forgets symmetry and reports $K \cdot p^2 = 300$ — same mistake compounded.</p>
+          <p>A is one $\Sigma$ alone — that's the LDA pooled-covariance count. B forgets symmetry and reports $p^2 = 100$ for one matrix. C forgets symmetry and reports $K \cdot p^2 = 300$ — same mistake compounded.</p>
           <p class="ref">Atoms: <a href="/concepts/quadratic-discriminant-analysis">quadratic-discriminant-analysis</a>.</p>
         </div>
       </details>
@@ -571,7 +571,7 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 19</span>
-        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__points">3 points</span>
       </header>
       <p class="q-text">Mark each statement about the diagnostic vs sampling (generative) paradigm as true or false.</p>
       <ul class="exam-q__tf">
@@ -639,7 +639,7 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 21</span>
-        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__points">3 points</span>
       </header>
       <p class="q-text">Mark each statement about KNN classification as true or false.</p>
       <ul class="exam-q__tf">
@@ -779,15 +779,15 @@
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> QDA: it has the lowest training error, which is the most reliable indicator of generalisation.</li>
         <li><span class="opt-label">B</span> QDA: it is strictly more flexible, so any apparent training-error advantage will translate to test-error advantage with enough regularisation.</li>
-        <li><span class="opt-label">C</span> LDA: its test error is lower, suggesting the extra parameters in QDA hurt more (variance) than they help (bias) on this sample size.</li>
-        <li><span class="opt-label">D</span> Either; the difference between $0.17$ and $0.32$ is too small to matter without a formal hypothesis test.</li>
+        <li><span class="opt-label">C</span> Either; the difference between $0.17$ and $0.32$ is too small to matter without a formal hypothesis test.</li>
+        <li><span class="opt-label">D</span> LDA: its test error is lower, suggesting the extra parameters in QDA hurt more (variance) than they help (bias) on this sample size.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: C</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>Test error is the only honest generalisation signal. QDA's tighter training fit but worse test fit is the canonical bias-variance overfit pattern; pooling $\Sigma$ in LDA is paying off on this sample size. The prof's iris example, verbatim.</p>
-          <p>A treats training error as truth — the classic overfitting trap. B is hand-waving: regularising QDA to look like LDA just becomes LDA. D is wrong about the magnitude — nearly doubling test error is large; you don't need a formal test to pick the better generaliser.</p>
+          <p>A treats training error as truth — the classic overfitting trap. B is hand-waving: regularising QDA to look like LDA just becomes LDA. C is wrong about the magnitude — nearly doubling test error is large; you don't need a formal test to pick the better generaliser.</p>
           <p class="ref">Atoms: <a href="/concepts/quadratic-discriminant-analysis">quadratic-discriminant-analysis</a>, <a href="/concepts/linear-discriminant-analysis">linear-discriminant-analysis</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>, <a href="/concepts/confusion-matrix">confusion-matrix</a>. Lecture: <a href="/lectures/L09-classif-3">L09-classif-3</a>.</p>
         </div>
       </details>
@@ -797,7 +797,7 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 26</span>
-        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__points">4 points</span>
         <span class="exam-q__src">ISLR §4 Q7</span>
       </header>
       <p class="q-text">A 1D LDA setup: companies that issued a dividend ($Y = 1$) had $\bar X = 10$, those that did not had $\bar X = 0$, with shared $\hat\sigma^2 = 36$. The prior is $\pi_1 = 0.8$. Assuming Gaussian class-conditionals, what is $\Pr(Y = 1 \mid X = 4)$?</p>
@@ -827,7 +827,7 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 27</span>
-        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__points">3 points</span>
       </header>
       <p class="q-text">Mark each statement about LDA's class-conditional density assumption as true or false.</p>
       <ul class="exam-q__tf">

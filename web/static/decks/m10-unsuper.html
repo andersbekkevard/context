@@ -1,0 +1,810 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 10 — Unsupervised learning · TMA4268</title>
+
+  <!-- Sync theme with the Quartz wiki (reads same localStorage key, falls back to OS) -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var theme = saved || (prefersDark ? "dark" : "light");
+        document.documentElement.setAttribute("saved-theme", theme);
+      } catch (e) {
+        document.documentElement.setAttribute("saved-theme", "light");
+      }
+    })();
+  </script>
+
+  <!-- Quartz fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+
+  <link rel="stylesheet" href="exam.css">
+
+  <!-- KaTeX for inline math -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$',  right: '$',  display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });"></script>
+</head>
+<body>
+  <main class="exam-shell">
+    <header class="exam-head">
+      <a href="/" class="back-link">← Back to wiki</a>
+      <h1>Module 10 — Unsupervised learning</h1>
+      <p class="meta">24 questions · 100 points · ~40 min</p>
+      <p class="meta">
+        Click an option to lock the answer; the explanation auto-opens.
+        Score tracker bottom-left.
+      </p>
+    </header>
+
+    <!-- ─────── Q1 — recall: PCA optimization framing ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 1</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">The first principal component of a centered data matrix $X \in \mathbb{R}^{n \times p}$ is best defined as the direction $\phi_1 \in \mathbb{R}^p$ that:</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> minimizes the sum of squared distances from each $x_i$ to its nearest cluster centroid, subject to $\|\phi_1\| = 1$.</li>
+        <li><span class="opt-label">B</span> maximizes the sample variance of the projection $z_{i1} = \phi_1^\top x_i$, subject to $\sum_j \phi_{j1}^2 = 1$.</li>
+        <li><span class="opt-label">C</span> maximizes the covariance between the projection $z_{i1}$ and the response $Y$, with no norm constraint on $\phi_1$.</li>
+        <li><span class="opt-label">D</span> picks the original variable $X_j$ with the largest sample variance and sets $\phi_1$ to the corresponding standard-basis vector.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>This is the prof's verbatim framing: "find the best way of rotating our shit such that now it has a maximum variance" with a unit-norm constraint so the algorithm rotates rather than rescales.</p>
+          <p>A confuses PCA with K-means (within-cluster sum-of-squares minimization). C describes <strong>partial least squares</strong> (PLS), which is supervised and uses $Y$ — PCA is unsupervised. D mistakes "direction of largest variance" for "variable with largest variance"; PCA finds <em>linear combinations</em>, not single columns.</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-analysis">principal-component-analysis</a>, <a href="/concepts/dimensionality-reduction">dimensionality-reduction</a>. Lecture: <a href="/lectures/L21-unsupervised-1">L21-unsupervised-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q2 — application: PCA threshold counting (lifted from Exam 2025 P2f) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 2</span>
+        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__src">Exam 2025 P2f</span>
+      </header>
+      <p class="q-text">
+        PCA is performed on a dataset with 5 standardized variables. The eigenvalues are:
+      </p>
+      <p class="q-text">
+        $\lambda_1 = 2.7,\ \lambda_2 = 1.5,\ \lambda_3 = 0.5,\ \lambda_4 = 0.2,\ \lambda_5 = 0.1.$
+      </p>
+      <p class="q-text">How many principal components must you keep to retain at least 90% of the total variance?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 2 components</li>
+        <li><span class="opt-label">B</span> 3 components</li>
+        <li><span class="opt-label">C</span> 4 components</li>
+        <li><span class="opt-label">D</span> 5 components</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Total variance $= 2.7+1.5+0.5+0.2+0.1 = 5$ (which equals $p$, since the variables are standardized). Cumulative PVE: $2.7/5 = 0.54$; $0.54+0.30 = 0.84$ (still under 0.90); $0.84+0.10 = 0.94$ — threshold crossed at $M = 3$.</p>
+          <p>A stops at 0.84 and reads "almost 90%" as enough — the threshold is 0.90, not 0.85. C and D add components past the threshold; once 0.94 is reached, more components do not earn their keep.</p>
+          <p class="ref">Atoms: <a href="/concepts/explained-variance-and-scree-plot">explained-variance-and-scree-plot</a>, <a href="/concepts/principal-component-analysis">principal-component-analysis</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q3 — application: PC1 score computation (lifted from Exam 2025 P2f) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 3</span>
+        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__src">Exam 2025 P2f</span>
+      </header>
+      <p class="q-text">
+        Continuing the PCA above, the loadings of the first principal component are
+        $\phi_1 = (0.85,\ 0.2,\ 0.2,\ 0.1,\ 0.05)^\top$. For an observation with standardized values
+        $x = (1,\ 0.5,\ -0.5,\ -1,\ 0)$, what is the score $z_1 = \phi_1^\top x$ on PC1?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $0.55$</li>
+        <li><span class="opt-label">B</span> $0.75$</li>
+        <li><span class="opt-label">C</span> $0.95$</li>
+        <li><span class="opt-label">D</span> $1.40$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>$z_1 = 0.85(1) + 0.2(0.5) + 0.2(-0.5) + 0.1(-1) + 0.05(0) = 0.85 + 0.1 - 0.1 - 0.1 + 0 = 0.75$.</p>
+          <p>A drops the $0.85 \cdot 1$ contribution and keeps only the rest. C drops the negative terms (sign error on $X_3$ or $X_4$). D adds $|0.85| + |0.1| + |0.1| + |0.1| + 0$, ignoring signs entirely — a common "absolute-value" mistake.</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-analysis">principal-component-analysis</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q4 — T/F: standardization & scale-invariance across methods ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 4</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) PCA is scale-invariant: rescaling one column by a factor of 1000 does not change the loadings.</span>
+          <label><input type="radio" name="q4-a" value="true"> True</label>
+          <label><input type="radio" name="q4-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Standardizing predictors before K-means clustering is recommended whenever the variables are measured in different units.</span>
+          <label><input type="radio" name="q4-b" value="true"> True</label>
+          <label><input type="radio" name="q4-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Hierarchical clustering with Euclidean distance is unaffected by the units of the input variables.</span>
+          <label><input type="radio" name="q4-c" value="true"> True</label>
+          <label><input type="radio" name="q4-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Multiple linear regression (OLS) requires standardized predictors to fit the model correctly.</span>
+          <label><input type="radio" name="q4-d" value="true"> True</label>
+          <label><input type="radio" name="q4-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>False</strong> — PCA is not scale invariant: the largest-unit variable dominates the first PC purely because its numbers are bigger. The prof's slide bullet: "PCA is not scale invariant."</li>
+            <li><strong>True</strong> — Euclidean distance is dominated by the largest-scale variable; standardize so all coordinates contribute on equal footing.</li>
+            <li><strong>False</strong> — same Euclidean-distance issue applies to hierarchical clustering as to K-means.</li>
+            <li><strong>False</strong> — OLS is scale-invariant in the fit ($\hat\beta_j$ rescales to compensate); standardization for OLS is cosmetic, useful for comparing $\hat\beta$'s but not required.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/standardization">standardization</a>, <a href="/concepts/principal-component-analysis">principal-component-analysis</a>, <a href="/concepts/k-means-clustering">k-means-clustering</a>. Lecture: <a href="/lectures/L21-unsupervised-1">L21-unsupervised-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q5 — application: PVE arithmetic ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 5</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        Suppose the variance of PC1 is $\lambda_1 = 6$ and the total variance of the centered data is 12. What is the proportion of variance explained by PC1?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $0.25$</li>
+        <li><span class="opt-label">B</span> $0.50$</li>
+        <li><span class="opt-label">C</span> $0.71$</li>
+        <li><span class="opt-label">D</span> $2.00$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>$\text{PVE}_1 = \lambda_1 / \sum_k \lambda_k = 6 / 12 = 0.5$.</p>
+          <p>A divides $\lambda_1^2 / \text{total}^2$ or otherwise squares the wrong quantity. C uses $\sqrt{\lambda_1 / \text{total}}$ — confuses variance with standard deviation. D inverts the ratio (total / $\lambda_1$); a PVE cannot exceed 1.</p>
+          <p class="ref">Atoms: <a href="/concepts/explained-variance-and-scree-plot">explained-variance-and-scree-plot</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q6 — T/F: PCA properties ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 6</span>
+        <span class="exam-q__points">5 points</span>
+      </header>
+      <p class="q-text">Mark each statement about principal component analysis as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) The squared loadings of any single principal component sum to 1: $\sum_j \phi_{jm}^2 = 1$.</span>
+          <label><input type="radio" name="q6-a" value="true"> True</label>
+          <label><input type="radio" name="q6-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) The first PC always points in the direction that best predicts the response variable $Y$.</span>
+          <label><input type="radio" name="q6-b" value="true"> True</label>
+          <label><input type="radio" name="q6-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) The score vectors $z_1, z_2, \ldots, z_p$ from PCA are mutually uncorrelated.</span>
+          <label><input type="radio" name="q6-c" value="true"> True</label>
+          <label><input type="radio" name="q6-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Flipping the sign of a loading vector $\phi_m$ produces a fundamentally different principal component.</span>
+          <label><input type="radio" name="q6-d" value="true"> True</label>
+          <label><input type="radio" name="q6-d" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">e) Computing all $p$ principal components and keeping them all is a form of dimensionality reduction.</span>
+          <label><input type="radio" name="q6-e" value="true"> True</label>
+          <label><input type="radio" name="q6-e" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — loading vectors are unit norm by construction; this is the constraint that prevents PCA from cheating by inflating variance through scaling.</li>
+            <li><strong>False</strong> — PCA is unsupervised and never sees $Y$; max-variance directions of $X$ may be unrelated to $Y$. This is precisely PCR's failure mode that motivates PLS.</li>
+            <li><strong>True</strong> — orthogonal loadings yield uncorrelated scores; the prof's framing is that PCA "removes all these annoying correlations in your data."</li>
+            <li><strong>False</strong> — PCs are unique up to a sign flip. "The sign flip is boring; it just means which direction it is." Different software packages may report opposite signs for the same component.</li>
+            <li><strong>False</strong> — keeping all $p$ PCs is a rotation of coordinates, not a reduction. The reduction comes from truncating to the first $M < p$.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-analysis">principal-component-analysis</a>, <a href="/concepts/dimensionality-reduction">dimensionality-reduction</a>. Lecture: <a href="/lectures/L21-unsupervised-1">L21-unsupervised-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q7 — scenario: PCA standardize-or-not on USArrests ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 7</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        You run PCA on the <code>USArrests</code> dataset with four columns: <code>Murder</code> (per 100,000, sample variance ≈ 19), <code>Assault</code> (per 100,000, variance ≈ 6945), <code>UrbanPop</code> (% of population, variance ≈ 210), and <code>Rape</code> (per 100,000, variance ≈ 88). You forget to standardize. Which of the following is the most likely outcome?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> The first PC will load almost entirely on <code>Assault</code>, because its raw variance dwarfs the others.</li>
+        <li><span class="opt-label">B</span> The first PC will load most heavily on <code>UrbanPop</code>, because urbanization is qualitatively the strongest signal in the data.</li>
+        <li><span class="opt-label">C</span> The result will be the same as with standardization, since PCA is invariant to linear rescaling of the columns.</li>
+        <li><span class="opt-label">D</span> PCA will return an error, because the column variances differ by more than two orders of magnitude.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>PCA chases total variance, and unscaled <code>Assault</code> has variance ≈ 6945, which is ~35× larger than the next biggest column. The first PC's loading on <code>Assault</code> approaches 1 and the substantive "overall criminality" axis is lost. Standardize, and PC1 picks up the meaningful all-three-crime axis instead.</p>
+          <p>B confuses qualitative interpretability with the numerical objective; PCA does not know what variables "mean." C contradicts the prof's slide bullet "PCA is not scale invariant" — this is the canonical scope trap. D invents a numerical-stability constraint that does not exist.</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-analysis">principal-component-analysis</a>, <a href="/concepts/standardization">standardization</a>. Lecture: <a href="/lectures/L21-unsupervised-1">L21-unsupervised-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q8 — scenario: scree plot interpretation ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 8</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        A PCA on $p = 8$ standardized variables yields a scree plot in which all eight bars are roughly equal in height. What is the most defensible conclusion?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> The data has very strong low-dimensional structure; keeping only PC1 is sufficient.</li>
+        <li><span class="opt-label">B</span> PCA has revealed no real low-dimensional structure; dimensionality reduction will not help here.</li>
+        <li><span class="opt-label">C</span> The variables are perfectly collinear, and the original data lies on a 1-D line.</li>
+        <li><span class="opt-label">D</span> The standardization step must have been skipped, and the analysis should be re-run.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>A flat scree plot means each PC explains roughly $1/p$ of the variance — i.e., the variables were already nearly orthogonal. The prof: "if the variables were already orthogonal then adding more PCs is just the same as adding another variable." There is no low-dim structure to exploit.</p>
+          <p>A inverts the reading: a flat scree means weak — not strong — low-dim structure. C describes the opposite extreme (one PC explaining ≈ 100%); perfect collinearity gives a steep, not flat, scree. D blames standardization, but standardization makes <em>flat</em> scree plots more likely (column variances all 1) — the diagnostic for forgetting to standardize is one PC dominating, not the reverse.</p>
+          <p class="ref">Atoms: <a href="/concepts/explained-variance-and-scree-plot">explained-variance-and-scree-plot</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q9 — application: hand hierarchical clustering, complete linkage (lifted from Exam 2025 P3b) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 9</span>
+        <span class="exam-q__points">6 points</span>
+        <span class="exam-q__src">Exam 2025 P3b</span>
+      </header>
+      <p class="q-text">
+        You have four observations with the following Euclidean dissimilarity matrix:
+      </p>
+      <p class="q-text">
+        $$D = \begin{pmatrix} 0 & 6.5 & 5 & 7 \\ 6.5 & 0 & 6 & 4 \\ 5 & 6 & 0 & 2 \\ 7 & 4 & 2 & 0 \end{pmatrix}.$$
+      </p>
+      <p class="q-text">
+        Perform hierarchical clustering with <strong>complete</strong> linkage. At which fusion heights do the three merges occur, in order?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $2,\ 5,\ 7$</li>
+        <li><span class="opt-label">B</span> $2,\ 4,\ 6.5$</li>
+        <li><span class="opt-label">C</span> $2,\ 6,\ 7$</li>
+        <li><span class="opt-label">D</span> $2,\ 4,\ 7$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>Smallest entry is $d_{34} = 2$ → fuse $\{3, 4\}$ at height <strong>2</strong>. Recompute with complete linkage (max): $D(\{3,4\}, 1) = \max(5, 7) = 7$; $D(\{3,4\}, 2) = \max(6, 4) = 6$; $d_{12} = 6.5$ unchanged. Smallest in the 3×3 is $D(\{3,4\}, 2) = 6$ → fuse $\{2, 3, 4\}$ at height <strong>6</strong>. Final: $D(\{2,3,4\}, 1) = \max(6.5, 5, 7) = 7$ → fuse at height <strong>7</strong>.</p>
+          <p>A takes the second merge as $d_{13} = 5$, ignoring the recomputation step (forgets that observation 2 has been incorporated into the small cluster after the recomputed distances). B uses single linkage (min) instead of complete (max) — common linkage mix-up. D uses single linkage at step 2 ($\min(6,4) = 4$) but complete at step 3, mixing the two rules within one dendrogram.</p>
+          <p class="ref">Atoms: <a href="/concepts/hierarchical-clustering">hierarchical-clustering</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>. Note: −1 point per mistake on this question type.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q10 — application: same matrix, single linkage ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 10</span>
+        <span class="exam-q__points">5 points</span>
+      </header>
+      <p class="q-text">
+        Using the <em>same</em> dissimilarity matrix as Q9, perform hierarchical clustering with <strong>single</strong> linkage instead. What are the three fusion heights, in order?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $2,\ 4,\ 5$</li>
+        <li><span class="opt-label">B</span> $2,\ 5,\ 6.5$</li>
+        <li><span class="opt-label">C</span> $2,\ 6,\ 7$</li>
+        <li><span class="opt-label">D</span> $2,\ 4,\ 6.5$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>First fusion is the same: $d_{34} = 2$ → fuse $\{3, 4\}$ at height <strong>2</strong>. Single linkage (min): $D(\{3,4\}, 1) = \min(5, 7) = 5$; $D(\{3,4\}, 2) = \min(6, 4) = 4$; $d_{12} = 6.5$. Smallest = $D(\{3,4\}, 2) = 4$ → fuse $\{2, 3, 4\}$ at height <strong>4</strong>. Final: $D(\{2,3,4\}, 1) = \min(6.5, 5, 7) = 5$ → fuse at height <strong>5</strong>. Note that single-linkage merges typically occur at lower heights than complete-linkage merges on the same data.</p>
+          <p>B mixes max for the third merge ($\max(6.5, 5, 7) = 7$ would give 7 not 6.5; here 6.5 is just the unchanged $d_{12}$, but at this step $\{1,2\}$ is no longer a possible fusion). C is the complete-linkage answer (Q9). D uses single for the second merge but complete for the third.</p>
+          <p class="ref">Atoms: <a href="/concepts/hierarchical-clustering">hierarchical-clustering</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q11 — T/F: linkage choice direction-of-effect ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 11</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement about hierarchical clustering linkage as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Complete and average linkage tend to produce more balanced dendrograms than single linkage.</span>
+          <label><input type="radio" name="q11-a" value="true"> True</label>
+          <label><input type="radio" name="q11-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Single linkage is prone to "chaining" — long, snaking clusters that grow one observation at a time.</span>
+          <label><input type="radio" name="q11-b" value="true"> True</label>
+          <label><input type="radio" name="q11-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) For two clusters $A$ and $B$, complete-linkage dissimilarity is always at least as large as single-linkage dissimilarity on the same data.</span>
+          <label><input type="radio" name="q11-c" value="true"> True</label>
+          <label><input type="radio" name="q11-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Average linkage requires fewer pairwise distance computations than single or complete linkage.</span>
+          <label><input type="radio" name="q11-d" value="true"> True</label>
+          <label><input type="radio" name="q11-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — prof verbatim: "Average and complete tend to yield more balanced clusters."</li>
+            <li><strong>True</strong> — single linkage's $\min$ rule means a single near-neighbor pulls a whole cluster in; the result is a chain rather than a compact group.</li>
+            <li><strong>True</strong> — for any sets $A, B$: $\max_{i \in A, j \in B} d(x_i, x_j) \ge \min_{i \in A, j \in B} d(x_i, x_j)$. They are equal only when $A$ and $B$ are singletons, where all three linkages collapse to the same point-to-point distance.</li>
+            <li><strong>False</strong> — all three linkages are computed from the same $\binom{n}{2}$ pairwise distances; complete uses the max, single the min, average the mean. Computational cost is the same.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/hierarchical-clustering">hierarchical-clustering</a>. Lecture: <a href="/lectures/L22-unsupervised-2">L22-unsupervised-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q12 — scenario: dendrogram horizontal-axis interpretation ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 12</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        On a hierarchical-clustering dendrogram, observations 9 and 2 sit far apart on the horizontal (x) axis but their vertical fusion line meets at a low height. Observations 9 and 7 sit next to each other on the x-axis but only fuse at a much higher height. Which pair is most similar?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Observations 9 and 7, since they are adjacent on the x-axis.</li>
+        <li><span class="opt-label">B</span> Observations 9 and 2, since their fusion height is lower.</li>
+        <li><span class="opt-label">C</span> The dendrogram does not contain enough information to compare these two pairs.</li>
+        <li><span class="opt-label">D</span> Both pairs are equally similar, since both belong to the same dendrogram.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Only the <strong>fusion height</strong> (vertical axis) carries information. The prof: "Don't assume that 9 and 2 are somehow closer together for some reason. Don't interpret this [horizontal layout] as being distances between things." There are $2^{n-1}$ valid horizontal orderings of the same dendrogram (children can be swapped at every fusion); horizontal proximity is arbitrary.</p>
+          <p>A is the canonical dendrogram-reading trap. C is overly cautious — fusion height does encode similarity, you just have to read the right axis. D ignores the structure entirely.</p>
+          <p class="ref">Atoms: <a href="/concepts/hierarchical-clustering">hierarchical-clustering</a>. Lecture: <a href="/lectures/L22-unsupervised-2">L22-unsupervised-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q13 — recall: K-means objective ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 13</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">Which optimization criterion does K-means clustering minimize?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $\displaystyle \sum_{k=1}^K \frac{1}{|C_k|} \sum_{i, i' \in C_k} \sum_{j=1}^p (x_{ij} - x_{i'j})^2$</li>
+        <li><span class="opt-label">B</span> $\displaystyle \sum_{k=1}^K \max_{i, i' \in C_k} \sum_{j=1}^p (x_{ij} - x_{i'j})^2$</li>
+        <li><span class="opt-label">C</span> $\displaystyle \sum_{i=1}^n (y_i - \mathbf{x}_i^\top \boldsymbol{\beta})^2 + \lambda \sum_{j=1}^p |\beta_j|$</li>
+        <li><span class="opt-label">D</span> $\displaystyle \sum_{i: x_i \in R_1} (y_i - \hat y_{R_1})^2 + \sum_{i: x_i \in R_2} (y_i - \hat y_{R_2})^2$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>K-means minimizes the within-cluster sum of pairwise squared Euclidean distances, normalized by cluster size (book Eq. 12.17).</p>
+          <p>B replaces the sum with a max — that would be a "diameter" objective, not K-means. C is the lasso objective. D is the regression-tree splitting criterion. Each is the right answer to a different question.</p>
+          <p class="ref">Atoms: <a href="/concepts/k-means-clustering">k-means-clustering</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q14 — T/F: K-means properties ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 14</span>
+        <span class="exam-q__points">5 points</span>
+      </header>
+      <p class="q-text">Mark each statement about the K-means algorithm as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) The K-means objective is non-increasing across iterations of the centroid–reassign loop.</span>
+          <label><input type="radio" name="q14-a" value="true"> True</label>
+          <label><input type="radio" name="q14-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Two different random initializations on the same dataset can lead to different final clusterings.</span>
+          <label><input type="radio" name="q14-b" value="true"> True</label>
+          <label><input type="radio" name="q14-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) The K-means partition for $K = 5$ is a refinement of the partition for $K = 4$ — i.e. each $K = 5$ cluster is contained in some $K = 4$ cluster.</span>
+          <label><input type="radio" name="q14-c" value="true"> True</label>
+          <label><input type="radio" name="q14-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) K-means is guaranteed to converge to the global minimum of its objective.</span>
+          <label><input type="radio" name="q14-d" value="true"> True</label>
+          <label><input type="radio" name="q14-d" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">e) Setting $K = n$ (one cluster per observation) drives the K-means objective to zero.</span>
+          <label><input type="radio" name="q14-e" value="true"> True</label>
+          <label><input type="radio" name="q14-e" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — both the centroid step (cluster mean is the minimizer of squared deviations) and the assign step (each point moves to its closest centroid) weakly decrease the same nonnegative objective.</li>
+            <li><strong>True</strong> — random init is the prof's headline pitfall: "this random initialization can really screw you." Standard fix: run many times (e.g. <code>nstart = 20</code>) and keep the best.</li>
+            <li><strong>False</strong> — there is no nesting between K-means partitions across $K$. The $K = 4$ and $K = 5$ solutions can be totally unrelated. This is a core contrast with hierarchical clustering, where the dendrogram makes partitions nested by construction.</li>
+            <li><strong>False</strong> — K-means converges to a <em>local</em> minimum only. Brute-force is infeasible: $K^n$ partitions exist (e.g. $10^{1000}$ for $n = 1000, K = 10$).</li>
+            <li><strong>True</strong> — every observation is its own cluster, so the within-cluster pairwise sum is empty and the objective is 0. This is the trivial degenerate solution; you have learned nothing.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/k-means-clustering">k-means-clustering</a>, <a href="/concepts/hierarchical-clustering">hierarchical-clustering</a>. Lecture: <a href="/lectures/L22-unsupervised-2">L22-unsupervised-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q15 — application: K-means hand iteration ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 15</span>
+        <span class="exam-q__points">5 points</span>
+      </header>
+      <p class="q-text">
+        You run K-means with $K = 2$ on three observations in 1-D: $x_1 = 0,\ x_2 = 2,\ x_3 = 8$. The random init assigns $x_1$ and $x_3$ to cluster A and $x_2$ to cluster B. After <strong>one</strong> centroid step plus one reassignment step, which cluster is each observation in?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $x_1 \in A$, $x_2 \in B$, $x_3 \in A$ (no change from initialization).</li>
+        <li><span class="opt-label">B</span> $x_1 \in B$, $x_2 \in B$, $x_3 \in A$.</li>
+        <li><span class="opt-label">C</span> $x_1 \in A$, $x_2 \in A$, $x_3 \in B$.</li>
+        <li><span class="opt-label">D</span> $x_1 \in A$, $x_2 \in B$, $x_3 \in B$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Centroid step: $\bar x_A = (0 + 8)/2 = 4$, $\bar x_B = 2$. Reassignment: distance from $x_1 = 0$ to centroid A is 4, to centroid B is 2 → move to B. $x_2 = 2$ stays in B (distance 0 < 2). $x_3 = 8$ stays in A (distance 4 < 6). Final: $x_1 \in B, x_2 \in B, x_3 \in A$.</p>
+          <p>A misses the reassignment step entirely. C swaps the labels (treats $x_3$ as the outlier that gets isolated and pulls the rest together — but the centroid update has happened, and $x_3$ stays nearest to its old centroid). D moves $x_3$ rather than $x_1$, which would require $x_3$ to be closer to centroid B = 2 than to centroid A = 4, but $|8 - 2| = 6 > |8 - 4| = 4$.</p>
+          <p class="ref">Atoms: <a href="/concepts/k-means-clustering">k-means-clustering</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a> (k-means hand-computation flagged as fair game).</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q16 — scenario: shopper Euclidean vs correlation ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 16</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        An online retailer wants to cluster shoppers so that customers with <em>similar tastes</em> (the relative mix of products in their basket) end up together, regardless of how much they spend overall. Which dissimilarity measure best fits this goal?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Euclidean distance on the raw counts of items per category.</li>
+        <li><span class="opt-label">B</span> Correlation distance ($1 - \rho$) between each pair of shopper profiles.</li>
+        <li><span class="opt-label">C</span> Squared Euclidean distance with column standardization, no other change.</li>
+        <li><span class="opt-label">D</span> The number of categories in which both shoppers made any purchase, divided by the total number of categories.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Correlation distance measures whether the <em>shapes</em> of two profiles match. Two shoppers with identical proportional preferences but different overall volumes have $\rho \approx 1$ → distance ≈ 0. The prof's verbatim example: "Euclidean distance might group together infrequent shoppers — people just don't shop a lot — whereas the correlation distance would find people who have similar preferences."</p>
+          <p>A groups infrequent shoppers together regardless of taste, the canonical wrong choice. C handles units but not the volume-vs-shape distinction; standardizing columns does not make Euclidean distance shape-sensitive. D is the Jaccard-style overlap measure — it captures "did both buy in the same categories" but ignores the proportions, missing the "similar tastes" signal.</p>
+          <p class="ref">Atoms: <a href="/concepts/distance-metrics">distance-metrics</a>, <a href="/concepts/hierarchical-clustering">hierarchical-clustering</a>. Lecture: <a href="/lectures/L22-unsupervised-2">L22-unsupervised-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q17 — recall: K-means vs hierarchical comparison ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 17</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Which of the following best distinguishes hierarchical clustering from K-means clustering?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Hierarchical clustering produces a single dendrogram from which any number of clusters can be read by cutting at different heights; K-means returns one partition for one fixed $K$.</li>
+        <li><span class="opt-label">B</span> Hierarchical clustering is supervised (uses the response $Y$); K-means is unsupervised.</li>
+        <li><span class="opt-label">C</span> Hierarchical clustering is guaranteed to find the global minimum of its objective; K-means is not.</li>
+        <li><span class="opt-label">D</span> Hierarchical clustering does not require a notion of distance between observations; K-means requires Euclidean distance.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Hierarchical clustering produces a tree (the dendrogram) you can cut at any height — one fit, all $K$'s available simultaneously. K-means must be re-run for each $K$, and partitions across $K$ are not nested.</p>
+          <p>B is wrong on both counts — both methods are unsupervised. C invents a non-existent guarantee; hierarchical merges are deterministic but the result depends on the linkage and dissimilarity choices, neither method "globally optimizes" anything in a useful sense. D inverts reality: hierarchical clustering is built around a distance/dissimilarity matrix, and K-means' Euclidean is swappable in principle (though the centroid step assumes Euclidean for its closed-form mean update).</p>
+          <p class="ref">Atoms: <a href="/concepts/hierarchical-clustering">hierarchical-clustering</a>, <a href="/concepts/k-means-clustering">k-means-clustering</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q18 — scenario: choose linkage to discourage chains ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 18</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        You suspect that a long, snake-like cluster will form in your data if the wrong linkage is used, and you want to <em>discourage</em> that. Which linkage rule should you choose?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Single linkage</li>
+        <li><span class="opt-label">B</span> Complete linkage</li>
+        <li><span class="opt-label">C</span> Centroid linkage</li>
+        <li><span class="opt-label">D</span> Linkage choice does not affect chaining</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Single linkage's $\min$ rule is what produces chaining: a single near-neighbor pulls a whole cluster forward one step at a time. Complete linkage uses $\max$, so a candidate merge has to be close to <em>every</em> point in the existing cluster, producing balanced compact clusters. (Average is also fine; it isn't offered here.)</p>
+          <p>A is the linkage that <em>causes</em> chaining — the opposite of what was asked. C (centroid) can produce dendrogram inversions and is generally not preferred; the prof name-checks it but doesn't recommend it. D contradicts the prof: "Average and complete tend to yield more balanced clusters."</p>
+          <p class="ref">Atoms: <a href="/concepts/hierarchical-clustering">hierarchical-clustering</a>. Lecture: <a href="/lectures/L22-unsupervised-2">L22-unsupervised-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q19 — T/F: ISLR §12 Conceptual Q4 (single vs complete linkage on same fusion) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 19</span>
+        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__src">ISLR §12 Q4</span>
+      </header>
+      <p class="q-text">
+        For a particular dataset, you build two dendrograms — one with single linkage, one with complete linkage. Mark each statement as true or false.
+      </p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) If clusters $\{1,2,3\}$ and $\{4,5\}$ fuse on both dendrograms, the complete-linkage fusion will occur at a height greater than or equal to the single-linkage fusion.</span>
+          <label><input type="radio" name="q19-a" value="true"> True</label>
+          <label><input type="radio" name="q19-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) When two singleton clusters $\{5\}$ and $\{6\}$ fuse, the height equals $d(x_5, x_6)$ on both dendrograms.</span>
+          <label><input type="radio" name="q19-b" value="true"> True</label>
+          <label><input type="radio" name="q19-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Cutting either dendrogram at the same height $h$ always produces the same number of clusters.</span>
+          <label><input type="radio" name="q19-c" value="true"> True</label>
+          <label><input type="radio" name="q19-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Cutting either dendrogram at the same height $h$ always produces the same partition of the observations.</span>
+          <label><input type="radio" name="q19-d" value="true"> True</label>
+          <label><input type="radio" name="q19-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — when the same two clusters fuse, complete linkage uses the max pairwise distance and single uses the min, so complete ≥ single (with equality only in degenerate cases).</li>
+            <li><strong>True</strong> — for singletons, all linkages collapse to the point-to-point distance $d(x_5, x_6)$. Linkage formulas only differ for set-to-set distances.</li>
+            <li><strong>False</strong> — different linkages produce different fusion heights, so the same horizontal cut crosses different numbers of vertical lines, yielding different cluster counts in general.</li>
+            <li><strong>False</strong> — even when the cluster counts coincide, the partitions can differ because the merging order differs.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/hierarchical-clustering">hierarchical-clustering</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q20 — scenario: K-means + nstart fix ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 20</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        A colleague runs K-means once on a dataset with $K = 3$ and reports the final cluster assignments. You re-run the same code and get a different answer. What is the most likely cause and the standard fix?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> The colleague forgot to standardize; rerun after $z$-scoring each column.</li>
+        <li><span class="opt-label">B</span> Different random initializations lead to different local minima; rerun with many starts (e.g. <code>nstart = 20</code>) and keep the run with the lowest within-cluster sum of squares.</li>
+        <li><span class="opt-label">C</span> The dataset is too high-dimensional; apply PCA first, then K-means.</li>
+        <li><span class="opt-label">D</span> The objective has multiple global minima; pick whichever is reported.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>K-means converges to a <em>local</em> minimum determined by the random initial assignment. Different seeds → different basins of attraction → different final clusterings. The standard fix is to run many initializations and keep the one with the smallest within-cluster sum of squares.</p>
+          <p>A is a real concern in general but does not explain run-to-run variation when the only thing changing is the seed. C addresses the curse of dimensionality, a separate failure mode unrelated to randomness. D is wrong: the objective generically has multiple <em>local</em> minima, and not all are global; picking arbitrarily forfeits the lowest-objective solution.</p>
+          <p class="ref">Atoms: <a href="/concepts/k-means-clustering">k-means-clustering</a>. Lecture: <a href="/lectures/L22-unsupervised-2">L22-unsupervised-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q21 — recall: dimensionality reduction taxonomy ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 21</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        Among PCA, partial least squares (PLS), lasso, and LDA, which one performs <strong>variable selection</strong> — i.e. produces a model in which some original predictors $X_j$ have coefficient exactly zero?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> PCA</li>
+        <li><span class="opt-label">B</span> PLS</li>
+        <li><span class="opt-label">C</span> Lasso</li>
+        <li><span class="opt-label">D</span> LDA</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>The lasso's $\ell_1$ penalty has corners on the coordinate axes, so the optimum lies on these corners for large enough $\lambda$ — driving some $\hat\beta_j$ to <em>exactly</em> zero. The other three are dimensionality-reduction methods: each new variable $Z_m = \sum_j \phi_{jm} X_j$ is a linear combination of <em>all</em> $X_j$'s; the back-implied $\hat\beta_j = \sum_m \theta_m \phi_{jm}$ is generically nonzero for every $j$.</p>
+          <p>A: PCA picks max-variance directions of $X$, no variable is dropped. B: PLS uses $Y$ to pick directions but still mixes all variables. D: LDA gives discriminant scores that are linear combinations of all features. None of these zero out individual $X_j$'s.</p>
+          <p class="ref">Atoms: <a href="/concepts/dimensionality-reduction">dimensionality-reduction</a>, <a href="/concepts/principal-component-analysis">principal-component-analysis</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q22 — T/F: dimensionality reduction concepts ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 22</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement about dimensionality reduction as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) PCA chooses its directions using only $X$, not the response $Y$.</span>
+          <label><input type="radio" name="q22-a" value="true"> True</label>
+          <label><input type="radio" name="q22-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) PLS chooses its directions to maximize covariance with the response $Y$.</span>
+          <label><input type="radio" name="q22-b" value="true"> True</label>
+          <label><input type="radio" name="q22-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) PCA can always recover the underlying low-dimensional structure of data lying on a curved manifold (e.g. an arc or a circle).</span>
+          <label><input type="radio" name="q22-c" value="true"> True</label>
+          <label><input type="radio" name="q22-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) When PCA is used inside a supervised pipeline (PCR), the number $M$ of components to keep should be chosen by cross-validating the downstream model.</span>
+          <label><input type="radio" name="q22-d" value="true"> True</label>
+          <label><input type="radio" name="q22-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — PCA is unsupervised; loadings are eigenvectors of the sample covariance of $X$, with no $Y$ involvement. This is exactly why PCR can fail when the high-variance directions of $X$ are unrelated to $Y$.</li>
+            <li><strong>True</strong> — PLS is the supervised counterpart of PCR. Each direction maximizes $\text{Cov}(Z_m, Y)$ subject to orthogonality.</li>
+            <li><strong>False</strong> — PCA is linear and "cannot do anything non-linear." On a curve, the first two PCs cut through the cloud rather than wrapping along the manifold; clustering or nonlinear dim-reduction is needed.</li>
+            <li><strong>True</strong> — for supervised use, treat $M$ as a tuning parameter and pick the value minimizing CV error on the downstream model. Scree-plot heuristics are for pure visualization, not for PCR.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/dimensionality-reduction">dimensionality-reduction</a>, <a href="/concepts/principal-component-analysis">principal-component-analysis</a>, <a href="/concepts/explained-variance-and-scree-plot">explained-variance-and-scree-plot</a>. Lecture: <a href="/lectures/L21-unsupervised-1">L21-unsupervised-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q23 — scenario: biplot interpretation ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 23</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Exam 2024 P2g</span>
+      </header>
+      <p class="q-text">
+        A PCA biplot of a four-variable standardized dataset shows the first two PCs explaining 62% and 25% of the total variance. The arrow for variable $X_2$ points sharply along the PC2 axis with large magnitude; the arrows for $X_1$ and $X_3$ point along PC1 with similar magnitudes; $X_4$'s arrow is short and ambiguous. Which interpretation is best supported?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $X_2$ has a high loading on PC2; $X_1$ and $X_3$ load similarly on PC1; $X_4$ contributes little to either PC1 or PC2.</li>
+        <li><span class="opt-label">B</span> $X_2$ is uncorrelated with the response; $X_1$ and $X_3$ are the most predictive; $X_4$ should be discarded.</li>
+        <li><span class="opt-label">C</span> $X_2$ explains 25% of the data's total variance on its own; the others explain 62%.</li>
+        <li><span class="opt-label">D</span> The arrows show that $X_1$ and $X_3$ have the lowest sample variance among the four variables.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Biplot arrows show variable loadings projected onto the first two PCs. Arrow direction = which PC the variable loads on; arrow length = magnitude of those loadings. A short arrow means the variable contributes little to PC1 or PC2 (most of its variance lives in higher PCs).</p>
+          <p>B drags in the response $Y$, but PCA never sees $Y$; the biplot says nothing about prediction. C confuses an individual variable's loading with the variance the PC explains: 25% is the share PC2 captures across <em>all</em> four variables, not what $X_2$ alone explains. D inverts the geometry — the sample variance of each standardized variable is exactly 1; arrow length reflects how that variance is distributed across PCs, not its absolute magnitude.</p>
+          <p class="ref">Atoms: <a href="/concepts/principal-component-analysis">principal-component-analysis</a>, <a href="/concepts/explained-variance-and-scree-plot">explained-variance-and-scree-plot</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q24 — recall: when hierarchical clustering is the wrong choice ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 24</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        In which of the following situations is hierarchical clustering most likely to perform <em>worse</em> than K-means?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> When the true groupings are nested (e.g. species within genera within families).</li>
+        <li><span class="opt-label">B</span> When the true groupings split the same data along two genuinely non-nested axes (e.g. by gender into 2 groups and by nationality into 3).</li>
+        <li><span class="opt-label">C</span> When the analyst wants to visualize the merging structure as a dendrogram.</li>
+        <li><span class="opt-label">D</span> When the analyst does not know in advance how many clusters to look for.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Hierarchical clustering imposes nested structure by construction. When the true partitions don't nest — gender vs. nationality is the prof's example — hierarchical clustering forces the data into a tree it doesn't have, and K-means at the appropriate $K$ may recover the structure better. "If you're trying to cluster data that doesn't necessarily have a hierarchical structure to it, then probably bad."</p>
+          <p>A is precisely where hierarchical shines (the prof's animal-behavior data, taxonomic data). C is a strength, not a weakness — the dendrogram <em>is</em> the visualization. D is also a strength: cutting the dendrogram at any height gives any $K$, no need to commit in advance.</p>
+          <p class="ref">Atoms: <a href="/concepts/hierarchical-clustering">hierarchical-clustering</a>, <a href="/concepts/k-means-clustering">k-means-clustering</a>. Lecture: <a href="/lectures/L22-unsupervised-2">L22-unsupervised-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+  </main>
+  <script src="exam.js"></script>
+</body>
+</html>

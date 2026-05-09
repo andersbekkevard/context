@@ -97,16 +97,16 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> 4</li>
-        <li><span class="opt-label">B</span> 7</li>
-        <li><span class="opt-label">C</span> 8</li>
-        <li><span class="opt-label">D</span> 12</li>
+        <li><span class="opt-label">B</span> 8</li>
+        <li><span class="opt-label">C</span> 12</li>
+        <li><span class="opt-label">D</span> 7</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>For a cubic spline with $K$ knots: $K + d + 1 = K + 4$ parameters total (degree $d=3$ plus intercept). With $K = 4$ knots that is $4 + 4 = 8$. Subtract one because the intercept is already in the model: $8 - 1 = 7$.</p>
-          <p>A counts only the knots (forgets the three polynomial columns $x, x^2, x^3$). C is the count <em>including</em> the intercept — the trap when you don't notice the model already has one. D triple-counts (one polynomial term per knot).</p>
+          <p>A counts only the knots (forgets the three polynomial columns $x, x^2, x^3$). B is the count <em>including</em> the intercept — the trap when you don't notice the model already has one. C triple-counts (one polynomial term per knot).</p>
           <p class="ref">Atoms: <a href="/concepts/regression-splines">regression-splines</a>, <a href="/concepts/basis-functions">basis-functions</a>.</p>
         </div>
       </details>
@@ -116,7 +116,7 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 3</span>
-        <span class="exam-q__points">8 points</span>
+        <span class="exam-q__points">6 points</span>
         <span class="exam-q__src">Exam 2025 P4d</span>
       </header>
       <p class="q-text">In smoothing splines, increasing the smoothing parameter $\lambda$ will:</p>
@@ -151,7 +151,7 @@
             <li><strong>True</strong> — that <em>is</em> what $\lambda$ multiplies in the objective $\sum (y_i - g(x_i))^2 + \lambda \int g''(t)^2\, dt$.</li>
             <li><strong>True</strong> — effective df $= \mathrm{tr}(\mathbf S_\lambda)$ moves in the same direction as flexibility, so $\lambda \uparrow \Rightarrow$ df $\downarrow$ (toward 2).</li>
           </ol>
-          <p>Sub-statements scored independently, $8/4 = 2$ points each. The (a) statement is the prof's flagged direction-flip trap from L27 Q3d.</p>
+          <p>Sub-statements scored independently, $6/4 = 1.5$ points each. The (a) statement is the prof's flagged direction-flip trap from L27 Q3d.</p>
           <p class="ref">Atoms: <a href="/concepts/smoothing-splines">smoothing-splines</a>, <a href="/concepts/regularization">regularization</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>.</p>
         </div>
       </details>
@@ -170,16 +170,16 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> $\lambda \int g'(t)^2 \, dt$</li>
-        <li><span class="opt-label">B</span> $\lambda \int g''(t)^2 \, dt$</li>
-        <li><span class="opt-label">C</span> $\lambda \int |g(t)|\, dt$</li>
-        <li><span class="opt-label">D</span> $\lambda \int g(t)^2\, dt$</li>
+        <li><span class="opt-label">B</span> $\lambda \int |g(t)|\, dt$</li>
+        <li><span class="opt-label">C</span> $\lambda \int g(t)^2\, dt$</li>
+        <li><span class="opt-label">D</span> $\lambda \int g''(t)^2 \, dt$</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>The penalty is integrated <em>squared second derivative</em>: $g''(t)$ measures how fast the slope changes (curvature), and $\int g''(t)^2\, dt$ aggregates curvature across the range. Memorise: <strong>second</strong> derivative.</p>
-          <p>A penalises slope, not curvature — a constant non-zero slope would already get penalised, which is wrong (a straight line should have zero penalty). C is an L1 functional norm, not the smoothing-spline objective. D penalises the function's <em>magnitude</em>, which would shrink toward zero, not toward a straight line.</p>
+          <p>A penalises slope, not curvature — a constant non-zero slope would already get penalised, which is wrong (a straight line should have zero penalty). B is an L1 functional norm, not the smoothing-spline objective. C penalises the function's <em>magnitude</em>, which would shrink toward zero, not toward a straight line.</p>
           <p class="ref">Atoms: <a href="/concepts/smoothing-splines">smoothing-splines</a>.</p>
         </div>
       </details>
@@ -199,16 +199,16 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> 3</li>
-        <li><span class="opt-label">B</span> 4</li>
-        <li><span class="opt-label">C</span> 6</li>
+        <li><span class="opt-label">B</span> 6</li>
+        <li><span class="opt-label">C</span> 4</li>
         <li><span class="opt-label">D</span> 7</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: C</span>
           <p>A natural cubic spline forces linearity past the boundary knots, costing two constraints relative to a plain cubic spline. Param count: plain cubic with $K$ knots = $K+4$; natural cubic = $K+4-2 = K+2$ total, or $K+1$ when an intercept already lives in the model. With $K = 3$ that is $3 + 1 = 4$.</p>
-          <p>A forgets that an intercept-shifted constant column is still being added by the spline (you'd get $K = 3$ alone, missing the linear column $x$). C is the cubic-spline answer with intercept ($K + 3$ — confusing natural and plain cubic). D is plain cubic <em>including</em> intercept ($K+4$) — both errors at once.</p>
+          <p>A forgets that an intercept-shifted constant column is still being added by the spline (you'd get $K = 3$ alone, missing the linear column $x$). B is the cubic-spline answer with intercept ($K + 3$ — confusing natural and plain cubic). D is plain cubic <em>including</em> intercept ($K+4$) — both errors at once.</p>
           <p class="ref">Atoms: <a href="/concepts/regression-splines">regression-splines</a>.</p>
         </div>
       </details>
@@ -218,7 +218,7 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 6</span>
-        <span class="exam-q__points">8 points</span>
+        <span class="exam-q__points">6 points</span>
       </header>
       <p class="q-text">
         Mark each statement about an additive model
@@ -384,7 +384,7 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 11</span>
-        <span class="exam-q__points">6 points</span>
+        <span class="exam-q__points">5 points</span>
         <span class="exam-q__src">ISLR §7 Q5</span>
       </header>
       <p class="q-text">
@@ -498,16 +498,23 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> 6</li>
-        <li><span class="opt-label">B</span> 9</li>
-        <li><span class="opt-label">C</span> 11</li>
+        <li><span class="opt-label">B</span> 8</li>
+        <li><span class="opt-label">C</span> 12</li>
         <li><span class="opt-label">D</span> 14</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: C</span>
-          <p>Add the per-component dof, excluding intercepts: cubic spline with $K=1$ knot $= K + 3 = 4$; degree-2 polynomial $= 2$; linear weight $= 1$; smoothing spline $= 3$ (given); 3-level factor $= K-1 = 2$ dummies. Total $= 4 + 2 + 1 + 3 + 2 = 12$. Wait — recount: $4+2+1+3+2 = 12$. The intended sum of <em>4 + 2 + 1 + 3 + 2 = 12$ also exceeds 11; let's redo cubic spline carefully: $K + d + 1$ params <em>including</em> intercept is $1+3+1=5$, but excluding intercept it is $4$. With a single knot the truncated-power basis has columns $x, x^2, x^3, (x-290)^3_+$ → 4 columns. Total dof beyond intercept: $4 + 2 + 1 + 3 + 2 = 12$. The closest listed integer is C, 11, off by one if you (correctly) double-count <code>origin</code> as 2 dummies but treat one of the polynomial / spline columns as absorbed. <strong>Correction:</strong> the canonical answer for this Auto-GAM exercise is <strong>C = 11</strong> after the factor's reference column is absorbed into the global intercept and one polynomial / spline column likewise; full count 12 minus 1 = 11.</p>
-          <p>A counts only one dof per component (forgets that splines and polynomials add multiple columns). B forgets the smoothing-spline df entirely. D double-counts: it includes the global intercept on top of the 11 already present.</p>
+          <p>Sum the per-component dof, all <em>excluding</em> the global intercept:
+          cubic spline on <code>displace</code> with one knot $= K + 3 = 4$
+          (truncated-power columns $x, x^2, x^3, (x-290)^3_+$);
+          degree-2 polynomial on <code>horsepower</code> $= 2$;
+          linear <code>weight</code> $= 1$;
+          smoothing spline on <code>accel</code> $= 3$ (given);
+          factor <code>origin</code> with 3 levels $= 3 - 1 = 2$ dummies.
+          Total $= 4 + 2 + 1 + 3 + 2 = 12$.</p>
+          <p>A counts only one dof per component (forgets that splines and polynomials add multiple columns). B forgets the smoothing-spline df entirely. D double-counts the global intercept on top of the 12 dof already in the components.</p>
           <p class="ref">Atoms: <a href="/concepts/generalized-additive-models">generalized-additive-models</a>, <a href="/concepts/regression-splines">regression-splines</a>, <a href="/concepts/smoothing-splines">smoothing-splines</a>.</p>
         </div>
       </details>

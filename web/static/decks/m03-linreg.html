@@ -1,0 +1,970 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 03 — Linear Regression · TMA4268</title>
+
+  <!-- Sync theme with the Quartz wiki (reads same localStorage key, falls back to OS) -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var theme = saved || (prefersDark ? "dark" : "light");
+        document.documentElement.setAttribute("saved-theme", theme);
+      } catch (e) {
+        document.documentElement.setAttribute("saved-theme", "light");
+      }
+    })();
+  </script>
+
+  <!-- Quartz fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+
+  <link rel="stylesheet" href="exam.css">
+
+  <!-- KaTeX for inline math -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$',  right: '$',  display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });"></script>
+</head>
+<body>
+  <main class="exam-shell">
+    <header class="exam-head">
+      <a href="/" class="back-link">← Back to wiki</a>
+      <h1>Module 03 — Linear Regression</h1>
+      <p class="meta">29 questions · 100 points · ~45 min</p>
+      <p class="meta">
+        Click an option to lock the answer; the explanation auto-opens.
+        Score tracker bottom-left.
+      </p>
+    </header>
+
+    <!-- ─────── Q1: linear-in-parameters T/F (recall) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 1</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">A model is fit as $y_i = \beta_0 + \beta_1 x_i + \beta_2 x_i^2 + \varepsilon_i$ by ordinary least squares. Which statement best describes this model?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> It is nonlinear regression because the response curves with $x$.</li>
+        <li><span class="opt-label">B</span> It is linear regression because it is linear in the parameters $\boldsymbol\beta$.</li>
+        <li><span class="opt-label">C</span> It is a generalised additive model because two basis terms enter additively.</li>
+        <li><span class="opt-label">D</span> It can only be fit by gradient descent because of the quadratic term.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>"Linear" refers to the parameters, not the predictor. Treat $(1, x, x^2)$ as columns of $\mathbf{X}$ and run ordinary OLS — closed-form $\hat{\boldsymbol\beta} = (\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\mathbf{y}$ still applies.</p>
+          <p>A confuses curvature in $x$ with non-linearity in $\boldsymbol\beta$ (the canonical L06 trap). C is wrong because GAMs use *smoothed* univariate functions, not fixed polynomial bases. D is wrong: OLS has a one-shot closed form whenever $\mathbf{X}^\top\mathbf{X}$ is invertible.</p>
+          <p class="ref">Atoms: <a href="/concepts/polynomial-regression">polynomial-regression</a>, <a href="/concepts/linear-regression">linear-regression</a>. Lecture: <a href="/lectures/L06-linreg-2">L06-linreg-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q2: ISLR ch3 Q3 — interaction direction (synth) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 2</span>
+        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__src">ISLR §3 Q3</span>
+      </header>
+      <p class="q-text">
+        Starting salary (in $\$1{,}000$) is modelled as
+        $$\hat y = 50 + 20\,\text{GPA} + 0.07\,\text{IQ} + 35\,\text{Level} + 0.01\,(\text{GPA}\cdot\text{IQ}) - 10\,(\text{GPA}\cdot\text{Level})$$
+        with $\text{Level} = 1$ for college and $0$ for high school. Which statement is correct, holding $\text{IQ}$ and $\text{GPA}$ fixed?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> College graduates earn more on average than high-school graduates regardless of GPA.</li>
+        <li><span class="opt-label">B</span> High-school graduates earn more on average than college graduates regardless of GPA.</li>
+        <li><span class="opt-label">C</span> College graduates earn more on average, provided that GPA is high enough.</li>
+        <li><span class="opt-label">D</span> High-school graduates earn more on average, provided that GPA is high enough.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: D</span>
+          <p>The college-vs-high-school gap is $35 - 10\cdot\text{GPA}$. It is positive only when $\text{GPA} &lt; 3.5$ and flips negative for $\text{GPA} &gt; 3.5$. So at sufficiently high GPA, high-school graduates earn more.</p>
+          <p>A reads only the main effect $35$ and ignores the interaction (the canonical "main effect under interaction" trap). B ignores the +35 main effect entirely. C flips the sign of the interaction-driven crossover.</p>
+          <p class="ref">Atoms: <a href="/concepts/categorical-encoding-and-interactions">categorical-encoding-and-interactions</a>, <a href="/concepts/linear-regression">linear-regression</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q3: 2025 P2a interaction trap (T/F multi) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 3</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Exam 2025 P2a</span>
+      </header>
+      <p class="q-text">
+        Adult weight (kg) is modelled on age (years) and sex (male = 1, female = 0) with an $\text{age}\times\text{sex}$ interaction. The fitted equation is
+        $$\hat{\text{weight}} = 60.2 + 0.11\,\text{age} + 5.03\,\text{sex} + 0.68\,(\text{age}\cdot\text{sex}).$$
+        Mark each statement as true or false.
+      </p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Female weight increases on average by $0.11$ kg per year of age.</span>
+          <label><input type="radio" name="q3-a" value="true"> True</label>
+          <label><input type="radio" name="q3-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Males weigh on average $5.03$ kg more than females across the entire age range in the data.</span>
+          <label><input type="radio" name="q3-b" value="true"> True</label>
+          <label><input type="radio" name="q3-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) The age slope for males is $0.79$ kg per year.</span>
+          <label><input type="radio" name="q3-c" value="true"> True</label>
+          <label><input type="radio" name="q3-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) The dependence of weight on age is allowed to differ between males and females in this model.</span>
+          <label><input type="radio" name="q3-d" value="true"> True</label>
+          <label><input type="radio" name="q3-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — for females ($\text{sex}=0$), the slope on age is $0.11$.</li>
+            <li><strong>False</strong> — the $5.03$ coefficient is the male-vs-female gap *only when age $= 0$*. Since the interaction is $0.68$, the gap at age $a$ is $5.03 + 0.68\,a$, very different from $5.03$ across the data range. This is the prof's flagged 2025 Q2 interaction trap.</li>
+            <li><strong>True</strong> — male age slope = $0.11 + 0.68 = 0.79$ kg/year.</li>
+            <li><strong>True</strong> — the $\text{age}\cdot\text{sex}$ term is precisely what allows different age slopes per sex.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/categorical-encoding-and-interactions">categorical-encoding-and-interactions</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q4: ISLR ch3 Q4 — train RSS polynomial vs linear ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 4</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">ISLR §3 Q4</span>
+      </header>
+      <p class="q-text">
+        With $n=100$ observations of a single predictor $X$ and quantitative response $Y$, you fit
+        Model A: $\hat y = \hat\beta_0 + \hat\beta_1 x$, and Model B: $\hat y = \hat\beta_0 + \hat\beta_1 x + \hat\beta_2 x^2 + \hat\beta_3 x^3$.
+        Suppose the *true* relationship is linear. What can you say about the **training** RSS of the two models?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Training RSS is the same, since the truth is linear and OLS is unbiased.</li>
+        <li><span class="opt-label">B</span> Training RSS is lower for Model B, because adding parameters cannot raise training RSS.</li>
+        <li><span class="opt-label">C</span> Training RSS is lower for Model A, because the cubic terms add irreducible noise to the residuals.</li>
+        <li><span class="opt-label">D</span> Cannot be determined without seeing the test set, since RSS depends on the held-out split.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Model A is nested inside Model B (set $\beta_2 = \beta_3 = 0$). On the training data, OLS picks the coefficients that *minimise* RSS over the larger parameter space, so Model B's training RSS $\le$ Model A's. The prof's flagged keyword is <em>training</em> — for <em>test</em> RSS it would flip.</p>
+          <p>A misses that adding parameters lets the optimiser fit noise — the truth being linear matters for population-level bias, not for finite-sample training fit. C confuses irreducible noise with what the model *fits to*; cubic terms don't add noise, they absorb residuals. D conflates training and test — training RSS is computed only on the training split and is fully determined by the fit.</p>
+          <p class="ref">Atoms: <a href="/concepts/polynomial-regression">polynomial-regression</a>, <a href="/concepts/r-squared">r-squared</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q5: ISLR ch3 Q4 (test version) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 5</span>
+        <span class="exam-q__points">3 points</span>
+        <span class="exam-q__src">ISLR §3 Q4</span>
+      </header>
+      <p class="q-text">
+        Same setup as Q4 (true relationship is linear, $n=100$). What do you expect for the **test** RSS of Model A versus Model B?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Lower for Model A on average; Model B overfits noise.</li>
+        <li><span class="opt-label">B</span> Lower for Model B on average; more flexibility always helps prediction.</li>
+        <li><span class="opt-label">C</span> Identical, because both models contain the truth.</li>
+        <li><span class="opt-label">D</span> The cubic and linear models give exactly the same predictions, so test RSS is identical.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>The cubic model has the same bias as the linear model (both contain the truth) but extra variance from estimating two unnecessary coefficients, so on average test RSS is lower for the simpler Model A.</p>
+          <p>B inverts the bias-variance message — when the truth is in the simpler model, the simpler model wins. C ignores the variance term — Model B's noisier coefficient estimates inflate prediction MSE. D is wrong: with finite samples $\hat\beta_2, \hat\beta_3$ are nonzero point estimates, so Model B's predictions differ from Model A's.</p>
+          <p class="ref">Atoms: <a href="/concepts/polynomial-regression">polynomial-regression</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q6: 2025 P4a-style Boston interpretation ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 6</span>
+        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__src">Exam 2025 P4a</span>
+      </header>
+      <p class="q-text">
+        A Boston-housing-style regression of median home value (<code>medv</code>, in $\$1000$) on nine predictors plus an $\text{rm}^2$ quadratic term gives the following partial output for the $\text{chas}$ indicator (1 if tract bounds the Charles River, 0 otherwise):
+        <br><br>
+        <code>chas&nbsp;&nbsp;Estimate&nbsp;3.36&nbsp;&nbsp;Std.&nbsp;Error&nbsp;0.86&nbsp;&nbsp;t&nbsp;value&nbsp;3.91&nbsp;&nbsp;Pr(&gt;|t|)&nbsp;0.0001</code>
+        <br><br>
+        Using the working approximation $t_{0.975, n-p-1}\approx 2$, the approximate 95% confidence interval for the chas effect is closest to:
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $[3.36 \pm 0.86]$, i.e. $[2.50,\ 4.22]$ thousand dollars.</li>
+        <li><span class="opt-label">B</span> $[3.36 \pm 1.72]$, i.e. $[1.64,\ 5.08]$ thousand dollars.</li>
+        <li><span class="opt-label">C</span> $[3.36 \pm 7.82]$, i.e. $[-4.46,\ 11.18]$ thousand dollars.</li>
+        <li><span class="opt-label">D</span> $[0.0001,\ 3.36]$ thousand dollars.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>$\hat\beta \pm t_{0.975}\cdot\mathrm{SE} \approx 3.36 \pm 2\cdot 0.86 = 3.36 \pm 1.72 \to [1.64, 5.08]$. Houses bounding the river fetch on average $\$1{,}640$–$\$5{,}080$ more, holding other predictors constant.</p>
+          <p>A drops the $t$ multiplier, using one SE rather than two. C uses the t-value $3.91$ instead of the t-quantile (a confusion of column names). D treats the p-value as a confidence bound — p-values and CIs are different objects.</p>
+          <p class="ref">Atoms: <a href="/concepts/confidence-and-prediction-intervals">confidence-and-prediction-intervals</a>, <a href="/concepts/sampling-distribution-of-beta">sampling-distribution-of-beta</a>, <a href="/concepts/t-test-and-significance">t-test-and-significance</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q7: Degrees of freedom counting ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 7</span>
+        <span class="exam-q__points">3 points</span>
+        <span class="exam-q__src">Exam 2025 P4a</span>
+      </header>
+      <p class="q-text">
+        A linear model is fit with an intercept, 7 continuous predictors, a 9-level factor (entered as dummies with one reference level), and one quadratic term <code>I(rm^2)</code>. How many regression parameters does the fitted model consume (counting the intercept)?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $7 + 9 + 1 = 17$.</li>
+        <li><span class="opt-label">B</span> $1 + 7 + 8 + 1 = 17$.</li>
+        <li><span class="opt-label">C</span> $1 + 7 + 9 + 1 = 18$.</li>
+        <li><span class="opt-label">D</span> $1 + 7 + 8 + 2 = 18$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>1 intercept + 7 continuous slopes + $K-1 = 8$ dummies for the 9-level factor + 1 for $\text{rm}^2$ = 17.</p>
+          <p>A forgets the intercept entirely. C uses $K=9$ dummies instead of $K-1$ — the 9-th level is absorbed into the intercept (otherwise $\mathbf{X}^\top\mathbf{X}$ is singular). D double-counts the quadratic term as if both $\text{rm}$ and $\text{rm}^2$ were *new* (they each consume one slot, and $\text{rm}$ is already in the 7 continuous predictors).</p>
+          <p class="ref">Atoms: <a href="/concepts/categorical-encoding-and-interactions">categorical-encoding-and-interactions</a>, <a href="/concepts/design-matrix-and-hat-matrix">design-matrix-and-hat-matrix</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q8: t-test compute (synth, computation) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 8</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        A multiple regression is fit with $n = 200$ observations and $p = 9$ slope parameters. For one predictor, the output gives $\hat\beta = 0.40$ and $\mathrm{SE}(\hat\beta) = 0.20$. Using the working cutoff $t_{0.975, 190}\approx 1.97$, is this coefficient significant at the 5% level, and what is its t-statistic?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $t = 2.0$; significant at the 5% level.</li>
+        <li><span class="opt-label">B</span> $t = 0.5$; not significant at the 5% level.</li>
+        <li><span class="opt-label">C</span> $t = 0.08$; not significant at the 5% level.</li>
+        <li><span class="opt-label">D</span> $t = 2.0$; not significant because $|t|$ has to exceed $t_{0.99}\approx 2.6$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>$t = \hat\beta / \mathrm{SE}(\hat\beta) = 0.40 / 0.20 = 2.0 &gt; 1.97$, so reject $H_0:\beta=0$ at $\alpha=0.05$.</p>
+          <p>B inverts numerator and denominator (computes $\mathrm{SE}/\hat\beta$). C drops the SE step and reads $\hat\beta\cdot\mathrm{SE}$. D applies the wrong cutoff (1% two-sided instead of 5%).</p>
+          <p class="ref">Atoms: <a href="/concepts/t-test-and-significance">t-test-and-significance</a>, <a href="/concepts/sampling-distribution-of-beta">sampling-distribution-of-beta</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q9: p-value misinterpretations (T/F multi from CE1 2g) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 9</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">CE1 P2g</span>
+      </header>
+      <p class="q-text">
+        For a t-test with null $H_0:\beta_j = 0$ and observed two-sided p-value $p$, mark each statement as true or false.
+      </p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) $1 - p$ is the probability that $H_0$ is true.</span>
+          <label><input type="radio" name="q9-a" value="true"> True</label>
+          <label><input type="radio" name="q9-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) If $p &gt; 0.05$, we conclude that $H_1$ is not true.</span>
+          <label><input type="radio" name="q9-b" value="true"> True</label>
+          <label><input type="radio" name="q9-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) $p$ is the probability of observing a test statistic at least as extreme as the one we got, computed under $H_0$.</span>
+          <label><input type="radio" name="q9-c" value="true"> True</label>
+          <label><input type="radio" name="q9-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) $p$ tells us the probability that our results happened by random chance.</span>
+          <label><input type="radio" name="q9-d" value="true"> True</label>
+          <label><input type="radio" name="q9-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>False</strong> — the p-value is computed *conditional on* $H_0$; it is not a posterior probability of $H_0$.</li>
+            <li><strong>False</strong> — failing to reject $H_0$ is "insufficient evidence", not "$H_1$ is false".</li>
+            <li><strong>True</strong> — this is the canonical correct definition.</li>
+            <li><strong>False</strong> — under $H_0$ "everything is random chance" by assumption; the p-value is a tail probability under that assumption, not a probability of "results being chance".</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/t-test-and-significance">t-test-and-significance</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q10: significance vs effect size (scenario) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 10</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        A regression on $n = 50{,}000$ observations gives $\hat\beta = 0.003$ kg/year for a body-fat predictor, with $p &lt; 10^{-6}$. The investigator concludes that the effect is large because the p-value is tiny. The best critique is:
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> A small p-value is evidence the effect is real, but the effect size is the slope, not the p-value; $0.003$ kg/year is practically negligible.</li>
+        <li><span class="opt-label">B</span> A small p-value with large $n$ proves the model is correctly specified, so the conclusion is sound.</li>
+        <li><span class="opt-label">C</span> The effect is large because $p$ is small; effect size and significance carry the same information at large $n$.</li>
+        <li><span class="opt-label">D</span> The p-value is invalid because it is below the conventional reporting threshold of $0.001$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>The prof's "significance is just sample size" sermon: with huge $n$ the SE shrinks like $1/\sqrt n$, so any non-zero effect becomes statistically significant. Practical (effect-size) and statistical (p-value) significance are different — you want both, ideally.</p>
+          <p>B confuses significance with model adequacy — diagnostics, not p-values, check specification. C is the canonical conflation the prof warns against. D invents a non-existent reporting rule.</p>
+          <p class="ref">Atoms: <a href="/concepts/t-test-and-significance">t-test-and-significance</a>, <a href="/concepts/sampling-distribution-of-beta">sampling-distribution-of-beta</a>. Lecture: <a href="/lectures/L05-linreg-1">L05-linreg-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q11: SE direction (T/F multi, direction-of-effect) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 11</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        Recall the simple-LR formula $\mathrm{SE}(\hat\beta_1)^2 = \sigma^2 / \sum_i (x_i - \bar x)^2$. Mark each statement about $\mathrm{SE}(\hat\beta_1)$ as true or false.
+      </p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Doubling $n$ while keeping the spread of $x$ fixed approximately divides $\mathrm{SE}(\hat\beta_1)$ by $\sqrt{2}$.</span>
+          <label><input type="radio" name="q11-a" value="true"> True</label>
+          <label><input type="radio" name="q11-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Spreading the $x$ values further from $\bar x$ (without changing $n$ or $\sigma^2$) decreases $\mathrm{SE}(\hat\beta_1)$.</span>
+          <label><input type="radio" name="q11-b" value="true"> True</label>
+          <label><input type="radio" name="q11-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Adding a second predictor that is highly correlated with $x_1$ generally decreases $\mathrm{SE}(\hat\beta_1)$.</span>
+          <label><input type="radio" name="q11-c" value="true"> True</label>
+          <label><input type="radio" name="q11-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Larger $\sigma^2$ (more noise in the response) increases $\mathrm{SE}(\hat\beta_1)$.</span>
+          <label><input type="radio" name="q11-d" value="true"> True</label>
+          <label><input type="radio" name="q11-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — variance scales like $1/n$, so SE scales like $1/\sqrt n$.</li>
+            <li><strong>True</strong> — the denominator $\sum(x_i - \bar x)^2$ grows, shrinking SE; this is the prof's "design wider experiments" lever.</li>
+            <li><strong>False</strong> — collinearity *inflates* SE: $\mathbf{X}^\top\mathbf{X}$ becomes near-singular, $(\mathbf{X}^\top\mathbf{X})^{-1}$ blows up.</li>
+            <li><strong>True</strong> — SE is proportional to $\sigma$.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/sampling-distribution-of-beta">sampling-distribution-of-beta</a>, <a href="/concepts/collinearity">collinearity</a>. Lecture: <a href="/lectures/L05-linreg-1">L05-linreg-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q12: CI vs PI (single-MC, scenario) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 12</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        At a fixed test point $\mathbf{x}_0$, you can construct (a) a 95% confidence interval for $\mathbf{x}_0^\top\boldsymbol\beta$ and (b) a 95% prediction interval for a future $Y$ at $\mathbf{x}_0$. Which of the following correctly contrasts them?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> The CI captures uncertainty in $\hat{\boldsymbol\beta}$ only; the PI adds the irreducible noise variance $\sigma^2$, so PI is always wider.</li>
+        <li><span class="opt-label">B</span> The CI captures the true individual response; the PI captures the population mean, so PI is wider only when $\mathbf{x}_0$ is far from the data mean.</li>
+        <li><span class="opt-label">C</span> Both intervals carry the same uncertainty; the only difference is the nominal coverage level.</li>
+        <li><span class="opt-label">D</span> The PI is always narrower because it conditions on the observed $\mathbf{x}_0$ rather than averaging over data.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>The CI for the *mean response* uses $\hat\sigma\sqrt{\mathbf{x}_0^\top(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{x}_0}$; the PI for a *future observation* uses $\hat\sigma\sqrt{1 + \mathbf{x}_0^\top(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{x}_0}$ — that "+1" is the $\sigma^2$ contribution from $\varepsilon_{\text{new}}$.</p>
+          <p>B swaps the targets: the CI is for the mean, the PI is for an individual. C ignores the structurally different objects each interval covers. D inverts the inequality — PI is *always* wider, never narrower.</p>
+          <p class="ref">Atoms: <a href="/concepts/confidence-and-prediction-intervals">confidence-and-prediction-intervals</a>, <a href="/concepts/sampling-distribution-of-beta">sampling-distribution-of-beta</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q13: R² monotonicity vs adjusted R² (T/F multi) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 13</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        Mark each statement about $R^2$ and $R^2_{\text{adj}}$ in OLS as true or false.
+      </p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Adding any predictor to an OLS model with intercept never decreases the training $R^2$.</span>
+          <label><input type="radio" name="q13-a" value="true"> True</label>
+          <label><input type="radio" name="q13-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Adjusted $R^2$ can decrease when a useless predictor is added.</span>
+          <label><input type="radio" name="q13-b" value="true"> True</label>
+          <label><input type="radio" name="q13-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) For simple linear regression with intercept, $R^2$ equals the squared sample correlation $\mathrm{Cor}(\mathbf{x}, \mathbf{y})^2$.</span>
+          <label><input type="radio" name="q13-c" value="true"> True</label>
+          <label><input type="radio" name="q13-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) An $R^2$ of $0.7$ means the model's predictions are correct $70\%$ of the time.</span>
+          <label><input type="radio" name="q13-d" value="true"> True</label>
+          <label><input type="radio" name="q13-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — the larger model contains the smaller as a special case ($\beta_{\text{new}} = 0$), so OLS minimisation cannot raise RSS.</li>
+            <li><strong>True</strong> — the $(n-1)/(n-p-1)$ penalty makes $R^2_{\text{adj}}$ fall when added parameters do not pull their weight.</li>
+            <li><strong>True</strong> — a standard simple-LR identity.</li>
+            <li><strong>False</strong> — $R^2$ is the *fraction of variance* in $Y$ explained, not a classification accuracy.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/r-squared">r-squared</a>, <a href="/concepts/linear-regression">linear-regression</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q14: R² hand calculation ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 14</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        A linear model is fit to $n = 8$ observations with response variance summary $\mathrm{TSS} = 800$. The fitted residuals satisfy $\mathrm{RSS} = 200$. What is $R^2$?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $0.20$.</li>
+        <li><span class="opt-label">B</span> $0.25$.</li>
+        <li><span class="opt-label">C</span> $0.75$.</li>
+        <li><span class="opt-label">D</span> $4.00$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>$R^2 = 1 - \mathrm{RSS}/\mathrm{TSS} = 1 - 200/800 = 0.75$.</p>
+          <p>A reports $\mathrm{RSS}/\mathrm{TSS} = 0.25$ as $0.20$ — arithmetic slip. B reports $\mathrm{RSS}/\mathrm{TSS}$ instead of $1 - \mathrm{RSS}/\mathrm{TSS}$ (forgets the $1-$). D inverts the ratio to $\mathrm{TSS}/\mathrm{RSS}$.</p>
+          <p class="ref">Atoms: <a href="/concepts/r-squared">r-squared</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q15: residual diagnostics — QQ plot scenario ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 15</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        After fitting an OLS regression you produce a QQ plot of standardised residuals against theoretical normal quantiles. The middle of the plot lies on the reference line, but both tails curl strongly upward at the high end and downward at the low end (heavy "S-shape"). Which assumption is most directly called into question?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Independence of the errors $\varepsilon_i$.</li>
+        <li><span class="opt-label">B</span> Normality of the errors — the residuals look heavy-tailed relative to a Gaussian.</li>
+        <li><span class="opt-label">C</span> Linearity of the conditional mean $E[Y\mid X]$.</li>
+        <li><span class="opt-label">D</span> Constancy of $\sigma^2$ across the range of fitted values.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>An S-curve with extreme tails pulling away from the reference line is the canonical "heavy tails / non-Gaussian errors" pattern on a QQ plot. The bulk being aligned says the centre of the distribution looks roughly normal; the deviations are at the extremes.</p>
+          <p>A would show as structure in the residuals-vs-fitted or order plots, not in the QQ plot. C shows up as curvature in residuals-vs-fitted. D shows up as a fan in residuals-vs-fitted or scale-location plots, not as an S in the QQ plot.</p>
+          <p class="ref">Atoms: <a href="/concepts/residual-diagnostics">residual-diagnostics</a>, <a href="/concepts/gaussian-error-assumptions">gaussian-error-assumptions</a>. Lecture: <a href="/lectures/L06-linreg-2">L06-linreg-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q16: leverage hand calc (computation) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 16</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        In simple linear regression with $n = 5$ predictor values $\mathbf{x} = (1, 2, 3, 4, 10)$, what is the leverage $h_{55}$ of the fifth observation ($x_5 = 10$)? Recall $h_{ii} = \tfrac{1}{n} + (x_i - \bar x)^2 / \sum_j (x_j - \bar x)^2$.
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $0.20$.</li>
+        <li><span class="opt-label">B</span> $0.72$.</li>
+        <li><span class="opt-label">C</span> $0.92$.</li>
+        <li><span class="opt-label">D</span> $1.20$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>$\bar x = (1+2+3+4+10)/5 = 4$. Deviations $(x_i - \bar x) = (-3, -2, -1, 0, 6)$, so $\sum(x_j-\bar x)^2 = 9 + 4 + 1 + 0 + 36 = 50$. Then $h_{55} = 1/5 + 36/50 = 0.20 + 0.72 = 0.92$. The fifth observation has very high leverage — it sits at the far end of $x$.</p>
+          <p>A reports only the baseline $1/n$ term and forgets the $(x_i - \bar x)^2$ contribution. B reports just the second term $36/50 = 0.72$ and forgets the $1/n$ baseline. D adds a full $1$ instead of $1/n$ — confusing the prediction-interval "+1" with the leverage formula.</p>
+          <p class="ref">Atoms: <a href="/concepts/residual-diagnostics">residual-diagnostics</a>, <a href="/concepts/design-matrix-and-hat-matrix">design-matrix-and-hat-matrix</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q17: leverage vs influence (scenario, common mistake #5) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 17</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        On a residuals-vs-leverage plot, four points are highlighted. Which one is *most* dangerous for the OLS fit (i.e. exerts the largest influence on $\hat{\boldsymbol\beta}$)?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> A point with low leverage and a large residual.</li>
+        <li><span class="opt-label">B</span> A point with high leverage and a residual close to zero.</li>
+        <li><span class="opt-label">C</span> A point with high leverage and a large residual.</li>
+        <li><span class="opt-label">D</span> A point with low leverage and a residual close to zero.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>Cook's distance combines both: $D_i \propto \tilde r_i^2 \cdot h_{ii}/(1-h_{ii})$. The dangerous corner is high leverage *and* large residual — the "fat kid far from centre on the seesaw" image.</p>
+          <p>A has no lever arm — the point can have a large residual but limited pull on the line. B is "harmless high leverage" — the point sits on the fitted line, so it doesn't bend it. D has neither lever nor residual; the safest case.</p>
+          <p class="ref">Atoms: <a href="/concepts/residual-diagnostics">residual-diagnostics</a>. Lecture: <a href="/lectures/L08-classif-2">L08-classif-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q18: collinearity symptoms (T/F multi) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 18</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        Two predictors $x_1$ and $x_2$ are highly correlated (sample correlation $\approx 0.99$). Mark each statement about the OLS fit as true or false.
+      </p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) The standard errors of $\hat\beta_1$ and $\hat\beta_2$ are inflated relative to a fit with only one of the two predictors.</span>
+          <label><input type="radio" name="q18-a" value="true"> True</label>
+          <label><input type="radio" name="q18-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) The point estimates $\hat\beta_1, \hat\beta_2$ become biased.</span>
+          <label><input type="radio" name="q18-b" value="true"> True</label>
+          <label><input type="radio" name="q18-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Individual t-tests on $\beta_1$ and $\beta_2$ may both fail to reject even when the joint contribution is highly significant.</span>
+          <label><input type="radio" name="q18-c" value="true"> True</label>
+          <label><input type="radio" name="q18-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Predictions $\hat y$ on data similar to the training set can still be reasonably stable, even when individual coefficients are not.</span>
+          <label><input type="radio" name="q18-d" value="true"> True</label>
+          <label><input type="radio" name="q18-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — collinearity makes $\mathbf{X}^\top\mathbf{X}$ near-singular, so $(\mathbf{X}^\top\mathbf{X})^{-1}$ has large diagonal entries → SE explodes.</li>
+            <li><strong>False</strong> — under the classical assumptions, OLS is unbiased even under collinearity; only the variance is inflated.</li>
+            <li><strong>True</strong> — the canonical reason to do the joint F-test before drilling into per-coefficient t's.</li>
+            <li><strong>True</strong> — the *sum* $\beta_1 x_1 + \beta_2 x_2$ is well-determined even when each coefficient isn't; predictions on similar data hold up.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/collinearity">collinearity</a>, <a href="/concepts/sampling-distribution-of-beta">sampling-distribution-of-beta</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q19: F-test concept (scope-aware) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 19</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        You want to test whether *any* of the predictors in a multiple regression with $p = 5$ slopes contributes to predicting $Y$. Which is the appropriate procedure?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Run an F-test on $H_0:\beta_1 = \cdots = \beta_5 = 0$ before drilling into individual t-tests.</li>
+        <li><span class="opt-label">B</span> Pick the smallest individual p-value and report it as the overall test.</li>
+        <li><span class="opt-label">C</span> Compare $R^2$ between the full model and the intercept-only model and reject if $R^2 &gt; 0.5$.</li>
+        <li><span class="opt-label">D</span> Compute the residual standard error and reject if it is below $\sigma$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>The F-test on the joint null is exactly the question being asked. It is also robust to collinearity: individual t's can both fail while the joint F is highly significant. Note: you are <em>not</em> expected to compute the F-statistic on this exam — only to know what null it tests and why you'd reach for it.</p>
+          <p>B inflates the family-wise false-positive rate (the multiple-testing trap), and ignores collinearity-masked signals. C invents a non-existent rejection rule. D is meaningless — RSE estimates $\sigma$ but doesn't test "any predictor matters".</p>
+          <p class="ref">Atoms: <a href="/concepts/f-test">f-test</a>, <a href="/concepts/t-test-and-significance">t-test-and-significance</a>, <a href="/concepts/collinearity">collinearity</a>. Lecture: <a href="/lectures/L06-linreg-2">L06-linreg-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q20: dummies / 3-level factor (CE1 P2c) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 20</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">CE1 P2c</span>
+      </header>
+      <p class="q-text">
+        Earthworm weight $Y$ is modelled on stomach circumference $X$ (continuous) and genus $G \in \{L, N, Oc\}$ (factor; <code>L</code> as reference) via $\hat Y = \hat\beta_0 + \hat\beta_1 X + \hat\beta_2 \mathbf{1}_{G=N} + \hat\beta_3 \mathbf{1}_{G=Oc}$. The fitted equation for genus <code>Oc</code> is:
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $\hat Y = \hat\beta_0 + \hat\beta_1 X$.</li>
+        <li><span class="opt-label">B</span> $\hat Y = (\hat\beta_0 + \hat\beta_2) + \hat\beta_1 X$.</li>
+        <li><span class="opt-label">C</span> $\hat Y = (\hat\beta_0 + \hat\beta_3) + \hat\beta_1 X$.</li>
+        <li><span class="opt-label">D</span> $\hat Y = (\hat\beta_0 + \hat\beta_2 + \hat\beta_3) + \hat\beta_1 X$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>For genus <code>Oc</code>, $\mathbf{1}_{G=N} = 0$ and $\mathbf{1}_{G=Oc} = 1$, so the dummy contribution is $\hat\beta_3$ added to the intercept. Slope $\hat\beta_1$ is the same across genera (no interaction).</p>
+          <p>A is the reference-genus equation (<code>L</code>). B is genus <code>N</code>. D adds <em>both</em> dummies as if they could be active simultaneously — but each observation belongs to exactly one genus.</p>
+          <p class="ref">Atoms: <a href="/concepts/categorical-encoding-and-interactions">categorical-encoding-and-interactions</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q21: K vs K-1 dummies ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 21</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        A categorical predictor takes $K = 4$ levels. Why does R encode it as $3$ dummy columns rather than $4$?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Because $4$ dummies would make $\mathbf{X}^\top\mathbf{X}$ singular (the column of ones equals the sum of the four dummies), so the model is unidentifiable.</li>
+        <li><span class="opt-label">B</span> Because $4$ dummies would impose an arbitrary numerical ordering on the four levels.</li>
+        <li><span class="opt-label">C</span> Because R reserves one column for the residual variance estimate.</li>
+        <li><span class="opt-label">D</span> Because the F-test requires $K-1$ degrees of freedom by definition.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>With $K$ dummies plus an intercept, the column of ones equals the sum of the four dummies — perfect collinearity, so $(\mathbf{X}^\top\mathbf{X})^{-1}$ doesn't exist. Drop one dummy to absorb the reference level into the intercept.</p>
+          <p>B confuses the K-dummy issue with the *0/1/2* coding mistake (which is a different trap — that one imposes ordering, but is also wrong for separate reasons). C invents a non-existent design. D inverts cause and effect: degrees of freedom are a *consequence* of identifiability, not the reason for it.</p>
+          <p class="ref">Atoms: <a href="/concepts/categorical-encoding-and-interactions">categorical-encoding-and-interactions</a>, <a href="/concepts/design-matrix-and-hat-matrix">design-matrix-and-hat-matrix</a>, <a href="/concepts/collinearity">collinearity</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q22: main-effects rule (T/F multi) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 22</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        Mark each statement about interaction terms in linear regression as true or false.
+      </p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) If you fit $y = \beta_0 + \beta_3 (X\cdot Z) + \varepsilon$ without including $X$ and $Z$ as main effects, the model violates the hierarchical (main-effects) principle.</span>
+          <label><input type="radio" name="q22-a" value="true"> True</label>
+          <label><input type="radio" name="q22-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) In a model with $X$, $Z$ binary, and the $X\cdot Z$ term, the coefficient on $Z$ alone is the $Z=1$-vs-$Z=0$ difference at $X=0$.</span>
+          <label><input type="radio" name="q22-b" value="true"> True</label>
+          <label><input type="radio" name="q22-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Adding an interaction lets two groups have different intercepts but forces the slopes to be equal.</span>
+          <label><input type="radio" name="q22-c" value="true"> True</label>
+          <label><input type="radio" name="q22-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) A small p-value on the interaction term is evidence that the slopes for the two groups truly differ.</span>
+          <label><input type="radio" name="q22-d" value="true"> True</label>
+          <label><input type="radio" name="q22-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — the prof's flagged "non-negotiable" main-effects rule. Including only $X\cdot Z$ is almost always wrong.</li>
+            <li><strong>True</strong> — the canonical interaction trap. Don't read it as a global average.</li>
+            <li><strong>False</strong> — interactions <em>are</em> what allow different slopes. The "different intercepts only" picture is the no-interaction model.</li>
+            <li><strong>True</strong> — that's exactly what the interaction coefficient measures: the slope difference between groups.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/categorical-encoding-and-interactions">categorical-encoding-and-interactions</a>. Lecture: <a href="/lectures/L06-linreg-2">L06-linreg-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q23: independence violation (scenario, common-mistake #2) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 23</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        Hourly temperature is regressed on time of day. Sampling resolution is then refined from hourly to every $5$ minutes (so $n$ grows by $\sim 12\times$). Reported t-statistics for the time slope shoot up; the p-value drops to $&lt;10^{-9}$. The most accurate critique is:
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Adjacent time bins are highly correlated; effective sample size is much smaller than $n$, so the SEs are underestimated and the reported significance is unreliable.</li>
+        <li><span class="opt-label">B</span> The point estimate $\hat\beta$ becomes biased once $n$ exceeds the number of distinct hours in the data.</li>
+        <li><span class="opt-label">C</span> $R^2$ exceeds $0.95$, so the fit must be overfitting; reduce model flexibility.</li>
+        <li><span class="opt-label">D</span> The Gaussian assumption fails because temperature is non-negative and bounded.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Independence (assumption 5) is violated by serial correlation. The OLS algebra still computes $\hat\beta$, but the reported uncertainty is wrong — the prof's "horseshit standard errors" critique. Effective $n$ is much less than apparent $n$.</p>
+          <p>B confuses bias of $\hat\beta$ with bias of inference; under correlated errors point estimates are still unbiased. C invokes a different problem (overfitting), unrelated to dependence. D is a stretch — Gaussian is robust to mild boundedness, and mismatched.</p>
+          <p class="ref">Atoms: <a href="/concepts/gaussian-error-assumptions">gaussian-error-assumptions</a>, <a href="/concepts/sampling-distribution-of-beta">sampling-distribution-of-beta</a>. Lecture: <a href="/lectures/L05-linreg-1">L05-linreg-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q24: residuals-vs-fitted patterns (T/F multi) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 24</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        Mark each statement about the residuals-vs-fitted plot as true or false.
+      </p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) A clear cone (fanning) shape indicates the homoscedasticity assumption may be violated.</span>
+          <label><input type="radio" name="q24-a" value="true"> True</label>
+          <label><input type="radio" name="q24-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Curvature (a clear U or inverted-U pattern) suggests the linear-mean assumption may be missing a non-linear term.</span>
+          <label><input type="radio" name="q24-b" value="true"> True</label>
+          <label><input type="radio" name="q24-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) A flat band of residuals around zero, with no structure, is consistent with the OLS assumptions.</span>
+          <label><input type="radio" name="q24-c" value="true"> True</label>
+          <label><input type="radio" name="q24-c" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — fanning means $\mathrm{Var}(\varepsilon_i)$ scales with the fitted value, breaking common-variance.</li>
+            <li><strong>True</strong> — systematic shape in residuals against fitted values says the conditional mean is mis-specified; add a transformation or polynomial.</li>
+            <li><strong>True</strong> — exactly the "no structure" pattern the assumptions predict.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/residual-diagnostics">residual-diagnostics</a>, <a href="/concepts/gaussian-error-assumptions">gaussian-error-assumptions</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q25: error vs residual (recall) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 25</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        Which statement best captures the difference between an *error* $\varepsilon_i$ and a *residual* $e_i = y_i - \hat y_i$ in the linear-regression model?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Errors are unobservable random variables; residuals are observed predictions of those errors.</li>
+        <li><span class="opt-label">B</span> Errors are computed from the data; residuals are the parameters of the noise model.</li>
+        <li><span class="opt-label">C</span> Errors and residuals are identical when the model has an intercept.</li>
+        <li><span class="opt-label">D</span> Residuals are unbiased for $\sigma^2$; errors are biased.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>The prof's distinction: $\varepsilon_i$ is the *random* deviation in the population model, never directly observed. $e_i$ is the *observed* prediction of that error after fitting. Raw residuals additionally have $\mathrm{Cov}(\mathbf{e}) = \sigma^2(\mathbf{I}-\mathbf{H})$, which is why we standardise them for diagnostics.</p>
+          <p>B inverts the two roles. C is wrong even with an intercept — residuals are predictions of unobserved errors, not equal to them. D mixes up bias of an estimator (variance) with the variables themselves.</p>
+          <p class="ref">Atoms: <a href="/concepts/gaussian-error-assumptions">gaussian-error-assumptions</a>, <a href="/concepts/residual-diagnostics">residual-diagnostics</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q26: LS = MLE under Gaussian errors (recall, prof's mathy template) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 26</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Exam 2024 P3</span>
+      </header>
+      <p class="q-text">
+        Under the linear model $y_i = \mathbf{x}_i^\top\boldsymbol\beta + \varepsilon_i$ with $\varepsilon_i \overset{\text{iid}}\sim N(0, \sigma^2)$, what is the *correct* short justification that the least-squares estimator equals the maximum-likelihood estimator?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Because $\hat{\boldsymbol\beta}$ is unbiased, and unbiased estimators are always MLEs.</li>
+        <li><span class="opt-label">B</span> Because the log-likelihood equals $-\frac{n}{2}\log(2\pi\sigma^2) - \frac{1}{2\sigma^2}\sum_i (y_i - \mathbf{x}_i^\top\boldsymbol\beta)^2$; the only $\boldsymbol\beta$-dependent piece is the SSE, and maximising the log-likelihood in $\boldsymbol\beta$ amounts to minimising the SSE.</li>
+        <li><span class="opt-label">C</span> Because OLS has a closed form $(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\mathbf{y}$ and closed-form estimators are MLEs by definition.</li>
+        <li><span class="opt-label">D</span> Because the Gaussian density is symmetric, every symmetric estimator is automatically an MLE.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The prof's flagged mathy template (verbatim from L27 / 2024 exam P3): write the log-likelihood, drop terms not depending on $\boldsymbol\beta$, identify the SSE, conclude. About 6–10 lines on the exam.</p>
+          <p>A confuses unbiasedness with the MLE property — they're different. C confuses computational convenience with the optimisation objective — closed form is a property of the algebra, not the principle. D is nonsense — symmetry is not a sufficient condition for being an MLE.</p>
+          <p class="ref">Atoms: <a href="/concepts/least-squares-and-mle">least-squares-and-mle</a>, <a href="/concepts/gaussian-error-assumptions">gaussian-error-assumptions</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q27: derive normal equations (recall) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 27</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        Differentiating the matrix-form residual sum of squares $\mathrm{RSS}(\boldsymbol\beta) = (\mathbf{y} - \mathbf{X}\boldsymbol\beta)^\top(\mathbf{y} - \mathbf{X}\boldsymbol\beta)$ with respect to $\boldsymbol\beta$ and setting the result to zero gives:
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $\mathbf{X}^\top\mathbf{X}\,\hat{\boldsymbol\beta} = \mathbf{X}^\top\mathbf{y}$ (the normal equations).</li>
+        <li><span class="opt-label">B</span> $\mathbf{X}\,\hat{\boldsymbol\beta} = \mathbf{y}$.</li>
+        <li><span class="opt-label">C</span> $\hat{\boldsymbol\beta} = \mathbf{y}^\top\mathbf{X} / (\mathbf{X}^\top\mathbf{X})$.</li>
+        <li><span class="opt-label">D</span> $\hat{\boldsymbol\beta} = \mathbf{X}\,(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{y}$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>$\partial\mathrm{RSS}/\partial\boldsymbol\beta = -2\mathbf{X}^\top\mathbf{y} + 2\mathbf{X}^\top\mathbf{X}\boldsymbol\beta = \mathbf{0}$ gives the normal equations. Solving (when $\mathbf{X}^\top\mathbf{X}$ is invertible) yields $\hat{\boldsymbol\beta} = (\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\mathbf{y}$.</p>
+          <p>B is the residual-equals-zero condition, which only holds for $n \le p+1$ (degenerate). C reorders the matrix product and uses scalar division for matrices — algebraically illegal. D mis-orders the inverse and projection: $(\mathbf{X}^\top\mathbf{X})^{-1}$ is followed by $\mathbf{X}^\top$, not premultiplied by $\mathbf{X}$.</p>
+          <p class="ref">Atoms: <a href="/concepts/least-squares-and-mle">least-squares-and-mle</a>, <a href="/concepts/design-matrix-and-hat-matrix">design-matrix-and-hat-matrix</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q28: Hat matrix properties (T/F multi) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 28</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        Let $\mathbf{H} = \mathbf{X}(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top$ be the hat matrix in OLS. Mark each statement as true or false.
+      </p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) $\mathbf{H}$ depends only on the design matrix $\mathbf{X}$, not on the response $\mathbf{y}$.</span>
+          <label><input type="radio" name="q28-a" value="true"> True</label>
+          <label><input type="radio" name="q28-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) The diagonal entries $h_{ii}$ measure leverage; they sum to $p+1$.</span>
+          <label><input type="radio" name="q28-b" value="true"> True</label>
+          <label><input type="radio" name="q28-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) $\mathbf{H}$ is symmetric and idempotent ($\mathbf{H}^\top = \mathbf{H}$ and $\mathbf{H}^2 = \mathbf{H}$).</span>
+          <label><input type="radio" name="q28-c" value="true"> True</label>
+          <label><input type="radio" name="q28-c" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — useful: leverage can be computed from the design alone, before $\mathbf{y}$ is observed.</li>
+            <li><strong>True</strong> — $\sum h_{ii} = \mathrm{tr}(\mathbf{H}) = p + 1$, the number of fitted parameters (counting the intercept).</li>
+            <li><strong>True</strong> — $\mathbf{H}$ is the orthogonal projection onto the column space of $\mathbf{X}$.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/design-matrix-and-hat-matrix">design-matrix-and-hat-matrix</a>, <a href="/concepts/residual-diagnostics">residual-diagnostics</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Q29: regression is not causation (recall, common mistake #7) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 29</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        A regression of life expectancy on years of education estimates $\hat\beta = 0.6$ years of life per year of schooling, with a small p-value. Which of the following claims is best supported by this OLS fit alone?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Adding one year of schooling causes a person's life expectancy to rise by $0.6$ years on average.</li>
+        <li><span class="opt-label">B</span> In the data, more-educated individuals have on average $0.6$ more years of life expectancy per year of schooling, controlling for whatever else is in the model.</li>
+        <li><span class="opt-label">C</span> Education is the dominant determinant of life expectancy in this population.</li>
+        <li><span class="opt-label">D</span> Schooling and life expectancy are statistically independent in the population.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Regression measures conditional association, not causation — the prof's "fancy correlations" line. The slope is the average change in $\hat Y$ associated with a one-unit change in the predictor, conditional on the other predictors in the model. Lurking variables, reverse causation, and selection effects can all generate a non-zero slope.</p>
+          <p>A reads the slope as causal — the canonical exam-flagged mistake. C overstates: a significant non-zero slope is consistent with many populations, including ones where education is a minor driver. D contradicts the stated significant fit.</p>
+          <p class="ref">Atoms: <a href="/concepts/linear-regression">linear-regression</a>, <a href="/concepts/t-test-and-significance">t-test-and-significance</a>. Lecture: <a href="/lectures/L05-linreg-1">L05-linreg-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+  </main>
+  <script src="exam.js"></script>
+</body>
+</html>
