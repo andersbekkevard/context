@@ -8,14 +8,14 @@ The LLM-generated layer of the TMA4268 context bank. See [[../docs/overview]] fo
 - [[mocs/m02-statlearn]]
 - [[mocs/m03-linreg]]
 - [[mocs/m04-classif]]
-- [[mocs/m05-resampling]]
+- [[mocs/m05-resample]]
 - [[mocs/m06-modelsel]]
-- [[mocs/m07-beyond-linear]]
+- [[mocs/m07-beyondlinear]]
 - [[mocs/m08-trees]]
 - [[mocs/m09-boosting]]
 - [[mocs/m10-unsuper]]
 - [[mocs/m11-nnet]]
-- [[mocs/m12-summary]]
+- [[mocs/m12-final]]
 
 ## Subfolders
 
@@ -25,5 +25,5 @@ The LLM-generated layer of the TMA4268 context bank. See [[../docs/overview]] fo
 
 ## See also
 
-- [[../exam_analysis]] — exam logistics, scope, past-exam translation rules
-- [[../course-information]] — schedule + curriculum
+- [[../docs/scope]] — canonical scope authority (what's in / out, source hierarchy, question patterns)
+- [[../exam_analysis]] — useful synthesis (tier rankings, traps, datasets, opinionated takes)

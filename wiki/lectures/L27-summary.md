@@ -24,7 +24,7 @@ topics:
   - sensitivity-specificity
   - roc-curve
   - knn
-  - random-forests
+  - random-forest
   - maximum-likelihood
 tags:
   - lecture
@@ -245,7 +245,7 @@ Most KNN questions need code, so on his exam you'd likely just get a [[confusion
 
 ### Q7 cont. — Tree-based method choice
 
-Original let students pick any tree method. He'd ask: "What tree-based method would you use, and justify the parameters." E.g. [[random-forests|random forest]], $m \approx \sqrt{p}$, etc. Justify your choices.
+Original let students pick any tree method. He'd ask: "What tree-based method would you use, and justify the parameters." E.g. [[random-forest|random forest]], $m \approx \sqrt{p}$, etc. Justify your choices.
 
 ### Q7 cont. — Class imbalance and bias
 

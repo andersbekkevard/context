@@ -7,14 +7,12 @@ slides: modules/2StatLearn/2StatLearn.1.md
 topics:
   - statistical-learning
   - quantitative-vs-qualitative
-  - supervised-learning
-  - unsupervised-learning
+  - supervised-vs-unsupervised
   - regression-vs-classification
   - prediction-vs-inference
   - bias-variance-tradeoff
   - statistical-vs-machine-learning
-  - misspecification
-  - training-test-validation
+  - training-validation-test-split
 tags:
   - lecture
   - module/02-statlearn
@@ -30,7 +28,7 @@ Ben (taking over from Stephanie) walks through the first half of Module 2, stick
 
 - [[statistical-learning]] = learning *from data*, in the misspecified-model regime — you don't have access to the truth, you don't have all the variables, your model is wrong, and you have to deal with it. This is the regime that *didn't exist* before sensors and computers got good ~20–30 years ago.
 - Two variable types: **quantitative** (continuous or discrete numbers) vs **qualitative** (categorical, often coded numerically). Tokens in LLMs are an interesting in-between because they encode position/context, not just word identity.
-- [[supervised-learning]] has a Y to aim at; [[unsupervised-learning]] just has X with no clear objective. Most of the course is supervised. Many "unsupervised" problems can be reframed as supervised — LLMs are the canonical example: trained only to predict the next word, yet appear to know therapy and Python.
+- [[supervised-vs-unsupervised|Supervised learning]] has a Y to aim at; [[supervised-vs-unsupervised|unsupervised learning]] just has X with no clear objective. Most of the course is supervised. Many "unsupervised" problems can be reframed as supervised — LLMs are the canonical example: trained only to predict the next word, yet appear to know therapy and Python.
 - Two reasons to estimate f: **prediction** (don't care what's inside, want Ŷ accurate) vs **inference / interpretation** (want to know which X's matter and how). Same model, very different design choices.
 - "If it's a math class or statistics — depends on what you call statistics. If it's math or not." Course is in the math department, "less mathematical than most math classes, but the goal is for mathematicians."
 - The bias–variance phrasing: he doesn't like the term, will keep saying so, and **expects an exam question on it** ("if I had to guess today what the exam question would be, it would be… criticize the term bias–variance trade-off, give two perspectives on it"). Today is just the *beginning* of that discussion.

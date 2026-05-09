@@ -276,7 +276,7 @@ A third regularization knob, on top of $M$ and $\nu$.
 
 > "Instead of always using all of the training data, you take a subsample of the data."
 
-Subsample — **without** replacement, distinct from bootstrapping which is with replacement. Build each tree on a different random subset (e.g. 50% of rows). The motivation is the same as for [[random-forests]]: by letting each weak learner see different data, the ensemble has more diversity and lower variance.
+Subsample — **without** replacement, distinct from bootstrapping which is with replacement. Build each tree on a different random subset (e.g. 50% of rows). The motivation is the same as for [[random-forest]]: by letting each weak learner see different data, the ensemble has more diversity and lower variance.
 
 > "By subsampling or resampling the data every time, then using a random subsample… you're encouraging diversity. Because again, one nice way of reducing the variance is by making the models be very different and ensembling them together."
 

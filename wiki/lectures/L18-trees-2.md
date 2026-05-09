@@ -5,15 +5,15 @@ module: 08-trees
 title: Tree-based Methods 2
 slides: modules/8Trees/8Trees.md
 topics:
-  - regression-trees
+  - regression-tree
   - cart
   - cost-complexity-pruning
-  - classification-trees
+  - classification-tree
   - gini-index
   - cross-entropy
   - confusion-matrix
   - bagging
-  - random-forests
+  - random-forest
   - out-of-bag-error
   - variable-importance
 tags:
@@ -25,7 +25,7 @@ aliases:
 
 # L18 — Tree-based Methods 2
 
-The prof recapped CART regression trees (greedy splitting on RSS, build out then prune via cost complexity), then moved to classification trees (majority vote / class probabilities, split by [[gini-index]] or [[cross-entropy]] not misclassification, prune on misclassification). Closed by motivating [[bagging]] and introducing [[random-forests]] / out-of-bag error; deferred boosting to next lecture.
+The prof recapped CART regression trees (greedy splitting on RSS, build out then prune via cost complexity), then moved to classification trees (majority vote / class probabilities, split by [[gini-index]] or [[cross-entropy]] not misclassification, prune on misclassification). Closed by motivating [[bagging]] and introducing [[random-forest]] / out-of-bag error; deferred boosting to next lecture.
 
 ## Key takeaways
 
@@ -219,7 +219,7 @@ The prof flagged the slight oddness: "you have this strange dependency on the te
 
 ### Random forests
 
-[[random-forests]] = bagging + extra randomness: at each split, only a random subset of predictors is considered. This decorrelates the trees further. The prof framed bagging → forests via the analogy "you can see the forest through the trees." Set `B` (number of trees, e.g. 500) and `mtry` (predictors per split).
+[[random-forest]] = bagging + extra randomness: at each split, only a random subset of predictors is considered. This decorrelates the trees further. The prof framed bagging → forests via the analogy "you can see the forest through the trees." Set `B` (number of trees, e.g. 500) and `mtry` (predictors per split).
 
 Synonym: ensembling. "I think that's more common in machine learning, that term."
 

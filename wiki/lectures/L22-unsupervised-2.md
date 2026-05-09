@@ -16,7 +16,7 @@ topics:
   - standardization
   - neural-networks
   - feedforward-network
-  - activation-function
+  - activation-functions
   - deep-learning
 tags:
   - lecture
@@ -335,7 +335,7 @@ For a hidden unit $z_m$:
 
 $$z_m = a\!\left(\beta_0 + \sum_{j} \alpha_{jm}\, x_j\right).$$
 
-Translation: take inputs from previous layer, multiply by connection weights $\alpha_{jm}$, add a bias $\beta_0$, pass the sum through an **[[activation-function]]** $a(\cdot)$. The output layer has the same form, with an activation of its own.
+Translation: take inputs from previous layer, multiply by connection weights $\alpha_{jm}$, add a bias $\beta_0$, pass the sum through an **[[activation-functions|activation function]]** $a(\cdot)$. The output layer has the same form, with an activation of its own.
 
 > "It could just be a sum, and then the value of this thing would be a sum, but then that would be very boring. And often people kind of attribute the importance of having some kind of nonlinearity."
 

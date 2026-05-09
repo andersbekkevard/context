@@ -11,7 +11,7 @@ topics:
   - implicit-regularization
   - bayesian-interpretation-of-regularization
   - dimensionality-reduction
-  - principal-components-regression
+  - principal-component-regression
   - principal-component-analysis
   - partial-least-squares
   - multicollinearity
@@ -26,7 +26,7 @@ aliases:
 
 # L14 — Model Selection and Regularization 3 (PCR/PCA)
 
-The prof recaps L1/L2 [[regularization]] as the third leg of model selection (after best-subset and forward/backward), introduces **implicit regularization** as a teaser, gives the Bayesian-prior view of ridge and lasso, then pivots to **dimensionality reduction** — specifically [[principal-components-regression]] via [[principal-component-analysis|PCA]] — as a different way to tame too-many-correlated-predictors. Ends early (doctor's appointment) with [[partial-least-squares]] flagged for next time.
+The prof recaps L1/L2 [[regularization]] as the third leg of model selection (after best-subset and forward/backward), introduces **implicit regularization** as a teaser, gives the Bayesian-prior view of ridge and lasso, then pivots to **dimensionality reduction** — specifically [[principal-component-regression]] via [[principal-component-analysis|PCA]] — as a different way to tame too-many-correlated-predictors. Ends early (doctor's appointment) with [[partial-least-squares]] flagged for next time.
 
 ## Key takeaways
 

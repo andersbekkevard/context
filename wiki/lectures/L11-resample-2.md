@@ -211,7 +211,7 @@ He polled the room about whether anyone learned that version in their basic stat
 
 ## Bagging — preview of module 8
 
-[[Bagging]] = **B**ootstrap **AGG**regat**ING**. Same resampling trick, used not to estimate uncertainty but to *build a better model*. *"There's a similar magic"* to the bootstrap, the prof says, *"in that you can use this trick in a different way to basically make an ensemble of different models of your data and then average across those."*
+[[bagging]] = **B**ootstrap **AGG**regat**ING**. Same resampling trick, used not to estimate uncertainty but to *build a better model*. *"There's a similar magic"* to the bootstrap, the prof says, *"in that you can use this trick in a different way to basically make an ensemble of different models of your data and then average across those."*
 
 Recipe:
 1. Draw $B$ bootstrap samples from your training data.
@@ -227,7 +227,7 @@ The variance argument: if the $B$ samples were genuinely independent, taking the
 $$\text{Var}_{\text{bag}} = \rho \sigma^2 + \frac{1-\rho}{B}\sigma^2$$
 *"It's not as good of a reduction as if it were independently sampled data, but it's still pretty good."*
 
-The prof flagged that bagging can also remove **bias**, not just variance — *"by doing that, even though you're always just resampling the same data, you can actually remove bias from your model"* — though he's clear the main and easiest argument is the variance one. Bagging shines for **high-variance models with poor prediction ability** — particularly [[regression-trees|trees]], which we'll cover in module 8 ("bagging trees"). Variance reduction here is variance *across realizations of the data*, same notion that's been driving the whole module.
+The prof flagged that bagging can also remove **bias**, not just variance — *"by doing that, even though you're always just resampling the same data, you can actually remove bias from your model"* — though he's clear the main and easiest argument is the variance one. Bagging shines for **high-variance models with poor prediction ability** — particularly [[regression-tree|trees]], which we'll cover in module 8 ("bagging trees"). Variance reduction here is variance *across realizations of the data*, same notion that's been driving the whole module.
 
 > [!note] A surprising aside
 > *"It's actually using this bagging trick implicitly. So you end up with so many different parameters that actually the collection of parameters finds different models and different parts of the parameters and then essentially averages them together."* The prof's intuition: very large-parameter single models — the regime where the bias-variance curve goes back *down* on the far right — end up implicitly bagging. *"It's super weird, but it's interesting."* Comes back in the [[double-descent]] discussion much later.

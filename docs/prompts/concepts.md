@@ -111,6 +111,13 @@ This catches concepts the prof mentioned briefly that matter, and tells Anders w
 - Math in LaTeX (`$...$`, `$$...$$`)
 - Section ordering as in the template
 
+## Hard reminders
+
+- **DO NOT modify `docs/concepts-manifest.md`.** It is the deterministic slug source. If you find a manifest entry that shouldn't exist or a missing concept, report it in your final summary — do not act unilaterally.
+- **Overwrite freely.** If a `wiki/concepts/<slug>.md` already exists, overwrite it. Earlier passes may have produced stubs.
+- **Module agents do NOT write Specials atoms.** Specials atoms (with plural `modules:` in the manifest) are owned by the specials agent. Module agents wikilink to them via `[[bias-variance-tradeoff]]` etc. but never create or modify them.
+- **Do NOT read `notes/`** — off-limits per `CLAUDE.md`.
+
 ## What you're not doing
 
 - Not declaring importance tiers — depth is visible in the signals you cite, the section richness, and the exam-pattern count
