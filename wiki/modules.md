@@ -2,8 +2,6 @@
 title: Modules
 ---
 
-# Modules
-
 Each module page (an "MOC") lists the lectures it covers, the concepts it touches, and what's flagged as in or out of scope. The slide deck links go to the prof's original PDFs (annotated where available).
 
 - [[mocs/m01-intro|01: Introduction]] · <a href="/pdfs/m01-intro-slides.pdf" target="_blank" rel="noopener">slides</a>

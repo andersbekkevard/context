@@ -2,8 +2,6 @@
 title: Exercises
 ---
 
-# Exercises
-
 The original course's recommended and compulsory exercise PDFs, with the official solution proposals.
 
 ## Recommended exercises

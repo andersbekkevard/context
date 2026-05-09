@@ -89,17 +89,17 @@
       </header>
       <p class="q-text">Suppose someone proposed dropping the unit-norm constraint $\sum_j \phi_{j1}^2 = 1$ from the PCA optimization. <em>Why</em> does the constraint exist — what specifically goes wrong without it?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Without the constraint, the algorithm would average all variables equally, producing a single uninformative direction.</li>
-        <li><span class="opt-label">B</span> Without the constraint the optimization becomes unbounded — multiplying $\phi_1$ by any positive scalar inflates $\text{Var}(\phi_1^\top x_i)$ arbitrarily, so the algorithm could manufacture infinite "explained variance" without finding a genuine direction.</li>
-        <li><span class="opt-label">C</span> Without the constraint, PCA would no longer be invariant to rotations of the coordinate system.</li>
-        <li><span class="opt-label">D</span> Without the constraint, loadings could become negative, which has no interpretation.</li>
+        <li><span class="opt-label">A</span> Without the constraint, the orthogonality between successive PCs breaks, so $Z_1$ and $Z_2$ would carry overlapping information and decorrelation is lost.</li>
+        <li><span class="opt-label">B</span> Without the constraint the optimization is unbounded — scaling $\phi_1$ by any positive constant inflates $\text{Var}(\phi_1^\top x)$ without bound, so "maximize variance" has no finite solution.</li>
+        <li><span class="opt-label">C</span> Without the constraint, PCA loses invariance to rotations of the coordinate system, so different column orderings of $X$ would yield different first PCs.</li>
+        <li><span class="opt-label">D</span> Without the constraint, the loadings $\phi_{j1}$ stop being interpretable as the correlations between $Z_1$ and the original $X_j$, breaking the loading-as-correlation reading.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: B</span>
           <p>The prof's verbatim explanation: "If you didn't subject that constraint, you could just make it … arbitrarily create high numbers, but also because we don't want to rescale the data." The unit-norm forces PCA to pick a <em>direction</em>, not a <em>magnification</em> — the variance comparison is meaningful only if all candidate $\phi$ live on the unit sphere.</p>
-          <p>A is wrong: PCA does not average — it weights variables in proportion to how they covary. C is unrelated; orthonormal rotations preserve the constraint anyway. D is a non-issue: negative loadings have a clean interpretation (variable contributes in the opposite direction).</p>
+          <p>A confuses what the constraint controls — orthogonality between PCs is enforced separately (each new PC is constrained orthogonal to previous ones), independent of unit-norm. C is wrong on dependency: column reordering doesn't change PCA's answer either way; orthonormal rotations preserve the constraint anyway. D inverts the relationship — the loading-as-correlation reading is a downstream property; the unit-norm constraint exists for boundedness, not interpretability.</p>
           <p class="ref">Atoms: <a href="/concepts/principal-component-analysis">principal-component-analysis</a>. Lecture: <a href="/lectures/L21-unsupervised-1">L21-unsupervised-1</a>. ISLP §12.2.1.</p>
         </div>
       </details>
@@ -162,17 +162,17 @@
       </header>
       <p class="q-text">PCA is sometimes called a "rotation." In what precise sense is this language exact, and where does it become merely useful shorthand?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> PCA is exactly a rotation only on standardized data; on unstandardized data it is a stretching operation.</li>
-        <li><span class="opt-label">B</span> PCA rotates each observation independently around the data centroid by an angle equal to its first PC score.</li>
-        <li><span class="opt-label">C</span> Computing all $p$ PCs is exactly an orthonormal change of basis — total variance is preserved. Truncating to $M &lt; p$ is the projection step; people use "rotation" as shorthand for the whole pipeline.</li>
-        <li><span class="opt-label">D</span> PCA is exactly a rotation only when the response $Y$ is held constant; otherwise it becomes supervised.</li>
+        <li><span class="opt-label">A</span> PCA is exactly a rotation only on standardized data; on unstandardized data it becomes a stretching operation along the standard-deviation axis of each column.</li>
+        <li><span class="opt-label">B</span> The "rotation" is around the data centroid, applied to each observation in turn — after PCA the points sit at new coordinates while the original axes stay fixed.</li>
+        <li><span class="opt-label">C</span> Keeping all $p$ PCs is an exact orthonormal change of basis; truncating to $M &lt; p$ adds the projection step. "Rotation" is shorthand for the whole rotate-then-truncate pipeline.</li>
+        <li><span class="opt-label">D</span> The rotation is exact only when no two eigenvalues are tied; ties between eigenvalues collapse the orthonormal basis and break the rotation interpretation.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: C</span>
-          <p>The rotation is exact on the <em>full</em> set of $p$ PCs — you've just changed basis with an orthonormal matrix, which preserves all distances and total variance. The reduction comes from chopping at $M &lt; p$ (the projection step). Conflating these two steps is a common source of confusion: "PCA reduces dimension" is true only after the truncation, not at the rotation.</p>
-          <p>A inverts the dependency — standardization affects which directions get picked, not whether PCA is a rotation. B describes a rotation of <em>observations</em>, not coordinates; PCA rotates coordinates, leaving the points fixed. D adds a supervised hook PCA does not have.</p>
+          <p>The rotation is exact on the <em>full</em> set of $p$ PCs — you've just changed basis with an orthonormal matrix, which preserves all distances and total variance. The reduction comes from chopping at $M &lt; p$ (the projection step). "PCA reduces dimension" is true only after the truncation, not at the rotation.</p>
+          <p>A confuses preprocessing with geometry — standardization affects which directions get picked, not whether the basis change is a rotation. B inverts what's rotated: PCA rotates the <em>coordinate axes</em>, leaving the points themselves fixed in physical space. D invents a degeneracy: tied eigenvalues leave the eigenvector basis non-unique within the tied subspace, but every choice is still orthonormal — the rotation interpretation survives.</p>
           <p class="ref">Atoms: <a href="/concepts/principal-component-analysis">principal-component-analysis</a>, <a href="/concepts/dimensionality-reduction">dimensionality-reduction</a>. Lecture: <a href="/lectures/L21-unsupervised-1">L21-unsupervised-1</a>. ISLP §12.2.2 develops the orthonormal-basis-and-projection geometry.</p>
         </div>
       </details>
@@ -239,7 +239,7 @@
       <p class="q-text">PCA on a centered dataset gives PC1 with variance $\lambda_1 = 7.2$, while the total variance of the data is $9.6$. What is the proportion of variance explained by PC1?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> $0.50$</li>
-        <li><span class="opt-label">B</span> $1.33$</li>
+        <li><span class="opt-label">B</span> $0.25$</li>
         <li><span class="opt-label">C</span> $0.75$</li>
         <li><span class="opt-label">D</span> $0.87$</li>
       </ul>
@@ -248,7 +248,7 @@
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: C</span>
           <p>$\text{PVE}_1 = \lambda_1 / \sum_k \lambda_k = 7.2 / 9.6 = 0.75$.</p>
-          <p>A divides the wrong way (e.g. uses some incorrect total $14.4$). B inverts the ratio ($9.6 / 7.2 \approx 1.33$); a PVE cannot exceed 1. D computes $\sqrt{0.75} \approx 0.87$ — confuses variance with standard deviation.</p>
+          <p>A halves to 0.50 by mis-totalling the variance (e.g. doubling: $7.2 / 14.4$). B reports the residual fraction $1 - \text{PVE}_1 = 2.4 / 9.6 = 0.25$ — the proportion <em>not</em> explained by PC1, not the proportion explained. D computes $\sqrt{0.75} \approx 0.87$ — confuses variance with standard deviation.</p>
           <p class="ref">Atoms: <a href="/concepts/explained-variance-and-scree-plot">explained-variance-and-scree-plot</a>, <a href="/concepts/principal-component-analysis">principal-component-analysis</a>. ISLP §12.2.3 (PVE definition and the $R^2 = 1 - \text{RSS}/\text{TSS}$ identity).</p>
         </div>
       </details>
