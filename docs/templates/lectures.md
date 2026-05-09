@@ -10,6 +10,7 @@ lecture: <sequential number 1..27>
 date: <YYYY-MM-DD>
 module: <NN-slug>          # e.g. 03-linreg
 title: <lecture title>     # e.g. Linear Regression 1
+slides: <path>             # path to the slide deck the prof walked through, e.g. modules/3LinReg/3LinReg.md
 topics:                    # concept slugs touched in this lecture
   - <concept-slug>
 tags:
@@ -43,6 +44,7 @@ lecture: 4
 date: 2026-01-19
 module: 03-linreg
 title: Linear Regression 1
+slides: modules/3LinReg/3LinReg.md
 topics:
   - ols
   - bias-variance-tradeoff

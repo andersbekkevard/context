@@ -18,11 +18,12 @@ Bronze transcripts are too long to load into LLM context efficiently. Lecture pa
 
 Each lecture follows the canonical template at [[templates/lectures]]:
 
-- Frontmatter (lecture number, date, module, title, topics, tags, aliases)
+- Frontmatter (lecture number, date, module, title, slides path, topics, tags, aliases)
 - H1 lecture title
 - A 1–3 sentence prose summary right after the H1
 - `## Key takeaways` — 3–6 bullets
 - Body, with H2 headings marking the prof's actual topic transitions and H3 for sub-segments. Never H4.
+- Length: 250–500 lines
 
 The headings reflect the lecture's natural shape, not an imposed template.
 

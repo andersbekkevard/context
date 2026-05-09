@@ -14,7 +14,9 @@ The prof was explicit on Apr 28:
 
 > "If it was covered in the slides or the exercises, it's fair game. If it's only in the book and we didn't talk about it in class or exercises, it won't be on the test."
 
-This is the canonical in-scope test. Atoms apply it: include what the prof covered, note where the textbook adds material he didn't, and don't atomize anything that lives only in the book.
+Strengthened by his own emphasis: **"especially the exercises."**
+
+[[scope]] is the canonical authority for "is X in scope?" — it spells out the source hierarchy (exercises > lectures > slides; ISLR for fleshing out in-scope ideas, not for scoping), the explicit out-of-scope list with verbatim anchors, the programming policy, the 2026 question patterns, and the past-exam translation rules. Atoms apply this rule: include what the prof covered, note where the textbook adds material he didn't, don't atomize anything that lives only in the book.
 
 ## The corpus
 
@@ -24,7 +26,7 @@ This is the canonical in-scope test. Atoms apply it: include what the prof cover
 | `modules/` | Slides — the **structure** of the curriculum |
 | `exercises/` | Recommended + compulsory exercises — the **form** of exam-style problems |
 | `exams/` | Past papers (2023, 2024, 2025) — the **historical question patterns** |
-| Book (ISLR) | Content reference. Available at the exam, low memorization value. |
+| `book/` | ISLR as markdown, one file per chapter (slugs match module slugs). Content reference; available at the exam. Used for citation and look-up, not memorization. |
 
 Each source has a distinct role. We mine each for what only it gives.
 
@@ -35,6 +37,10 @@ Each source has a distinct role. We mine each for what only it gives.
 The raw sources above, plus `archive/` (old materials), `course-information.md` (schedule), `exam_analysis.md` (prior synthesis of exam logistics + scope from a previous transcript pass — useful as scaffolding, not canonical).
 
 Nothing modifies bronze.
+
+### Off-limits — `notes/`
+
+The `notes/` folder contains Anders's own private notes. **Claude does not read, reference, or modify this folder.** It is invisible to all agents and to the tutor. No file under `notes/` should appear in any wiki output, agent prompt, or tutor response.
 
 ### Wiki — LLM-generated
 
