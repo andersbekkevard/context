@@ -304,10 +304,10 @@
         single-sentence interpretation?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Training MSE always decreases because higher-degree models can chase noise; test MSE is U-shaped because variance eventually dominates the bias gain — pick degree 2 from the bottom of the U.</li>
-        <li><span class="opt-label">B</span> Training and test MSE always agree in shape; the U you see is just noise in the test split.</li>
-        <li><span class="opt-label">C</span> Training MSE drops because higher degrees increase the irreducible error.</li>
-        <li><span class="opt-label">D</span> Training MSE drops because higher degrees lower the variance term in the bias-variance decomposition.</li>
+        <li><span class="opt-label">A</span> Training MSE falls monotonically with model flexibility; test MSE is U-shaped because variance eventually dominates the bias gain, so pick degree 2 from the bottom of the U.</li>
+        <li><span class="opt-label">B</span> Training and test MSE always agree in shape; the U you see in test MSE is purely sampling noise from this particular train/test split.</li>
+        <li><span class="opt-label">C</span> Training MSE drops because higher polynomial degree increases the irreducible error term in the bias-variance decomposition.</li>
+        <li><span class="opt-label">D</span> Training MSE drops because higher polynomial degree lowers the variance term in the bias-variance decomposition.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -524,7 +524,7 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 15</span>
-        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__points">3 points</span>
       </header>
       <p class="q-text">
         How does the lecturer recommend choosing the smoothing parameter
@@ -532,17 +532,17 @@
         cheap to evaluate?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> By minimising training RSS — the smoothing penalty already prevents overfitting.</li>
-        <li><span class="opt-label">B</span> By leave-one-out cross-validation, which has a closed-form shortcut so only one fit on the full data is needed.</li>
-        <li><span class="opt-label">C</span> By the F-test against the null model — the prof said it is the standard inference tool here.</li>
-        <li><span class="opt-label">D</span> By Akaike's information criterion using $\mathrm{tr}(\mathbf S_\lambda)$ as the parameter count.</li>
+        <li><span class="opt-label">A</span> By minimising training RSS — the smoothing penalty by itself is enough to keep the fit from overfitting.</li>
+        <li><span class="opt-label">B</span> By a global F-test against the null intercept-only model — the standard inference tool for nonparametric fits.</li>
+        <li><span class="opt-label">C</span> By Akaike's information criterion with $\mathrm{tr}(\mathbf S_\lambda)$ taking the role of the effective parameter count.</li>
+        <li><span class="opt-label">D</span> By leave-one-out CV, exploiting the closed-form shortcut so only one fit on the full data is needed.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>The book / lecturer recommends LOOCV because the leave-one-out residuals can be computed from a single fit: $\mathrm{RSS}_{\text{cv}}(\lambda) = \sum_i ((y_i - \hat y_i)/(1 - \{\mathbf S_\lambda\}_{ii}))^2$. Same shortcut shape as OLS LOOCV with the smoother-matrix diagonal in place of $h_{ii}$.</p>
-          <p>A picks the most flexible fit (df $\to n$) — training RSS is monotone in flexibility. C uses an F-test, which the prof explicitly said he won't ask about (and it doesn't apply to nonparametric fits anyway). D uses AIC — the prof "doesn't trust them" and prefers CV; AIC also relies on penalty-formula assumptions for nonparametric fits that are dubious here.</p>
+          <p>A picks the most flexible fit (df $\to n$) — training RSS is monotone in flexibility. B uses an F-test, which the prof explicitly said he won't ask about (and it doesn't apply to nonparametric fits anyway). C uses AIC — the prof "doesn't trust them" and prefers CV; AIC also relies on penalty-formula assumptions for nonparametric fits that are dubious here.</p>
           <p class="ref">Atoms: <a href="/concepts/smoothing-splines">smoothing-splines</a>, <a href="/concepts/cross-validation">cross-validation</a>.</p>
         </div>
       </details>
@@ -552,7 +552,7 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 16</span>
-        <span class="exam-q__points">8 points</span>
+        <span class="exam-q__points">6 points</span>
       </header>
       <p class="q-text">Mark each statement about a <em>plain</em> cubic regression spline (truncated-power basis) as true or false.</p>
       <ul class="exam-q__tf">
@@ -606,10 +606,10 @@
         each method?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Boosted trees win because they exploit non-linear effects <em>and</em> interactions; the GAM beats linear / lasso because it captures non-linearity per predictor but not interactions.</li>
-        <li><span class="opt-label">B</span> The GAM and lasso are the same model class, so their MSEs should be identical; the difference must be a coding error.</li>
-        <li><span class="opt-label">C</span> Boosted trees are best because boosting always reduces test MSE relative to GAMs and linear models.</li>
-        <li><span class="opt-label">D</span> Linear regression wins on bias-variance grounds; the lower MSEs of the GAM and boosted trees only reflect overfit.</li>
+        <li><span class="opt-label">A</span> Boosted trees exploit both non-linear effects and interactions; the GAM beats linear / lasso by capturing non-linearity but cannot match boosting on interactions.</li>
+        <li><span class="opt-label">B</span> The GAM and the lasso are the same model class, so their test MSEs should be identical; the gap above is most likely a coding error.</li>
+        <li><span class="opt-label">C</span> Boosted trees are best because boosting always reduces test MSE relative to GAMs and linear models, regardless of dataset or interaction structure.</li>
+        <li><span class="opt-label">D</span> Linear regression wins on bias-variance grounds; the lower test MSEs of the GAM and boosted trees only reflect overfit to this particular split.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -626,7 +626,7 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 18</span>
-        <span class="exam-q__points">8 points</span>
+        <span class="exam-q__points">6 points</span>
       </header>
       <p class="q-text">Mark each statement comparing regression splines and smoothing splines as true or false.</p>
       <ul class="exam-q__tf">
@@ -669,7 +669,7 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 19</span>
-        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__points">3 points</span>
       </header>
       <p class="q-text">
         The prof framed smoothing splines as a function-space analogue of which
@@ -677,17 +677,17 @@
         analogy say about the role of $\lambda$?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Lasso — $\lambda$ pushes coefficients to exactly zero, giving a sparse fit.</li>
-        <li><span class="opt-label">B</span> Ridge regression — $\lambda$ shrinks toward a low-curvature fit, the same loss-plus-L2-penalty structure applied to $g''$.</li>
-        <li><span class="opt-label">C</span> Stepwise selection — $\lambda$ is a $p$-value cutoff for adding a basis term.</li>
-        <li><span class="opt-label">D</span> Cross-validation itself — $\lambda$ <em>is</em> the held-out fold size.</li>
+        <li><span class="opt-label">A</span> Lasso — $\lambda$ pushes individual coefficients to exactly zero, giving a sparse and interpretable fit.</li>
+        <li><span class="opt-label">B</span> Stepwise model selection — $\lambda$ is a $p$-value cutoff for adding or dropping a basis term.</li>
+        <li><span class="opt-label">C</span> Ridge regression — same loss-plus-L2-penalty structure, applied to the curvature $g''$ instead of $\beta$.</li>
+        <li><span class="opt-label">D</span> Cross-validation itself — $\lambda$ <em>is</em> the held-out fold size in the resampling scheme.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: C</span>
           <p>Verbatim L16: "we had regularizers… $Y - \beta X$ squared plus sum of $\beta$ squared, that was our ridge regression… Really what you're doing is you're adding another objective to your optimization." Smoothing splines plug the L2-on-curvature term $\lambda \int g''(t)^2\, dt$ into the same loss-plus-penalty frame.</p>
-          <p>A picks the wrong regulariser — lasso's L1 corner-induced sparsity has no analogue in the curvature penalty. C confuses tuning by penalty with tuning by selection (and the prof distrusts $p$-value-driven model selection anyway). D conflates the regularisation parameter $\lambda$ with the cross-validation fold count.</p>
+          <p>A picks the wrong regulariser — lasso's L1 corner-induced sparsity has no analogue in the curvature penalty. B confuses tuning by penalty with tuning by selection (and the prof distrusts $p$-value-driven model selection anyway). D conflates the regularisation parameter $\lambda$ with the cross-validation fold count.</p>
           <p class="ref">Atoms: <a href="/concepts/smoothing-splines">smoothing-splines</a>, <a href="/concepts/regularization">regularization</a>.</p>
         </div>
       </details>
@@ -704,10 +704,10 @@
         of using a natural cubic spline instead of a plain cubic spline?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> The natural spline is forced to be linear past the boundary knots, reducing variance at the tails at the cost of two effective parameters.</li>
-        <li><span class="opt-label">B</span> The natural spline is forced to interpolate every data point, eliminating training RSS.</li>
-        <li><span class="opt-label">C</span> The natural spline switches the basis from cubic to quadratic, halving the parameter count.</li>
-        <li><span class="opt-label">D</span> The natural spline imposes continuity of all derivatives at every knot, including the third.</li>
+        <li><span class="opt-label">A</span> The natural spline is forced linear past the boundary knots, reducing tail variance at the cost of two parameters.</li>
+        <li><span class="opt-label">B</span> The natural spline is forced to interpolate every training observation, driving the training residual sum of squares to zero.</li>
+        <li><span class="opt-label">C</span> The natural spline switches the interior basis from cubic to quadratic, roughly halving the total parameter count.</li>
+        <li><span class="opt-label">D</span> The natural spline imposes continuity of all derivatives at every interior knot, including the third derivative.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -732,10 +732,10 @@
         Which interpretation of "the panel value at age 47" is correct?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> The expected wage of a 47-year-old, in dollars.</li>
-        <li><span class="opt-label">B</span> The contribution of age 47 to wage, holding the other predictors at their mean values, on the wage scale.</li>
-        <li><span class="opt-label">C</span> The slope of wage with respect to age at age 47.</li>
-        <li><span class="opt-label">D</span> The probability that a 47-year-old earns more than the sample mean wage.</li>
+        <li><span class="opt-label">A</span> The predicted wage of a 47-year-old at average year and average education, in dollars.</li>
+        <li><span class="opt-label">B</span> The age-47 contribution to wage, holding the other predictors at their means, on the wage scale.</li>
+        <li><span class="opt-label">C</span> The slope of fitted wage with respect to age, evaluated locally at age 47.</li>
+        <li><span class="opt-label">D</span> The probability that a randomly drawn 47-year-old earns more than the sample mean wage.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>

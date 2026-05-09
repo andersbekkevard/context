@@ -62,16 +62,16 @@
       <p class="q-text">A model is fit as $y_i = \beta_0 + \beta_1 x_i + \beta_2 x_i^2 + \varepsilon_i$ by ordinary least squares. Which statement best describes this model?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> It is nonlinear regression because the response curves with $x$.</li>
-        <li><span class="opt-label">B</span> It is linear regression because it is linear in the parameters $\boldsymbol\beta$.</li>
-        <li><span class="opt-label">C</span> It is a generalised additive model because two basis terms enter additively.</li>
-        <li><span class="opt-label">D</span> It can only be fit by gradient descent because of the quadratic term.</li>
+        <li><span class="opt-label">B</span> It is a generalised additive model because two basis terms enter additively.</li>
+        <li><span class="opt-label">C</span> It can only be fit by gradient descent because of the quadratic term.</li>
+        <li><span class="opt-label">D</span> It is linear regression because it is linear in the parameters $\boldsymbol\beta$.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>"Linear" refers to the parameters, not the predictor. Treat $(1, x, x^2)$ as columns of $\mathbf{X}$ and run ordinary OLS — closed-form $\hat{\boldsymbol\beta} = (\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\mathbf{y}$ still applies.</p>
-          <p>A confuses curvature in $x$ with non-linearity in $\boldsymbol\beta$ (the canonical L06 trap). C is wrong because GAMs use *smoothed* univariate functions, not fixed polynomial bases. D is wrong: OLS has a one-shot closed form whenever $\mathbf{X}^\top\mathbf{X}$ is invertible.</p>
+          <p>A confuses curvature in $x$ with non-linearity in $\boldsymbol\beta$ (the canonical L06 trap). B is wrong because GAMs use *smoothed* univariate functions, not fixed polynomial bases. C is wrong: OLS has a one-shot closed form whenever $\mathbf{X}^\top\mathbf{X}$ is invertible.</p>
           <p class="ref">Atoms: <a href="/concepts/polynomial-regression">polynomial-regression</a>, <a href="/concepts/linear-regression">linear-regression</a>. Lecture: <a href="/lectures/L06-linreg-2">L06-linreg-2</a>.</p>
         </div>
       </details>
@@ -350,17 +350,17 @@
         A regression on $n = 50{,}000$ observations gives $\hat\beta = 0.003$ kg/year for a body-fat predictor, with $p &lt; 10^{-6}$. The investigator concludes that the effect is large because the p-value is tiny. The best critique is:
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> A small p-value is evidence the effect is real, but the effect size is the slope, not the p-value; $0.003$ kg/year is practically negligible.</li>
-        <li><span class="opt-label">B</span> A small p-value with large $n$ proves the model is correctly specified, so the conclusion is sound.</li>
-        <li><span class="opt-label">C</span> The effect is large because $p$ is small; effect size and significance carry the same information at large $n$.</li>
-        <li><span class="opt-label">D</span> The p-value is invalid because it is below the conventional reporting threshold of $0.001$.</li>
+        <li><span class="opt-label">A</span> A small p-value with large $n$ proves the model is correctly specified, so the conclusion is sound.</li>
+        <li><span class="opt-label">B</span> The effect is large because $p$ is small; effect size and significance carry the same information at large $n$.</li>
+        <li><span class="opt-label">C</span> The p-value is invalid because it is below the conventional reporting threshold of $0.001$.</li>
+        <li><span class="opt-label">D</span> A small p-value is evidence the effect is real, but the effect size is the slope, not the p-value; $0.003$ kg/year is practically negligible.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: A</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>The prof's "significance is just sample size" sermon: with huge $n$ the SE shrinks like $1/\sqrt n$, so any non-zero effect becomes statistically significant. Practical (effect-size) and statistical (p-value) significance are different — you want both, ideally.</p>
-          <p>B confuses significance with model adequacy — diagnostics, not p-values, check specification. C is the canonical conflation the prof warns against. D invents a non-existent reporting rule.</p>
+          <p>A confuses significance with model adequacy — diagnostics, not p-values, check specification. B is the canonical conflation the prof warns against. C invents a non-existent reporting rule.</p>
           <p class="ref">Atoms: <a href="/concepts/t-test-and-significance">t-test-and-significance</a>, <a href="/concepts/sampling-distribution-of-beta">sampling-distribution-of-beta</a>. Lecture: <a href="/lectures/L05-linreg-1">L05-linreg-1</a>.</p>
         </div>
       </details>
@@ -370,7 +370,7 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 11</span>
-        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__points">3 points</span>
       </header>
       <p class="q-text">
         Recall the simple-LR formula $\mathrm{SE}(\hat\beta_1)^2 = \sigma^2 / \sum_i (x_i - \bar x)^2$. Mark each statement about $\mathrm{SE}(\hat\beta_1)$ as true or false.
@@ -626,7 +626,7 @@
             <li><strong>True</strong> — the canonical reason to do the joint F-test before drilling into per-coefficient t's.</li>
             <li><strong>True</strong> — the *sum* $\beta_1 x_1 + \beta_2 x_2$ is well-determined even when each coefficient isn't; predictions on similar data hold up.</li>
           </ol>
-          <p class="ref">Atoms: <a href="/concepts/collinearity">collinearity</a>, <a href="/concepts/sampling-distribution-of-beta">sampling-distribution-of-beta</a>.</p>
+          <p class="ref">Atoms: <a href="/concepts/collinearity">collinearity</a>, <a href="/concepts/sampling-distribution-of-beta">sampling-distribution-of-beta</a>, <a href="/concepts/multivariate-normal">multivariate-normal</a> (the joint $N_{p+1}(\boldsymbol\beta, \sigma^2(\mathbf{X}^\top\mathbf{X})^{-1})$ distribution of $\hat{\boldsymbol\beta}$ is the foundation for inflated SEs under collinearity).</p>
         </div>
       </details>
     </article>
@@ -641,17 +641,17 @@
         You want to test whether *any* of the predictors in a multiple regression with $p = 5$ slopes contributes to predicting $Y$. Which is the appropriate procedure?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Run an F-test on $H_0:\beta_1 = \cdots = \beta_5 = 0$ before drilling into individual t-tests.</li>
-        <li><span class="opt-label">B</span> Pick the smallest individual p-value and report it as the overall test.</li>
-        <li><span class="opt-label">C</span> Compare $R^2$ between the full model and the intercept-only model and reject if $R^2 &gt; 0.5$.</li>
-        <li><span class="opt-label">D</span> Compute the residual standard error and reject if it is below $\sigma$.</li>
+        <li><span class="opt-label">A</span> Pick the smallest individual p-value and report it as the overall test.</li>
+        <li><span class="opt-label">B</span> Compute the residual standard error and reject if it is below $\sigma$.</li>
+        <li><span class="opt-label">C</span> Run an F-test on $H_0:\beta_1 = \cdots = \beta_5 = 0$ before drilling into individual t-tests.</li>
+        <li><span class="opt-label">D</span> Compare $R^2$ between the full model and the intercept-only model and reject if $R^2 &gt; 0.5$.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: A</span>
+          <span class="fasit-correct">Correct answer: C</span>
           <p>The F-test on the joint null is exactly the question being asked. It is also robust to collinearity: individual t's can both fail while the joint F is highly significant. Note: you are <em>not</em> expected to compute the F-statistic on this exam — only to know what null it tests and why you'd reach for it.</p>
-          <p>B inflates the family-wise false-positive rate (the multiple-testing trap), and ignores collinearity-masked signals. C invents a non-existent rejection rule. D is meaningless — RSE estimates $\sigma$ but doesn't test "any predictor matters".</p>
+          <p>A inflates the family-wise false-positive rate (the multiple-testing trap), and ignores collinearity-masked signals. B is meaningless — RSE estimates $\sigma$ but doesn't test "any predictor matters". D invents a non-existent rejection rule.</p>
           <p class="ref">Atoms: <a href="/concepts/f-test">f-test</a>, <a href="/concepts/t-test-and-significance">t-test-and-significance</a>, <a href="/concepts/collinearity">collinearity</a>. Lecture: <a href="/lectures/L06-linreg-2">L06-linreg-2</a>.</p>
         </div>
       </details>
@@ -694,10 +694,10 @@
         A categorical predictor takes $K = 4$ levels. Why does R encode it as $3$ dummy columns rather than $4$?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Because $4$ dummies would make $\mathbf{X}^\top\mathbf{X}$ singular (the column of ones equals the sum of the four dummies), so the model is unidentifiable.</li>
-        <li><span class="opt-label">B</span> Because $4$ dummies would impose an arbitrary numerical ordering on the four levels.</li>
-        <li><span class="opt-label">C</span> Because R reserves one column for the residual variance estimate.</li>
-        <li><span class="opt-label">D</span> Because the F-test requires $K-1$ degrees of freedom by definition.</li>
+        <li><span class="opt-label">A</span> Because the column of ones plus $4$ dummies is linearly dependent, so $\mathbf{X}^\top\mathbf{X}$ is singular and the fit is unidentifiable.</li>
+        <li><span class="opt-label">B</span> Because $4$ dummies would impose an arbitrary numerical ordering on the four otherwise unordered category labels.</li>
+        <li><span class="opt-label">C</span> Because R automatically reserves one design-matrix column for the residual-variance estimate $\hat\sigma^2$.</li>
+        <li><span class="opt-label">D</span> Because the relevant F-test on this factor consumes exactly $K-1$ degrees of freedom by definition.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -714,7 +714,7 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 22</span>
-        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__points">3 points</span>
       </header>
       <p class="q-text">
         Mark each statement about interaction terms in linear regression as true or false.
@@ -765,17 +765,17 @@
         Hourly temperature is regressed on time of day. Sampling resolution is then refined from hourly to every $5$ minutes (so $n$ grows by $\sim 12\times$). Reported t-statistics for the time slope shoot up; the p-value drops to $&lt;10^{-9}$. The most accurate critique is:
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Adjacent time bins are highly correlated; effective sample size is much smaller than $n$, so the SEs are underestimated and the reported significance is unreliable.</li>
-        <li><span class="opt-label">B</span> The point estimate $\hat\beta$ becomes biased once $n$ exceeds the number of distinct hours in the data.</li>
-        <li><span class="opt-label">C</span> $R^2$ exceeds $0.95$, so the fit must be overfitting; reduce model flexibility.</li>
-        <li><span class="opt-label">D</span> The Gaussian assumption fails because temperature is non-negative and bounded.</li>
+        <li><span class="opt-label">A</span> The point estimate $\hat\beta$ becomes biased once $n$ exceeds the number of distinct hours in the data.</li>
+        <li><span class="opt-label">B</span> $R^2$ exceeds $0.95$, so the fit must be overfitting; reduce model flexibility.</li>
+        <li><span class="opt-label">C</span> The Gaussian assumption fails because temperature is non-negative and bounded.</li>
+        <li><span class="opt-label">D</span> Adjacent time bins are highly correlated; effective sample size is much smaller than $n$, so the SEs are underestimated and the reported significance is unreliable.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: A</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>Independence (assumption 5) is violated by serial correlation. The OLS algebra still computes $\hat\beta$, but the reported uncertainty is wrong — the prof's "horseshit standard errors" critique. Effective $n$ is much less than apparent $n$.</p>
-          <p>B confuses bias of $\hat\beta$ with bias of inference; under correlated errors point estimates are still unbiased. C invokes a different problem (overfitting), unrelated to dependence. D is a stretch — Gaussian is robust to mild boundedness, and mismatched.</p>
+          <p>A confuses bias of $\hat\beta$ with bias of inference; under correlated errors point estimates are still unbiased. B invokes a different problem (overfitting), unrelated to dependence. C is a stretch — Gaussian is robust to mild boundedness, and mismatched.</p>
           <p class="ref">Atoms: <a href="/concepts/gaussian-error-assumptions">gaussian-error-assumptions</a>, <a href="/concepts/sampling-distribution-of-beta">sampling-distribution-of-beta</a>. Lecture: <a href="/lectures/L05-linreg-1">L05-linreg-1</a>.</p>
         </div>
       </details>
@@ -830,17 +830,17 @@
         Which statement best captures the difference between an *error* $\varepsilon_i$ and a *residual* $e_i = y_i - \hat y_i$ in the linear-regression model?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Errors are unobservable random variables; residuals are observed predictions of those errors.</li>
-        <li><span class="opt-label">B</span> Errors are computed from the data; residuals are the parameters of the noise model.</li>
-        <li><span class="opt-label">C</span> Errors and residuals are identical when the model has an intercept.</li>
-        <li><span class="opt-label">D</span> Residuals are unbiased for $\sigma^2$; errors are biased.</li>
+        <li><span class="opt-label">A</span> Errors are computed from the data; residuals are the parameters of the noise model.</li>
+        <li><span class="opt-label">B</span> Errors and residuals are identical when the model has an intercept.</li>
+        <li><span class="opt-label">C</span> Residuals are unbiased for $\sigma^2$; errors are biased.</li>
+        <li><span class="opt-label">D</span> Errors are unobservable random variables; residuals are observed predictions of those errors.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: A</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>The prof's distinction: $\varepsilon_i$ is the *random* deviation in the population model, never directly observed. $e_i$ is the *observed* prediction of that error after fitting. Raw residuals additionally have $\mathrm{Cov}(\mathbf{e}) = \sigma^2(\mathbf{I}-\mathbf{H})$, which is why we standardise them for diagnostics.</p>
-          <p>B inverts the two roles. C is wrong even with an intercept — residuals are predictions of unobserved errors, not equal to them. D mixes up bias of an estimator (variance) with the variables themselves.</p>
+          <p>A inverts the two roles. B is wrong even with an intercept — residuals are predictions of unobserved errors, not equal to them. C mixes up bias of an estimator (variance) with the variables themselves.</p>
           <p class="ref">Atoms: <a href="/concepts/gaussian-error-assumptions">gaussian-error-assumptions</a>, <a href="/concepts/residual-diagnostics">residual-diagnostics</a>.</p>
         </div>
       </details>
@@ -857,10 +857,10 @@
         Under the linear model $y_i = \mathbf{x}_i^\top\boldsymbol\beta + \varepsilon_i$ with $\varepsilon_i \overset{\text{iid}}\sim N(0, \sigma^2)$, what is the *correct* short justification that the least-squares estimator equals the maximum-likelihood estimator?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Because $\hat{\boldsymbol\beta}$ is unbiased, and unbiased estimators are always MLEs.</li>
-        <li><span class="opt-label">B</span> Because the log-likelihood equals $-\frac{n}{2}\log(2\pi\sigma^2) - \frac{1}{2\sigma^2}\sum_i (y_i - \mathbf{x}_i^\top\boldsymbol\beta)^2$; the only $\boldsymbol\beta$-dependent piece is the SSE, and maximising the log-likelihood in $\boldsymbol\beta$ amounts to minimising the SSE.</li>
-        <li><span class="opt-label">C</span> Because OLS has a closed form $(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\mathbf{y}$ and closed-form estimators are MLEs by definition.</li>
-        <li><span class="opt-label">D</span> Because the Gaussian density is symmetric, every symmetric estimator is automatically an MLE.</li>
+        <li><span class="opt-label">A</span> Because $\hat{\boldsymbol\beta}$ is unbiased under the Gaussian model, and any unbiased estimator of a parameter automatically maximises the joint likelihood.</li>
+        <li><span class="opt-label">B</span> Because $\log L \propto -\sum_i (y_i - \mathbf{x}_i^\top\boldsymbol\beta)^2$ in $\boldsymbol\beta$, so maximising $\log L$ is equivalent to minimising the SSE — the LS objective.</li>
+        <li><span class="opt-label">C</span> Because the OLS closed form $(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\mathbf{y}$ exists in one matrix multiplication, and closed-form estimators coincide with MLEs by definition.</li>
+        <li><span class="opt-label">D</span> Because the Gaussian density is symmetric, and any symmetric-loss minimiser is automatically an MLE under the symmetric likelihood.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -949,16 +949,16 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Adding one year of schooling causes a person's life expectancy to rise by $0.6$ years on average.</li>
-        <li><span class="opt-label">B</span> In the data, more-educated individuals have on average $0.6$ more years of life expectancy per year of schooling, controlling for whatever else is in the model.</li>
-        <li><span class="opt-label">C</span> Education is the dominant determinant of life expectancy in this population.</li>
+        <li><span class="opt-label">B</span> Education is the dominant determinant of life expectancy in this population.</li>
+        <li><span class="opt-label">C</span> In the data, more-educated individuals have on average $0.6$ more years of life expectancy per year of schooling, controlling for whatever else is in the model.</li>
         <li><span class="opt-label">D</span> Schooling and life expectancy are statistically independent in the population.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: C</span>
           <p>Regression measures conditional association, not causation — the prof's "fancy correlations" line. The slope is the average change in $\hat Y$ associated with a one-unit change in the predictor, conditional on the other predictors in the model. Lurking variables, reverse causation, and selection effects can all generate a non-zero slope.</p>
-          <p>A reads the slope as causal — the canonical exam-flagged mistake. C overstates: a significant non-zero slope is consistent with many populations, including ones where education is a minor driver. D contradicts the stated significant fit.</p>
+          <p>A reads the slope as causal — the canonical exam-flagged mistake. B overstates: a significant non-zero slope is consistent with many populations, including ones where education is a minor driver. D contradicts the stated significant fit.</p>
           <p class="ref">Atoms: <a href="/concepts/linear-regression">linear-regression</a>, <a href="/concepts/t-test-and-significance">t-test-and-significance</a>. Lecture: <a href="/lectures/L05-linreg-1">L05-linreg-1</a>.</p>
         </div>
       </details>

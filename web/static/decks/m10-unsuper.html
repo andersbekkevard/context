@@ -93,16 +93,16 @@
       <p class="q-text">How many principal components must you keep to retain at least 90% of the total variance?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> 2 components</li>
-        <li><span class="opt-label">B</span> 3 components</li>
+        <li><span class="opt-label">B</span> 5 components</li>
         <li><span class="opt-label">C</span> 4 components</li>
-        <li><span class="opt-label">D</span> 5 components</li>
+        <li><span class="opt-label">D</span> 3 components</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>Total variance $= 2.7+1.5+0.5+0.2+0.1 = 5$ (which equals $p$, since the variables are standardized). Cumulative PVE: $2.7/5 = 0.54$; $0.54+0.30 = 0.84$ (still under 0.90); $0.84+0.10 = 0.94$ — threshold crossed at $M = 3$.</p>
-          <p>A stops at 0.84 and reads "almost 90%" as enough — the threshold is 0.90, not 0.85. C and D add components past the threshold; once 0.94 is reached, more components do not earn their keep.</p>
+          <p>A stops at 0.84 and reads "almost 90%" as enough — the threshold is 0.90, not 0.85. B and C add components past the threshold; once 0.94 is reached, more components do not earn their keep.</p>
           <p class="ref">Atoms: <a href="/concepts/explained-variance-and-scree-plot">explained-variance-and-scree-plot</a>, <a href="/concepts/principal-component-analysis">principal-component-analysis</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>.</p>
         </div>
       </details>
@@ -191,16 +191,16 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> $0.25$</li>
-        <li><span class="opt-label">B</span> $0.50$</li>
+        <li><span class="opt-label">B</span> $2.00$</li>
         <li><span class="opt-label">C</span> $0.71$</li>
-        <li><span class="opt-label">D</span> $2.00$</li>
+        <li><span class="opt-label">D</span> $0.50$</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>$\text{PVE}_1 = \lambda_1 / \sum_k \lambda_k = 6 / 12 = 0.5$.</p>
-          <p>A divides $\lambda_1^2 / \text{total}^2$ or otherwise squares the wrong quantity. C uses $\sqrt{\lambda_1 / \text{total}}$ — confuses variance with standard deviation. D inverts the ratio (total / $\lambda_1$); a PVE cannot exceed 1.</p>
+          <p>A divides $\lambda_1^2 / \text{total}^2$ or otherwise squares the wrong quantity. C uses $\sqrt{\lambda_1 / \text{total}}$ — confuses variance with standard deviation. B inverts the ratio (total / $\lambda_1$); a PVE cannot exceed 1.</p>
           <p class="ref">Atoms: <a href="/concepts/explained-variance-and-scree-plot">explained-variance-and-scree-plot</a>.</p>
         </div>
       </details>
@@ -292,16 +292,16 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> The data has very strong low-dimensional structure; keeping only PC1 is sufficient.</li>
-        <li><span class="opt-label">B</span> PCA has revealed no real low-dimensional structure; dimensionality reduction will not help here.</li>
-        <li><span class="opt-label">C</span> The variables are perfectly collinear, and the original data lies on a 1-D line.</li>
+        <li><span class="opt-label">B</span> The variables are perfectly collinear, and the original data lies on a 1-D line.</li>
+        <li><span class="opt-label">C</span> PCA has revealed no real low-dimensional structure; dimensionality reduction will not help here.</li>
         <li><span class="opt-label">D</span> The standardization step must have been skipped, and the analysis should be re-run.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: C</span>
           <p>A flat scree plot means each PC explains roughly $1/p$ of the variance — i.e., the variables were already nearly orthogonal. The prof: "if the variables were already orthogonal then adding more PCs is just the same as adding another variable." There is no low-dim structure to exploit.</p>
-          <p>A inverts the reading: a flat scree means weak — not strong — low-dim structure. C describes the opposite extreme (one PC explaining ≈ 100%); perfect collinearity gives a steep, not flat, scree. D blames standardization, but standardization makes <em>flat</em> scree plots more likely (column variances all 1) — the diagnostic for forgetting to standardize is one PC dominating, not the reverse.</p>
+          <p>A inverts the reading: a flat scree means weak — not strong — low-dim structure. B describes the opposite extreme (one PC explaining ≈ 100%); perfect collinearity gives a steep, not flat, scree. D blames standardization, but standardization makes <em>flat</em> scree plots more likely (column variances all 1) — the diagnostic for forgetting to standardize is one PC dominating, not the reverse.</p>
           <p class="ref">Atoms: <a href="/concepts/explained-variance-and-scree-plot">explained-variance-and-scree-plot</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>.</p>
         </div>
       </details>
@@ -519,16 +519,16 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> $x_1 \in A$, $x_2 \in B$, $x_3 \in A$ (no change from initialization).</li>
-        <li><span class="opt-label">B</span> $x_1 \in B$, $x_2 \in B$, $x_3 \in A$.</li>
+        <li><span class="opt-label">B</span> $x_1 \in A$, $x_2 \in B$, $x_3 \in B$.</li>
         <li><span class="opt-label">C</span> $x_1 \in A$, $x_2 \in A$, $x_3 \in B$.</li>
-        <li><span class="opt-label">D</span> $x_1 \in A$, $x_2 \in B$, $x_3 \in B$.</li>
+        <li><span class="opt-label">D</span> $x_1 \in B$, $x_2 \in B$, $x_3 \in A$.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>Centroid step: $\bar x_A = (0 + 8)/2 = 4$, $\bar x_B = 2$. Reassignment: distance from $x_1 = 0$ to centroid A is 4, to centroid B is 2 → move to B. $x_2 = 2$ stays in B (distance 0 < 2). $x_3 = 8$ stays in A (distance 4 < 6). Final: $x_1 \in B, x_2 \in B, x_3 \in A$.</p>
-          <p>A misses the reassignment step entirely. C swaps the labels (treats $x_3$ as the outlier that gets isolated and pulls the rest together — but the centroid update has happened, and $x_3$ stays nearest to its old centroid). D moves $x_3$ rather than $x_1$, which would require $x_3$ to be closer to centroid B = 2 than to centroid A = 4, but $|8 - 2| = 6 > |8 - 4| = 4$.</p>
+          <p>A misses the reassignment step entirely. C swaps the labels (treats $x_3$ as the outlier that gets isolated and pulls the rest together — but the centroid update has happened, and $x_3$ stays nearest to its old centroid). B moves $x_3$ rather than $x_1$, which would require $x_3$ to be closer to centroid B = 2 than to centroid A = 4, but $|8 - 2| = 6 > |8 - 4| = 4$.</p>
           <p class="ref">Atoms: <a href="/concepts/k-means-clustering">k-means-clustering</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a> (k-means hand-computation flagged as fair game).</p>
         </div>
       </details>
@@ -545,16 +545,16 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Euclidean distance on the raw counts of items per category.</li>
-        <li><span class="opt-label">B</span> Correlation distance ($1 - \rho$) between each pair of shopper profiles.</li>
-        <li><span class="opt-label">C</span> Squared Euclidean distance with column standardization, no other change.</li>
+        <li><span class="opt-label">B</span> Squared Euclidean distance with column standardization, no other change.</li>
+        <li><span class="opt-label">C</span> Correlation distance ($1 - \rho$) between each pair of shopper profiles.</li>
         <li><span class="opt-label">D</span> The number of categories in which both shoppers made any purchase, divided by the total number of categories.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: C</span>
           <p>Correlation distance measures whether the <em>shapes</em> of two profiles match. Two shoppers with identical proportional preferences but different overall volumes have $\rho \approx 1$ → distance ≈ 0. The prof's verbatim example: "Euclidean distance might group together infrequent shoppers — people just don't shop a lot — whereas the correlation distance would find people who have similar preferences."</p>
-          <p>A groups infrequent shoppers together regardless of taste, the canonical wrong choice. C handles units but not the volume-vs-shape distinction; standardizing columns does not make Euclidean distance shape-sensitive. D is the Jaccard-style overlap measure — it captures "did both buy in the same categories" but ignores the proportions, missing the "similar tastes" signal.</p>
+          <p>A groups infrequent shoppers together regardless of taste, the canonical wrong choice. B handles units but not the volume-vs-shape distinction; standardizing columns does not make Euclidean distance shape-sensitive. D is the Jaccard-style overlap measure — it captures "did both buy in the same categories" but ignores the proportions, missing the "similar tastes" signal.</p>
           <p class="ref">Atoms: <a href="/concepts/distance-metrics">distance-metrics</a>, <a href="/concepts/hierarchical-clustering">hierarchical-clustering</a>. Lecture: <a href="/lectures/L22-unsupervised-2">L22-unsupervised-2</a>.</p>
         </div>
       </details>
@@ -568,10 +568,10 @@
       </header>
       <p class="q-text">Which of the following best distinguishes hierarchical clustering from K-means clustering?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Hierarchical clustering produces a single dendrogram from which any number of clusters can be read by cutting at different heights; K-means returns one partition for one fixed $K$.</li>
-        <li><span class="opt-label">B</span> Hierarchical clustering is supervised (uses the response $Y$); K-means is unsupervised.</li>
-        <li><span class="opt-label">C</span> Hierarchical clustering is guaranteed to find the global minimum of its objective; K-means is not.</li>
-        <li><span class="opt-label">D</span> Hierarchical clustering does not require a notion of distance between observations; K-means requires Euclidean distance.</li>
+        <li><span class="opt-label">A</span> Hierarchical clustering produces a dendrogram from which any $K$ can be read by cutting at different heights, while K-means returns one partition for one fixed $K$.</li>
+        <li><span class="opt-label">B</span> Hierarchical clustering is supervised because it uses the response $Y$ to weight pairwise distances, while K-means is unsupervised and ignores $Y$.</li>
+        <li><span class="opt-label">C</span> Hierarchical clustering is guaranteed to find the global optimum of a well-defined objective, while K-means is only guaranteed to find a local optimum.</li>
+        <li><span class="opt-label">D</span> Hierarchical clustering does not need any distance between observations to run, while K-means cannot proceed without Euclidean distance.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -595,16 +595,16 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Single linkage</li>
-        <li><span class="opt-label">B</span> Complete linkage</li>
-        <li><span class="opt-label">C</span> Centroid linkage</li>
+        <li><span class="opt-label">B</span> Centroid linkage</li>
+        <li><span class="opt-label">C</span> Complete linkage</li>
         <li><span class="opt-label">D</span> Linkage choice does not affect chaining</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: C</span>
           <p>Single linkage's $\min$ rule is what produces chaining: a single near-neighbor pulls a whole cluster forward one step at a time. Complete linkage uses $\max$, so a candidate merge has to be close to <em>every</em> point in the existing cluster, producing balanced compact clusters. (Average is also fine; it isn't offered here.)</p>
-          <p>A is the linkage that <em>causes</em> chaining — the opposite of what was asked. C (centroid) can produce dendrogram inversions and is generally not preferred; the prof name-checks it but doesn't recommend it. D contradicts the prof: "Average and complete tend to yield more balanced clusters."</p>
+          <p>A is the linkage that <em>causes</em> chaining — the opposite of what was asked. B (centroid) can produce dendrogram inversions and is generally not preferred; the prof name-checks it but doesn't recommend it. D contradicts the prof: "Average and complete tend to yield more balanced clusters."</p>
           <p class="ref">Atoms: <a href="/concepts/hierarchical-clustering">hierarchical-clustering</a>. Lecture: <a href="/lectures/L22-unsupervised-2">L22-unsupervised-2</a>.</p>
         </div>
       </details>
@@ -666,10 +666,10 @@
         A colleague runs K-means once on a dataset with $K = 3$ and reports the final cluster assignments. You re-run the same code and get a different answer. What is the most likely cause and the standard fix?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> The colleague forgot to standardize; rerun after $z$-scoring each column.</li>
-        <li><span class="opt-label">B</span> Different random initializations lead to different local minima; rerun with many starts (e.g. <code>nstart = 20</code>) and keep the run with the lowest within-cluster sum of squares.</li>
-        <li><span class="opt-label">C</span> The dataset is too high-dimensional; apply PCA first, then K-means.</li>
-        <li><span class="opt-label">D</span> The objective has multiple global minima; pick whichever is reported.</li>
+        <li><span class="opt-label">A</span> The colleague forgot to standardize the predictors; the standard fix is to $z$-score each column and rerun once with the new data.</li>
+        <li><span class="opt-label">B</span> Different random initializations land in different local minima; rerun with many starts (e.g. <code>nstart = 20</code>) and keep the lowest-objective run.</li>
+        <li><span class="opt-label">C</span> The dataset is too high-dimensional for Euclidean distance to separate clusters; the standard fix is to apply PCA first, then run K-means once on the reduced data.</li>
+        <li><span class="opt-label">D</span> The objective has multiple global minima of equal value; the standard practice is to pick whichever solution is reported on the first run.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -762,10 +762,10 @@
         A PCA biplot of a four-variable standardized dataset shows the first two PCs explaining 62% and 25% of the total variance. The arrow for variable $X_2$ points sharply along the PC2 axis with large magnitude; the arrows for $X_1$ and $X_3$ point along PC1 with similar magnitudes; $X_4$'s arrow is short and ambiguous. Which interpretation is best supported?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> $X_2$ has a high loading on PC2; $X_1$ and $X_3$ load similarly on PC1; $X_4$ contributes little to either PC1 or PC2.</li>
-        <li><span class="opt-label">B</span> $X_2$ is uncorrelated with the response; $X_1$ and $X_3$ are the most predictive; $X_4$ should be discarded.</li>
-        <li><span class="opt-label">C</span> $X_2$ explains 25% of the data's total variance on its own; the others explain 62%.</li>
-        <li><span class="opt-label">D</span> The arrows show that $X_1$ and $X_3$ have the lowest sample variance among the four variables.</li>
+        <li><span class="opt-label">A</span> $X_2$ has a high loading on PC2, $X_1$ and $X_3$ load similarly on PC1, and $X_4$ contributes little to either PC1 or PC2.</li>
+        <li><span class="opt-label">B</span> $X_2$ is uncorrelated with the response variable, $X_1$ and $X_3$ are the most predictive of the response, and $X_4$ should be discarded as a predictor.</li>
+        <li><span class="opt-label">C</span> $X_2$ on its own explains 25% of the data's total variance, while $X_1$ and $X_3$ together explain 62% of the total variance.</li>
+        <li><span class="opt-label">D</span> The arrows show that $X_1$ and $X_3$ have the lowest sample variance, while $X_2$ has the highest sample variance, among the four variables.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -788,17 +788,17 @@
         In which of the following situations is hierarchical clustering most likely to perform <em>worse</em> than K-means?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> When the true groupings are nested (e.g. species within genera within families).</li>
-        <li><span class="opt-label">B</span> When the true groupings split the same data along two genuinely non-nested axes (e.g. by gender into 2 groups and by nationality into 3).</li>
-        <li><span class="opt-label">C</span> When the analyst wants to visualize the merging structure as a dendrogram.</li>
-        <li><span class="opt-label">D</span> When the analyst does not know in advance how many clusters to look for.</li>
+        <li><span class="opt-label">A</span> When the true groupings naturally nest (e.g. species within genera within families), so that finer partitions refine the coarser ones.</li>
+        <li><span class="opt-label">B</span> When the analyst does not know in advance how many clusters $K$ to look for, and wants any $K$ available from a single fit.</li>
+        <li><span class="opt-label">C</span> When the analyst wants to visualize the entire merging structure as a single dendrogram rather than commit to a single partition.</li>
+        <li><span class="opt-label">D</span> When the true groupings split along two non-nested axes (e.g. by gender into 2 groups and by nationality into 3 groups).</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>Hierarchical clustering imposes nested structure by construction. When the true partitions don't nest — gender vs. nationality is the prof's example — hierarchical clustering forces the data into a tree it doesn't have, and K-means at the appropriate $K$ may recover the structure better. "If you're trying to cluster data that doesn't necessarily have a hierarchical structure to it, then probably bad."</p>
-          <p>A is precisely where hierarchical shines (the prof's animal-behavior data, taxonomic data). C is a strength, not a weakness — the dendrogram <em>is</em> the visualization. D is also a strength: cutting the dendrogram at any height gives any $K$, no need to commit in advance.</p>
+          <p>A is precisely where hierarchical shines (the prof's animal-behavior data, taxonomic data). C is a strength, not a weakness — the dendrogram <em>is</em> the visualization. B is also a strength: cutting the dendrogram at any height gives any $K$, no need to commit in advance.</p>
           <p class="ref">Atoms: <a href="/concepts/hierarchical-clustering">hierarchical-clustering</a>, <a href="/concepts/k-means-clustering">k-means-clustering</a>. Lecture: <a href="/lectures/L22-unsupervised-2">L22-unsupervised-2</a>.</p>
         </div>
       </details>

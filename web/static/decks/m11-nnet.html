@@ -1,0 +1,992 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 11 — Neural Networks · TMA4268</title>
+
+  <!-- Sync theme with the Quartz wiki (reads same localStorage key, falls back to OS) -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var theme = saved || (prefersDark ? "dark" : "light");
+        document.documentElement.setAttribute("saved-theme", theme);
+      } catch (e) {
+        document.documentElement.setAttribute("saved-theme", "light");
+      }
+    })();
+  </script>
+
+  <!-- Quartz fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+
+  <link rel="stylesheet" href="exam.css">
+
+  <!-- KaTeX for inline math -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$',  right: '$',  display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });"></script>
+</head>
+<body>
+  <main class="exam-shell">
+    <header class="exam-head">
+      <a href="/" class="back-link">← Back to wiki</a>
+      <h1>Module 11 — Neural Networks</h1>
+      <p class="meta">29 questions · 100 points · ~45 min</p>
+      <p class="meta">
+        Click an option to lock the answer; the explanation auto-opens.
+        Score tracker bottom-left.
+      </p>
+    </header>
+
+    <!-- ======================== Q1 ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 1</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        A feedforward network has $p$ inputs, one hidden layer of width $M$, and $C$ output units, with biases
+        on every non-input unit. Which expression equals the total parameter count?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $pM + MC$</li>
+        <li><span class="opt-label">B</span> $(p+1)(M+1)C$</li>
+        <li><span class="opt-label">C</span> $(p+1)M + (M+1)C$</li>
+        <li><span class="opt-label">D</span> $p(M+1) + M(C+1)$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>Each hidden unit has $p$ input weights plus one bias, so input→hidden contributes $(p+1)M$. Each output unit has $M$ weights from hidden plus one bias, so hidden→output contributes $(M+1)C$. The prof's headline formula.</p>
+          <p>A drops both biases — the canonical "forgot the bias term" mistake the prof flagged. B multiplies the two layer counts as if they composed, conflating "how many connections in series" with "how many parameters total". D puts the bias on the sending side instead of the receiving side; the +1 lives on whichever layer is actually receiving the bias unit.</p>
+          <p class="ref">Atoms: <a href="/concepts/nn-parameter-count">nn-parameter-count</a>, <a href="/concepts/feedforward-network">feedforward-network</a>. Lecture: <a href="/lectures/L23-nnet-1">L23-nnet-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q2 ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 2</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Exam 2025 P2c</span>
+      </header>
+      <p class="q-text">
+        A fully-connected feedforward network has 3 inputs, one hidden layer with 4 ReLU neurons, and a single
+        output unit (regression). Biases on all hidden and output units. How many parameters does the network estimate?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $16$</li>
+        <li><span class="opt-label">B</span> $17$</li>
+        <li><span class="opt-label">C</span> $20$</li>
+        <li><span class="opt-label">D</span> $21$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: D</span>
+          <p>Hidden layer: each of $4$ neurons has $3$ input weights $+ 1$ bias $= 4$ parameters → $4 \cdot 4 = 16$. Output: $4$ weights from the hidden units $+ 1$ bias $= 5$. Total $= 16 + 5 = 21$.</p>
+          <p>A counts only the hidden-layer weights and biases ($4 \cdot 4$) — forgets the output unit entirely. B drops the output bias, giving only $4$ extra. C drops the hidden-layer biases ($3 \cdot 4 + 4 \cdot 1 + 1 = 17$? no — drops all biases gives $3 \cdot 4 + 4 \cdot 1 = 16$; $20$ is the half-bias slip $4 \cdot 4 + 4 = 20$). The bias-omission distractors are the canonical trap the prof flagged.</p>
+          <p class="ref">Atoms: <a href="/concepts/nn-parameter-count">nn-parameter-count</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a> (Q3b walkthrough).</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q3 ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 3</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Exam 2023 P5e</span>
+      </header>
+      <p class="q-text">
+        A fully-connected feedforward network for 5-class classification has input dimension $128$, two hidden
+        layers of widths $32$ and $64$ (in that order), and a softmax output layer. Biases everywhere; dropout
+        of $20\%$ is applied in each hidden layer during training. How many parameters are estimated?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $128 \cdot 32 + 32 \cdot 64 + 64 \cdot 5 = 6528$</li>
+        <li><span class="opt-label">B</span> $129 \cdot 32 + 33 \cdot 64 + 65 \cdot 5 = 6565$</li>
+        <li><span class="opt-label">C</span> $0.8 \cdot (129 \cdot 32 + 33 \cdot 64 + 65 \cdot 5) = 5252$</li>
+        <li><span class="opt-label">D</span> $129 \cdot 32 + 32 \cdot 64 + 64 \cdot 5 = 6485$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Layer-by-layer with biases on every receiving layer: $128\to 32$ has $(128+1) \cdot 32 = 4128$; $32 \to 64$ has $(32+1) \cdot 64 = 2112$; $64 \to 5$ softmax has $(64+1) \cdot 5 = 325$. Sum $= 4128 + 2112 + 325 = 6565$.</p>
+          <p>A drops every bias — the canonical wrong answer the prof said students always pick. C applies the dropout rate to the parameter count; dropout zeros activations during training, it does not delete parameters, so all weights are still estimated. D drops the biases on the second and third layers but keeps them on the first.</p>
+          <p class="ref">Atoms: <a href="/concepts/nn-parameter-count">nn-parameter-count</a>, <a href="/concepts/nn-regularization">nn-regularization</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q4 ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 4</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Exam 2025 P2c(ii)</span>
+      </header>
+      <p class="q-text">
+        A single hidden ReLU neuron receives inputs $x_1 = -1,\ x_2 = 2,\ x_3 = 0$ with weights
+        $w_1 = 0.5,\ w_2 = 0,\ w_3 = 1$ and bias $b = 0$. What is the neuron's output?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $-0.5$</li>
+        <li><span class="opt-label">B</span> $1.5$</li>
+        <li><span class="opt-label">C</span> $0.5$</li>
+        <li><span class="opt-label">D</span> $0$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: D</span>
+          <p>Pre-activation $z = w_1 x_1 + w_2 x_2 + w_3 x_3 + b = (-1)(0.5) + (2)(0) + (0)(1) + 0 = -0.5$. ReLU clamps negatives to zero: $\max(0, -0.5) = 0$.</p>
+          <p>A reports the raw pre-activation, forgetting to apply ReLU. B uses the absolute value of the pre-activation, ignoring that ReLU is one-sided. C flips a sign on $x_1$ (treats it as $+1$). The canonical trap is forgetting that ReLU outputs exactly zero whenever the pre-activation is negative.</p>
+          <p class="ref">Atoms: <a href="/concepts/activation-functions">activation-functions</a>, <a href="/concepts/feedforward-network">feedforward-network</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q5 ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 5</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        A single ReLU hidden neuron has weights $w = (0.3,\ -0.7,\ 0.5,\ 0.2)$, bias $b = 0.4$, and
+        inputs $x = (2,\ 1,\ -1,\ 3)$. What is the output of the neuron?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $0.4$</li>
+        <li><span class="opt-label">B</span> $0$</li>
+        <li><span class="opt-label">C</span> $1.0$</li>
+        <li><span class="opt-label">D</span> $-0.4$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Dot product: $(0.3)(2) + (-0.7)(1) + (0.5)(-1) + (0.2)(3) = 0.6 - 0.7 - 0.5 + 0.6 = 0.0$. Add bias: $0.0 + 0.4 = 0.4$. ReLU is the identity on positives: $\max(0, 0.4) = 0.4$.</p>
+          <p>B treats the pre-activation as if it were negative — the canonical "forgot to add the bias" or "flipped a sign" trap that yields exactly $0$ after ReLU. C uses $|w \cdot x|$ wrongly (or treats the third term as $(-0.5)(-1) = 0.5$ then adds bias incorrectly). D reports a negative pre-activation as the output — forgets that ReLU clamps negatives to zero (and the pre-activation here is in fact positive after the bias).</p>
+          <p class="ref">Atoms: <a href="/concepts/activation-functions">activation-functions</a>, <a href="/concepts/feedforward-network">feedforward-network</a>. Lecture: <a href="/lectures/L24-nnet-2">L24-nnet-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q6 ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 6</span>
+        <span class="exam-q__points">3 points</span>
+        <span class="exam-q__src">Exam 2025 P2g</span>
+      </header>
+      <p class="q-text">
+        Why are nonlinear activation functions necessary in a feedforward neural network?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> They reduce the number of parameters the model has to estimate.</li>
+        <li><span class="opt-label">B</span> They make the network fully connected between consecutive layers.</li>
+        <li><span class="opt-label">C</span> They let the network represent complex nonlinear functions of the input.</li>
+        <li><span class="opt-label">D</span> They guarantee convergence of stochastic gradient descent to the global optimum.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>The prof's verbatim point: a linear sum of linear things is linear, so without a nonlinear hidden activation the entire stacked network collapses to ordinary linear regression. Nonlinearity is what gives the network expressive power and makes the universal-approximation result possible.</p>
+          <p>A is wrong: activation choice is independent of parameter count — swapping ReLU for sigmoid does not change how many weights you estimate. B confuses activation with topology — full connectivity is a separate architectural choice. D is wrong: gradient descent on a non-convex NN loss is not guaranteed to find the global optimum, regardless of activation. The prof flagged the "reduces parameters" and "makes fully connected" answers as canonical wrong picks.</p>
+          <p class="ref">Atoms: <a href="/concepts/activation-functions">activation-functions</a>, <a href="/concepts/universal-approximation">universal-approximation</a>. Lecture: <a href="/lectures/L23-nnet-1">L23-nnet-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q7 (T/F) ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 7</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement about activation functions as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) For binary classification with one output node, the standard pairing is sigmoid output activation with binary cross-entropy loss.</span>
+          <label><input type="radio" name="q7-a" value="true"> True</label>
+          <label><input type="radio" name="q7-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) A network whose hidden activation is the identity function $g(z) = z$ can still represent arbitrary nonlinear functions, provided it has enough hidden units.</span>
+          <label><input type="radio" name="q7-b" value="true"> True</label>
+          <label><input type="radio" name="q7-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Softmax outputs across the $C$ output units always sum to $1$ for any input.</span>
+          <label><input type="radio" name="q7-c" value="true"> True</label>
+          <label><input type="radio" name="q7-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) ReLU outputs the absolute value of the pre-activation: $g(z) = |z|$.</span>
+          <label><input type="radio" name="q7-d" value="true"> True</label>
+          <label><input type="radio" name="q7-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — sigmoid + BCE is the natural pairing because BCE is the negative log-likelihood of a Bernoulli model, exactly the GLM identification the prof emphasised.</li>
+            <li><strong>False</strong> — a stack of linear layers composes to a single linear function. Linear hidden activation collapses the network to linear regression regardless of width.</li>
+            <li><strong>True</strong> — softmax normalises by $\sum_k e^{z_k}$ so the outputs lie on the probability simplex by construction.</li>
+            <li><strong>False</strong> — ReLU is $\max(0, z)$: zero on the negative side, identity on the positive side. Distinct from $|z|$.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/activation-functions">activation-functions</a>, <a href="/concepts/nn-loss-functions">nn-loss-functions</a>, <a href="/concepts/feedforward-network">feedforward-network</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q8 ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 8</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        A network for $C = 10$-class image classification (e.g. CIFAR-10) is being designed. Which output-activation
+        + loss pairing is appropriate?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Linear output with mean-squared-error loss.</li>
+        <li><span class="opt-label">B</span> Sigmoid output with binary cross-entropy loss.</li>
+        <li><span class="opt-label">C</span> ReLU output with mean-absolute-error loss.</li>
+        <li><span class="opt-label">D</span> Softmax output with categorical cross-entropy loss.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: D</span>
+          <p>Multi-class output with one-hot labels uses softmax across $C$ output nodes (probabilities summing to 1) paired with categorical cross-entropy (the negative log-likelihood of a multinomial). This matches the prof's slide-deck pairing table.</p>
+          <p>A treats the class label as a continuous response — wrong family of loss; gives nonsensical gradients for classification. B is the binary pairing and forces class probabilities into a single number, which can't represent 10 mutually-exclusive classes. C mismatches an output-only activation (ReLU is for hidden layers) with a regression loss, breaking the classification interpretation entirely.</p>
+          <p class="ref">Atoms: <a href="/concepts/nn-loss-functions">nn-loss-functions</a>, <a href="/concepts/activation-functions">activation-functions</a>, <a href="/concepts/convolutional-neural-network">convolutional-neural-network</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q9 ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 9</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        Given the formula $\hat y(\mathbf x) = \beta_0 + \sum_{m=1}^5 \beta_m \cdot \max\!\left(\alpha_{0m} + \sum_{j=1}^{10} \alpha_{jm} x_j, 0\right)$,
+        identify the architecture and count its parameters.
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 1 hidden layer, ReLU activation, linear output; $50$ parameters.</li>
+        <li><span class="opt-label">B</span> 1 hidden layer, ReLU activation, linear output; $55$ parameters.</li>
+        <li><span class="opt-label">C</span> 1 hidden layer, ReLU activation, linear output; $61$ parameters.</li>
+        <li><span class="opt-label">D</span> 2 hidden layers, sigmoid activation, linear output; $61$ parameters.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>The $\max(\cdot, 0)$ identifies ReLU; the outer sum has no nonlinearity so the output activation is linear; one level of nesting means one hidden layer. With $p = 10,\ M = 5,\ C = 1$: parameters $= (10+1) \cdot 5 + (5+1) \cdot 1 = 55 + 6 = 61$.</p>
+          <p>A drops both biases ($10 \cdot 5 + 0 = 50$). B drops only the output bias and keeps hidden biases ($55$). D misreads $\max(\cdot, 0)$ as a sigmoid and counts an extra layer the formula does not contain — there is only one $\max$ nesting.</p>
+          <p class="ref">Atoms: <a href="/concepts/nn-parameter-count">nn-parameter-count</a>, <a href="/concepts/feedforward-network">feedforward-network</a>, <a href="/concepts/activation-functions">activation-functions</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q10 ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 10</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        Which of the following is a sufficient condition for a feedforward neural network to satisfy the
+        universal-approximation property (Borel-measurable functions, arbitrary $\varepsilon$)?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Linear output, identity hidden activation, and sufficient hidden width.</li>
+        <li><span class="opt-label">B</span> Linear output, a squashing (nonlinear) hidden activation, sufficient width.</li>
+        <li><span class="opt-label">C</span> Recurrent connections from the output back to the input layer of the network.</li>
+        <li><span class="opt-label">D</span> Sigmoid output, sigmoid hidden activation, with exactly two hidden layers stacked.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The theorem requires (i) a linear output layer, (ii) at least one hidden layer with a "squashing" / nonlinear activation, and (iii) enough hidden units. Depth is not required — one wide hidden layer suffices.</p>
+          <p>A swaps the squashing requirement for an identity activation; the network then collapses to linear regression and cannot represent nonlinear functions. C invokes recurrence, which is unrelated to UAT (recurrent networks add a different capability). D over-specifies with sigmoid output and a fixed depth — the theorem is silent on output activation choice and does not require a particular depth.</p>
+          <p class="ref">Atoms: <a href="/concepts/universal-approximation">universal-approximation</a>, <a href="/concepts/activation-functions">activation-functions</a>. Lecture: <a href="/lectures/L23-nnet-1">L23-nnet-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q11 (T/F) ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 11</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement about the universal-approximation theorem as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) The theorem guarantees that for any Borel-measurable target function there <em>exists</em> a feedforward network achieving any desired non-zero approximation error.</span>
+          <label><input type="radio" name="q11-a" value="true"> True</label>
+          <label><input type="radio" name="q11-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) The theorem also tells you the width $M$ needed and how to find the weights via training.</span>
+          <label><input type="radio" name="q11-b" value="true"> True</label>
+          <label><input type="radio" name="q11-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) A single hidden layer is sufficient in theory; in practice, deeper networks can achieve similar accuracy with far fewer total units.</span>
+          <label><input type="radio" name="q11-c" value="true"> True</label>
+          <label><input type="radio" name="q11-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) The proof of the theorem is part of the curriculum and you should be ready to reproduce it on the exam.</span>
+          <label><input type="radio" name="q11-d" value="true"> True</label>
+          <label><input type="radio" name="q11-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — that's the existence statement.</li>
+            <li><strong>False</strong> — UAT is purely an existence result. It says nothing about width bounds, optimisation, or whether SGD will find the weights.</li>
+            <li><strong>True</strong> — depth and width trade off; modern practice favours depth.</li>
+            <li><strong>False</strong> — the proof requires measure theory and the prof explicitly excluded it: "we don't talk about that in this class."</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/universal-approximation">universal-approximation</a>. Lecture: <a href="/lectures/L23-nnet-1">L23-nnet-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q12 ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 12</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        The mini-batch SGD update for parameters $\boldsymbol\theta$ with learning rate $\lambda$ uses a
+        gradient estimated from a random subset of $m \ll N$ samples. Which statement best describes mini-batch SGD?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Its gradient estimate is biased, so it converges to a different minimum than full-batch GD does.</li>
+        <li><span class="opt-label">B</span> It is slower per step than full-batch GD because it has to randomly sample the data each iteration.</li>
+        <li><span class="opt-label">C</span> Its gradient is unbiased and the noise from a small batch provides implicit L2 regularisation.</li>
+        <li><span class="opt-label">D</span> It is mathematically equivalent to full-batch GD whenever the batch size is a power of two units.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>A random mini-batch is an unbiased estimator of the full gradient (same expectation, larger variance). The prof's headline NN fact: in the over-parameterised regime mini-batch SGD picks the minimum-norm interpolator among the infinitely many zero-loss solutions — that is the implicit L2 regularisation, "and it has been proven."</p>
+          <p>A confuses noise with bias — mini-batch gradients are noisy but unbiased. B reverses the speed claim: small batches are faster per step (less computation, parallelisable). D conflates a hardware convention (powers of two for GPU efficiency) with a mathematical equivalence; batch size has nothing to do with statistical equivalence to full-batch GD.</p>
+          <p class="ref">Atoms: <a href="/concepts/gradient-descent-and-sgd">gradient-descent-and-sgd</a>, <a href="/concepts/regularization">regularization</a>. Lecture: <a href="/lectures/L23-nnet-1">L23-nnet-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q13 (T/F) ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 13</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement about gradient descent and mini-batch SGD as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) A learning rate of $\lambda = 2$ is typically reasonable; values near $\lambda \approx 0.1$ tend to cause the optimiser to bounce around without converging.</span>
+          <label><input type="radio" name="q13-a" value="true"> True</label>
+          <label><input type="radio" name="q13-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Increasing the mini-batch size decreases the variance of the gradient estimate, which weakens the implicit regularisation effect.</span>
+          <label><input type="radio" name="q13-b" value="true"> True</label>
+          <label><input type="radio" name="q13-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Batch sizes are commonly chosen as powers of two (32, 128, 256, …) for hardware-efficiency reasons, not statistical reasons.</span>
+          <label><input type="radio" name="q13-c" value="true"> True</label>
+          <label><input type="radio" name="q13-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) NN loss surfaces are convex, so any local minimum reached by SGD is also the global minimum.</span>
+          <label><input type="radio" name="q13-d" value="true"> True</label>
+          <label><input type="radio" name="q13-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>False</strong> — direction reversed. The prof's words: "$\eta = 2$ is horrible, bouncing everywhere; $\eta \approx 0.1$ is fine." Too-large learning rates overshoot.</li>
+            <li><strong>True</strong> — bigger batch → less noise → less implicit regularisation. The §4b direction-of-effect row in the exam analysis.</li>
+            <li><strong>True</strong> — verbatim prof framing: "powers of two because that's what you always do in machine learning, hardware-efficiency."</li>
+            <li><strong>False</strong> — NN losses are highly non-convex; the prof noted that the local minima are forgivingly connected, but they are not unique global minima.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/gradient-descent-and-sgd">gradient-descent-and-sgd</a>. Lecture: <a href="/lectures/L24-nnet-2">L24-nnet-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q14 ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 14</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        Backpropagation is the standard way to compute gradients for training a feedforward network. Which
+        of the following best describes what backpropagation does?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> It updates the parameters in the direction of the negative gradient.</li>
+        <li><span class="opt-label">B</span> It computes the loss on a held-out validation set to detect overfitting.</li>
+        <li><span class="opt-label">C</span> It is a specialised optimiser that replaces gradient descent in modern deep learning.</li>
+        <li><span class="opt-label">D</span> It applies the chain rule efficiently by reusing intermediate values stored during the forward pass.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: D</span>
+          <p>Backprop is the chain rule, organised so that pre-activations and activations stored during the forward pass get reused on the way back. That makes one forward + one backward pass enough to compute the gradient with respect to every parameter — the algorithmic breakthrough that pulled NNs out of the AI winter.</p>
+          <p>A describes the gradient-descent update, not how the gradient is computed; backprop is the calculator, SGD is the updater. B confuses backprop with validation/early-stopping. C reverses the relationship: backprop computes the gradient, and an optimiser (SGD, Adam, …) consumes it; backprop does not replace optimisers.</p>
+          <p class="ref">Atoms: <a href="/concepts/backpropagation">backpropagation</a>, <a href="/concepts/gradient-descent-and-sgd">gradient-descent-and-sgd</a>. Lecture: <a href="/lectures/L24-nnet-2">L24-nnet-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q15 (T/F) ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 15</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">Mark each statement about backpropagation as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Backpropagation works for a feedforward network because the network is acyclic and admits a topological order.</span>
+          <label><input type="radio" name="q15-a" value="true"> True</label>
+          <label><input type="radio" name="q15-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) The hidden-layer error term contains the derivative $g'$ of the activation function at the pre-activation.</span>
+          <label><input type="radio" name="q15-b" value="true"> True</label>
+          <label><input type="radio" name="q15-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Plain backpropagation as taught in the course applies directly to recurrent networks without modification.</span>
+          <label><input type="radio" name="q15-c" value="true"> True</label>
+          <label><input type="radio" name="q15-c" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — the prof: "if you had loops you're kind of screwed". The acyclic structure is what lets the backward sweep work.</li>
+            <li><strong>True</strong> — $\delta^{\text{hid}} = \delta^{\text{out}} \cdot \beta \cdot g'(v)$. For ReLU, $g'(v)$ is 0 or 1, which is what makes the gradient computation cheap.</li>
+            <li><strong>False</strong> — recurrent networks need a specialised variant ("backpropagation through time", out of scope). The basic algorithm needs modification because the hidden state at $t$ depends on itself at $t-1$.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/backpropagation">backpropagation</a>, <a href="/concepts/recurrent-neural-network">recurrent-neural-network</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q16 ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 16</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        Exercise 11.1d: you have a feedforward network with $10\,000$ weights but only $1\,000$ training observations.
+        Which of the following is the strongest single argument that the model can still generalise well?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Universal approximation guarantees that the model fits any function exactly.</li>
+        <li><span class="opt-label">B</span> The bias-variance trade-off says that more parameters always reduce test error.</li>
+        <li><span class="opt-label">C</span> The number of parameters is irrelevant; only the choice of activation function matters for generalisation.</li>
+        <li><span class="opt-label">D</span> Mini-batch SGD with regularisation (L1/L2, dropout, early stopping, augmentation) implicitly selects a low-norm interpolator that generalises.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: D</span>
+          <p>The textbook answer to "$10\,000$ weights, $1\,000$ samples" is regularisation — explicit (L1/L2, dropout, early stopping, data augmentation, label smoothing, transfer learning) and implicit (mini-batch SGD picks the minimum-norm interpolator, the double-descent mechanism). The prof's iron rule: never train an NN without regularisation.</p>
+          <p>A confuses existence (UAT) with generalisation: UAT promises a network exists that approximates any function on training data, but says nothing about test performance. B inverts the trade-off — more flexibility raises variance and typically hurts test error in the under-parameterised regime. C ignores parameter count entirely; choice of activation does not by itself prevent overfitting.</p>
+          <p class="ref">Atoms: <a href="/concepts/nn-regularization">nn-regularization</a>, <a href="/concepts/double-descent">double-descent</a>, <a href="/concepts/gradient-descent-and-sgd">gradient-descent-and-sgd</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q17 (T/F) ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 17</span>
+        <span class="exam-q__points">5 points</span>
+      </header>
+      <p class="q-text">Mark each statement about NN regularisation as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Regularisation typically reduces generalisation error and may slightly increase training error.</span>
+          <label><input type="radio" name="q17-a" value="true"> True</label>
+          <label><input type="radio" name="q17-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) A dropout rate of $50\%$ is the prof's standard recommendation for hidden layers.</span>
+          <label><input type="radio" name="q17-b" value="true"> True</label>
+          <label><input type="radio" name="q17-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Dropout is applied during training only; at test time the network is evaluated with all units active (with appropriate rescaling).</span>
+          <label><input type="radio" name="q17-c" value="true"> True</label>
+          <label><input type="radio" name="q17-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) L2 weight decay encourages many weights to become exactly zero, producing a sparse network.</span>
+          <label><input type="radio" name="q17-d" value="true"> True</label>
+          <label><input type="radio" name="q17-d" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">e) Early stopping returns the parameters from the epoch with the lowest validation error, not the final epoch.</span>
+          <label><input type="radio" name="q17-e" value="true"> True</label>
+          <label><input type="radio" name="q17-e" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — the Goodfellow definition the prof read aloud: "a modification intended to reduce its generalisation error but not its training error." It can hurt training fit by design.</li>
+            <li><strong>False</strong> — direction reversed. The prof's words: "$20\%$ is very common, never use $50\%$." Fifty percent is too aggressive.</li>
+            <li><strong>True</strong> — dropout is a training-time noise injection; at inference you evaluate the intact network (or scale outputs appropriately).</li>
+            <li><strong>False</strong> — that's L1 (lasso-style sparsity). L2 (ridge-style) shrinks weights smoothly toward zero but rarely produces exact zeros.</li>
+            <li><strong>True</strong> — that is the definition of early stopping. The prof confessed it "feels like cheating", but it is the most commonly used regulariser.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/nn-regularization">nn-regularization</a>, <a href="/concepts/regularization">regularization</a>. Lecture: <a href="/lectures/L24-nnet-2">L24-nnet-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q18 ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 18</span>
+        <span class="exam-q__points">3 points</span>
+        <span class="exam-q__src">Exam 2024 P1</span>
+      </header>
+      <p class="q-text">
+        In the prof's framing of regularisation across modules, tree-based models perform shrinkage-type
+        regularisation via tree pruning. Which of the following lists is the analogous menu for neural networks?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Bagging, random forests, boosting, and classification trees.</li>
+        <li><span class="opt-label">B</span> Forward selection, backward selection, AIC, and BIC.</li>
+        <li><span class="opt-label">C</span> Data augmentation, label smoothing, dropout, and early stopping (plus L1/L2 weight decay).</li>
+        <li><span class="opt-label">D</span> One-hot encoding, batch normalisation, and Adam optimiser tuning.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>The 2024 exam answer key gives this menu verbatim: data augmentation, label smoothing, dropout, early stopping (the slide bracket); plus the explicit weight-penalty options L1/L2 from the lecture. Together these are the prof's regularisation toolbox for NNs.</p>
+          <p>A lists ensembling tools — those <em>are</em> regularisation, but they belong to the tree side of the analogy, not the NN side. B is model-selection on linear models (information criteria, stepwise), unrelated to NN training tricks. D mixes encoding (a preprocessing step, not regularisation) with batch normalisation and optimisers — both of which are explicitly out of scope per the prof's statements about "advanced optimizers" and "batch normalisation".</p>
+          <p class="ref">Atoms: <a href="/concepts/nn-regularization">nn-regularization</a>, <a href="/concepts/regularization">regularization</a>. Lecture: <a href="/lectures/L24-nnet-2">L24-nnet-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q19 ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 19</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        For the Boston Housing regression problem (13 numerical predictors, continuous response, 506 observations),
+        Exercise 11.3 trains a Keras feedforward network with two ReLU hidden layers (64 → 32 → 1, linear output).
+        What preprocessing step is essential before fitting, and why?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> One-hot encode all predictors so the network treats them as categorical.</li>
+        <li><span class="opt-label">B</span> Standardise each predictor (subtract its training-set mean, divide by its training-set sd) so no single variable dominates the gradient by scale.</li>
+        <li><span class="opt-label">C</span> Apply principal-component analysis to reduce the input dimension to 5 components.</li>
+        <li><span class="opt-label">D</span> Convert the continuous response to one-hot vectors of housing-price bins.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The prof's words on this exact exercise: "you don't want one variable to basically suck up all the variance, just like in PCA." Standardisation is mandatory before NNs, ridge, lasso, PCA, k-means, hierarchical clustering, and KNN — every method that is not scale-invariant.</p>
+          <p>A treats continuous predictors as categorical and explodes the input dimension nonsensically. C is allowable but discards information and is not the standard preprocessing for an NN regression; the exercise solution does not call for it. D destroys the regression target — Boston housing is a continuous-response regression problem, not a classification problem.</p>
+          <p class="ref">Atoms: <a href="/concepts/standardization">standardization</a>, <a href="/concepts/feedforward-network">feedforward-network</a>. Lecture: <a href="/lectures/L24-nnet-2">L24-nnet-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q20 (T/F) ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 20</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement about CNNs as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) A CNN is still a feedforward network, so backpropagation applies without modification.</span>
+          <label><input type="radio" name="q20-a" value="true"> True</label>
+          <label><input type="radio" name="q20-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) The filter weights in a convolutional layer are hand-designed (e.g. as Gabor or Sobel edge detectors) and remain fixed during training.</span>
+          <label><input type="radio" name="q20-b" value="true"> True</label>
+          <label><input type="radio" name="q20-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) A max-pooling layer reduces spatial dimension by emitting the maximum activation within each non-overlapping patch.</span>
+          <label><input type="radio" name="q20-c" value="true"> True</label>
+          <label><input type="radio" name="q20-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Data augmentation (rotation, flip, shift) is a particularly natural form of regularisation for image-classification CNNs.</span>
+          <label><input type="radio" name="q20-d" value="true"> True</label>
+          <label><input type="radio" name="q20-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — the prof's headline: "CNN is just a neural network… still no loops backwards. So backprop drops in." The trick is weight sharing across spatial locations.</li>
+            <li><strong>False</strong> — that's the pre-CNN classical-vision approach. CNNs <em>learn</em> the filter weights from data, which is the algorithmic shift LeCun introduced.</li>
+            <li><strong>True</strong> — the canonical conv → ReLU → max-pool block in Exercise 11.4.</li>
+            <li><strong>True</strong> — same image, perturbed pose, same label — directly applicable to CNNs and a core part of Exercise 11.4.2.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/convolutional-neural-network">convolutional-neural-network</a>, <a href="/concepts/nn-regularization">nn-regularization</a>, <a href="/concepts/backpropagation">backpropagation</a>. Lecture: <a href="/lectures/L24-nnet-2">L24-nnet-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q21 ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 21</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Ex11.4.1b</span>
+      </header>
+      <p class="q-text">
+        After training a CIFAR-10 CNN, the test confusion matrix shows $7\,200$ correctly classified and
+        $2\,800$ misclassified out of $10\,000$ test images. What is the misclassification rate?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $0.10$</li>
+        <li><span class="opt-label">B</span> $0.28$</li>
+        <li><span class="opt-label">C</span> $0.39$</li>
+        <li><span class="opt-label">D</span> $0.72$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Misclassification rate $= \frac{\text{incorrect}}{\text{total}} = \frac{2800}{10000} = 0.28$.</p>
+          <p>A is a round-number trap unrelated to the data. C divides incorrect by correct ($2800 / 7200 \approx 0.39$) — that's the odds, not the rate. D reports the accuracy ($7200/10000 = 0.72$), which is one minus the misclassification rate. The trap is mixing up rate, accuracy, and odds.</p>
+          <p class="ref">Atoms: <a href="/concepts/convolutional-neural-network">convolutional-neural-network</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q22 ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 22</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        A practitioner has a sequential dataset (e.g. NYSE daily volume, returns, volatility for the past
+        $L$ days, predicting tomorrow's volume). Which architecture is the most appropriate match for the
+        sequential structure within the scope of this course?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> A recurrent network that propagates a hidden state $A_t$ across the sequence with shared weights $W, U, B$.</li>
+        <li><span class="opt-label">B</span> A standard 2-D convolutional network (CNN with $3 \times 3$ filters).</li>
+        <li><span class="opt-label">C</span> An ordinary feedforward network with one large hidden layer trained on each day independently.</li>
+        <li><span class="opt-label">D</span> Principal component analysis followed by linear regression on the leading components.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>RNNs are designed exactly for sequential data: the hidden state $A_t = \sigma(b + W X_t + U A_{t-1})$ carries information forward through the sequence, and the weights $W, U, B$ are shared across positions (the prof's emphasised weight-sharing point).</p>
+          <p>B is for 2-D image-like spatial structure; the NYSE setup is one-dimensional and sequential, not spatial. C ignores ordering by training each day in isolation — exactly what the prof flagged as the limitation an RNN is meant to overcome ("if there was no order, there would be no obvious ordering"). D is unsupervised dimensionality reduction; it does not address sequence structure at all.</p>
+          <p class="ref">Atoms: <a href="/concepts/recurrent-neural-network">recurrent-neural-network</a>, <a href="/concepts/feedforward-network">feedforward-network</a>. Lecture: <a href="/lectures/L26-nnet-3">L26-nnet-3</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q23 (T/F) ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 23</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">Mark each statement about RNNs as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) An RNN uses the same weights $W, U, B$ at every position in the sequence; this weight sharing is what keeps the parameter count manageable as sequence length grows.</span>
+          <label><input type="radio" name="q23-a" value="true"> True</label>
+          <label><input type="radio" name="q23-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Information from the input at position $1$ can in principle propagate through the hidden states and influence the output at position $L$.</span>
+          <label><input type="radio" name="q23-b" value="true"> True</label>
+          <label><input type="radio" name="q23-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) RNNs can be trained with the standard feedforward backpropagation algorithm without modification, because the hidden states are deterministic functions of the inputs.</span>
+          <label><input type="radio" name="q23-c" value="true"> True</label>
+          <label><input type="radio" name="q23-c" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — verbatim from the prof: "we don't have… the weights changing every time" — same $W, U, B$ at every step is what keeps training tractable.</li>
+            <li><strong>True</strong> — the prof: "if $L$ is a billion, even the first thing in your sequence is affecting the billionth output." (Information may degrade in practice — the motivation for LSTMs/attention, out of scope here.)</li>
+            <li><strong>False</strong> — RNNs require a specialised variant ("backpropagation through time") because the recurrence creates an implicit loop in the dependency graph. BPTT itself is out of scope; the answer required is just "no, not unmodified".</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/recurrent-neural-network">recurrent-neural-network</a>, <a href="/concepts/backpropagation">backpropagation</a>. Lecture: <a href="/lectures/L26-nnet-3">L26-nnet-3</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q24 ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 24</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Exam 2024 P3b</span>
+      </header>
+      <p class="q-text">
+        Consider an additive-error regression model $Y_i = f_\theta(X_i) + \varepsilon_i$ with $\varepsilon_i \sim
+        \mathcal N(0, \sigma^2)$, i.i.d. The log-likelihood as a function of $\theta$ is
+        $\ell(\theta) = -\tfrac{n}{2}\log(2\pi\sigma^2) - \tfrac{1}{2\sigma^2}\sum_i (y_i - f_\theta(x_i))^2$.
+        Which conclusion follows directly?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Maximising $\ell(\theta)$ in $\theta$ is equivalent to minimising $\sum_i (y_i - f_\theta(x_i))^2$, the least-squares objective.</li>
+        <li><span class="opt-label">B</span> The MLE of $\theta$ depends on $\sigma^2$ but not on the residuals.</li>
+        <li><span class="opt-label">C</span> Maximising $\ell(\theta)$ in $\theta$ is equivalent to maximising the residual sum of squares.</li>
+        <li><span class="opt-label">D</span> Without further assumptions, MLE and least squares give different estimates of $\theta$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>The first term $-\tfrac{n}{2}\log(2\pi\sigma^2)$ does not depend on $\theta$. The second term contains $\theta$ only through $\sum_i (y_i - f_\theta(x_i))^2$, with a negative sign and a positive coefficient $\tfrac{1}{2\sigma^2}$. So maximising $\ell$ in $\theta$ is the same as minimising the residual sum of squares. Under additive Gaussian noise, MLE = LS — the mathy 2024 question the prof flagged as a likely template.</p>
+          <p>B is wrong: $\sigma^2$ enters as a positive multiplicative constant in front of $\sum (y - f)^2$, so it scales the objective but does not change the argmin in $\theta$ — the MLE depends on the residuals through this very sum. C reverses the sign — maximising the log-likelihood means <em>minimising</em>, not maximising, the SSE. D is incorrect: under Gaussian errors with constant $\sigma^2$, the two estimators coincide; the equivalence is the whole point of this derivation.</p>
+          <p class="ref">Atoms: <a href="/concepts/nn-loss-functions">nn-loss-functions</a>, <a href="/concepts/least-squares-and-mle">least-squares-and-mle</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a> (mathy question).</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q25 (T/F) ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 25</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement about double descent as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Double descent contradicts the bias-variance decomposition: bias and variance no longer sum to the test MSE in the over-parameterised regime.</span>
+          <label><input type="radio" name="q25-a" value="true"> True</label>
+          <label><input type="radio" name="q25-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) The interpolation point — where the test error peaks before descending again — is typically near $\#\text{parameters} \approx \#\text{samples}$.</span>
+          <label><input type="radio" name="q25-b" value="true"> True</label>
+          <label><input type="radio" name="q25-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Past the interpolation point, mini-batch SGD picks the minimum-norm solution among the infinitely many zero-training-loss interpolators.</span>
+          <label><input type="radio" name="q25-c" value="true"> True</label>
+          <label><input type="radio" name="q25-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Most statistical learning methods covered in this course (ridge, lasso, GAMs, trees with CV-tuned hyperparameters) routinely exhibit double descent in practice.</span>
+          <label><input type="radio" name="q25-d" value="true"> True</label>
+          <label><input type="radio" name="q25-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>False</strong> — the prof was emphatic: bias and variance still always add up; double descent just changes the <em>shape</em> of the curve, not the identity.</li>
+            <li><strong>True</strong> — the peak is at the interpolation threshold ($\#\text{params} \approx \#\text{samples}$) where the variance explodes, and test error often comes down a second time past that threshold.</li>
+            <li><strong>True</strong> — this is the prof's preferred mechanism. Past the interpolation point the optimisation effectively becomes "minimise $\sum \beta^2$ subject to fitting all data exactly" — the min-norm interpolator.</li>
+            <li><strong>False</strong> — the prof and the slide explicitly say most methods covered in the course do not show double descent; it is mostly a deep-learning phenomenon, and the slide says "we typically do not want to rely on this behaviour."</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/double-descent">double-descent</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>, <a href="/concepts/gradient-descent-and-sgd">gradient-descent-and-sgd</a>. Lecture: <a href="/lectures/L26-nnet-3">L26-nnet-3</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q26 ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 26</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        How does the prof reconcile the bias-variance decomposition with the second descent in the
+        over-parameterised regime?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Past the interpolation point, the model has infinitely many zero-training-loss fits and SGD picks the minimum-norm one, which keeps variance low even at extreme flexibility.</li>
+        <li><span class="opt-label">B</span> Past the interpolation point, bias goes to zero and variance also goes to zero, so the trade-off disappears.</li>
+        <li><span class="opt-label">C</span> The decomposition only holds for linear regression and breaks down for any nonlinear model.</li>
+        <li><span class="opt-label">D</span> Double descent is observed only for ridge regression and never for neural networks.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>The prof's preferred framing: past the interpolation point the optimiser is no longer balancing fit and penalty — every model fits the training data exactly. So you are choosing among interpolators, and SGD's implicit bias selects the minimum-norm one, which has low variance and generalises well.</p>
+          <p>B is wrong: bias does not go to zero — the training fit is exact but bias is about expectations across training sets, not training residuals. C is wrong: the decomposition is a general identity for squared-error loss, not specific to linear regression. D is wrong: double descent was popularised <em>in the NN context</em>; it appears in over-parameterised polynomial fits, neural networks, and many flexible models.</p>
+          <p class="ref">Atoms: <a href="/concepts/double-descent">double-descent</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>. Lecture: <a href="/lectures/L26-nnet-3">L26-nnet-3</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q27 ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 27</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        You want to choose the dropout rate, the L2 weight-decay strength, and the hidden width of a feedforward
+        network for a small tabular dataset. The prof's preferred selection strategy in this course is:
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Pick the values that minimise training error.</li>
+        <li><span class="opt-label">B</span> Use AIC / BIC computed on the training set to penalise complexity automatically.</li>
+        <li><span class="opt-label">C</span> Tune the hyperparameters using $k$-fold cross-validation (or a held-out validation set), comparing CV/validation error across candidate values.</li>
+        <li><span class="opt-label">D</span> Use the minimum-norm interpolator, which removes the need for hyperparameter selection altogether.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>The prof's repeated stance: hyperparameters (dropout rate, weight-decay strength, depth/width) are chosen via cross-validation or a held-out validation set. He explicitly distrusts AIC/BIC ("they're making assumptions that probably won't hold") and prefers CV.</p>
+          <p>A overfits: training error is monotone non-increasing in flexibility, so it always pushes toward the most complex model. B contradicts the prof's distrust of information criteria, and AIC/BIC are also flagged as having out-of-scope derivations. D misuses the min-norm-interpolator concept — it is a description of what SGD does in the post-interpolation regime, not a hyperparameter-tuning recipe.</p>
+          <p class="ref">Atoms: <a href="/concepts/cross-validation">cross-validation</a>, <a href="/concepts/nn-regularization">nn-regularization</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q28 (T/F) ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 28</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement about feedforward networks vs. classical methods as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) A 1-hidden-layer FNN with linear hidden activation and sigmoid output is essentially equivalent to logistic regression (up to reparameterisation).</span>
+          <label><input type="radio" name="q28-a" value="true"> True</label>
+          <label><input type="radio" name="q28-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) A GAM models the response as a sum of nonlinear functions of <em>each individual</em> covariate, while an FNN's hidden units apply nonlinearities to <em>linear combinations</em> of covariates — so FNNs can capture interactions that an additive GAM cannot.</span>
+          <label><input type="radio" name="q28-b" value="true"> True</label>
+          <label><input type="radio" name="q28-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) The prof recommends preferring an unregularised neural network over lasso when the training set is small (e.g. a few hundred observations).</span>
+          <label><input type="radio" name="q28-c" value="true"> True</label>
+          <label><input type="radio" name="q28-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) NNs are attractive when interpretability is a top priority because each hidden unit has a directly interpretable meaning.</span>
+          <label><input type="radio" name="q28-d" value="true"> True</label>
+          <label><input type="radio" name="q28-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — Exercise 11.1c: with linear hidden activation, the composition reduces to a single linear predictor passed through a sigmoid, the logistic-regression form.</li>
+            <li><strong>True</strong> — Exercise 11.2c. GAMs are additive and per-feature; FNNs mix features inside each hidden unit and so capture interactions natively (at the cost of interpretability).</li>
+            <li><strong>False</strong> — direction reversed. The Hitters comparison (linear ≈ 0.56, lasso ≈ 0.50, unregularised NN slightly worse on 263 observations) and the prof's verbatim "if you constructed your model this way you doing it wrong": small data + unregularised NN = bad. The prof: "if you don't have a lot of data and need interpretability, probably don't use neural networks at all. Use trees."</li>
+            <li><strong>False</strong> — the prof's words: "if you fit a complicated neural network, in the end you don't know what you have." Hidden units are not directly interpretable; this is precisely why the prof recommends trees / classical models when interpretability matters.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/feedforward-network">feedforward-network</a>, <a href="/concepts/nn-regularization">nn-regularization</a>. Lecture: <a href="/lectures/L26-nnet-3">L26-nnet-3</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ======================== Q29 ======================== -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 29</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">
+        A hidden-layer ReLU neuron has 4 inputs and one bias. Inputs are
+        $x = (1,\ -2,\ 3,\ 0)$, weights $w = (0.5,\ 0.5,\ -1,\ 2)$, bias $b = 1$.
+        What is the neuron's output?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $0$</li>
+        <li><span class="opt-label">B</span> $-2.5$</li>
+        <li><span class="opt-label">C</span> $0.5$</li>
+        <li><span class="opt-label">D</span> $2.5$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Pre-activation: $(0.5)(1) + (0.5)(-2) + (-1)(3) + (2)(0) + 1 = 0.5 - 1 - 3 + 0 + 1 = -2.5$. ReLU clamps negatives to zero: $\max(0, -2.5) = 0$.</p>
+          <p>B reports the raw pre-activation, forgetting to apply ReLU. C and D are sign- or arithmetic-slip distractors (e.g. $-2.5 + 3$ or $-2.5 - (-3)$ as if a sign were flipped). The trap is exactly the canonical "forgot to apply $\max(0,\cdot)$" or sign error in the $w_3 x_3$ term.</p>
+          <p class="ref">Atoms: <a href="/concepts/activation-functions">activation-functions</a>, <a href="/concepts/feedforward-network">feedforward-network</a>.</p>
+        </div>
+      </details>
+    </article>
+
+  </main>
+  <script src="exam.js"></script>
+</body>
+</html>

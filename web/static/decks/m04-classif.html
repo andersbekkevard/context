@@ -61,10 +61,10 @@
       </header>
       <p class="q-text">In the classification setup, what is the <em>Bayes error rate</em>?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> The training error of a fitted Bayes-network classifier on the data at hand.</li>
-        <li><span class="opt-label">B</span> The classification analogue of the residual sum of squares: $\sum_i \mathbf 1(y_i \neq \hat y_i)$ on the training set.</li>
+        <li><span class="opt-label">A</span> The training error of a fitted Bayes-network classifier on the data at hand, evaluated under the $0/1$ loss.</li>
+        <li><span class="opt-label">B</span> The classification analogue of the residual sum of squares: $\sum_i \mathbf 1(y_i \neq \hat y_i)$ counted on the training set.</li>
         <li><span class="opt-label">C</span> The expected $0/1$ loss of the classifier $\hat y(x) = \arg\max_k \Pr(Y=k\mid X=x)$ that uses the true posterior, i.e. $1 - E[\max_k \Pr(Y=k\mid X)]$.</li>
-        <li><span class="opt-label">D</span> The misclassification rate of naive Bayes when its conditional-independence assumption holds exactly.</li>
+        <li><span class="opt-label">D</span> The misclassification rate of the naive-Bayes classifier when its conditional-independence assumption is satisfied.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -326,10 +326,10 @@
       </header>
       <p class="q-text">Which statement most accurately describes a ROC curve and AUC for a binary classifier producing scores $\hat p(x)$?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> The $y$-axis is sensitivity, the $x$-axis is specificity; the curve sweeps the threshold; AUC near $1$ is good.</li>
+        <li><span class="opt-label">A</span> The $y$-axis is sensitivity, the $x$-axis is specificity, and the curve is traced by sweeping the classification threshold; AUC near $1$ indicates a good classifier.</li>
         <li><span class="opt-label">B</span> The $y$-axis is sensitivity, the $x$-axis is $1-$specificity; the curve sweeps the threshold; AUC equals the probability that a random positive scores higher than a random negative.</li>
-        <li><span class="opt-label">C</span> The curve plots accuracy against the threshold; AUC is the area under that curve and equals $1$ for a perfect classifier.</li>
-        <li><span class="opt-label">D</span> The curve plots precision against recall; AUC near $0$ means the classifier is useless.</li>
+        <li><span class="opt-label">C</span> The curve plots overall accuracy against the threshold value; AUC is the area under that curve and equals exactly $1$ when the classifier is perfect.</li>
+        <li><span class="opt-label">D</span> The curve plots precision against recall as the threshold sweeps; an AUC near $0$ means the classifier carries essentially no useful information about class.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -387,9 +387,9 @@
       </header>
       <p class="q-text">In LDA, why is the discriminant $\delta_k(x)$ <em>linear</em> in $x$, while in QDA it is <em>quadratic</em>?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> In LDA the priors $\pi_k$ are equal; in QDA they differ, which adds a quadratic correction.</li>
-        <li><span class="opt-label">B</span> LDA assumes Gaussian class-conditionals; QDA drops the Gaussian assumption and uses a kernel density, which is locally quadratic.</li>
-        <li><span class="opt-label">C</span> LDA uses $\Sigma$ directly while QDA uses $\Sigma^{-1}$, and squaring the inverse introduces the quadratic term.</li>
+        <li><span class="opt-label">A</span> In LDA the priors $\pi_k$ are required to be equal across classes, while in QDA the priors differ, and this difference contributes the quadratic term in the discriminant.</li>
+        <li><span class="opt-label">B</span> LDA assumes the class-conditionals are Gaussian, while QDA drops this assumption and replaces $f_k(x)$ with a kernel density estimate, which makes the discriminant locally quadratic in $x$.</li>
+        <li><span class="opt-label">C</span> LDA writes the discriminant in terms of $\Sigma$ while QDA writes it in terms of $\Sigma^{-1}$, and the squared inverse turns the linear cross-term into a quadratic form in $x$.</li>
         <li><span class="opt-label">D</span> Pooling $\Sigma$ in LDA makes the term $-\tfrac12 x^\top\Sigma^{-1}x$ independent of $k$ and it cancels in $\arg\max_k$; QDA keeps a class-specific $\Sigma_k$, so $-\tfrac12 x^\top\Sigma_k^{-1}x$ depends on $k$ and survives.</li>
       </ul>
       <details class="fasit-details">
@@ -457,12 +457,12 @@
         <span class="exam-q__num">Question 15</span>
         <span class="exam-q__points">3 points</span>
       </header>
-      <p class="q-text">In LDA, you raise the prior $\pi_A$ from $0.5$ to $0.7$ (and lower $\pi_B$ to $0.3$) without changing the means or covariance. What happens to the decision boundary between classes $A$ and $B$?</p>
+      <p class="q-text">In LDA, you raise the prior $\pi_A$ from $0.5$ to $0.7$ (and lower $\pi_B$ to $0.3$) without changing the means or the shared covariance. What happens to the decision boundary between classes $A$ and $B$?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> It shifts <em>away</em> from $\mu_A$, so more of the input space is classified as $A$.</li>
-        <li><span class="opt-label">B</span> It shifts <em>toward</em> $\mu_A$, so more of the input space is classified as $A$.</li>
-        <li><span class="opt-label">C</span> It is unchanged, since the boundary depends only on $\mu_k$ and $\Sigma$.</li>
-        <li><span class="opt-label">D</span> It rotates by an angle proportional to $\log(\pi_A/\pi_B)$.</li>
+        <li><span class="opt-label">A</span> It shifts in space <em>away</em> from $\mu_A$ and toward $\mu_B$, so more of the input space is classified as class $A$.</li>
+        <li><span class="opt-label">B</span> It shifts in space <em>toward</em> $\mu_A$ and away from $\mu_B$, so more of the input space is classified as class $A$.</li>
+        <li><span class="opt-label">C</span> It is unchanged, since the LDA boundary depends only on the class means $\mu_k$ and the pooled covariance $\Sigma$.</li>
+        <li><span class="opt-label">D</span> It rotates around the midpoint $(\mu_A + \mu_B)/2$ by an angle proportional to $\log(\pi_A/\pi_B)$.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -551,17 +551,17 @@
       </header>
       <p class="q-text">What is the defining modeling assumption of (Gaussian) naive Bayes?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> The predictors $X_1, \dots, X_p$ are unconditionally independent.</li>
-        <li><span class="opt-label">B</span> The predictors $X_1, \dots, X_p$ are conditionally independent <em>given the class</em>; in the Gaussian case, this is equivalent to QDA with each $\Sigma_k$ restricted to be diagonal.</li>
-        <li><span class="opt-label">C</span> The class prior $\pi_k$ is uniform across classes.</li>
-        <li><span class="opt-label">D</span> The Bayes posterior is computed using a Bayesian network rather than the Bayes-classifier abstraction.</li>
+        <li><span class="opt-label">A</span> The predictors $X_1, \dots, X_p$ are <em>unconditionally</em> independent of each other in the population, regardless of the class label.</li>
+        <li><span class="opt-label">B</span> The class prior $\pi_k$ is assumed uniform across the $K$ classes, so that all classification information comes from the class-conditional density.</li>
+        <li><span class="opt-label">C</span> The predictors $X_1, \dots, X_p$ are conditionally independent <em>given the class</em>; in the Gaussian case, this is equivalent to QDA with each $\Sigma_k$ restricted to be diagonal.</li>
+        <li><span class="opt-label">D</span> The Bayes posterior is computed using a directed-graphical Bayesian network rather than via the Bayes-classifier $\arg\max_k$ abstraction.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: C</span>
           <p>$f_k(x) = \prod_j f_{kj}(x_j)$ — predictors are independent <em>within</em> each class. With Gaussian marginals plus class-specific variances, this is exactly QDA with diagonal $\Sigma_k$. The win is the parameter count, $O(p)$ vs $O(p^2)$.</p>
-          <p>A drops the "given class" qualifier — that would be a much stronger (essentially never holding) assumption. C is a uniform-prior assumption used by some other classifiers; naive Bayes still estimates $\pi_k$ from frequencies. D conflates the Bayes classifier abstraction with naive Bayes (same prof-flagged confusion).</p>
+          <p>A drops the "given class" qualifier — that would be a much stronger (essentially never holding) assumption. B is a uniform-prior assumption used by some other classifiers; naive Bayes still estimates $\pi_k$ from frequencies. D conflates the Bayes classifier abstraction with naive Bayes (same prof-flagged confusion).</p>
           <p class="ref">Atoms: <a href="/concepts/naive-bayes">naive-bayes</a>, <a href="/concepts/diagnostic-vs-sampling-paradigm">diagnostic-vs-sampling-paradigm</a>.</p>
         </div>
       </details>
@@ -619,10 +619,10 @@
       </header>
       <p class="q-text">A 7-point training set with two predictors and labels $\{A, A, A, B, B, B, B\}$. We want to predict the class at $x_0 = (1,2)$ using KNN. The prof's exercise asks why $K = 7$ is a poor choice. The best explanation is:</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> With $K = 7$ on $7$ points, every training point is a neighbor; the prediction equals the majority class globally and ignores $x_0$.</li>
-        <li><span class="opt-label">B</span> With $K = 7$ the classifier overfits drastically because it uses too many neighbors.</li>
-        <li><span class="opt-label">C</span> $K = 7$ produces ties and is undefined for binary classification with majority voting.</li>
-        <li><span class="opt-label">D</span> $K = 7$ is fine; the issue is that Euclidean distance is invalid in two dimensions.</li>
+        <li><span class="opt-label">A</span> With $K = 7$ on a $7$-point training set, every training point is a neighbor; the prediction equals the global majority class and entirely ignores the location of $x_0$.</li>
+        <li><span class="opt-label">B</span> With $K = 7$ the classifier overfits drastically because it uses too many neighbors and chases noise in the training labels.</li>
+        <li><span class="opt-label">C</span> A choice of $K = 7$ on a $7$-point training set produces ties and leaves the majority-vote prediction mathematically undefined here.</li>
+        <li><span class="opt-label">D</span> $K = 7$ is fine in principle; the actual issue is that Euclidean distance is invalid for predictions in two dimensions.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -687,10 +687,10 @@
       </header>
       <p class="q-text">Observations are uniformly distributed on the unit hypercube $[0,1]^p$. To predict at a new point we use only training observations whose coordinates each lie within a $10\%$ window centred on the test point's coordinate. As $p$ grows from $1$ to $100$, the average fraction of training points actually used shrinks roughly as:</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> $0.1$ for any $p$, since each coordinate independently keeps the same window.</li>
+        <li><span class="opt-label">A</span> $0.1$ for any $p$, since each coordinate independently keeps the same $10\%$ window around the test point.</li>
         <li><span class="opt-label">B</span> $0.1^p$ — exponentially toward zero, so at $p = 100$ essentially no training points qualify as "near".</li>
-        <li><span class="opt-label">C</span> $0.1 \cdot p$ — linearly growing, so the curse only kicks in at extremely large $p$.</li>
-        <li><span class="opt-label">D</span> $1 - 0.1^p$ — most points are nearby in high dimensions because the volume concentrates.</li>
+        <li><span class="opt-label">C</span> $0.1 \cdot p$ — linearly growing, so the curse of dimensionality only kicks in at very large $p$.</li>
+        <li><span class="opt-label">D</span> $1 - 0.1^p$ — most points are nearby in high dimensions because the unit-cube volume concentrates near its centre.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -750,9 +750,9 @@
       <p class="q-text">In the credit-default data, only about $5\%$ of clients default. A trivial classifier that predicts "no default" for every client achieves around $95\%$ accuracy. The most useful conclusion to draw from this is:</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Accuracy is misleading under class imbalance; sensitivity is $0$ and specificity is $1$, so the classifier is useless for catching defaulters.</li>
-        <li><span class="opt-label">B</span> Accuracy is the right summary; any classifier with accuracy below $95\%$ should be discarded.</li>
-        <li><span class="opt-label">C</span> The trivial classifier has good sensitivity but poor specificity, since it never raises false alarms.</li>
-        <li><span class="opt-label">D</span> The class-imbalance issue can be resolved by computing AUC instead of accuracy; AUC is also $\approx 0.95$ here.</li>
+        <li><span class="opt-label">B</span> Accuracy is the right summary metric here; any candidate classifier whose accuracy is below this $95\%$ baseline should simply be discarded.</li>
+        <li><span class="opt-label">C</span> The trivial classifier has good sensitivity but poor specificity, since it never raises false alarms but also catches every actual default.</li>
+        <li><span class="opt-label">D</span> The class-imbalance issue is resolved by reporting AUC instead of accuracy; the AUC of the trivial classifier is also $\approx 0.95$.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -875,10 +875,10 @@
       </header>
       <p class="q-text">Two competing classifiers $p(x)$ and $q(x)$ produce probabilities of disease for the same population. On independent validation sets, $p(x)$ has AUC $0.6$ and $q(x)$ has AUC $0.7$. Which method would you prefer, and why?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> $p(x)$: lower AUC corresponds to better separation since the curve sits closer to the diagonal.</li>
+        <li><span class="opt-label">A</span> $p(x)$: lower AUC corresponds to better class separation, because the ROC curve lies closer to the chance diagonal.</li>
         <li><span class="opt-label">B</span> $q(x)$: higher AUC means a larger probability that a random positive scores higher than a random negative, summarising better trade-offs across all thresholds.</li>
-        <li><span class="opt-label">C</span> Cannot tell: AUCs from independent validation sets are never comparable.</li>
-        <li><span class="opt-label">D</span> $p(x)$: AUC $0.6$ is closer to the chance level $0.5$, which is the safe choice.</li>
+        <li><span class="opt-label">C</span> Cannot tell: AUCs computed on independent validation sets are not comparable across classifiers in any meaningful way.</li>
+        <li><span class="opt-label">D</span> $p(x)$: AUC $0.6$ is closer to the chance level of $0.5$, which makes it the more conservative and statistically safer choice.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>

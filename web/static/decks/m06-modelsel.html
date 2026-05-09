@@ -194,15 +194,15 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 5</span>
-        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__points">3 points</span>
         <span class="exam-q__src">ISLR §6 Q2</span>
       </header>
       <p class="q-text">Relative to ordinary least squares, the lasso is:</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> More flexible; gives improved prediction accuracy when its increase in variance is less than its decrease in bias.</li>
-        <li><span class="opt-label">B</span> More flexible; gives improved prediction accuracy when its increase in bias is less than its decrease in variance.</li>
-        <li><span class="opt-label">C</span> Less flexible; gives improved prediction accuracy when its increase in variance is less than its decrease in bias.</li>
-        <li><span class="opt-label">D</span> Less flexible; gives improved prediction accuracy when its increase in bias is less than its decrease in variance.</li>
+        <li><span class="opt-label">A</span> More flexible; improves prediction accuracy when its increase in variance is less than its decrease in bias.</li>
+        <li><span class="opt-label">B</span> More flexible; improves prediction accuracy when its increase in bias is less than its decrease in variance.</li>
+        <li><span class="opt-label">C</span> Less flexible; improves prediction accuracy when its increase in variance is less than its decrease in bias.</li>
+        <li><span class="opt-label">D</span> Less flexible; improves prediction accuracy when its increase in bias is less than its decrease in variance.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -252,17 +252,17 @@
       </header>
       <p class="q-text">In the constrained-optimisation picture (ISL Fig 6.7), the RSS contours are concentric ellipses centred at $\hat\beta^{\text{OLS}}$, and the regularisation constraint defines a region centred at the origin. Which statement best explains why lasso produces sparse solutions but ridge does not?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> The lasso constraint region is smaller than the ridge region for the same $\lambda$, so it always lies on a coordinate axis.</li>
-        <li><span class="opt-label">B</span> The ridge constraint region is a circle whose interior never touches the axes, while the lasso region is a diamond with corners on the axes that the expanding RSS ellipse tends to first contact.</li>
-        <li><span class="opt-label">C</span> Lasso uses cross-validation to select variables; ridge does not.</li>
-        <li><span class="opt-label">D</span> Ridge is convex and lasso is non-convex, so only lasso can settle on coordinate corners.</li>
+        <li><span class="opt-label">A</span> The lasso region is smaller in volume than the ridge region at any $\lambda$, so its solution is forced to lie on a coordinate axis at every fit.</li>
+        <li><span class="opt-label">B</span> Ridge is convex while lasso is non-convex, so only lasso can settle at coordinate corners during the optimisation.</li>
+        <li><span class="opt-label">C</span> Lasso uses cross-validation internally to select variables, whereas ridge does not select variables at all.</li>
+        <li><span class="opt-label">D</span> Lasso's region is a diamond with corners on the axes (the RSS ellipse tends to first touch a corner), while ridge's region is a smooth circle.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>Geometric story: the $L^1$ ball is a diamond with sharp corners on the axes; the $L^2$ ball is smooth. The smallest RSS ellipse that touches the constraint region tends to land on a diamond corner (which forces some $\beta_j = 0$) but at a generic interior-direction point on the circle.</p>
-          <p>A is wrong: nothing about the diamond <em>always</em> sits on an axis — it just typically does. C confuses fitting (the penalty itself produces sparsity) with hyperparameter tuning. D inverts convexity: <em>both</em> the $L^1$ and $L^2$ penalties define convex problems; convexity isn't the discriminator. The corners-vs-smooth distinction is.</p>
+          <p>A is wrong: nothing about the diamond <em>always</em> sits on an axis — it just typically does. B inverts convexity: <em>both</em> the $L^1$ and $L^2$ penalties define convex problems; convexity isn't the discriminator. C confuses fitting (the penalty itself produces sparsity) with hyperparameter tuning. The corners-vs-smooth distinction is what matters.</p>
           <p class="ref">Atoms: <a href="/concepts/ridge-vs-lasso-geometry">ridge-vs-lasso-geometry</a>, <a href="/concepts/lasso">lasso</a>, <a href="/concepts/ridge-regression">ridge-regression</a>. Lecture: <a href="/lectures/L13-modelsel-2">L13-modelsel-2</a>.</p>
         </div>
       </details>
@@ -337,10 +337,10 @@
       </header>
       <p class="q-text">Which of the following best describes the canonical PCR procedure?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Choose components by maximising $\mathrm{Cov}(X\phi, Y)$, regress $Y$ on the first $M$ such components, pick $M$ by cross-validation.</li>
+        <li><span class="opt-label">A</span> Choose components by maximising $\mathrm{Cov}(X\phi, Y)$, regress $Y$ on the first $M$ components, pick $M$ by CV.</li>
         <li><span class="opt-label">B</span> Standardise $X$, run PCA on $X$ alone, regress $Y$ on the first $M$ principal components, pick $M$ by cross-validation.</li>
-        <li><span class="opt-label">C</span> Standardise $X$, drop the components of $X$ with smallest $\mathrm{Cor}(X_j, Y)$, refit OLS on the survivors.</li>
-        <li><span class="opt-label">D</span> Apply a lasso penalty inside a PCA decomposition so some loadings $\phi_{jm}$ are exactly zero.</li>
+        <li><span class="opt-label">C</span> Standardise $X$, drop the original predictors $X_j$ whose marginal correlation with $Y$ is smallest, refit OLS on the survivors.</li>
+        <li><span class="opt-label">D</span> Apply a lasso penalty inside the PCA decomposition step so that some loading entries $\phi_{jm}$ are driven exactly to zero.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -357,7 +357,7 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 11</span>
-        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__points">3 points</span>
       </header>
       <p class="q-text">PCA on a standardised design matrix returns five eigenvalues $\lambda_1 = 2.5,\ \lambda_2 = 1.2,\ \lambda_3 = 0.7,\ \lambda_4 = 0.4,\ \lambda_5 = 0.2$. What fraction of the total variance is explained by the first three principal components?</p>
       <ul class="exam-q__opts">
@@ -385,17 +385,17 @@
       </header>
       <p class="q-text">The prof framed PCR as a "discretised ridge regression." Which sentence best captures the analogy?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Both methods perform variable selection by zeroing the small-magnitude coefficients.</li>
-        <li><span class="opt-label">B</span> PCR shrinks coefficient estimates by the same factor as ridge for every $\lambda$ value.</li>
-        <li><span class="opt-label">C</span> Both shrink the small-eigenvalue directions of the predictor space; PCR truncates them abruptly, ridge shrinks them smoothly.</li>
-        <li><span class="opt-label">D</span> Ridge is a special case of PCR with $M = p$.</li>
+        <li><span class="opt-label">A</span> Both shrink the small-eigenvalue directions; PCR truncates them abruptly, ridge shrinks smoothly.</li>
+        <li><span class="opt-label">B</span> PCR and ridge shrink every coefficient estimate by the same factor for every value of $\lambda$.</li>
+        <li><span class="opt-label">C</span> Both methods perform automatic variable selection by zeroing out the small-magnitude coefficients.</li>
+        <li><span class="opt-label">D</span> Ridge regression is a special case of PCR taken with $M = p$ (no truncation at all).</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: C</span>
+          <span class="fasit-correct">Correct answer: A</span>
           <p>PCR drops the $p - M$ smallest-eigenvalue components outright (hard threshold). Ridge applies a smooth per-PC shrinkage factor $\lambda_j^2/(\lambda_j^2 + \lambda)$ that hits the small-eigenvalue directions hardest. Same target, different shape.</p>
-          <p>A is wrong on both counts: neither method does variable selection (that's lasso). B confuses "discretised analogue" with "identical fits." D is the reverse implication: PCR with $M = p$ recovers OLS, not ridge.</p>
+          <p>B confuses "discretised analogue" with "identical fits." C is wrong on both counts: neither method does variable selection (that's lasso). D is the reverse implication: PCR with $M = p$ recovers OLS, not ridge.</p>
           <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/ridge-regression">ridge-regression</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>.</p>
         </div>
       </details>
@@ -490,17 +490,17 @@
       </header>
       <p class="q-text">A regularised regression on $n = 200$ patients with $p = 5000$ candidate gene-expression predictors picks an "active set" of 30 features. What is the most defensible interpretation?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> These 30 are the truly causally predictive features; the other 4970 have no relationship to the response.</li>
-        <li><span class="opt-label">B</span> These 30 — or features correlated with the truly predictive ones — make up one of many possibly-suitable predictive models; we cannot identify the true causal set in this regime.</li>
-        <li><span class="opt-label">C</span> Because $p \gg n$, no inference is possible at all and the active set should be ignored.</li>
-        <li><span class="opt-label">D</span> The model has training $R^2 \approx 1$, which proves these 30 are the right features.</li>
+        <li><span class="opt-label">A</span> These 30 — or features correlated with the truly predictive ones — give one of many predictive models; the true set isn't identifiable.</li>
+        <li><span class="opt-label">B</span> These 30 are the truly causally predictive features; the other 4970 have no relationship at all to the response variable here.</li>
+        <li><span class="opt-label">C</span> Because $p \gg n$, no inference is possible whatsoever and the active set should be ignored as a methodological artifact.</li>
+        <li><span class="opt-label">D</span> The fitted model achieves training $R^2 \approx 1$, which is direct evidence that these 30 features are the right set.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: A</span>
           <p>Slide-flagged verbatim: <em>"In the high-dimensional setting, the multicollinearity problem is extreme. We can never know exactly which variables, if any, truly are predictive of the outcome … At most, we can hope to assign large regression coefficients to variables that are correlated with the variables that truly are predictive."</em> The active set is one of many suitable predictive models; "fishing around," not confirmation.</p>
-          <p>A overclaims causality and exclusivity. C overcorrects; the active set is informative even if not definitive. D mistakes a near-1 training $R^2$ (automatic at $p \gg n$) for evidence.</p>
+          <p>B overclaims causality and exclusivity. C overcorrects; the active set is informative even if not definitive. D mistakes a near-1 training $R^2$ (automatic at $p \gg n$) for evidence.</p>
           <p class="ref">Atoms: <a href="/concepts/high-dimensional-regression">high-dimensional-regression</a>, <a href="/concepts/lasso">lasso</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>.</p>
         </div>
       </details>
@@ -514,17 +514,17 @@
       </header>
       <p class="q-text">The prof calls regularisation "the most important variant of model selection that we talk about throughout." Which sentence best captures <em>why</em> regularisation typically improves test error in module 6?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> It eliminates the irreducible noise term $\sigma^2$ from the test-MSE decomposition.</li>
-        <li><span class="opt-label">B</span> It accepts a small increase in bias in exchange for a larger decrease in variance.</li>
-        <li><span class="opt-label">C</span> It guarantees that training MSE matches test MSE, so overfitting is impossible.</li>
-        <li><span class="opt-label">D</span> It increases the model's flexibility, lowering both bias and variance simultaneously.</li>
+        <li><span class="opt-label">A</span> It eliminates the irreducible noise term $\sigma^2$ from the test-MSE decomposition entirely.</li>
+        <li><span class="opt-label">B</span> It increases the model's flexibility, lowering bias and variance simultaneously across the entire $\lambda$ range.</li>
+        <li><span class="opt-label">C</span> It guarantees that training MSE equals test MSE, so overfitting becomes structurally impossible.</li>
+        <li><span class="opt-label">D</span> It accepts a small increase in bias in exchange for a larger decrease in variance.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>Verbatim: <em>"Often we can substantially reduce the variance at the cost of a negligible increase in bias."</em> That bias-for-variance trade is the universal sales pitch behind ridge, lasso, smoothing splines, cost-complexity pruning, dropout, weight decay, and bagging.</p>
-          <p>A is wrong: $\sigma^2$ is irreducible by definition; no method removes it. C confuses regularisation with infinite data. D inverts the direction: regularisation makes the model <em>less</em> flexible (more constrained).</p>
+          <p>A is wrong: $\sigma^2$ is irreducible by definition; no method removes it. B inverts the direction: regularisation makes the model <em>less</em> flexible (more constrained). C confuses regularisation with infinite data.</p>
           <p class="ref">Atoms: <a href="/concepts/regularization">regularization</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>. Lecture: <a href="/lectures/L14-modelsel-3">L14-modelsel-3</a>.</p>
         </div>
       </details>
@@ -534,21 +534,21 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 17</span>
-        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__points">3 points</span>
       </header>
       <p class="q-text">You want to tune $\lambda$ for ridge regression on a training set $\mathcal{D}$ via $k$-fold CV. Which procedure is correct?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Refit ridge on $\mathcal{D}$ at many $\lambda$ values, pick the $\lambda$ that gives the smallest <em>training</em> RSS, refit on $\mathcal{D}$.</li>
-        <li><span class="opt-label">B</span> For each $\lambda$ in a grid, partition $\mathcal{D}$ into $k$ folds, average the held-out MSE across folds, pick $\lambda$ minimising the averaged CV-MSE, refit ridge on $\mathcal{D}$ at that $\lambda$.</li>
-        <li><span class="opt-label">C</span> Pick $\lambda$ analytically using $C_p$ or BIC computed on $\mathcal{D}$, then refit ridge on $\mathcal{D}$ at that $\lambda$.</li>
-        <li><span class="opt-label">D</span> Run lasso first to identify nonzero coefficients, then run ridge with $\lambda$ chosen so all those coefficients are retained.</li>
+        <li><span class="opt-label">A</span> Refit ridge on $\mathcal{D}$ for many $\lambda$, pick the $\lambda$ giving the smallest <em>training</em> RSS, refit ridge at that $\lambda$ on $\mathcal{D}$.</li>
+        <li><span class="opt-label">B</span> Run lasso first to identify nonzero coefficients on $\mathcal{D}$, then run ridge with $\lambda$ chosen so all those coefficients are retained.</li>
+        <li><span class="opt-label">C</span> Pick $\lambda$ analytically using $C_p$ or BIC computed on $\mathcal{D}$, then refit ridge at the chosen $\lambda$ on $\mathcal{D}$.</li>
+        <li><span class="opt-label">D</span> For each $\lambda$ in a grid, $k$-fold-CV on $\mathcal{D}$, pick $\lambda$ minimising mean CV-MSE, refit ridge at $\hat\lambda$ on $\mathcal{D}$.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>Standard recipe: grid of $\lambda$, $k$-fold CV per grid point, pick $\hat\lambda$ minimising mean CV-MSE (or one-SE rule), refit on full training data with $\hat\lambda$.</p>
-          <p>A picks the unregularised end ($\lambda = 0$) every time — training RSS strictly decreases as $\lambda$ shrinks. C uses penalty criteria the prof distrusts: <em>"their assumptions are always wrong, and they're typically always wrong."</em> D conflates two methods and breaks the bias-variance balance ridge is supposed to achieve.</p>
+          <p>A picks the unregularised end ($\lambda = 0$) every time — training RSS strictly decreases as $\lambda$ shrinks. B conflates two methods and breaks the bias-variance balance ridge is supposed to achieve. C uses penalty criteria the prof distrusts: <em>"their assumptions are always wrong, and they're typically always wrong."</em></p>
           <p class="ref">Atoms: <a href="/concepts/cross-validation">cross-validation</a>, <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/regularization">regularization</a>. Lecture: <a href="/lectures/L14-modelsel-3">L14-modelsel-3</a>.</p>
         </div>
       </details>
@@ -558,7 +558,7 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 18</span>
-        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__points">4 points</span>
         <span class="exam-q__src">Exam 2025 P6b</span>
       </header>
       <p class="q-text">A 10-fold CV plot of MSE versus $\log(\lambda)$ for lasso on a regression problem shows the minimum CV-MSE at $\lambda_{\min}$ corresponding to lasso test MSE $\approx 50.80$. The unregularised OLS test MSE on the same hold-out is $\approx 50.78$. Which conclusion is best supported?</p>
@@ -724,17 +724,17 @@
       </header>
       <p class="q-text">"Double descent" / benign overfitting refers to the empirical observation that:</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Test error always goes down monotonically with the number of parameters.</li>
-        <li><span class="opt-label">B</span> Past the interpolation point ($p \approx n$) the bias-variance decomposition no longer holds.</li>
-        <li><span class="opt-label">C</span> Past the interpolation point, test error can come back down because the optimisation effectively picks a minimum-norm interpolator among infinitely many.</li>
-        <li><span class="opt-label">D</span> Cross-validation error is always U-shaped in the model's degree of flexibility.</li>
+        <li><span class="opt-label">A</span> Test error always goes down monotonically with the number of fitted parameters in the model class.</li>
+        <li><span class="opt-label">B</span> Past the interpolation point ($p \approx n$), the bias-variance decomposition itself no longer holds for the test MSE.</li>
+        <li><span class="opt-label">C</span> Cross-validation error is always U-shaped in the model's degree of flexibility, no matter the size of $p$.</li>
+        <li><span class="opt-label">D</span> Past the interpolation point, test error can drop again because the optimisation picks a minimum-norm interpolator among infinitely many.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: C</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>The prof's headline framing: <em>"the optimisation changes from 'fit + penalty' to 'min penalty subject to fitting'."</em> Past $p \approx n$, infinitely many zero-training-error solutions exist; the pseudoinverse / SGD picks the smallest-norm one, which is implicit ridge. That's the "benign" in benign overfitting.</p>
-          <p>A is too strong — there's still the U-shape <em>before</em> the interpolation point. B is wrong: the decomposition stays exact at every $p$; double descent is just a non-U profile of test MSE = $\sigma^2$ + bias² + variance. D ignores the second descent entirely — that's the whole point of the phenomenon.</p>
+          <p>A is too strong — there's still the U-shape <em>before</em> the interpolation point. B is wrong: the decomposition stays exact at every $p$; double descent is just a non-U profile of test MSE = $\sigma^2$ + bias² + variance. C ignores the second descent entirely — that's the whole point of the phenomenon.</p>
           <p class="ref">Atoms: <a href="/concepts/double-descent">double-descent</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>, <a href="/concepts/ridge-regression">ridge-regression</a>. Lecture: <a href="/lectures/L13-modelsel-2">L13-modelsel-2</a>.</p>
         </div>
       </details>
@@ -868,16 +868,16 @@
       <p class="q-text">Two predictors $X_1, X_2$ are nearly perfectly correlated. Each method is fit at a moderate penalty / constraint level. Which row best describes the typical behaviour?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Ridge zeros one of the two; lasso averages them at moderate values.</li>
-        <li><span class="opt-label">B</span> Lasso zeros one of the two; ridge averages them at moderate values.</li>
+        <li><span class="opt-label">B</span> Both methods zero both; only OLS keeps them at non-zero values.</li>
         <li><span class="opt-label">C</span> Both methods average them; the only difference is the magnitude of the joint coefficient.</li>
-        <li><span class="opt-label">D</span> Both methods zero both; only OLS keeps them at non-zero values.</li>
+        <li><span class="opt-label">D</span> Lasso zeros one of the two; ridge averages them at moderate values.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>The prof's "capitalist vs socialist" framing: lasso picks one and zeros the other (corner of the diamond on an axis); ridge averages them at moderate values (smooth circle, no corners). The choice of which coefficient lasso zeros is data-dependent and unstable across resamples — this is the failure mode elastic net was designed to fix.</p>
-          <p>A swaps the methods (the canonical exam trap). C misses lasso's sparsity. D zeros both, which neither method does at moderate $\lambda$.</p>
+          <p>A swaps the methods (the canonical exam trap). B zeros both, which neither method does at moderate $\lambda$. C misses lasso's sparsity.</p>
           <p class="ref">Atoms: <a href="/concepts/lasso">lasso</a>, <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/ridge-vs-lasso-geometry">ridge-vs-lasso-geometry</a>, <a href="/concepts/elastic-net">elastic-net</a>. Lecture: <a href="/lectures/L13-modelsel-2">L13-modelsel-2</a>.</p>
         </div>
       </details>

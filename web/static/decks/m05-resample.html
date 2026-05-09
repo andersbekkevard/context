@@ -146,17 +146,17 @@
       </header>
       <p class="q-text">For $k$-fold CV with equal-sized folds and squared-error loss in regression, which expression equals $\text{CV}_{(k)}$?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> $\frac{1}{k}\sum_{j=1}^{k}\text{MSE}_j$, where $\text{MSE}_j = \frac{1}{n_j}\sum_{i\in C_j}(y_i-\hat y_i^{(-j)})^2$.</li>
-        <li><span class="opt-label">B</span> $\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat y_i)^2$, where $\hat y_i$ is the full-data fitted value.</li>
-        <li><span class="opt-label">C</span> $\frac{1}{k}\sum_{j=1}^{k}(y_j-\hat y_j)^2$, evaluated only at the $k$ chosen "fold representatives."</li>
-        <li><span class="opt-label">D</span> $\frac{1}{k-1}\sum_{j=1}^{k}(\text{MSE}_j-\overline{\text{MSE}})^2$.</li>
+        <li><span class="opt-label">A</span> $\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat y_i)^2$, where $\hat y_i$ is the full-data fitted value.</li>
+        <li><span class="opt-label">B</span> $\frac{1}{k}\sum_{j=1}^{k}(y_j-\hat y_j)^2$, evaluated only at the $k$ chosen "fold representatives."</li>
+        <li><span class="opt-label">C</span> $\frac{1}{k-1}\sum_{j=1}^{k}(\text{MSE}_j-\overline{\text{MSE}})^2$.</li>
+        <li><span class="opt-label">D</span> $\frac{1}{k}\sum_{j=1}^{k}\text{MSE}_j$, where $\text{MSE}_j = \frac{1}{n_j}\sum_{i\in C_j}(y_i-\hat y_i^{(-j)})^2$.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: A</span>
-          <p>Each fold $j$ contributes the held-out MSE of the model trained on the other $k-1$ folds; CV is the average across folds. With unequal folds the weighted form $\frac{1}{n}\sum n_j\text{MSE}_j$ is identical to A when fold sizes match.</p>
-          <p>B is the in-sample training MSE, no held-out structure at all. C invents "fold representatives" and averages only $k$ residuals out of $n$; the held-out test in fold $j$ uses every observation in $C_j$. D is the formula for the per-fold sample variance $\widehat{\text{SE}}^2$, which feeds the one-SE rule, not the CV estimate itself.</p>
+          <span class="fasit-correct">Correct answer: D</span>
+          <p>Each fold $j$ contributes the held-out MSE of the model trained on the other $k-1$ folds; CV is the average across folds. With unequal folds the weighted form $\frac{1}{n}\sum n_j\text{MSE}_j$ is identical to D when fold sizes match.</p>
+          <p>A is the in-sample training MSE, no held-out structure at all. B invents "fold representatives" and averages only $k$ residuals out of $n$; the held-out test in fold $j$ uses every observation in $C_j$. C is the formula for the per-fold sample variance $\widehat{\text{SE}}^2$, which feeds the one-SE rule, not the CV estimate itself.</p>
           <p class="ref">Atom: <a href="/concepts/k-fold-cv">k-fold-cv</a>.</p>
         </div>
       </details>
@@ -235,7 +235,7 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 7</span>
-        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__points">4 points</span>
       </header>
       <p class="q-text">For an OLS fit on $n=4$ observations the residuals and hat-matrix diagonals are
         $r_i = y_i - \hat y_i = (2,\,-1,\,1,\,0)$ and $h_{ii} = (0.5,\,0.5,\,0.5,\,0.5)$.
@@ -298,16 +298,16 @@
       <p class="q-text">The slide deck flags the standard-error estimate underlying the one-SE rule as "strictly speaking, not quite valid." Why?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Sample standard deviations are biased estimators in finite samples.</li>
-        <li><span class="opt-label">B</span> The held-out folds used to compute the SE are also used to pick the optimal hyperparameter, so the SE is not an independent estimate.</li>
-        <li><span class="opt-label">C</span> The per-fold MSEs are not normally distributed.</li>
+        <li><span class="opt-label">B</span> The per-fold MSEs are not normally distributed.</li>
+        <li><span class="opt-label">C</span> The held-out folds used to compute the SE are also used to pick the optimal hyperparameter, so the SE is not an independent estimate.</li>
         <li><span class="opt-label">D</span> The folds are sampled without replacement, which violates the i.i.d. requirement of the SE formula.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: C</span>
           <p>The SE is computed on the very fold-MSEs that were minimized to choose $\hat\theta$, so it isn't an independent uncertainty estimate. The prof leaves it as a thought question on the slide; the answer is the same selection-bias logic that motivates nested CV.</p>
-          <p>A is irrelevant: the sample SD with $n-1$ in the denominator is unbiased for the variance under standard conditions, and that is not the slide's concern. C describes a possible issue for confidence-interval shape, but the prof's footnote is about reuse of data, not normality. D is wrong, no-replacement partitioning is exactly what CV does, and the SE formula does not require i.i.d. fold errors.</p>
+          <p>A is irrelevant: the sample SD with $n-1$ in the denominator is unbiased for the variance under standard conditions, and that is not the slide's concern. B describes a possible issue for confidence-interval shape, but the prof's footnote is about reuse of data, not normality. D is wrong, no-replacement partitioning is exactly what CV does, and the SE formula does not require i.i.d. fold errors.</p>
           <p class="ref">Atoms: <a href="/concepts/one-standard-error-rule">one-standard-error-rule</a>, <a href="/concepts/k-fold-cv">k-fold-cv</a>. Lecture: <a href="/lectures/L10-resample-1">L10-resample-1</a>.</p>
         </div>
       </details>
@@ -345,17 +345,17 @@
       </header>
       <p class="q-text">Among the conceptual claims about AIC and BIC that are still in scope (formulas are not), which one is correct?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> BIC penalises model complexity more aggressively than AIC, so it tends to favour smaller models.</li>
-        <li><span class="opt-label">B</span> AIC penalises model complexity more aggressively than BIC, so it tends to favour smaller models.</li>
-        <li><span class="opt-label">C</span> Both penalise complexity by exactly the same amount; the only difference is the leading constant.</li>
-        <li><span class="opt-label">D</span> Both penalise the test error directly, so neither uses the training error.</li>
+        <li><span class="opt-label">A</span> AIC penalises model complexity more aggressively than BIC, so it tends to favour smaller models.</li>
+        <li><span class="opt-label">B</span> Both penalise complexity by exactly the same amount; the only difference is the leading constant.</li>
+        <li><span class="opt-label">C</span> Both penalise the test error directly, so neither uses the training error.</li>
+        <li><span class="opt-label">D</span> BIC penalises model complexity more aggressively than AIC, so it tends to favour smaller models.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: A</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>The standard one-line comparison: BIC's complexity penalty grows with $\log n$, AIC's does not. So as $n$ grows, BIC penalises additional parameters more harshly and selects smaller models.</p>
-          <p>B reverses the direction. C is wrong, the penalties differ in functional form, not just a leading constant. D inverts the construction: both criteria start from the <em>training</em> error and add a penalty to estimate test error.</p>
+          <p>A reverses the direction. B is wrong, the penalties differ in functional form, not just a leading constant. C inverts the construction: both criteria start from the <em>training</em> error and add a penalty to estimate test error.</p>
           <p class="ref">Atom: <a href="/concepts/aic-bic-conceptual">aic-bic-conceptual</a>.</p>
         </div>
       </details>
@@ -365,7 +365,7 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 12</span>
-        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__points">4 points</span>
         <span class="exam-q__src">Ex5.3</span>
       </header>
       <p class="q-text">A genomics paper reports the following pipeline on $n = 50$ samples and $p = 5{,}000$ predictors with random 0/1 labels (so the true Bayes error is 50%):
@@ -393,7 +393,7 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 13</span>
-        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__points">4 points</span>
       </header>
       <p class="q-text">Continuing Q12: which pseudocode for "filter then classify" gives an honest CV estimate of generalisation error?</p>
       <ul class="exam-q__opts">
@@ -417,7 +417,7 @@
     <article class="exam-q">
       <header class="exam-q__head">
         <span class="exam-q__num">Question 14</span>
-        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__points">4 points</span>
       </header>
       <p class="q-text">You apply LOOCV to a regression model on hourly weather measurements from a single sensor. Adjacent hours are strongly correlated. Compared to its behaviour on i.i.d. data, what happens to the LOOCV estimate?</p>
       <ul class="exam-q__opts">
@@ -503,16 +503,16 @@
       <p class="q-text">Which procedure correctly estimates the bootstrap standard error of an OLS coefficient $\hat\beta_j$ when you do not want to rely on the closed-form $\sigma^2(X^\top X)^{-1}$ formula?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Refit OLS $B$ times on $B$ random subsets of size $n/2$ (without replacement); take the sample SD of the $B$ values of $\hat\beta_j$.</li>
-        <li><span class="opt-label">B</span> For $b = 1,\dots,B$: draw $n$ rows from $(X,y)$ with replacement; refit OLS; store $\hat\beta_j^{*b}$. Bootstrap SE is the sample SD of $\{\hat\beta_j^{*1},\dots,\hat\beta_j^{*B}\}$.</li>
-        <li><span class="opt-label">C</span> Permute the rows of $X$ (without replacement) $B$ times, refit, and use the SD of $\hat\beta_j$ across permutations.</li>
-        <li><span class="opt-label">D</span> Take a single bootstrap sample of size $n$ with replacement, refit, and report the residual standard error from that single fit.</li>
+        <li><span class="opt-label">B</span> Permute the rows of $X$ (without replacement) $B$ times, refit, and use the SD of $\hat\beta_j$ across permutations.</li>
+        <li><span class="opt-label">C</span> Take a single bootstrap sample of size $n$ with replacement, refit, and report the residual standard error from that single fit.</li>
+        <li><span class="opt-label">D</span> For $b = 1,\dots,B$: draw $n$ rows from $(X,y)$ with replacement; refit OLS; store $\hat\beta_j^{*b}$. Bootstrap SE is the sample SD of $\{\hat\beta_j^{*1},\dots,\hat\beta_j^{*B}\}$.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>Standard bootstrap recipe (Exercise 5.5 / 5.6): resample rows with replacement at size $n$, refit, collect the resulting $\hat\beta_j^{*b}$ values, and use their sample SD as the bootstrap SE estimate. Use $B$ in the 1{,}000–10{,}000 range.</p>
-          <p>A uses subsets of size $n/2$ without replacement; that is subsampling, not bootstrapping, and the SE has a different scale. C is permutation testing of the design matrix and breaks the relationship between $X$ and $y$, which is not what we want for a coefficient SE. D ignores the whole point: a single bootstrap sample tells you nothing — the whole point is the distribution across $B$ resamples.</p>
+          <p>A uses subsets of size $n/2$ without replacement; that is subsampling, not bootstrapping, and the SE has a different scale. B is permutation testing of the design matrix and breaks the relationship between $X$ and $y$, which is not what we want for a coefficient SE. C ignores the whole point: a single bootstrap sample tells you nothing — the whole point is the distribution across $B$ resamples.</p>
           <p class="ref">Atom: <a href="/concepts/bootstrap">bootstrap</a>.</p>
         </div>
       </details>
@@ -551,17 +551,17 @@
       </header>
       <p class="q-text">You have fit a logistic regression of $\texttt{chd}$ on $\texttt{sbp}$ and $\texttt{sex}$, and want a 95% CI for the predicted probability $\hat P(\texttt{chd}=1\mid \texttt{sbp}=140, \texttt{sex}=\text{male})$. Why is the bootstrap a natural tool here?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> A logistic-regression coefficient's SE is given by $\sigma^2(X^\top X)^{-1}$, but that formula breaks for predicted probabilities; the bootstrap estimates the SE/CI of the predicted probability directly without a closed form.</li>
-        <li><span class="opt-label">B</span> Predicted probabilities are normally distributed under the logistic model, so the bootstrap is required to convert them to log-odds.</li>
-        <li><span class="opt-label">C</span> The bootstrap removes overfitting; a 95% CI is exactly the model's training error band.</li>
-        <li><span class="opt-label">D</span> Bootstrap CIs always coincide with theoretical Wald CIs, so it is just a faster alternative.</li>
+        <li><span class="opt-label">A</span> Predicted probabilities are normally distributed under the logistic model, so the bootstrap is required to convert them to log-odds.</li>
+        <li><span class="opt-label">B</span> The bootstrap removes overfitting; a 95% CI is exactly the model's training error band.</li>
+        <li><span class="opt-label">C</span> Bootstrap CIs always coincide with theoretical Wald CIs, so it is just a faster alternative.</li>
+        <li><span class="opt-label">D</span> The closed-form $\sigma^2(X^\top X)^{-1}$ does not give an SE for nonlinear functions of the coefficients like a predicted probability; the bootstrap estimates the SE/CI of $\hat P$ directly without a closed form.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: A</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>Predicted probabilities are derived nonlinear quantities — $\sigma(\hat\beta_0 + \hat\beta_1 \cdot 140 + \hat\beta_2 \cdot 1)$. There is no clean closed-form SE, so resample $(X,y)$ rows with replacement, refit, recompute $\hat P$ at the same predictor values each time, take the SD across resamples for the SE and the 2.5%/97.5% quantiles for a percentile CI.</p>
-          <p>B fabricates a normality claim about predicted probabilities. C confuses confidence intervals with training-error bands. D is wrong — bootstrap CIs and Wald CIs agree only when the underlying assumptions hold; the whole reason to bootstrap is that they often don't.</p>
+          <p>A fabricates a normality claim about predicted probabilities. B confuses confidence intervals with training-error bands. C is wrong — bootstrap CIs and Wald CIs agree only when the underlying assumptions hold; the whole reason to bootstrap is that they often don't.</p>
           <p class="ref">Atom: <a href="/concepts/bootstrap">bootstrap</a>.</p>
         </div>
       </details>
@@ -630,17 +630,17 @@
       </header>
       <p class="q-text">Which statement most accurately distinguishes bagging from boosting?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Bagging fits trees in parallel on independent bootstrap samples and averages or votes; boosting fits trees sequentially, with each new tree correcting the previous fit.</li>
-        <li><span class="opt-label">B</span> Bagging fits trees sequentially on residuals; boosting fits trees in parallel on bootstrap samples.</li>
-        <li><span class="opt-label">C</span> Bagging and boosting are the same algorithm; the names are interchangeable.</li>
+        <li><span class="opt-label">A</span> Bagging fits trees sequentially on residuals; boosting fits trees in parallel on bootstrap samples.</li>
+        <li><span class="opt-label">B</span> Bagging and boosting are the same algorithm; the names are interchangeable.</li>
+        <li><span class="opt-label">C</span> Bagging fits trees in parallel on independent bootstrap samples and averages or votes; boosting fits trees sequentially, with each new tree correcting the previous fit.</li>
         <li><span class="opt-label">D</span> Bagging is a single-tree algorithm; boosting is the multi-tree version.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: A</span>
+          <span class="fasit-correct">Correct answer: C</span>
           <p>Bagging = parallel + bootstrap + average; the goal is variance reduction. Boosting = sequential + residual-fitting + weighted ensemble; the goal is bias reduction. Different mechanisms, different tuning behaviour ($B$ doesn't overfit in bagging but does in boosting).</p>
-          <p>B reverses the two procedures. C confuses them despite their distinct mechanics. D invents a single-tree/multi-tree distinction that is unrelated to the bagging/boosting split (both fit many trees).</p>
+          <p>A reverses the two procedures. B confuses them despite their distinct mechanics. D invents a single-tree/multi-tree distinction that is unrelated to the bagging/boosting split (both fit many trees).</p>
           <p class="ref">Atoms: <a href="/concepts/bagging">bagging</a>, <a href="/concepts/boosting">boosting</a>.</p>
         </div>
       </details>
@@ -725,19 +725,19 @@
         <span class="exam-q__num">Question 26</span>
         <span class="exam-q__points">3 points</span>
       </header>
-      <p class="q-text">Order the three CV schemes in the order LOOCV — 10-fold — validation-set, by their <em>variance</em> as estimators of test error (lowest variance first), assuming i.i.d. data and the same model.</p>
+      <p class="q-text">Order the three CV schemes — LOOCV, 10-fold CV, validation-set approach — by their <em>variance</em> as estimators of test error (lowest variance first), assuming i.i.d. data and the same model.</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> 10-fold &lt; LOOCV &lt; validation-set.</li>
-        <li><span class="opt-label">B</span> LOOCV &lt; 10-fold &lt; validation-set.</li>
-        <li><span class="opt-label">C</span> Validation-set &lt; 10-fold &lt; LOOCV.</li>
-        <li><span class="opt-label">D</span> All three have the same variance because they are all CV.</li>
+        <li><span class="opt-label">A</span> LOOCV &lt; 10-fold &lt; validation-set.</li>
+        <li><span class="opt-label">B</span> Validation-set &lt; 10-fold &lt; LOOCV.</li>
+        <li><span class="opt-label">C</span> All three have the same variance because they are all CV.</li>
+        <li><span class="opt-label">D</span> 10-fold &lt; LOOCV &lt; validation-set.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: A</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>10-fold CV has lower variance than LOOCV because its training sets share less data (folds are less correlated). LOOCV's $n$ training sets share $n-2$ of $n-1$ points → highly correlated fold errors → high-variance average. Validation-set is the worst: a single split is wildly variable across reruns.</p>
-          <p>B inverts the LOOCV / 10-fold direction (the canonical CE1-4b trap). C inverts the LOOCV / validation-set direction; LOOCV is variable, but the validation-set approach is even worse. D ignores the bias-variance discussion that motivates picking $k = 5$ or $10$.</p>
+          <p>A inverts the LOOCV / 10-fold direction (the canonical CE1-4b trap). B inverts the LOOCV / validation-set direction; LOOCV is variable, but the validation-set approach is even worse. C ignores the bias-variance discussion that motivates picking $k = 5$ or $10$.</p>
           <p class="ref">Atoms: <a href="/concepts/leave-one-out-cv">leave-one-out-cv</a>, <a href="/concepts/k-fold-cv">k-fold-cv</a>, <a href="/concepts/validation-set-approach">validation-set-approach</a>.</p>
         </div>
       </details>

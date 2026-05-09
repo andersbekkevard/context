@@ -110,10 +110,10 @@
       </header>
       <p class="q-text">In the bias-variance derivation, after writing $f(x_0) - \hat f(x_0) = (f(x_0) - \mathbb E[\hat f(x_0)]) + (\mathbb E[\hat f(x_0)] - \hat f(x_0))$ and squaring, the cross term vanishes because:</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> $f(x_0)$ and $\hat f(x_0)$ are independent.</li>
-        <li><span class="opt-label">B</span> $\mathbb E[\,\mathbb E[\hat f(x_0)] - \hat f(x_0)\,] = 0$ by the tower property.</li>
-        <li><span class="opt-label">C</span> The noise $\varepsilon$ has expected value zero.</li>
-        <li><span class="opt-label">D</span> The training set is assumed to be Gaussian.</li>
+        <li><span class="opt-label">A</span> $f(x_0)$ and $\hat f(x_0)$ are independent across resamples of the training set.</li>
+        <li><span class="opt-label">B</span> Taking expectation over training sets, $\mathbb E[\,\mathbb E[\hat f(x_0)] - \hat f(x_0)\,] = 0$.</li>
+        <li><span class="opt-label">C</span> The noise $\varepsilon$ in the response has expected value zero by assumption.</li>
+        <li><span class="opt-label">D</span> The training observations are assumed to be jointly Gaussian distributed.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -529,10 +529,10 @@
         Two regression methods, $A$ and $B$, are fit to the same dataset. Method $A$ has training MSE $0.20$ and test MSE $0.35$. Method $B$ has training MSE $0.05$ and test MSE $0.60$. Which diagnosis is most consistent with these numbers?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Both methods underfit; the test gap reflects irreducible error alone.</li>
-        <li><span class="opt-label">B</span> Method $A$ is overfitting; method $B$ is underfitting.</li>
-        <li><span class="opt-label">C</span> Method $B$ is overfitting relative to method $A$, and method $A$ is the safer choice for prediction.</li>
-        <li><span class="opt-label">D</span> Method $B$ should be preferred because it has the lowest training MSE.</li>
+        <li><span class="opt-label">A</span> Both methods underfit; the test/training gap reflects only the irreducible error $\sigma^2$.</li>
+        <li><span class="opt-label">B</span> Method $A$ is overfitting and method $B$ is underfitting; $A$'s smaller train/test gap suggests bias.</li>
+        <li><span class="opt-label">C</span> Method $B$ is overfitting relative to $A$, and $A$ is the safer choice for prediction.</li>
+        <li><span class="opt-label">D</span> Method $B$ should be preferred because it achieves the lowest training MSE on this dataset.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -719,10 +719,10 @@
         The prof is on record as critical of calling bias-variance a "trade-off". Which best captures his objection?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> The decomposition is mathematically incorrect; bias and variance are not additive in MSE.</li>
-        <li><span class="opt-label">B</span> The decomposition is exact, but a smarter model class (e.g. with regularisation) can flatten the variance curve without paying a full bias cost — and in the over-parameterised regime, both can decrease at once.</li>
-        <li><span class="opt-label">C</span> The "trade-off" framing implies bias is more important than variance; in modern ML the opposite is true.</li>
-        <li><span class="opt-label">D</span> Bias and variance are not actually estimable from data, so any "trade-off" claim is unfalsifiable.</li>
+        <li><span class="opt-label">A</span> The decomposition is mathematically incorrect; bias and variance do not add up to test MSE in the way the formula suggests.</li>
+        <li><span class="opt-label">B</span> The decomposition is exact, but a regularised flexible class can shrink variance without paying full bias cost, and double descent reduces both at once.</li>
+        <li><span class="opt-label">C</span> The "trade-off" framing implies bias is more important than variance; in modern machine learning practice, the opposite is true.</li>
+        <li><span class="opt-label">D</span> Bias and variance cannot in principle be estimated from any finite dataset, so any "trade-off" claim is unfalsifiable from data.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -772,10 +772,10 @@
         You consider KNN classification with $n = 500$ training points in $p$ predictors. Holding $K$ fixed, you observe that test error grows steeply as $p$ goes from 5 to 50. Which mechanism best explains this?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> KNN's bias scales with $p$, so each new predictor mechanically adds bias.</li>
-        <li><span class="opt-label">B</span> KNN's training error rises with $p$; this matches the decline in test performance.</li>
-        <li><span class="opt-label">C</span> Adding predictors changes the Bayes error rate, raising the irreducible classification floor.</li>
-        <li><span class="opt-label">D</span> In high dimensions, pairwise Euclidean distances become more concentrated, so "nearest neighbour" stops carrying meaningful local information.</li>
+        <li><span class="opt-label">A</span> KNN's bias scales with $p$, so each new predictor mechanically adds bias to the prediction at any test point.</li>
+        <li><span class="opt-label">B</span> KNN's training error rises with $p$; the rise in training error is what causes the corresponding decline in test performance.</li>
+        <li><span class="opt-label">C</span> Adding predictors changes the Bayes error rate of the underlying problem, raising the irreducible classification floor.</li>
+        <li><span class="opt-label">D</span> In high dimensions pairwise Euclidean distances become concentrated; "nearest neighbour" stops carrying local information.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -798,10 +798,10 @@
         Two methods are compared on a regression task. Method $A$ has lower squared bias but higher variance than method $B$ at the same flexibility. Method $B$ is being considered as a regularised variant of $A$. Which conclusion is best supported by the bias-variance decomposition alone?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> $A$ always gives better predictions because it has lower bias.</li>
-        <li><span class="opt-label">B</span> $B$ always gives better predictions because regularisation reduces test error.</li>
-        <li><span class="opt-label">C</span> Whichever method has the smaller bias$^2$ + variance sum at the test point gives lower expected test MSE; this depends on whether $B$'s variance reduction outpaces the bias it pays.</li>
-        <li><span class="opt-label">D</span> The two methods must give identical test MSE because the irreducible noise floor is the same.</li>
+        <li><span class="opt-label">A</span> $A$ always gives better predictions because it has lower squared bias and bias dominates the decomposition.</li>
+        <li><span class="opt-label">B</span> $B$ always gives better predictions because regularisation reduces test MSE relative to the unregularised version.</li>
+        <li><span class="opt-label">C</span> Whichever method's bias$^2$ + variance sum is smaller at the test point wins; that depends on whether $B$'s variance drop exceeds the bias it pays.</li>
+        <li><span class="opt-label">D</span> The two methods must give identical test MSE because the irreducible noise floor $\sigma^2$ is shared by both.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>

@@ -172,7 +172,7 @@ body {
    tests, so it doesn't leak the answer space. See deck.md §3.5. */
 .exam-q__src {
   margin-left: auto;
-  font-family: var(--codeFont);
+  font-family: var(--bodyFont);
   font-size: 0.78rem;
   color: var(--darkgray);
   background: var(--highlight);

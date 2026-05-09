@@ -64,8 +64,8 @@
         At each internal node, a CART regression tree picks $(j, s)$ to minimise which quantity?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> $\sum_{i \in R_1(j,s)} (y_i - \hat y_{R_1})^2 + \sum_{i \in R_2(j,s)} (y_i - \hat y_{R_2})^2$, where $\hat y_{R_m}$ is the in-region mean of $y$.</li>
-        <li><span class="opt-label">B</span> $\sum_{i \in R_1(j,s)} (y_i - \bar y)^2 + \sum_{i \in R_2(j,s)} (y_i - \bar y)^2$, where $\bar y$ is the global mean of $y$.</li>
+        <li><span class="opt-label">A</span> $\sum_{i \in R_1(j,s)} (y_i - \hat y_{R_1})^2 + \sum_{i \in R_2(j,s)} (y_i - \hat y_{R_2})^2$, with $\hat y_{R_m}$ the in-region mean of $y$.</li>
+        <li><span class="opt-label">B</span> $\sum_{i \in R_1(j,s)} (y_i - \bar y)^2 + \sum_{i \in R_2(j,s)} (y_i - \bar y)^2$, with $\bar y$ the overall mean of $y$ across the whole training set.</li>
         <li><span class="opt-label">C</span> The mean of $(y_i - \hat y_{R_m})^2$ across all training observations, taken over both regions $R_1$ and $R_2$.</li>
         <li><span class="opt-label">D</span> $\sum_m |R_m|$, the total number of observations sitting in each candidate region.</li>
       </ul>
@@ -135,16 +135,16 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> $16.5$ (the median of the leaf's training $y$ values).</li>
-        <li><span class="opt-label">B</span> $25$ (the largest training $y$ in the leaf — the bound that decides the partition).</li>
-        <li><span class="opt-label">C</span> $17.33$ (the mean of the training $y$ values in the leaf).</li>
+        <li><span class="opt-label">B</span> $17.33$ (the mean of the training $y$ values in the leaf).</li>
+        <li><span class="opt-label">C</span> $25$ (the largest training $y$ in the leaf — the bound that decides the partition).</li>
         <li><span class="opt-label">D</span> $104$ (the sum of the training $y$ values in the leaf, which is what the splitter optimises).</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: C</span>
+          <span class="fasit-correct">Correct answer: B</span>
           <p>The CART regression-tree prediction in region $R_m$ is $\hat y_{R_m} = \frac{1}{|R_m|}\sum_{i \in R_m} y_i$. Here $\hat y_R = (12+14+15+18+20+25)/6 = 104/6 \approx 17.33$.</p>
-          <p>A picks the median, which is a robust alternative the prof named but not the textbook rule. B confuses the leaf prediction with an extreme order statistic. D forgets to divide by $|R_m|$ — the splitter minimises a sum of squared deviations, but the prediction itself is still the in-region mean.</p>
+          <p>A picks the median, which is a robust alternative the prof named but not the textbook rule. C confuses the leaf prediction with an extreme order statistic. D forgets to divide by $|R_m|$ — the splitter minimises a sum of squared deviations, but the prediction itself is still the in-region mean.</p>
           <p class="ref">Atoms: <a href="/concepts/regression-tree">regression-tree</a>.</p>
         </div>
       </details>
@@ -217,17 +217,17 @@
         <code>humidity = 60</code>, <code>weekend = no</code>.
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> 50 — the cold-day branch caught by the very first split on temperature.</li>
-        <li><span class="opt-label">B</span> 200 — temp $\geq 10$, humidity $&lt; 70$, weekend = no, so reach the leftmost leaf of that subtree.</li>
+        <li><span class="opt-label">A</span> 200 — temp $\geq 10$, humidity $&lt; 70$, weekend = no, leftmost leaf.</li>
+        <li><span class="opt-label">B</span> 50 — the cold-day branch caught by the very first split on temperature.</li>
         <li><span class="opt-label">C</span> 300 — temp $\geq 10$, humidity $\geq 70$, so the right branch of the humidity split.</li>
         <li><span class="opt-label">D</span> 420 — temp $\geq 10$, humidity $&lt; 70$, weekend = yes, so the rightmost leaf of that subtree.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: A</span>
           <p>Walk the splits with the test row: $\text{temp} = 18 \not&lt; 10$ so go right; $\text{humidity} = 60 &lt; 70$ so go left; $\text{weekend} = \text{no}$ so go left again. Leaf value = 200.</p>
-          <p>A misreads the first split direction (forces the cold branch). C ignores that 60 &lt; 70 and takes the wrong humidity branch. D answers for a weekend day, getting the leaf for "yes" instead of "no".</p>
+          <p>B misreads the first split direction (forces the cold branch). C ignores that 60 &lt; 70 and takes the wrong humidity branch. D answers for a weekend day, getting the leaf for "yes" instead of "no".</p>
           <p class="ref">Atoms: <a href="/concepts/regression-tree">regression-tree</a>.</p>
         </div>
       </details>
@@ -244,16 +244,16 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Early stopping is computationally infeasible because evaluating the RSS-reduction threshold is NP-hard at every node.</li>
-        <li><span class="opt-label">B</span> A locally weak-looking split can enable a much stronger split deeper in that branch, and you only see the gain by letting the tree grow.</li>
-        <li><span class="opt-label">C</span> Pruning gives the tree more parameters than early stopping, which lowers bias.</li>
-        <li><span class="opt-label">D</span> Early stopping always produces a tree that is too large, while pruning guarantees the globally optimal partition.</li>
+        <li><span class="opt-label">B</span> Pruning leaves the tree with more parameters than early stopping does, which lowers the bias of the final fitted model.</li>
+        <li><span class="opt-label">C</span> Early stopping always produces a tree that is too large, while pruning guarantees the globally optimal partition over all subtrees of $T_0$.</li>
+        <li><span class="opt-label">D</span> A locally weak-looking split can enable a much stronger split deeper in that branch — only visible if the tree grows.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>The prof verbatim: <em>"Sometimes you actually do a seemingly worthless split, but then it's followed by a very good one. Because again, sometimes you need to cut one way and then cut the other way until you really get the benefit … these interactions are not super obvious."</em> Build out, then prune.</p>
-          <p>A misuses the NP-hard fact (which applies to optimal global partitioning, not to evaluating a stopping threshold). C is direction-confused: more parameters means lower bias but higher variance, and the prune-after step removes parameters. D inverts the problem: early stopping yields trees that are too small, and weakest-link pruning is locally optimal over the nested sequence, not globally optimal over all subtrees.</p>
+          <p>A misuses the NP-hard fact (which applies to optimal global partitioning, not to evaluating a stopping threshold). B is direction-confused: more parameters means lower bias but higher variance, and the prune-after step <em>removes</em> parameters. C inverts the problem: early stopping yields trees that are too small, and weakest-link pruning is locally optimal over the nested sequence, not globally optimal over all subtrees.</p>
           <p class="ref">Atoms: <a href="/concepts/cost-complexity-pruning">cost-complexity-pruning</a>. Lecture: <a href="/lectures/L18-trees-2">L18-trees-2</a>.</p>
         </div>
       </details>
@@ -314,10 +314,10 @@
         You run <code>cv.tree</code> on a regression tree and get the CV deviance vs tree size curve below. The minimum sits at size 5; sizes 4 and 6 are within one standard error of size 5; sizes 1, 2 and 3 are clearly worse, and size 12 (the unpruned tree) is much worse. Which subtree should you select, given the prof's preference, and what does the choice imply about the cost-complexity penalty $\alpha$?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Size 12 — using the largest tree minimises training RSS, which corresponds to $\alpha = 0$.</li>
-        <li><span class="opt-label">B</span> Size 5 — the global CV minimum, with a moderate $\alpha &gt; 0$.</li>
-        <li><span class="opt-label">C</span> Size 4 — the smallest tree within one SE of the CV minimum (one-SE rule), with a slightly larger $\alpha$ than at size 5.</li>
-        <li><span class="opt-label">D</span> Size 1 — the simplest tree always wins under the one-SE rule, regardless of where the CV minimum lies.</li>
+        <li><span class="opt-label">A</span> Size 12 — using the largest tree minimises training RSS, which corresponds to penalty $\alpha = 0$.</li>
+        <li><span class="opt-label">B</span> Size 5 — the global CV minimum, corresponding to a moderate non-zero penalty $\alpha &gt; 0$.</li>
+        <li><span class="opt-label">C</span> Size 4 — the smallest tree within one SE of the minimum, slightly larger $\alpha$ than at size 5.</li>
+        <li><span class="opt-label">D</span> Size 1 — the simplest tree always wins under the one-SE rule, regardless of where the CV minimum sits.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -454,16 +454,16 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Misclassification error scales worse with the number of classes than Gini does.</li>
-        <li><span class="opt-label">B</span> Gini rewards Split 2 because one child is fully pure, while misclassification cannot tell Split 1 from Split 2.</li>
-        <li><span class="opt-label">C</span> Gini is computationally cheaper to evaluate than misclassification at each candidate split.</li>
-        <li><span class="opt-label">D</span> Misclassification error penalises imbalanced parent nodes more than balanced ones, biasing the splits.</li>
+        <li><span class="opt-label">B</span> Gini is computationally cheaper to evaluate than misclassification at each candidate split.</li>
+        <li><span class="opt-label">C</span> Misclassification error penalises imbalanced parent nodes more than balanced ones, biasing the chosen splits.</li>
+        <li><span class="opt-label">D</span> Gini rewards Split 2 because one child is fully pure, while misclassification cannot tell Split 1 from Split 2.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>Both splits have the same misclassification rate (25%), so misclassification can't choose between them. Gini sees the difference: Split 2's pure $(200\text{A}, 0\text{B})$ child has Gini 0, which is much purer than any node from Split 1. The prof's load-bearing argument: <em>"the misclassification error is not sufficiently sensitive for tree growing"</em> — it is the impurity-sensitivity argument, not differentiability.</p>
-          <p>A is unrelated — both criteria generalise straightforwardly to $K &gt; 2$ classes. C is wrong: all three impurity measures are cheap to evaluate. D inverts the argument: misclassification is class-balanced in its definition; it is impurity-insensitive, not imbalance-biased.</p>
+          <p>A is unrelated — both criteria generalise straightforwardly to $K &gt; 2$ classes. B is wrong: all three impurity measures are cheap to evaluate. C inverts the argument: misclassification is class-balanced in its definition; it is impurity-insensitive, not imbalance-biased.</p>
           <p class="ref">Atoms: <a href="/concepts/classification-tree">classification-tree</a>. Lecture: <a href="/lectures/L18-trees-2">L18-trees-2</a>.</p>
         </div>
       </details>
@@ -532,7 +532,7 @@
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: B</span>
           <p>Classification: $m \approx \sqrt p$. Regression: $m = p/3$. With $p = 9$ and a binary classifier, $\sqrt 9 = 3$, so mtry = 3 is the textbook classification default.</p>
-          <p>A picks $m = p$, which is plain bagging — no decorrelation, the variance floor stays at $\rho\sigma^2$. C uses the regression default ($p/3$); it happens to land on 3 here, but the rule for the wrong task type — easy way to lose a point on a question with $p = 12$ where the two defaults give different numbers (4 for regression, $\approx 3$ for classification). D invents a $\log_2 p$ rule that isn't textbook.</p>
+          <p>A picks $m = p$, which is plain bagging — no decorrelation, the variance floor stays at $\rho\sigma^2$. C uses the regression default ($p/3$); it happens to land on 3 here, but the rule is for the wrong task type — easy way to lose a point on a question with $p = 12$ where the two defaults give different numbers (4 for regression, $\approx 3$ for classification). D invents a $\log_2 p$ rule that isn't textbook.</p>
           <p class="ref">Atoms: <a href="/concepts/random-forest">random-forest</a>.</p>
         </div>
       </details>
@@ -594,16 +594,16 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> About $0.5$, since on average half the indices are sampled and half are not.</li>
-        <li><span class="opt-label">B</span> About $0.368 \approx 1/e$, since $P(\text{not drawn in } n \text{ tries}) = (1 - 1/n)^n \to 1/e$.</li>
-        <li><span class="opt-label">C</span> About $0.632$, since the in-bag fraction is $1 - 1/e$ and that is the OOB fraction.</li>
-        <li><span class="opt-label">D</span> Exactly $1/n$, the probability of any single observation being drawn on a given draw.</li>
+        <li><span class="opt-label">B</span> About $0.632$, since the in-bag fraction is $1 - 1/e$ and that is the OOB fraction.</li>
+        <li><span class="opt-label">C</span> Exactly $1/n$, the probability of any single observation being drawn on a given draw.</li>
+        <li><span class="opt-label">D</span> About $0.368 \approx 1/e$, since $(1 - 1/n)^n \to 1/e$ as $n \to \infty$.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>Each of the $n$ draws independently fails to pick observation $i$ with probability $1 - 1/n$, so $P(i \text{ never drawn}) = (1 - 1/n)^n \to 1/e \approx 0.368$. So about 37% are out-of-bag for each tree, and about 63% are in-bag.</p>
-          <p>A guesses 50/50 with no derivation. C swaps in-bag and OOB — $1 - 1/e \approx 0.632$ is the in-bag fraction; OOB is the complement. D confuses the per-draw selection probability with the all-draws-fail probability, missing the exponentiation.</p>
+          <p>A guesses 50/50 with no derivation. B swaps in-bag and OOB — $1 - 1/e \approx 0.632$ is the in-bag fraction; OOB is the complement. C confuses the per-draw selection probability with the all-draws-fail probability, missing the exponentiation.</p>
           <p class="ref">Atoms: <a href="/concepts/out-of-bag-error">out-of-bag-error</a>, <a href="/concepts/bootstrap">bootstrap</a>.</p>
         </div>
       </details>
@@ -620,16 +620,16 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> RF reduces $\sigma^2$ by considering only $m$ predictors per split, so each individual tree has lower variance.</li>
-        <li><span class="opt-label">B</span> RF reduces $\rho$ — different trees pick different root splits because the strong predictor isn't always available — which lowers the $\rho\sigma^2$ floor of the variance.</li>
-        <li><span class="opt-label">C</span> RF reduces $B$ to a smaller value, which makes the variance term $\sigma^2/B$ shrink faster.</li>
-        <li><span class="opt-label">D</span> RF eliminates the bootstrap step, which removes the dependence between trees entirely.</li>
+        <li><span class="opt-label">B</span> RF reduces $B$ to a smaller value, which lets the variance term $\sigma^2/B$ shrink faster across the ensemble.</li>
+        <li><span class="opt-label">C</span> RF reduces $\rho$ — different trees pick different root splits — lowering the $\rho\sigma^2$ floor of the variance.</li>
+        <li><span class="opt-label">D</span> RF eliminates the bootstrap step, which removes the dependence between trees entirely so $\rho \to 0$.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
-          <p>The $\rho \sigma^2$ floor doesn't shrink with $B$. To beat it you have to reduce $\rho$ — the per-tree pairwise correlation. RF does exactly this by hiding the strong predictor from a fraction of the splits; trees diverge from the very first split. The prof: <em>"if you want to have a lot of opinions, don't clone the same person 50 times … figure out a way to add diversity into your pool."</em></p>
-          <p>A gets the mechanism wrong: per-tree variance $\sigma^2$ is roughly unchanged (RF trees can be even higher variance individually); the gain is decorrelation. C inverts the direction of $B$ (and treats $B$ as a tuning parameter, which it isn't). D ignores that RF still uses bootstrap aggregation — it's bagging plus per-split predictor restriction, not an alternative to bootstrapping.</p>
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>The $\rho \sigma^2$ floor doesn't shrink with $B$. To beat it you have to reduce $\rho$ — the per-tree pairwise correlation. RF does exactly this by hiding the strong predictor from a random subset of splits; trees diverge from the very first split. The prof: <em>"if you want to have a lot of opinions, don't clone the same person 50 times … figure out a way to add diversity into your pool."</em></p>
+          <p>A gets the mechanism wrong: per-tree variance $\sigma^2$ is roughly unchanged (RF trees can even be higher variance individually); the gain is decorrelation. B inverts the direction of $B$ (and treats $B$ as a tuning parameter, which it isn't). D ignores that RF still uses bootstrap aggregation — it's bagging plus per-split predictor restriction, not an alternative to bootstrapping.</p>
           <p class="ref">Atoms: <a href="/concepts/random-forest">random-forest</a>, <a href="/concepts/bagging">bagging</a>.</p>
         </div>
       </details>
@@ -688,17 +688,17 @@
         Suppose individual bagged-tree predictions at a fixed test point have common variance $\sigma^2 = 1$ and pairwise correlation $\rho = 0.4$. Using $\operatorname{Var}\!\left(\frac{1}{B}\sum_b \hat f^{*b}\right) = \rho\sigma^2 + (1-\rho)\sigma^2 / B$, what is the variance of the bagged predictor when $B = 100$, and what does it converge to as $B \to \infty$?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> $0.406$ at $B=100$; $\to 0$ as $B \to \infty$.</li>
-        <li><span class="opt-label">B</span> $0.406$ at $B=100$; $\to 0.4$ as $B \to \infty$.</li>
+        <li><span class="opt-label">A</span> $0.406$ at $B=100$; $\to 0.4$ as $B \to \infty$.</li>
+        <li><span class="opt-label">B</span> $0.406$ at $B=100$; $\to 0$ as $B \to \infty$.</li>
         <li><span class="opt-label">C</span> $0.010$ at $B=100$; $\to 0$ as $B \to \infty$.</li>
-        <li><span class="opt-label">D</span> $0.600$ at $B=100$; $\to 0.6$ as $B \to \infty$.</li>
+        <li><span class="opt-label">D</span> $0.604$ at $B=100$; $\to 0.6$ as $B \to \infty$.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: A</span>
           <p>$0.4 \cdot 1 + (1 - 0.4)\cdot 1 / 100 = 0.4 + 0.006 = 0.406$. As $B \to \infty$, the second term vanishes and the variance approaches the floor $\rho\sigma^2 = 0.4$. This is the very reason RF decorrelates trees via mtry — to push $\rho$ (and hence the floor) down.</p>
-          <p>A applies the standard $\sigma^2/B$ formula at finite $B$ but forgets the floor at infinity, claiming it goes to zero (the IID reasoning, which doesn't apply when bootstrap samples share data). C uses $\sigma^2/B$ alone (the IID variance, $0.01$), missing the $\rho\sigma^2$ contribution entirely. D inverts the role of $\rho$: it computes $(1-\rho) + \rho/B = 0.604$ at $B=100$ and converges to $1 - \rho = 0.6$ — wrong direction.</p>
+          <p>B applies the formula at finite $B$ correctly but then forgets the floor at infinity, claiming variance goes to zero (the IID reasoning, which doesn't apply when bootstrap samples share data). C uses $\sigma^2/B$ alone (the IID variance, $0.01$), missing the $\rho\sigma^2$ contribution entirely. D inverts the role of $\rho$: it computes $(1-\rho) + \rho/B = 0.604$ at $B=100$ and converges to $1 - \rho = 0.6$ — wrong direction.</p>
           <p class="ref">Atoms: <a href="/concepts/bagging">bagging</a>, <a href="/concepts/random-forest">random-forest</a>.</p>
         </div>
       </details>
@@ -758,17 +758,17 @@
         A teammate fits a random forest on a mix of continuous and many-level categorical predictors and asks whether to read off variable importance from MeanDecreaseGini or MeanDecreaseAccuracy. Which is the textbook reason to prefer the permutation-based version (MeanDecreaseAccuracy) here?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Permutation importance uses fewer trees, so it is more reliable on small ensembles.</li>
-        <li><span class="opt-label">B</span> Impurity-based importance is biased toward predictors with many possible split points (continuous and high-cardinality categoricals), inflating their apparent importance.</li>
-        <li><span class="opt-label">C</span> MeanDecreaseAccuracy is the only valid importance measure for classification trees.</li>
-        <li><span class="opt-label">D</span> Permutation importance is computed on the in-bag training data, which is more representative of the model's typical inputs.</li>
+        <li><span class="opt-label">A</span> Permutation importance needs fewer trees to converge, so its rankings are more reliable on small ensembles fitted with a low value of $B$.</li>
+        <li><span class="opt-label">B</span> MeanDecreaseAccuracy is the only valid importance measure for classification trees, since Gini-based importance applies to regression problems only.</li>
+        <li><span class="opt-label">C</span> Permutation importance is computed on the in-bag training data, which is more representative of the model's typical inputs at deployment time.</li>
+        <li><span class="opt-label">D</span> Impurity-based importance is biased toward predictors with many possible split points, inflating their apparent importance.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>Many-level / continuous predictors get more chances to reduce impurity by chance, so impurity-based ranks them artificially high. Permutation importance directly tests whether knowing the predictor's value helps prediction on held-out data, so it sidesteps this bias. The prof on his preference: <em>"I would generally go with randomization one because it makes more sense."</em></p>
-          <p>A invents an unrelated efficiency claim. C wrongly excludes Gini-based importance, which is also valid (the 2023 exam key explicitly asked about it). D inverts the OOB construction: permutation importance uses <em>OOB</em> observations, not in-bag, exactly so the corruption test is honest.</p>
+          <p>A invents an unrelated efficiency claim. B wrongly excludes Gini-based importance, which is also valid (the 2023 exam key explicitly asked about it). C inverts the OOB construction: permutation importance uses <em>OOB</em> observations, not in-bag, exactly so the corruption test is honest.</p>
           <p class="ref">Atoms: <a href="/concepts/variable-importance">variable-importance</a>. Lecture: <a href="/lectures/L19-boosting-1">L19-boosting-1</a>.</p>
         </div>
       </details>
