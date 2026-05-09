@@ -177,17 +177,17 @@
         <em>classical statistics</em>?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Statistical learning is a strictly larger field that contains both classical statistics and machine learning as proper subsets.</li>
-        <li><span class="opt-label">B</span> Statistical learning is the statistician's angle on machine learning's models — same algorithms, but emphasising uncertainty, bias-variance, and what the model does under misspecification.</li>
-        <li><span class="opt-label">C</span> Statistical learning differs from classical statistics primarily in using likelihood-based inference, whereas classical stats relies on least squares.</li>
-        <li><span class="opt-label">D</span> Statistical learning is the engineering-focused subfield of machine learning concerned with deploying models in production.</li>
+        <li><span class="opt-label">A</span> The statistician's angle on machine learning — same algorithms, but emphasising uncertainty, bias-variance, and misspecification.</li>
+        <li><span class="opt-label">B</span> A strictly larger field that contains both classical statistics and machine learning as proper subsets, by definition of "learning."</li>
+        <li><span class="opt-label">C</span> A subfield of classical statistics that differs by using likelihood-based inference, whereas classical stats relies only on least squares.</li>
+        <li><span class="opt-label">D</span> The engineering-focused subfield of machine learning concerned with deploying production models at scale.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: A</span>
           <p>Verbatim: <em>"Statistical learning was a way for statisticians to get in on machine learning… same models as ML but with the statistician's care about uncertainty, bias-variance, distributional assumptions."</em> Plus: classical stats states the model first; statistical learning has the data come first and operates in the misspecified-model regime.</p>
-          <p>A inflates the field — the prof treats stat learning, ML, and classical stats as overlapping with different emphasis, not as nested sets. C miscasts the contrast — both classical stats and statistical learning use likelihoods and least squares; the real split is "model-first vs data-first" / "well-specified vs misspecified." D inverts the orientation: statistical learning is the <em>theory-focused</em> angle on ML algorithms, not the engineering / deployment side.</p>
+          <p>B inflates the field — the prof treats stat learning, ML, and classical stats as overlapping with different emphasis, not as nested sets. C miscasts the contrast — both classical stats and statistical learning use likelihoods and least squares; the real split is "model-first vs data-first" / "well-specified vs misspecified." D inverts the orientation: statistical learning is the <em>theory-focused</em> angle on ML algorithms, not the engineering / deployment side.</p>
           <p class="ref">Atoms: <a href="/concepts/statistical-learning">statistical-learning</a>. Lectures: <a href="/lectures/L01-intro">L01-intro</a>, <a href="/lectures/L02-statlearn-1">L02-statlearn-1</a>.</p>
         </div>
       </details>
@@ -233,10 +233,10 @@
         Of the four tasks below, which is genuinely <em>unsupervised</em> in the prof's sense?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Predicting tomorrow's electricity demand from the last seven days of consumption history.</li>
-        <li><span class="opt-label">B</span> Classifying handwritten digits 0–9 from $28 \times 28$ pixel images, given many human-labelled examples.</li>
+        <li><span class="opt-label">A</span> Predicting tomorrow's electricity demand at a substation from the last seven days of consumption history.</li>
+        <li><span class="opt-label">B</span> Classifying handwritten digits 0–9 from $28 \times 28$ pixel images, using a training set of many human-labelled examples.</li>
         <li><span class="opt-label">C</span> Grouping 5000 anonymous online shoppers into segments based only on purchase history, with no a priori segment labels.</li>
-        <li><span class="opt-label">D</span> Training a language model that learns to fill in masked words from a large corpus of text.</li>
+        <li><span class="opt-label">D</span> Training a language model that learns to fill in masked words from a large corpus of unlabelled text.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -260,10 +260,10 @@
         dropping it. Which term, and why?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> "Independent variables," because most predictors are correlated in practice and calling them independent overstates an assumption you usually do not have.</li>
-        <li><span class="opt-label">B</span> "Predictors," because the term suggests a causal direction the data does not support.</li>
-        <li><span class="opt-label">C</span> "Features," because the term is an engineering import from machine learning and obscures the statistical interpretation.</li>
-        <li><span class="opt-label">D</span> "Covariates," because it implies the variables co-vary over time, which only holds for time-series data.</li>
+        <li><span class="opt-label">A</span> "Independent variables," because most predictors are correlated in practice and "independent" overstates a property you usually do not have.</li>
+        <li><span class="opt-label">B</span> "Predictors," because the term suggests a causal direction the data does not support and pre-commits to a prediction-style framing.</li>
+        <li><span class="opt-label">C</span> "Features," because the term is an engineering import from machine learning that obscures the statistical interpretation.</li>
+        <li><span class="opt-label">D</span> "Covariates," because it implies the variables co-vary over time, which only holds in time-series settings.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -471,10 +471,10 @@
         framing of why the bias-variance idea matters at all?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> It is a feature-selection rule of thumb: drop predictors with high bias and keep predictors with low variance.</li>
-        <li><span class="opt-label">B</span> It is the statistician's distinctive contribution to machine learning — a way of reasoning carefully about why flexible models fit training data well but generalise poorly without restraint.</li>
-        <li><span class="opt-label">C</span> It is a result that only applies to linear regression and breaks down once non-linear methods (trees, neural networks) enter the picture.</li>
-        <li><span class="opt-label">D</span> It is primarily a statement about computational cost: variance grows with model size, so smaller models are always preferable when training time matters.</li>
+        <li><span class="opt-label">A</span> It is a feature-selection rule of thumb: keep predictors with low variance and drop those with high bias on training residuals.</li>
+        <li><span class="opt-label">B</span> It is the statistician's distinctive lens on flexible ML models — a way to reason about why high flexibility fits training data well but generalises poorly without restraint.</li>
+        <li><span class="opt-label">C</span> It is a result confined to linear regression that breaks down once non-linear methods such as trees or neural networks enter the picture.</li>
+        <li><span class="opt-label">D</span> It is mainly a statement about computational cost: variance grows with model size, so smaller models are always preferable when training time matters.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -505,16 +505,16 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> inference</li>
-        <li><span class="opt-label">B</span> prediction</li>
-        <li><span class="opt-label">C</span> unsupervised learning</li>
+        <li><span class="opt-label">B</span> unsupervised learning</li>
+        <li><span class="opt-label">C</span> prediction</li>
         <li><span class="opt-label">D</span> bias-variance trade-off</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: C</span>
           <p>The trap is the prof's classic Q1 hook: the answer is buried in subtle wording, not the obvious word at the top of the paragraph. The phrase "we do not care about the actual model parameters" is the canonical signature of <strong>prediction</strong> — black-box forecasting where only $\hat Y$ matters.</p>
-          <p>A inverts the definition: inference is precisely "we care which parameters matter and how to interpret them," which the passage explicitly contrasts with the latter case. C is wrong on the first word of the passage — the setup says "in supervised learning," and unsupervised learning has no response to relate variables to anyway. D names a concept (bias-variance) rather than a goal of supervised learning, and "trade-off" is not a fill-in for the slot the passage is asking about.</p>
+          <p>A inverts the definition: inference is precisely "we care which parameters matter and how to interpret them," which the passage explicitly contrasts with the latter case. B is wrong on the first word of the passage — the setup says "in supervised learning," and unsupervised learning has no response to relate variables to anyway. D names a concept (bias-variance) rather than a goal of supervised learning, and "trade-off" is not a fill-in for the slot the passage is asking about.</p>
           <p class="ref">Atoms: <a href="/concepts/prediction-vs-inference">prediction-vs-inference</a>, <a href="/concepts/supervised-vs-unsupervised">supervised-vs-unsupervised</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a> (Q1 walkthrough).</p>
         </div>
       </details>

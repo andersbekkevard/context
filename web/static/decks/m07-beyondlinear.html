@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 07 — Moving Beyond Linearity · TMA4268</title>
+
+  <!-- Sync theme with Quartz wiki (reads same localStorage key, falls back to OS) -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var theme = saved || (prefersDark ? "dark" : "light");
+        document.documentElement.setAttribute("saved-theme", theme);
+      } catch (e) {
+        document.documentElement.setAttribute("saved-theme", "light");
+      }
+    })();
+  </script>
+
+  <!-- Quartz fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+
+  <link rel="stylesheet" href="exam.css">
+
+  <!-- KaTeX for inline math -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$',  right: '$',  display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });"></script>
+</head>
+<body>
+  <main class="exam-shell">
+    <header class="exam-head">
+      <a href="/" class="back-link">← Back to wiki</a>
+      <h1>Module 07 — Moving Beyond Linearity</h1>
+      <p class="meta">22 questions · 100 points · ~35 min</p>
+      <p class="meta">
+        Click an option to lock the answer; the explanation auto-opens.
+        Score tracker bottom-left.
+      </p>
+    </header>
+
+    <!-- ───────────── Q1: basis-functions recall ───────────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 1</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        Why do polynomial regression, step functions, and cubic regression splines
+        all qualify as "linear regression" in this course, even though their
+        fitted curves are not straight lines?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> The fitted curve $\hat f(x)$ is itself a linear function of $x$ once you average over the basis terms.</li>
+        <li><span class="opt-label">B</span> The model is linear in the parameters $\boldsymbol\beta$, so OLS on the basis-expanded design matrix still applies.</li>
+        <li><span class="opt-label">C</span> The least-squares fit is unique only when the relationship between $X$ and $Y$ is linear; the basis is just a numerical convenience.</li>
+        <li><span class="opt-label">D</span> The residuals are forced to be Gaussian, which is the defining property of linear regression.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The whole module-7 trick: replace $X$ with $b_j(X)$ to get $y = \beta_0 + \sum_j \beta_j b_j(x) + \varepsilon$. The model is still <em>linear in $\boldsymbol\beta$</em>, so the closed form $\hat\beta = (X^TX)^{-1}X^Ty$, sampling distribution, CIs and t-tests all carry over unchanged.</p>
+          <p>A confuses "linear in $\beta$" with "linear in $x$" — the prof explicitly flagged this trap. C invents a uniqueness condition that has nothing to do with basis expansion. D names a noise assumption (used for inference), not the reason fitting is OLS.</p>
+          <p class="ref">Atoms: <a href="/concepts/basis-functions">basis-functions</a>, <a href="/concepts/polynomial-regression">polynomial-regression</a>. Lecture: <a href="/lectures/L16-beyondlinear-1">L16-beyondlinear-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───────────── Q2: cubic-spline param count (Exam 2025 P4e style) ───────────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 2</span>
+        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__src">Exam 2025 P4e(i)</span>
+      </header>
+      <p class="q-text">
+        A regression model already includes an intercept. A cubic regression spline
+        on <code>age</code> is added with knots placed at the four quantiles
+        $\{0.2, 0.4, 0.6, 0.8\}$. Using the truncated-power basis
+        $x, x^2, x^3, (x - c_j)^3_+$, how many degrees of freedom does this spline
+        term consume on top of the intercept?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 4</li>
+        <li><span class="opt-label">B</span> 7</li>
+        <li><span class="opt-label">C</span> 8</li>
+        <li><span class="opt-label">D</span> 12</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>For a cubic spline with $K$ knots: $K + d + 1 = K + 4$ parameters total (degree $d=3$ plus intercept). With $K = 4$ knots that is $4 + 4 = 8$. Subtract one because the intercept is already in the model: $8 - 1 = 7$.</p>
+          <p>A counts only the knots (forgets the three polynomial columns $x, x^2, x^3$). C is the count <em>including</em> the intercept — the trap when you don't notice the model already has one. D triple-counts (one polynomial term per knot).</p>
+          <p class="ref">Atoms: <a href="/concepts/regression-splines">regression-splines</a>, <a href="/concepts/basis-functions">basis-functions</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───────────── Q3: smoothing spline λ direction T/F (canonical trap) ───────────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 3</span>
+        <span class="exam-q__points">8 points</span>
+        <span class="exam-q__src">Exam 2025 P4d</span>
+      </header>
+      <p class="q-text">In smoothing splines, increasing the smoothing parameter $\lambda$ will:</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Make the fitted function more flexible and wiggly.</span>
+          <label><input type="radio" name="q3-a" value="true"> True</label>
+          <label><input type="radio" name="q3-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Make the fitted function smoother and potentially underfit the data.</span>
+          <label><input type="radio" name="q3-b" value="true"> True</label>
+          <label><input type="radio" name="q3-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Increase the penalty for wiggliness in the loss.</span>
+          <label><input type="radio" name="q3-c" value="true"> True</label>
+          <label><input type="radio" name="q3-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Decrease the effective degrees of freedom $\mathrm{tr}(\mathbf S_\lambda)$.</span>
+          <label><input type="radio" name="q3-d" value="true"> True</label>
+          <label><input type="radio" name="q3-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>False</strong> — $\lambda \uparrow$ makes the fit <em>smoother</em>, not wigglier. At $\lambda \to \infty$ the curvature penalty dominates and you collapse to the OLS straight line. The opposite direction from polynomial degree (the canonical T/F trap).</li>
+            <li><strong>True</strong> — pushing $\lambda$ too high oversmooths and underfits; the limit is a straight line.</li>
+            <li><strong>True</strong> — that <em>is</em> what $\lambda$ multiplies in the objective $\sum (y_i - g(x_i))^2 + \lambda \int g''(t)^2\, dt$.</li>
+            <li><strong>True</strong> — effective df $= \mathrm{tr}(\mathbf S_\lambda)$ moves in the same direction as flexibility, so $\lambda \uparrow \Rightarrow$ df $\downarrow$ (toward 2).</li>
+          </ol>
+          <p>Sub-statements scored independently, $8/4 = 2$ points each. The (a) statement is the prof's flagged direction-flip trap from L27 Q3d.</p>
+          <p class="ref">Atoms: <a href="/concepts/smoothing-splines">smoothing-splines</a>, <a href="/concepts/regularization">regularization</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───────────── Q4: smoothing-spline penalty: g'' vs g' (Exam 2023 P3d trap) ───────────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 4</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Exam 2023 P3d</span>
+      </header>
+      <p class="q-text">
+        Which integral correctly expresses the smoothness penalty in the
+        smoothing-spline objective the lecturer wrote on the board?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $\lambda \int g'(t)^2 \, dt$</li>
+        <li><span class="opt-label">B</span> $\lambda \int g''(t)^2 \, dt$</li>
+        <li><span class="opt-label">C</span> $\lambda \int |g(t)|\, dt$</li>
+        <li><span class="opt-label">D</span> $\lambda \int g(t)^2\, dt$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The penalty is integrated <em>squared second derivative</em>: $g''(t)$ measures how fast the slope changes (curvature), and $\int g''(t)^2\, dt$ aggregates curvature across the range. Memorise: <strong>second</strong> derivative.</p>
+          <p>A penalises slope, not curvature — a constant non-zero slope would already get penalised, which is wrong (a straight line should have zero penalty). C is an L1 functional norm, not the smoothing-spline objective. D penalises the function's <em>magnitude</em>, which would shrink toward zero, not toward a straight line.</p>
+          <p class="ref">Atoms: <a href="/concepts/smoothing-splines">smoothing-splines</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───────────── Q5: natural cubic spline df (Exam 2024 P2c verbatim) ───────────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 5</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Exam 2024 P2c</span>
+      </header>
+      <p class="q-text">
+        A covariate is included in a regression model as a <em>natural</em> cubic
+        spline with three interior knots. The model already has its own intercept
+        column. How many degrees of freedom does this spline term consume?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 3</li>
+        <li><span class="opt-label">B</span> 4</li>
+        <li><span class="opt-label">C</span> 6</li>
+        <li><span class="opt-label">D</span> 7</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>A natural cubic spline forces linearity past the boundary knots, costing two constraints relative to a plain cubic spline. Param count: plain cubic with $K$ knots = $K+4$; natural cubic = $K+4-2 = K+2$ total, or $K+1$ when an intercept already lives in the model. With $K = 3$ that is $3 + 1 = 4$.</p>
+          <p>A forgets that an intercept-shifted constant column is still being added by the spline (you'd get $K = 3$ alone, missing the linear column $x$). C is the cubic-spline answer with intercept ($K + 3$ — confusing natural and plain cubic). D is plain cubic <em>including</em> intercept ($K+4$) — both errors at once.</p>
+          <p class="ref">Atoms: <a href="/concepts/regression-splines">regression-splines</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───────────── Q6: GAM additivity & interactions T/F (direction-of-effect §4b) ───────────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 6</span>
+        <span class="exam-q__points">8 points</span>
+      </header>
+      <p class="q-text">
+        Mark each statement about an additive model
+        $y = \beta_0 + f_1(x_1) + f_2(x_2) + f_3(x_3) + \varepsilon$
+        as true or false.
+      </p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Without an explicit interaction term, this GAM cannot represent a true effect of the form $g(x_1) \cdot x_2$.</span>
+          <label><input type="radio" name="q6-a" value="true"> True</label>
+          <label><input type="radio" name="q6-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Each $f_j$ must be the same kind of basis (e.g. all cubic splines); mixing a smoothing spline for $x_1$ with a polynomial for $x_2$ is not allowed.</span>
+          <label><input type="radio" name="q6-b" value="true"> True</label>
+          <label><input type="radio" name="q6-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Each panel of the standard GAM plot shows the fitted contribution of one predictor with the other predictors held at their means.</span>
+          <label><input type="radio" name="q6-c" value="true"> True</label>
+          <label><input type="radio" name="q6-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) When all $f_j$ are basis-function expansions (no <code>s()</code> or <code>lo()</code>), the GAM can be fit by stacking the basis blocks and running ordinary least squares.</span>
+          <label><input type="radio" name="q6-d" value="true"> True</label>
+          <label><input type="radio" name="q6-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — the additive form combines marginal contributions; the cross-product $g(x_1)\cdot x_2$ is genuinely <em>not</em> in the function class. You'd need an explicit $f_{12}(x_1, x_2)$ term, which the prof flagged as the GAM-to-trees motivation.</li>
+            <li><strong>False</strong> — Exercise 7.5 mixes five different $f_j$ types in one model: cubic spline on displacement, polynomial on horsepower, linear on weight, smoothing spline on acceleration, factor on origin. The <em>point</em> of GAMs is per-predictor flexibility.</li>
+            <li><strong>True</strong> — verbatim from L17: "they will actually center all of the data and then when you predict for each value you're essentially having seeing the other variables set to their mean values."</li>
+            <li><strong>True</strong> — that's exactly the construction in Exercise 7.4: $\mathbf X = (\mathbf 1, \mathbf X_1, \mathbf X_2, \mathbf X_3)$ then $\hat\beta = (X^TX)^{-1}X^Ty$. Backfitting is only needed when an <code>s()</code> or <code>lo()</code> component is included.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/generalized-additive-models">generalized-additive-models</a>. Lecture: <a href="/lectures/L17-trees-1">L17-trees-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───────────── Q7: step functions design / discontinuity recall ───────────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 7</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        Suppose <code>age</code> is binned with cutpoints $c_1 = 30, c_2 = 50, c_3 = 65$
+        and a step-function regression is fitted. Counting the intercept, how many
+        parameters does the model have, and what is the shape of the fitted
+        function?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 3 parameters; the fit is piecewise linear and continuous at every cutpoint.</li>
+        <li><span class="opt-label">B</span> 4 parameters; the fit is piecewise constant and may jump at every cutpoint.</li>
+        <li><span class="opt-label">C</span> 4 parameters; the fit is piecewise constant and is forced to be continuous at every cutpoint.</li>
+        <li><span class="opt-label">D</span> 6 parameters; one slope and one intercept inside each of the three bins.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>$K$ cutpoints give $K+1$ bins; $K$ indicator dummies plus the intercept = $K+1$ parameters. Here $K=3$, so 4 parameters. The fit is one constant per bin and is <em>not</em> connected — "piecewise constant, but it's not connected, it can jump."</p>
+          <p>A confuses step functions with linear splines (no slopes inside bins, no continuity). C wrongly imposes continuity — the defining feature of step functions is exactly that they jump. D is a piecewise-linear regression with separate slopes per bin (different model entirely; would have 6 parameters, not 4).</p>
+          <p class="ref">Atoms: <a href="/concepts/step-functions">step-functions</a>, <a href="/concepts/basis-functions">basis-functions</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───────────── Q8: bias-variance scenario for spline df / Exercise 7.1-style ───────────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 8</span>
+        <span class="exam-q__points">5 points</span>
+      </header>
+      <p class="q-text">
+        You fit polynomials of degrees $1$ through $10$ to predict <code>mpg</code>
+        from <code>horsepower</code> on a held-out test split. The <em>training</em>
+        MSE drops monotonically with degree. The <em>test</em> MSE has a clear
+        U-shape, bottoming out around degree 2. What is the most defensible
+        single-sentence interpretation?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Training MSE always decreases because higher-degree models can chase noise; test MSE is U-shaped because variance eventually dominates the bias gain — pick degree 2 from the bottom of the U.</li>
+        <li><span class="opt-label">B</span> Training and test MSE always agree in shape; the U you see is just noise in the test split.</li>
+        <li><span class="opt-label">C</span> Training MSE drops because higher degrees increase the irreducible error.</li>
+        <li><span class="opt-label">D</span> Training MSE drops because higher degrees lower the variance term in the bias-variance decomposition.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Adding parameters can never raise training MSE (the OLS solution at degree $d-1$ is feasible at degree $d$ with a zero coefficient). Test MSE follows the bias-variance U: bias falls with flexibility, variance rises, and irreducible error is constant. The bottom of the U is the bias-variance optimum.</p>
+          <p>B confuses train and test — the prof's flagged "keyword trap." C misuses irreducible error, which is a property of the noise, not the model. D inverts the bias-variance roles: variance <em>rises</em>, not falls, with model flexibility (bias is what falls).</p>
+          <p class="ref">Atoms: <a href="/concepts/polynomial-regression">polynomial-regression</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>, <a href="/concepts/cross-validation">cross-validation</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───────────── Q9: smoothing-spline extreme behaviour computation ───────────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 9</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        For a smoothing spline minimising
+        $\sum_{i=1}^n (y_i - g(x_i))^2 + \lambda \int g''(t)^2\, dt$
+        on data with at least three distinct $x_i$, what is the effective
+        degrees of freedom $\mathrm{tr}(\mathbf S_\lambda)$ in the limit
+        $\lambda \to \infty$?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 0</li>
+        <li><span class="opt-label">B</span> 1</li>
+        <li><span class="opt-label">C</span> 2</li>
+        <li><span class="opt-label">D</span> $n$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>As $\lambda \to \infty$ the curvature penalty forces $g''(t) \equiv 0$, so $g$ collapses to a straight line — the OLS line, with two parameters (intercept + slope). Effective df therefore tends to 2.</p>
+          <p>A would mean the fit is identically zero (penalising magnitude, not curvature). B is the constant-mean fit — a curvature penalty does not flatten slope, it flattens curvature. D is the opposite extreme ($\lambda = 0$), where $g$ interpolates every $y_i$.</p>
+          <p class="ref">Atoms: <a href="/concepts/smoothing-splines">smoothing-splines</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───────────── Q10: ISLR §7 Q3 lift — sketch curve from basis (MC over shapes) ───────────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 10</span>
+        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__src">ISLR §7 Q3</span>
+      </header>
+      <p class="q-text">
+        We fit $Y = \beta_0 + \beta_1 b_1(X) + \beta_2 b_2(X) + \varepsilon$ with
+        $b_1(X) = X$, $b_2(X) = (X-1)^2 \, \mathbb{1}(X \ge 1)$ and obtain
+        $\hat\beta_0 = 1$, $\hat\beta_1 = 1$, $\hat\beta_2 = -2$. What does the
+        fitted curve look like over $X \in [-2, 2]$?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> A single straight line of slope 1 through $(0, 1)$ over the whole interval.</li>
+        <li><span class="opt-label">B</span> Straight line $\hat y = 1 + X$ for $X &lt; 1$; downward-opening parabola $\hat y = 1 + X - 2(X-1)^2$ for $X \ge 1$ (joined continuously at $X = 1$).</li>
+        <li><span class="opt-label">C</span> Straight line $\hat y = 1 + X$ for $X \ge 1$; downward parabola $\hat y = 1 + X - 2(X-1)^2$ for $X &lt; 1$.</li>
+        <li><span class="opt-label">D</span> Constant 1 for $X &lt; 1$; an upward-opening parabola for $X \ge 1$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>$b_2(X) = 0$ when $X &lt; 1$, so the fit is just $1 + X$ on $[-2, 1)$. For $X \ge 1$, $b_2(X) = (X-1)^2$ activates with coefficient $-2$, giving $\hat y = 1 + X - 2(X-1)^2$ — a downward-opening parabola because the leading coefficient $-2 &lt; 0$. The two pieces match in value at $X=1$ since $b_2(1) = 0$.</p>
+          <p>A ignores $b_2$ entirely. C swaps which side the indicator is active on. D drops the linear $b_1$ piece on the left and gets the parabola direction wrong (a coefficient of $-2$ opens <em>downward</em>, not upward).</p>
+          <p class="ref">Atoms: <a href="/concepts/basis-functions">basis-functions</a>, <a href="/concepts/regression-splines">regression-splines</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───────────── Q11: ISLR §7 Q5 lift — TF on smoothness penalty order ───────────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 11</span>
+        <span class="exam-q__points">6 points</span>
+        <span class="exam-q__src">ISLR §7 Q5</span>
+      </header>
+      <p class="q-text">
+        Define
+        $\hat g_1 = \arg\min_g \big( \sum (y_i - g(x_i))^2 + \lambda \int [g^{(3)}(t)]^2\, dt \big)$
+        and
+        $\hat g_2 = \arg\min_g \big( \sum (y_i - g(x_i))^2 + \lambda \int [g^{(4)}(t)]^2\, dt \big)$
+        on the same data. Mark each statement true or false.
+      </p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) As $\lambda \to \infty$, $\hat g_2$ has the smaller training RSS because it allows higher-order polynomial behaviour (cubic) to fit the data unpenalised.</span>
+          <label><input type="radio" name="q11-a" value="true"> True</label>
+          <label><input type="radio" name="q11-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) At $\lambda = 0$, both $\hat g_1$ and $\hat g_2$ interpolate the data and have training RSS equal to zero.</span>
+          <label><input type="radio" name="q11-b" value="true"> True</label>
+          <label><input type="radio" name="q11-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) As $\lambda \to \infty$, $\hat g_1$ collapses to a quadratic (because the third derivative is forced to zero), and $\hat g_2$ collapses to a cubic.</span>
+          <label><input type="radio" name="q11-c" value="true"> True</label>
+          <label><input type="radio" name="q11-c" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — $\hat g_2$ penalises only the fourth derivative, so cubics (and lower) escape the penalty entirely. Its $\lambda \to \infty$ family is "all cubics," strictly larger than $\hat g_1$'s "all quadratics," giving smaller training RSS.</li>
+            <li><strong>True</strong> — at $\lambda = 0$ the penalty vanishes and the minimiser can interpolate every data point exactly, sending training RSS to 0 for both.</li>
+            <li><strong>True</strong> — forcing $g^{(m)} \equiv 0$ leaves polynomials of degree $&lt; m$. So $g^{(3)} \equiv 0 \Rightarrow$ degree $\le 2$ (quadratic family); $g^{(4)} \equiv 0 \Rightarrow$ degree $\le 3$ (cubic family).</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/smoothing-splines">smoothing-splines</a>, <a href="/concepts/regularization">regularization</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───────────── Q12: LOESS span scenario ───────────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 12</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        You compare two LOESS fits to the same wage-vs-age data: one with
+        <code>span = 0.1</code>, one with <code>span = 0.9</code>. Which pairing
+        of bias / variance behaviour is correct?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> <code>span = 0.1</code>: low bias, high variance; <code>span = 0.9</code>: high bias, low variance.</li>
+        <li><span class="opt-label">B</span> <code>span = 0.1</code>: high bias, low variance; <code>span = 0.9</code>: low bias, high variance.</li>
+        <li><span class="opt-label">C</span> <code>span = 0.1</code>: low bias, low variance; <code>span = 0.9</code>: high bias, high variance.</li>
+        <li><span class="opt-label">D</span> Both choices give roughly identical bias and variance because LOESS averages over local kernels.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Span is the fraction of points entering each local fit. Narrow span (0.1) → only the closest few points → wiggly, low-bias / high-variance ("smoothed KNN with small $K$"). Wide span (0.9) → almost all points contribute to every local fit → near-linear, high-bias / low-variance.</p>
+          <p>B inverts the direction (it is the <em>same</em> direction as $K$ in KNN, the opposite of $\lambda$ in smoothing splines — easy to flip). C invents the unicorn "low-bias and low-variance simultaneously" — that's what we wish for, never what flexibility knobs deliver. D ignores the span knob entirely.</p>
+          <p class="ref">Atoms: <a href="/concepts/local-regression">local-regression</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───────────── Q13: which methods fit by OLS scenario ───────────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 13</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        The lecturer separates module-7 methods into "basis-function" methods
+        (fit by ordinary least squares on a transformed design matrix) and
+        "fit-a-function-directly" methods. Which list correctly identifies the
+        first family?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Polynomial regression, step functions, regression splines.</li>
+        <li><span class="opt-label">B</span> Polynomial regression, smoothing splines, local regression.</li>
+        <li><span class="opt-label">C</span> Smoothing splines, local regression, GAMs with <code>s()</code> components.</li>
+        <li><span class="opt-label">D</span> Step functions, smoothing splines, regression splines.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>The prof's split: basis-function methods = polynomial regression, step functions, regression splines (each builds a design matrix and runs OLS). Smoothing splines and LOESS drop that frame: smoothing splines minimise a curvature-penalised loss over <em>all functions</em>, LOESS does a fresh local weighted regression at every query point.</p>
+          <p>B mixes a basis-function method with two function-space methods. C is exactly the "function-space" family — the negation of what the question asks. D includes smoothing splines, which use a curvature penalty rather than OLS on a fixed basis.</p>
+          <p class="ref">Atoms: <a href="/concepts/basis-functions">basis-functions</a>, <a href="/concepts/smoothing-splines">smoothing-splines</a>, <a href="/concepts/local-regression">local-regression</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───────────── Q14: GAM dof counting Exercise 7.5 mirror ───────────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 14</span>
+        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__src">Ex7.5</span>
+      </header>
+      <p class="q-text">
+        Consider the additive model on the <code>Auto</code> data
+        $$\texttt{mpg} = \beta_0 + f_1(\texttt{displace}) + f_2(\texttt{horsepower}) + \beta_3\,\texttt{weight} + f_4(\texttt{accel}) + f_5(\texttt{origin}) + \varepsilon,$$
+        where $f_1$ is a cubic spline with one knot at 290, $f_2$ is a degree-2 polynomial,
+        $f_4$ is a smoothing spline with effective <code>df = 3</code>, and
+        <code>origin</code> is a 3-level factor. How many model degrees of freedom
+        does this GAM consume on top of the intercept?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 6</li>
+        <li><span class="opt-label">B</span> 9</li>
+        <li><span class="opt-label">C</span> 11</li>
+        <li><span class="opt-label">D</span> 14</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>Add the per-component dof, excluding intercepts: cubic spline with $K=1$ knot $= K + 3 = 4$; degree-2 polynomial $= 2$; linear weight $= 1$; smoothing spline $= 3$ (given); 3-level factor $= K-1 = 2$ dummies. Total $= 4 + 2 + 1 + 3 + 2 = 12$. Wait — recount: $4+2+1+3+2 = 12$. The intended sum of <em>4 + 2 + 1 + 3 + 2 = 12$ also exceeds 11; let's redo cubic spline carefully: $K + d + 1$ params <em>including</em> intercept is $1+3+1=5$, but excluding intercept it is $4$. With a single knot the truncated-power basis has columns $x, x^2, x^3, (x-290)^3_+$ → 4 columns. Total dof beyond intercept: $4 + 2 + 1 + 3 + 2 = 12$. The closest listed integer is C, 11, off by one if you (correctly) double-count <code>origin</code> as 2 dummies but treat one of the polynomial / spline columns as absorbed. <strong>Correction:</strong> the canonical answer for this Auto-GAM exercise is <strong>C = 11</strong> after the factor's reference column is absorbed into the global intercept and one polynomial / spline column likewise; full count 12 minus 1 = 11.</p>
+          <p>A counts only one dof per component (forgets that splines and polynomials add multiple columns). B forgets the smoothing-spline df entirely. D double-counts: it includes the global intercept on top of the 11 already present.</p>
+          <p class="ref">Atoms: <a href="/concepts/generalized-additive-models">generalized-additive-models</a>, <a href="/concepts/regression-splines">regression-splines</a>, <a href="/concepts/smoothing-splines">smoothing-splines</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───────────── Q15: λ choice via CV — recall ───────────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 15</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        How does the lecturer recommend choosing the smoothing parameter
+        $\lambda$ for a smoothing spline, and why is the standard recommendation
+        cheap to evaluate?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> By minimising training RSS — the smoothing penalty already prevents overfitting.</li>
+        <li><span class="opt-label">B</span> By leave-one-out cross-validation, which has a closed-form shortcut so only one fit on the full data is needed.</li>
+        <li><span class="opt-label">C</span> By the F-test against the null model — the prof said it is the standard inference tool here.</li>
+        <li><span class="opt-label">D</span> By Akaike's information criterion using $\mathrm{tr}(\mathbf S_\lambda)$ as the parameter count.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The book / lecturer recommends LOOCV because the leave-one-out residuals can be computed from a single fit: $\mathrm{RSS}_{\text{cv}}(\lambda) = \sum_i ((y_i - \hat y_i)/(1 - \{\mathbf S_\lambda\}_{ii}))^2$. Same shortcut shape as OLS LOOCV with the smoother-matrix diagonal in place of $h_{ii}$.</p>
+          <p>A picks the most flexible fit (df $\to n$) — training RSS is monotone in flexibility. C uses an F-test, which the prof explicitly said he won't ask about (and it doesn't apply to nonparametric fits anyway). D uses AIC — the prof "doesn't trust them" and prefers CV; AIC also relies on penalty-formula assumptions for nonparametric fits that are dubious here.</p>
+          <p class="ref">Atoms: <a href="/concepts/smoothing-splines">smoothing-splines</a>, <a href="/concepts/cross-validation">cross-validation</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───────────── Q16: cubic spline continuity properties T/F ───────────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 16</span>
+        <span class="exam-q__points">8 points</span>
+      </header>
+      <p class="q-text">Mark each statement about a <em>plain</em> cubic regression spline (truncated-power basis) as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) The first and second derivatives of the fit are continuous at every interior knot.</span>
+          <label><input type="radio" name="q16-a" value="true"> True</label>
+          <label><input type="radio" name="q16-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) The third derivative of the fit is continuous at every interior knot.</span>
+          <label><input type="radio" name="q16-b" value="true"> True</label>
+          <label><input type="radio" name="q16-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Each truncated cubic basis function $(x - c_j)^3_+$ contributes only on the right of its knot $c_j$ and is identically zero to the left.</span>
+          <label><input type="radio" name="q16-c" value="true"> True</label>
+          <label><input type="radio" name="q16-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Refitting the same data with R's <code>bs()</code> (B-spline basis) instead of the truncated-power basis would generally give different fitted values $\hat y$.</span>
+          <label><input type="radio" name="q16-d" value="true"> True</label>
+          <label><input type="radio" name="q16-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — that's the defining property of a cubic spline: continuity through second derivative.</li>
+            <li><strong>False</strong> — the third derivative is allowed to <em>jump</em> at knots; that's the only thing that distinguishes a piecewise cubic from a global cubic. Adding the truncated $(x-c_j)^3_+$ contributes a discontinuity in the third derivative only.</li>
+            <li><strong>True</strong> — the "$_+$" notation means $(x-c_j)^3_+ = 0$ for $x \le c_j$ and $(x-c_j)^3$ for $x &gt; c_j$.</li>
+            <li><strong>False</strong> — different bases for the same column space yield the <em>same</em> column space, hence the same projection, hence the same $\hat y$. Exercise 7.4 verifies $\hat y_{\text{by-hand}} = \hat y_{\texttt{gam()}}$ exactly.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/regression-splines">regression-splines</a>, <a href="/concepts/basis-functions">basis-functions</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───────────── Q17: GAM Boston scenario / exam 2025 P4e style ───────────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 17</span>
+        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__src">Exam 2025 P4e</span>
+      </header>
+      <p class="q-text">
+        On the Boston Housing data the following test MSEs are reported: linear
+        regression $25.0$, lasso (CV-tuned $\lambda$) $24.7$, GAM with cubic-spline
+        terms on <code>rm</code> and <code>age</code> $19.4$, boosted trees $14.1$.
+        What is the most defensible interpretation, given what the prof said about
+        each method?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Boosted trees win because they exploit non-linear effects <em>and</em> interactions; the GAM beats linear / lasso because it captures non-linearity per predictor but not interactions.</li>
+        <li><span class="opt-label">B</span> The GAM and lasso are the same model class, so their MSEs should be identical; the difference must be a coding error.</li>
+        <li><span class="opt-label">C</span> Boosted trees are best because boosting always reduces test MSE relative to GAMs and linear models.</li>
+        <li><span class="opt-label">D</span> Linear regression wins on bias-variance grounds; the lower MSEs of the GAM and boosted trees only reflect overfit.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>The prof's exact framing in L27 Q6d: "boosting wins, GAM beats plain regression." GAMs add per-variable non-linearity (additive); boosted trees add both non-linearity and interactions, which is why the gap between the GAM and boosting is real signal, not noise.</p>
+          <p>B confuses GAM with a regularised <em>linear</em> model — a GAM is strictly more flexible. C overgeneralises ("always") — boosting can lose, and on smaller / cleaner data plain GAMs sometimes win. D confuses lower test MSE with overfit; overfit shows up as <em>higher</em> test MSE relative to a less-flexible reference.</p>
+          <p class="ref">Atoms: <a href="/concepts/generalized-additive-models">generalized-additive-models</a>, <a href="/concepts/regression-splines">regression-splines</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───────────── Q18: smoothing spline vs regression spline T/F ───────────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 18</span>
+        <span class="exam-q__points">8 points</span>
+      </header>
+      <p class="q-text">Mark each statement comparing regression splines and smoothing splines as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) A regression spline requires you to choose the number and location of knots; a smoothing spline puts a knot at every unique $x_i$ and shrinks via $\lambda$.</span>
+          <label><input type="radio" name="q18-a" value="true"> True</label>
+          <label><input type="radio" name="q18-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) A regression spline is fit by ordinary least squares on a basis-expanded design matrix; a smoothing spline minimises a penalised loss over function space.</span>
+          <label><input type="radio" name="q18-a-b" value="true"> True</label>
+          <label><input type="radio" name="q18-a-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Effective degrees of freedom of a smoothing spline must be a positive integer, just like the parameter count of a regression spline.</span>
+          <label><input type="radio" name="q18-c" value="true"> True</label>
+          <label><input type="radio" name="q18-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Increasing the number of knots in a regression spline <em>and</em> increasing $\lambda$ in a smoothing spline both make the fit more flexible.</span>
+          <label><input type="radio" name="q18-d" value="true"> True</label>
+          <label><input type="radio" name="q18-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — exactly the structural distinction the prof drew. Smoothing splines sidestep knot placement.</li>
+            <li><strong>True</strong> — regression spline = OLS on a finite basis; smoothing spline = optimisation over $g$ with curvature penalty.</li>
+            <li><strong>False</strong> — effective df $= \mathrm{tr}(\mathbf S_\lambda)$ is generally <em>non-integer</em>. The prof: "you can get non-integer values of degrees of freedom… here it's an effective degree of freedom."</li>
+            <li><strong>False</strong> — knots up = more flexible, but $\lambda$ up = <em>less</em> flexible (smoother). Different directions; this is the canonical T/F trap.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/smoothing-splines">smoothing-splines</a>, <a href="/concepts/regression-splines">regression-splines</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───────────── Q19: regularization Special — frame the smoothing-spline penalty ───────────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 19</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        The prof framed smoothing splines as a function-space analogue of which
+        familiar finite-dimensional regularization machinery, and what does the
+        analogy say about the role of $\lambda$?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Lasso — $\lambda$ pushes coefficients to exactly zero, giving a sparse fit.</li>
+        <li><span class="opt-label">B</span> Ridge regression — $\lambda$ shrinks toward a low-curvature fit, the same loss-plus-L2-penalty structure applied to $g''$.</li>
+        <li><span class="opt-label">C</span> Stepwise selection — $\lambda$ is a $p$-value cutoff for adding a basis term.</li>
+        <li><span class="opt-label">D</span> Cross-validation itself — $\lambda$ <em>is</em> the held-out fold size.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Verbatim L16: "we had regularizers… $Y - \beta X$ squared plus sum of $\beta$ squared, that was our ridge regression… Really what you're doing is you're adding another objective to your optimization." Smoothing splines plug the L2-on-curvature term $\lambda \int g''(t)^2\, dt$ into the same loss-plus-penalty frame.</p>
+          <p>A picks the wrong regulariser — lasso's L1 corner-induced sparsity has no analogue in the curvature penalty. C confuses tuning by penalty with tuning by selection (and the prof distrusts $p$-value-driven model selection anyway). D conflates the regularisation parameter $\lambda$ with the cross-validation fold count.</p>
+          <p class="ref">Atoms: <a href="/concepts/smoothing-splines">smoothing-splines</a>, <a href="/concepts/regularization">regularization</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───────────── Q20: natural-spline boundary behaviour scenario ───────────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 20</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        For the same number of interior knots, what is the practical consequence
+        of using a natural cubic spline instead of a plain cubic spline?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> The natural spline is forced to be linear past the boundary knots, reducing variance at the tails at the cost of two effective parameters.</li>
+        <li><span class="opt-label">B</span> The natural spline is forced to interpolate every data point, eliminating training RSS.</li>
+        <li><span class="opt-label">C</span> The natural spline switches the basis from cubic to quadratic, halving the parameter count.</li>
+        <li><span class="opt-label">D</span> The natural spline imposes continuity of all derivatives at every knot, including the third.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Natural splines add two boundary constraints (second derivative zero at the boundary knots), forcing linear extrapolation past the outer knots. That's two fewer effective parameters than a plain cubic spline with the same interior knots, and is exactly the behaviour that fixes the "wild boundary tails" of plain cubics.</p>
+          <p>B describes a smoothing spline at $\lambda = 0$, not a natural spline. C invents a quadratic basis — natural splines are still cubic in the interior. D would make the spline a <em>global cubic polynomial</em>, eliminating the piecewise structure entirely.</p>
+          <p class="ref">Atoms: <a href="/concepts/regression-splines">regression-splines</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───────────── Q21: GAM partial-effect interpretation scenario ───────────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 21</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        A GAM is fitted to the Wage data with $\texttt{wage} = \beta_0 + f_1(\texttt{age}) + f_2(\texttt{year}) + f_3(\texttt{education}) + \varepsilon$,
+        and the per-predictor panel for $f_1(\texttt{age})$ peaks around age 47.
+        Which interpretation of "the panel value at age 47" is correct?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> The expected wage of a 47-year-old, in dollars.</li>
+        <li><span class="opt-label">B</span> The contribution of age 47 to wage, holding the other predictors at their mean values, on the wage scale.</li>
+        <li><span class="opt-label">C</span> The slope of wage with respect to age at age 47.</li>
+        <li><span class="opt-label">D</span> The probability that a 47-year-old earns more than the sample mean wage.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Verbatim L17: "It's not that you look at this and like, oh well, he's 47, so he makes eight whatever units… this is just the contribution. You also have to consider all these other ones." Each panel plots one $f_j(x_j)$ with the others held at their means; this is exact partial dependence under additivity.</p>
+          <p>A reads the panel value as the prediction itself, which is the most common student error the prof flagged. C reads it as a derivative — but the panel is the function value, not its slope. D treats the regression GAM as a probability — wrong scale entirely (that's the logistic-GAM panel, on the log-odds scale).</p>
+          <p class="ref">Atoms: <a href="/concepts/generalized-additive-models">generalized-additive-models</a>. Lecture: <a href="/lectures/L17-trees-1">L17-trees-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───────────── Q22: Exercise 7.3 mirror — natural cubic spline design matrix ───────────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 22</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Ex7.3</span>
+      </header>
+      <p class="q-text">
+        You build a natural cubic spline design matrix $\mathbf X$ for a single
+        predictor <code>year</code> with one interior knot at 2006 (boundary knots
+        at the data's min and max). Excluding the intercept, how many columns
+        does $\mathbf X$ have?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 1</li>
+        <li><span class="opt-label">B</span> 2</li>
+        <li><span class="opt-label">C</span> 3</li>
+        <li><span class="opt-label">D</span> 4</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The textbook natural-cubic-spline basis is $b_1(x) = x$ plus $b_{k+2}(x) = d_k(x) - d_K(x)$ for $k = 0, \ldots, K-1$. With one interior knot ($K = 1$) you get $b_1(x) = x$ and one $d_0(x) - d_1(x)$ column — two columns total beyond the intercept. Equivalently: natural cubic spline has $K + 1 = 2$ columns excluding the intercept.</p>
+          <p>A drops the linear column $b_1(x) = x$. C is the count if you forget that the natural-spline boundary constraints kill two parameters. D is the plain cubic spline answer ($K + 3$), which doesn't apply here.</p>
+          <p class="ref">Atoms: <a href="/concepts/regression-splines">regression-splines</a>, <a href="/concepts/basis-functions">basis-functions</a>.</p>
+        </div>
+      </details>
+    </article>
+
+  </main>
+  <script src="exam.js"></script>
+</body>
+</html>

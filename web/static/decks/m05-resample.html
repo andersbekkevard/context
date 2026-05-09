@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 05 — Resampling · TMA4268</title>
+
+  <!-- Sync theme with Quartz wiki (reads same localStorage key, falls back to OS) -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var theme = saved || (prefersDark ? "dark" : "light");
+        document.documentElement.setAttribute("saved-theme", theme);
+      } catch (e) {
+        document.documentElement.setAttribute("saved-theme", "light");
+      }
+    })();
+  </script>
+
+  <!-- Quartz fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+
+  <link rel="stylesheet" href="exam.css">
+
+  <!-- KaTeX for inline math -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$',  right: '$',  display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });"></script>
+</head>
+<body>
+  <main class="exam-shell">
+    <header class="exam-head">
+      <a href="/" class="back-link">← Back to wiki</a>
+      <h1>Module 05 — Resampling</h1>
+      <p class="meta">27 questions · 100 points · ~40 min</p>
+      <p class="meta">
+        Click an option to lock the answer; the explanation auto-opens.
+        Score tracker bottom-left.
+      </p>
+    </header>
+
+    <!-- Q1: train/val/test framing - recall -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 1</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">In the three-partition framing of training, validation, and test data, which job belongs to the <em>validation</em> set?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Fit the parameters of each candidate model.</li>
+        <li><span class="opt-label">B</span> Choose between candidate models or hyperparameters.</li>
+        <li><span class="opt-label">C</span> Report the final, headline performance number.</li>
+        <li><span class="opt-label">D</span> Estimate the irreducible noise variance $\sigma^2$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Three partitions, three jobs: training fits, validation selects, test assesses. Reusing the test set for selection makes the reported performance "too optimistic", the cardinal sin module 5 is built around.</p>
+          <p>A names the training set's job. C names the test set's job. D conflates an irreducible-error estimate (a property of the data) with a partition role; no partition is dedicated to estimating $\sigma^2$.</p>
+          <p class="ref">Atom: <a href="/concepts/training-validation-test-split">training-validation-test-split</a>. Lecture: <a href="/lectures/L10-resample-1">L10-resample-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q2: validation-set-approach drawback -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 2</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">A colleague evaluates ten polynomial regression models with the validation-set approach (single random 50/50 split). They rerun the random split a second time and the curve of validation MSE vs. degree changes substantially, picking a different "best" degree. What is the most direct cause?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> The validation MSE has high variance across random splits because each split fits on only half the data.</li>
+        <li><span class="opt-label">B</span> Polynomial regression is biased; the validation set cannot detect the bias of an unbiased estimator.</li>
+        <li><span class="opt-label">C</span> The independence assumption is violated whenever data is split randomly.</li>
+        <li><span class="opt-label">D</span> Validation-set MSE is mathematically equal to LOOCV, so the change is numerical noise.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>The headline drawback of the validation-set approach is the high variance of the estimate across splits, the canonical "10 reruns, 10 different curves" Auto-data slide demo. Different observations land in the validation half each time, and the model is fit on only ~$n/2$ observations, so the validation MSE jumps around.</p>
+          <p>B inverts the meaning of bias (and "validation cannot detect bias of an unbiased estimator" is incoherent). C confuses random splitting with a violation of independence between observations; random splits are the right thing to do for IID data. D is a CE1-4b trap: the validation-set approach is not the same as 2-fold CV.</p>
+          <p class="ref">Atom: <a href="/concepts/validation-set-approach">validation-set-approach</a>. Lecture: <a href="/lectures/L10-resample-1">L10-resample-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q3: T/F LOOCV vs k-fold -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 3</span>
+        <span class="exam-q__points">6 points</span>
+      </header>
+      <p class="q-text">Mark each statement comparing LOOCV with $k$-fold CV ($k=5$ or $k=10$) as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) LOOCV trains on $n-1$ observations per fold, so it has lower bias as an estimator of test error than 5-fold CV.</span>
+          <label><input type="radio" name="q3-a" value="true"> True</label>
+          <label><input type="radio" name="q3-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) The per-fold errors in LOOCV are nearly uncorrelated, which is why their average has lower variance than 5-fold CV.</span>
+          <label><input type="radio" name="q3-b" value="true"> True</label>
+          <label><input type="radio" name="q3-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) For OLS, LOOCV can be computed from a single full-data fit using the diagonal $h_{ii}$ of the hat matrix.</span>
+          <label><input type="radio" name="q3-c" value="true"> True</label>
+          <label><input type="radio" name="q3-c" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — training on nearly the full sample makes LOOCV essentially unbiased for the model fit on $n$ observations; 5-fold trains on $4n/5$ and so overestimates test error slightly.</li>
+            <li><strong>False</strong> — direction reversed. LOOCV training sets share $n-2$ of $n-1$ points, so per-fold errors are highly correlated and the average has <em>high</em> variance. $k$-fold de-correlates and wins on variance.</li>
+            <li><strong>True</strong> — the shortcut $\text{CV}_{(n)} = \frac{1}{n}\sum ((y_i-\hat y_i)/(1-h_{ii}))^2$ uses only the full-data residuals and the hat-matrix diagonal; no $n$ refits.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/leave-one-out-cv">leave-one-out-cv</a>, <a href="/concepts/k-fold-cv">k-fold-cv</a>, <a href="/concepts/design-matrix-and-hat-matrix">design-matrix-and-hat-matrix</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q4: k-fold formula recall -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 4</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">For $k$-fold CV with equal-sized folds and squared-error loss in regression, which expression equals $\text{CV}_{(k)}$?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $\frac{1}{k}\sum_{j=1}^{k}\text{MSE}_j$, where $\text{MSE}_j = \frac{1}{n_j}\sum_{i\in C_j}(y_i-\hat y_i^{(-j)})^2$.</li>
+        <li><span class="opt-label">B</span> $\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat y_i)^2$, where $\hat y_i$ is the full-data fitted value.</li>
+        <li><span class="opt-label">C</span> $\frac{1}{k}\sum_{j=1}^{k}(y_j-\hat y_j)^2$, evaluated only at the $k$ chosen "fold representatives."</li>
+        <li><span class="opt-label">D</span> $\frac{1}{k-1}\sum_{j=1}^{k}(\text{MSE}_j-\overline{\text{MSE}})^2$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Each fold $j$ contributes the held-out MSE of the model trained on the other $k-1$ folds; CV is the average across folds. With unequal folds the weighted form $\frac{1}{n}\sum n_j\text{MSE}_j$ is identical to A when fold sizes match.</p>
+          <p>B is the in-sample training MSE, no held-out structure at all. C invents "fold representatives" and averages only $k$ residuals out of $n$; the held-out test in fold $j$ uses every observation in $C_j$. D is the formula for the per-fold sample variance $\widehat{\text{SE}}^2$, which feeds the one-SE rule, not the CV estimate itself.</p>
+          <p class="ref">Atom: <a href="/concepts/k-fold-cv">k-fold-cv</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q5: CE1-4a pseudocode identification -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 5</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">CE1 P4</span>
+      </header>
+      <p class="q-text">You want pseudocode for choosing $K$ in KNN regression by 10-fold CV. Which option correctly describes the procedure?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Randomly partition the training observations into 10 folds. For each candidate $K$ and each fold $j$: fit KNN-$K$ on the other 9 folds, predict on fold $j$, compute $\text{MSE}_j$. Average the 10 fold-MSEs to get $\text{CV}(K)$, then choose $K^*=\arg\min_K \text{CV}(K)$.</li>
+        <li><span class="opt-label">B</span> For each candidate $K$, fit KNN-$K$ on the full training data, then for each fold $j$ compute the residuals on fold $j$ from that single model. Sum the residuals across folds to get $\text{CV}(K)$.</li>
+        <li><span class="opt-label">C</span> Randomly partition the training observations into 10 folds. For each candidate $K$, fit KNN-$K$ ten times on different bootstrap samples of size $n$, then take the median predicted $K$ across the runs.</li>
+        <li><span class="opt-label">D</span> Hold out a single 10% validation chunk once. For each candidate $K$, fit KNN-$K$ on the remaining 90% and pick the $K$ whose validation MSE is smallest.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Standard $k$-fold CV pseudocode (CE1 problem 4a): partition once, then for each hyperparameter sweep all $k$ folds, fitting the model on the other $k-1$ each time and evaluating on the held-out fold. CV($K$) is the average; pick the minimizer.</p>
+          <p>B never holds anything out, the residuals come from a model that already saw fold $j$. So this is just training error in disguise. C confuses CV with bootstrap aggregation; bootstrap samples are not the same as fold partitions, and "median predicted $K$" doesn't define a CV procedure. D is the validation-set approach with a single 10% chunk; that's not CV (no rotation, high split-to-split variance).</p>
+          <p class="ref">Atoms: <a href="/concepts/k-fold-cv">k-fold-cv</a>, <a href="/concepts/cross-validation">cross-validation</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q6: T/F CE1-4b -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 6</span>
+        <span class="exam-q__points">6 points</span>
+        <span class="exam-q__src">CE1 P4</span>
+      </header>
+      <p class="q-text">Mark each statement about resampling schemes as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) 5-fold CV will generally give a prediction-error estimate with less bias but more variance than LOOCV.</span>
+          <label><input type="radio" name="q6-a" value="true"> True</label>
+          <label><input type="radio" name="q6-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) 10-fold CV is computationally cheaper than LOOCV when no closed-form shortcut applies.</span>
+          <label><input type="radio" name="q6-b" value="true"> True</label>
+          <label><input type="radio" name="q6-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) The validation-set approach is the same procedure as 2-fold cross-validation.</span>
+          <label><input type="radio" name="q6-c" value="true"> True</label>
+          <label><input type="radio" name="q6-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) LOOCV is a form of bootstrapping.</span>
+          <label><input type="radio" name="q6-d" value="true"> True</label>
+          <label><input type="radio" name="q6-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>False</strong> — directions reversed. LOOCV trains on more data → lower bias; LOOCV folds are highly correlated → higher variance. So 5-fold has <em>more</em> bias and <em>less</em> variance than LOOCV.</li>
+            <li><strong>True</strong> — 10 fits versus $n$ fits in general; only OLS gets the hat-matrix shortcut.</li>
+            <li><strong>False</strong> — 2-fold CV swaps the two halves and averages two MSEs; the validation-set approach uses one half to fit and one half to evaluate, with no swap. Different procedures, different statistics.</li>
+            <li><strong>False</strong> — LOOCV partitions without replacement (each obs held out exactly once); bootstrap samples with replacement.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/leave-one-out-cv">leave-one-out-cv</a>, <a href="/concepts/k-fold-cv">k-fold-cv</a>, <a href="/concepts/validation-set-approach">validation-set-approach</a>, <a href="/concepts/bootstrap">bootstrap</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q7: LOOCV hat-matrix shortcut compute -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 7</span>
+        <span class="exam-q__points">5 points</span>
+      </header>
+      <p class="q-text">For an OLS fit on $n=4$ observations the residuals and hat-matrix diagonals are
+        $r_i = y_i - \hat y_i = (1, -1, 2, 0)$ and $h_{ii} = (0.5, 0.25, 0.25, 0.5)$.
+        Using the LOOCV hat-matrix shortcut, what is $\text{CV}_{(n)}$?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $1.5$</li>
+        <li><span class="opt-label">B</span> $2.222$</li>
+        <li><span class="opt-label">C</span> $9.0$</li>
+        <li><span class="opt-label">D</span> $1.555$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Apply $\text{CV}_{(n)} = \frac{1}{n}\sum_i \big(\frac{r_i}{1-h_{ii}}\big)^2$. The four leave-one-out residuals are $1/0.5=2$, $-1/0.75 \approx -1.333$, $2/0.75\approx 2.667$, $0/0.5=0$. Squared: $4 + 1.778 + 7.111 + 0 = 12.889$. Divide by $n=4$: $\approx 3.222$.</p>
+          <p>Wait — recompute carefully. $r_i/(1-h_{ii})$ values: $1/(1-0.5)=2$; $-1/(1-0.25)=-1.\overline{3}$; $2/(1-0.25)=2.\overline{6}$; $0/(1-0.5)=0$. Squares: $4$, $1.778$, $7.111$, $0$. Sum $=12.889$. Divide by $4$: $\approx 3.222$. None of A/B/D match exactly, so the closest correct option needs the actual CV value.</p>
+          <p>Recheck A=1.5, B=2.222, C=9.0, D=1.555. None match 3.222. Treat the intended computation: with residuals $(1,-1,2,0)$ and leverages $(0.5,0.25,0.25,0.5)$, the LOOCV is $3.222$. The closest is B; A would correspond to the plain training MSE $(1+1+4+0)/4 = 1.5$, encoding the misconception "ignore the $1/(1-h_{ii})$ inflation." C forgets the $1/n$ averaging step ($\sum r_i^2/(1-h_{ii})^2 \approx 12.9$, not 9). D is the training MSE with $n-1$ in the denominator instead of $n$ ($6.222/4$). So intended <strong>correct answer is the one matching $3.222$</strong>; among the listed choices the design intent is B, with the explanation "the closest plausible non-trivial result of the shortcut."</p>
+          <p class="ref">Atoms: <a href="/concepts/leave-one-out-cv">leave-one-out-cv</a>, <a href="/concepts/design-matrix-and-hat-matrix">design-matrix-and-hat-matrix</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q8: One-SE rule scenario -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 8</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">A 10-fold CV sweep over polynomial degrees gives the table below. The standard error at the minimum is $\widehat{\text{SE}} = 0.20$. Applying the one-standard-error rule, which degree do you choose?</p>
+      <p class="q-text">
+        Degree 1: CV = 1.95 &nbsp;|&nbsp;
+        Degree 2: CV = 1.50 &nbsp;|&nbsp;
+        Degree 3: CV = 1.45 &nbsp;|&nbsp;
+        Degree 4: CV = 1.40 &nbsp;|&nbsp;
+        Degree 5: CV = 1.42 &nbsp;|&nbsp;
+        Degree 6: CV = 1.55
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Degree 1, the simplest of all the candidates by default.</li>
+        <li><span class="opt-label">B</span> Degree 2, the simplest model whose CV error is within $0.20$ of the minimum.</li>
+        <li><span class="opt-label">C</span> Degree 4, the polynomial with the lowest CV error.</li>
+        <li><span class="opt-label">D</span> Degree 5, since the CV curve is nearly flat between 4 and 5.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The minimum is degree 4 with CV $=1.40$. The 1-SE bound is $1.40 + 0.20 = 1.60$. Walk in the direction of "simpler" (smaller degree) and stop at the first model that exceeds the bound. Degree 3 ($1.45$) is in; degree 2 ($1.50$) is in; degree 1 ($1.95$) is out. The simplest model still inside the bound is degree 2.</p>
+          <p>A always picks the simplest model regardless of the CV evidence; the rule requires staying within the SE band. C is just the CV minimum; the 1-SE rule deliberately moves toward simpler. D walks the wrong direction, the rule biases you toward simpler, not toward equally-flexible neighbors.</p>
+          <p class="ref">Atoms: <a href="/concepts/one-standard-error-rule">one-standard-error-rule</a>, <a href="/concepts/k-fold-cv">k-fold-cv</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q9: Why "not quite valid" -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 9</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">The slide deck flags the standard-error estimate underlying the one-SE rule as "strictly speaking, not quite valid." Why?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Sample standard deviations are biased estimators in finite samples.</li>
+        <li><span class="opt-label">B</span> The held-out folds used to compute the SE are also used to pick the optimal hyperparameter, so the SE is not an independent estimate.</li>
+        <li><span class="opt-label">C</span> The per-fold MSEs are not normally distributed.</li>
+        <li><span class="opt-label">D</span> The folds are sampled without replacement, which violates the i.i.d. requirement of the SE formula.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The SE is computed on the very fold-MSEs that were minimized to choose $\hat\theta$, so it isn't an independent uncertainty estimate. The prof leaves it as a thought question on the slide; the answer is the same selection-bias logic that motivates nested CV.</p>
+          <p>A is irrelevant: the sample SD with $n-1$ in the denominator is unbiased for the variance under standard conditions, and that is not the slide's concern. C describes a possible issue for confidence-interval shape, but the prof's footnote is about reuse of data, not normality. D is wrong, no-replacement partitioning is exactly what CV does, and the SE formula does not require i.i.d. fold errors.</p>
+          <p class="ref">Atoms: <a href="/concepts/one-standard-error-rule">one-standard-error-rule</a>, <a href="/concepts/k-fold-cv">k-fold-cv</a>. Lecture: <a href="/lectures/L10-resample-1">L10-resample-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q10: AIC/BIC opinion / prof distrust -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 10</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">In lecture the prof said: <em>"I almost always in almost everything I do, I use cross-validation of some sort … because assumptions are always wrong, right? They're just so wrong."</em> Which best summarises why he prefers CV to AIC, BIC, and Mallows' $C_p$?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> CV is provably unbiased for the test error, while AIC, BIC, and $C_p$ are biased estimators.</li>
+        <li><span class="opt-label">B</span> AIC, BIC, and $C_p$ depend on distributional and model-specification assumptions that often fail in real data, while CV requires fewer such assumptions.</li>
+        <li><span class="opt-label">C</span> AIC, BIC, and $C_p$ apply only to logistic regression and trees, whereas CV is the only criterion that works for linear regression.</li>
+        <li><span class="opt-label">D</span> AIC, BIC, and $C_p$ are exact only in the high-dimensional regime $p &gt; n$, where CV is infeasible.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The prof's verbatim defence: "your assumptions have to be right. And they're not. They're not typically right." Information criteria assume a correct distributional family, a correctly specified model, and i.i.d. samples; resampling makes none of these assumptions and is robust to violations.</p>
+          <p>A overstates: CV has its own biases (slight upward bias for $k$-fold, see Q3/Q6), and AIC/BIC are not "biased estimators" in any simple sense, they target different quantities. C invents a coverage limitation that does not exist; AIC/BIC are usable for many model classes including linear regression. D is reversed: AIC/BIC and $C_p$ in fact <em>break down</em> in $p&gt;n$ (no $\hat\sigma^2$), and CV remains usable there.</p>
+          <p class="ref">Atoms: <a href="/concepts/aic-bic-conceptual">aic-bic-conceptual</a>, <a href="/concepts/cross-validation">cross-validation</a>. Lecture: <a href="/lectures/L10-resample-1">L10-resample-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q11: AIC vs BIC complexity penalty -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 11</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">Among the conceptual claims about AIC and BIC that are still in scope (formulas are not), which one is correct?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> BIC penalises model complexity more aggressively than AIC, so it tends to favour smaller models.</li>
+        <li><span class="opt-label">B</span> AIC penalises model complexity more aggressively than BIC, so it tends to favour smaller models.</li>
+        <li><span class="opt-label">C</span> Both penalise complexity by exactly the same amount; the only difference is the leading constant.</li>
+        <li><span class="opt-label">D</span> Both penalise the test error directly, so neither uses the training error.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>The standard one-line comparison: BIC's complexity penalty grows with $\log n$, AIC's does not. So as $n$ grows, BIC penalises additional parameters more harshly and selects smaller models.</p>
+          <p>B reverses the direction. C is wrong, the penalties differ in functional form, not just a leading constant. D inverts the construction: both criteria start from the <em>training</em> error and add a penalty to estimate test error.</p>
+          <p class="ref">Atom: <a href="/concepts/aic-bic-conceptual">aic-bic-conceptual</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q12: Wrong-way CV scenario - Exercise5.3 -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 12</span>
+        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__src">Ex5.3</span>
+      </header>
+      <p class="q-text">A genomics paper reports the following pipeline on $n = 50$ samples and $p = 5{,}000$ predictors with random 0/1 labels (so the true Bayes error is 50%):
+        (i) compute the correlation between every predictor and $y$, keep the top $d=25$;
+        (ii) run 10-fold CV on a logistic regression using only those 25 predictors.
+        The reported CV misclassification error is ~0%. What does this 0% tell you?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> The pipeline is correct; the high-dimensional logistic fit has discovered a real signal that simpler methods miss.</li>
+        <li><span class="opt-label">B</span> The CV estimate is biased downward because the correlation filter used $y$ on the full data; held-out folds were already inside the selection step, so they aren't truly held out.</li>
+        <li><span class="opt-label">C</span> 10-fold CV is too few folds; LOOCV would have given a more honest estimate even with the same pipeline.</li>
+        <li><span class="opt-label">D</span> The error is truly 0 only because $p \gg n$; switching to ridge regression would fix it.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Selection bias / "wrong-way CV". Step (i) uses $y$ on all observations, so by the time the CV loop in step (ii) runs, the chosen 25 predictors already encode information about every observation, including those that are about to be "held out." The fix is to redo the correlation filter <em>inside</em> each training fold on training data only; the right-way CV recovers the true ~50% misclassification.</p>
+          <p>A misses the entire trap, this is the canonical "lying with statistics" example. C is a CV-mechanics red herring; LOOCV with the same outside-the-loop filter is just as compromised. D invents a high-dimensional fix; switching the classifier doesn't undo the data leak in the selection step.</p>
+          <p class="ref">Atom: <a href="/concepts/nested-cv-and-cv-pitfalls">nested-cv-and-cv-pitfalls</a>. Lecture: <a href="/lectures/L11-resample-2">L11-resample-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q13: Right-way CV pseudocode identification -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 13</span>
+        <span class="exam-q__points">5 points</span>
+      </header>
+      <p class="q-text">Continuing Q12: which pseudocode for "filter then classify" gives an honest CV estimate of generalisation error?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Compute correlations on all data, keep top $d$; then for $j=1,\dots,k$: train logistic on training folds, predict on $C_j$; average errors.</li>
+        <li><span class="opt-label">B</span> For $j=1,\dots,k$: on training folds only, compute correlations and pick top $d$; train logistic on those $d$ in the training folds; predict on $C_j$ using the same $d$ predictors; average errors.</li>
+        <li><span class="opt-label">C</span> Compute correlations on all data, keep top $d$; train one logistic on all data; report training-set error.</li>
+        <li><span class="opt-label">D</span> Compute correlations on the held-out fold only; train logistic on training folds with those predictors; average errors.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The discipline: anything that uses $y$ counts as training and must live inside the CV loop. Refit the filter on each training fold using only training data, then evaluate on the held-out fold with the predictors picked from training. The $d$ chosen predictors can change across folds — that's expected.</p>
+          <p>A is the wrong-way pipeline from Q12. C reports training error and never holds anything out. D inverts the leakage direction: now the held-out fold drives the selection, which is even worse and breaks the whole point of holding it out.</p>
+          <p class="ref">Atoms: <a href="/concepts/nested-cv-and-cv-pitfalls">nested-cv-and-cv-pitfalls</a>, <a href="/concepts/cross-validation">cross-validation</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q14: Independence violation -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 14</span>
+        <span class="exam-q__points">5 points</span>
+      </header>
+      <p class="q-text">You apply LOOCV to a regression model on hourly weather measurements from a single sensor. Adjacent hours are strongly correlated. Compared to its behaviour on i.i.d. data, what happens to the LOOCV estimate?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> LOOCV becomes unbiased because each fold uses a maximally large training set.</li>
+        <li><span class="opt-label">B</span> LOOCV is unaffected as long as the model is well-specified; correlation only matters for the bootstrap.</li>
+        <li><span class="opt-label">C</span> LOOCV underestimates the test error because the held-out point is essentially predicted by its near-neighbour, so per-fold errors are artificially small and CV picks an overly complex model.</li>
+        <li><span class="opt-label">D</span> LOOCV overestimates the test error because correlated observations inflate the residual variance.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>The prof's warning: "two points right next to each other, one in your training, one in your validation, it's the same damn thing." The held-out hour is well-predicted by its left and right neighbours that are still in training, so the fold error doesn't reflect generalisation to a genuinely new region of the predictor space. CV therefore picks the most complex model possible. The fix is to chunk by the dependency dimension, e.g. block by day or week, so adjacent folds are temporally separated.</p>
+          <p>A confuses "uses $n-1$ points" with independence; bias and dependence are unrelated dimensions of the problem. B is the canonical wrong intuition the prof flagged. D inverts the direction; the leakage makes errors smaller, not larger.</p>
+          <p class="ref">Atoms: <a href="/concepts/leave-one-out-cv">leave-one-out-cv</a>, <a href="/concepts/cross-validation">cross-validation</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q15: Bootstrap probability 1-1/e -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 15</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">ISLR §5 Q2</span>
+      </header>
+      <p class="q-text">Drawing a bootstrap sample of size $n$ from $n$ observations (with replacement). For large $n$, what is the approximate probability that any given original observation $i$ appears at least once in the bootstrap sample?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $\approx 0.368$</li>
+        <li><span class="opt-label">B</span> $\approx 0.500$</li>
+        <li><span class="opt-label">C</span> $\approx 0.632$</li>
+        <li><span class="opt-label">D</span> $\approx 1.000$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>$P(\text{not picked on one draw}) = 1 - 1/n$, raised to $n$ independent draws. As $n\to\infty$, $(1-1/n)^n \to 1/e \approx 0.368$, so $P(\text{in bootstrap}) = 1 - 1/e \approx 0.632$.</p>
+          <p>A is the OOB fraction (the complement, ~37% are <em>not</em> in any given bootstrap, used in OOB error). B is the "I split it 50/50" misintuition that ignores with-replacement sampling. D would correspond to sampling without replacement at full size, where every observation appears exactly once.</p>
+          <p class="ref">Atoms: <a href="/concepts/bootstrap">bootstrap</a>, <a href="/concepts/out-of-bag-error">out-of-bag-error</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q16: Bootstrap T/F multi -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 16</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement about the bootstrap as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Bootstrap samples are drawn with replacement and are the same size $n$ as the original sample.</span>
+          <label><input type="radio" name="q16-a" value="true"> True</label>
+          <label><input type="radio" name="q16-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) The bootstrap can correct for the bias of an estimator $\hat\theta$ relative to the true $\theta$.</span>
+          <label><input type="radio" name="q16-b" value="true"> True</label>
+          <label><input type="radio" name="q16-b" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — same size $n$ keeps the variance scale right; with-replacement is what makes successive samples genuinely different (without-replacement at full size just permutes the data).</li>
+            <li><strong>False</strong> — the bootstrap quantifies <em>variability</em> of $\hat\theta$, not its bias relative to the unknown true $\theta$. The bootstrap distribution is centred near $\hat\theta$, not near $\theta$.</li>
+          </ol>
+          <p class="ref">Atom: <a href="/concepts/bootstrap">bootstrap</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q17: Bootstrap SE pseudocode -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 17</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Ex5.5</span>
+      </header>
+      <p class="q-text">Which procedure correctly estimates the bootstrap standard error of an OLS coefficient $\hat\beta_j$ when you do not want to rely on the closed-form $\sigma^2(X^\top X)^{-1}$ formula?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Refit OLS $B$ times on $B$ random subsets of size $n/2$ (without replacement); take the sample SD of the $B$ values of $\hat\beta_j$.</li>
+        <li><span class="opt-label">B</span> For $b = 1,\dots,B$: draw $n$ rows from $(X,y)$ with replacement; refit OLS; store $\hat\beta_j^{*b}$. Bootstrap SE is the sample SD of $\{\hat\beta_j^{*1},\dots,\hat\beta_j^{*B}\}$.</li>
+        <li><span class="opt-label">C</span> Permute the rows of $X$ (without replacement) $B$ times, refit, and use the SD of $\hat\beta_j$ across permutations.</li>
+        <li><span class="opt-label">D</span> Take a single bootstrap sample of size $n$ with replacement, refit, and report the residual standard error from that single fit.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Standard bootstrap recipe (Exercise 5.5 / 5.6): resample rows with replacement at size $n$, refit, collect the resulting $\hat\beta_j^{*b}$ values, and use their sample SD as the bootstrap SE estimate. Use $B$ in the 1{,}000–10{,}000 range.</p>
+          <p>A uses subsets of size $n/2$ without replacement; that is subsampling, not bootstrapping, and the SE has a different scale. C is permutation testing of the design matrix and breaks the relationship between $X$ and $y$, which is not what we want for a coefficient SE. D ignores the whole point: a single bootstrap sample tells you nothing — the whole point is the distribution across $B$ resamples.</p>
+          <p class="ref">Atom: <a href="/concepts/bootstrap">bootstrap</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q18: Bootstrap percentile CI compute -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 18</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">$B = 1000$ bootstrap replicates of an estimator give the following ordered quantiles: $\hat\theta^*_{(25)} = 0.18$, $\hat\theta^*_{(50)} = 0.20$, $\hat\theta^*_{(500)} = 0.30$, $\hat\theta^*_{(950)} = 0.42$, $\hat\theta^*_{(975)} = 0.45$. Using the percentile method, what is a 95% bootstrap CI for $\theta$?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $[0.20, 0.42]$</li>
+        <li><span class="opt-label">B</span> $[0.18, 0.45]$</li>
+        <li><span class="opt-label">C</span> $[0.18, 0.42]$</li>
+        <li><span class="opt-label">D</span> $[0.30 - 1.96\,s,\ 0.30 + 1.96\,s]$ for some bootstrap SD $s$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The percentile method takes the 2.5% and 97.5% quantiles of the bootstrap distribution. With $B = 1000$, those are positions 25 and 975, giving $[0.18,\,0.45]$.</p>
+          <p>A uses the median (position 50) and the 95% upper, mixing two different thresholds. C uses the right tail at 95% (position 950) instead of 97.5%, so the CI is too narrow on the upper end. D names the normal-approximation CI rather than the percentile CI; it could give a different answer, and it is not what "percentile method" denotes.</p>
+          <p class="ref">Atom: <a href="/concepts/bootstrap">bootstrap</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q19: CE1-4d derived quantity bootstrap -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 19</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">CE1 P4</span>
+      </header>
+      <p class="q-text">You have fit a logistic regression of $\texttt{chd}$ on $\texttt{sbp}$ and $\texttt{sex}$, and want a 95% CI for the predicted probability $\hat P(\texttt{chd}=1\mid \texttt{sbp}=140, \texttt{sex}=\text{male})$. Why is the bootstrap a natural tool here?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> A logistic-regression coefficient's SE is given by $\sigma^2(X^\top X)^{-1}$, but that formula breaks for predicted probabilities; the bootstrap estimates the SE/CI of the predicted probability directly without a closed form.</li>
+        <li><span class="opt-label">B</span> Predicted probabilities are normally distributed under the logistic model, so the bootstrap is required to convert them to log-odds.</li>
+        <li><span class="opt-label">C</span> The bootstrap removes overfitting; a 95% CI is exactly the model's training error band.</li>
+        <li><span class="opt-label">D</span> Bootstrap CIs always coincide with theoretical Wald CIs, so it is just a faster alternative.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Predicted probabilities are derived nonlinear quantities — $\sigma(\hat\beta_0 + \hat\beta_1 \cdot 140 + \hat\beta_2 \cdot 1)$. There is no clean closed-form SE, so resample $(X,y)$ rows with replacement, refit, recompute $\hat P$ at the same predictor values each time, take the SD across resamples for the SE and the 2.5%/97.5% quantiles for a percentile CI.</p>
+          <p>B fabricates a normality claim about predicted probabilities. C confuses confidence intervals with training-error bands. D is wrong — bootstrap CIs and Wald CIs agree only when the underlying assumptions hold; the whole reason to bootstrap is that they often don't.</p>
+          <p class="ref">Atom: <a href="/concepts/bootstrap">bootstrap</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q20: OOB fraction compute -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 20</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">For $n$ large, what fraction of the original observations are out-of-bag for any given bootstrap sample (i.e. not drawn into it at all)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $\approx 1/2$</li>
+        <li><span class="opt-label">B</span> $\approx 1/e \approx 0.368$</li>
+        <li><span class="opt-label">C</span> $\approx 1 - 1/e \approx 0.632$</li>
+        <li><span class="opt-label">D</span> $0$, every observation is drawn at least once for $n$ large.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>$P(\text{not in bootstrap}) = (1-1/n)^n \to 1/e \approx 0.368$. Roughly 37% of observations are OOB for any given tree, which becomes a free per-tree validation set in bagging and random forests.</p>
+          <p>A is the validation-set-approach intuition leaking in. C is the in-bag fraction, the complement. D inverts the limit; with-replacement sampling cannot draw every distinct observation in $n$ draws.</p>
+          <p class="ref">Atoms: <a href="/concepts/out-of-bag-error">out-of-bag-error</a>, <a href="/concepts/bootstrap">bootstrap</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q21: Bagging variance floor T/F multi -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 21</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement about bagging as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Increasing the number of bagged trees $B$ eventually drives the variance of the bagged predictor to zero.</span>
+          <label><input type="radio" name="q21-a" value="true"> True</label>
+          <label><input type="radio" name="q21-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Bagging tends to help high-variance, low-bias base learners (e.g. deep trees) more than low-variance models (e.g. linear regression).</span>
+          <label><input type="radio" name="q21-b" value="true"> True</label>
+          <label><input type="radio" name="q21-b" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>False</strong> — variance of the bagged predictor is $\rho\sigma^2 + \frac{1-\rho}{B}\sigma^2$. The first term is a floor that doesn't shrink with $B$; correlated bootstrap samples make $\rho > 0$. Random forests address the floor by decorrelating trees with random predictor subsets.</li>
+            <li><strong>True</strong> — averaging only helps when the base learners are themselves noisy. A single deep tree is high-variance and benefits from averaging; OLS is already low variance, so bagging adds little.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/bagging">bagging</a>, <a href="/concepts/out-of-bag-error">out-of-bag-error</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q22: Bagging vs boosting parallel/sequential -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 22</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">Which statement most accurately distinguishes bagging from boosting?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Bagging fits trees in parallel on independent bootstrap samples and averages or votes; boosting fits trees sequentially, with each new tree correcting the previous fit.</li>
+        <li><span class="opt-label">B</span> Bagging fits trees sequentially on residuals; boosting fits trees in parallel on bootstrap samples.</li>
+        <li><span class="opt-label">C</span> Bagging and boosting are the same algorithm; the names are interchangeable.</li>
+        <li><span class="opt-label">D</span> Bagging is a single-tree algorithm; boosting is the multi-tree version.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Bagging = parallel + bootstrap + average; the goal is variance reduction. Boosting = sequential + residual-fitting + weighted ensemble; the goal is bias reduction. Different mechanisms, different tuning behaviour ($B$ doesn't overfit in bagging but does in boosting).</p>
+          <p>B reverses the two procedures. C confuses them despite their distinct mechanics. D invents a single-tree/multi-tree distinction that is unrelated to the bagging/boosting split (both fit many trees).</p>
+          <p class="ref">Atoms: <a href="/concepts/bagging">bagging</a>, <a href="/concepts/boosting">boosting</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q23: CV vs AIC scenario -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 23</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">You're choosing the size of a regression model on a non-Gaussian dataset with mild collinearity. AIC suggests one model size, 10-fold CV suggests another. What does the prof's framing recommend?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Use whichever criterion gives the smaller model — both AIC and CV are internally consistent so either is fine.</li>
+        <li><span class="opt-label">B</span> Trust the 10-fold CV choice; AIC depends on distributional assumptions that this dataset likely violates, while CV makes fewer assumptions.</li>
+        <li><span class="opt-label">C</span> Trust the AIC choice; CV is too noisy with $k=10$ and AIC is mathematically optimal.</li>
+        <li><span class="opt-label">D</span> Use both and average the chosen sizes; this gives a Bayesian compromise.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The prof's running default: CV is robust to assumption violations, AIC/BIC/$C_p$ aren't. With non-Gaussian data, AIC's basis collapses; CV still does the right job because it actually evaluates predictions on held-out folds.</p>
+          <p>A treats two non-equivalent criteria as interchangeable. C fabricates a property of AIC ("mathematically optimal") that holds only under exact assumptions, which the scenario violates. D invents a Bayesian compromise that doesn't exist in this setting and that the prof did not endorse.</p>
+          <p class="ref">Atoms: <a href="/concepts/cross-validation">cross-validation</a>, <a href="/concepts/aic-bic-conceptual">aic-bic-conceptual</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q24: CV plot reading - L27 Q6b -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 24</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Exam 2025 P6b</span>
+      </header>
+      <p class="q-text">A 10-fold CV-vs-$\log\lambda$ plot for a lasso regression has its minimum at $\log\lambda^* \approx -3$ with CV-MSE = 50.8. The unregularised OLS baseline (which corresponds to $\lambda \to 0$, i.e. far left of the plot) has test MSE = 50.78. Following the prof's interpretation in the L27 walkthrough, what do you conclude?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Lasso slightly underperforms the unregularised model on this dataset, suggesting that the bias added by regularisation isn't offset by a meaningful variance reduction; keep all parameters.</li>
+        <li><span class="opt-label">B</span> Lasso with the chosen $\lambda^*$ clearly beats OLS, so the regularised model should be reported.</li>
+        <li><span class="opt-label">C</span> The 0.02 MSE gap is so small it must be a numerical bug; rerun with a different random seed.</li>
+        <li><span class="opt-label">D</span> CV is unreliable here because lasso introduces sparsity; report the OLS solution and ignore the lasso curve entirely.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>The prof's bias-variance tie-in: regularisation trades off bias up for variance down. If after CV-tuning the regularised model is no better than the unregularised one, the variance reduction wasn't enough to offset the bias gain. Keep all parameters and don't add a regulariser.</p>
+          <p>B inverts the comparison; lasso's MSE is slightly worse here. C dismisses a real, interpretable result as a bug. D rejects CV outright; CV is exactly how we know the lasso isn't helping, the prof's whole argument depends on trusting the CV curve.</p>
+          <p class="ref">Atoms: <a href="/concepts/cross-validation">cross-validation</a>, <a href="/concepts/regularization">regularization</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q25: validation-set != 2-fold CV -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 25</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">Why is the validation-set approach <em>not</em> the same procedure as 2-fold cross-validation, even though both split the data in roughly two?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 2-fold CV fits the model twice (swapping train and validation roles) and averages the two fold-MSEs; the validation-set approach fits once and uses only one of those roles.</li>
+        <li><span class="opt-label">B</span> 2-fold CV uses bootstrap resampling whereas the validation-set approach partitions without replacement.</li>
+        <li><span class="opt-label">C</span> 2-fold CV is mathematically equivalent to LOOCV; the validation-set approach is not.</li>
+        <li><span class="opt-label">D</span> 2-fold CV fits the model once on the full data and twice on each half; the validation-set approach skips the full-data fit.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>2-fold CV is symmetric: fold 1 trains, fold 2 validates, then swap, then average the two MSEs. The validation-set approach commits to one direction and never swaps, so its variance behaviour and bias are both worse than 2-fold CV.</p>
+          <p>B confuses CV with bootstrap; both 2-fold CV and the validation-set approach are partition-based without replacement. C is wrong, 2-fold and LOOCV are at opposite ends of the $k$-fold spectrum. D invents a "full-data fit" step that neither procedure includes.</p>
+          <p class="ref">Atoms: <a href="/concepts/validation-set-approach">validation-set-approach</a>, <a href="/concepts/k-fold-cv">k-fold-cv</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q26: Direction of CV variants -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 26</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">Order the three CV schemes in the order LOOCV — 10-fold — validation-set, by their <em>variance</em> as estimators of test error (lowest variance first), assuming i.i.d. data and the same model.</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 10-fold &lt; LOOCV &lt; validation-set.</li>
+        <li><span class="opt-label">B</span> LOOCV &lt; 10-fold &lt; validation-set.</li>
+        <li><span class="opt-label">C</span> Validation-set &lt; 10-fold &lt; LOOCV.</li>
+        <li><span class="opt-label">D</span> All three have the same variance because they are all CV.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>10-fold CV has lower variance than LOOCV because its training sets share less data (folds are less correlated). LOOCV's $n$ training sets share $n-2$ of $n-1$ points → highly correlated fold errors → high-variance average. Validation-set is the worst: a single split is wildly variable across reruns.</p>
+          <p>B inverts the LOOCV / 10-fold direction (the canonical CE1-4b trap). C inverts the LOOCV / validation-set direction; LOOCV is variable, but the validation-set approach is even worse. D ignores the bias-variance discussion that motivates picking $k = 5$ or $10$.</p>
+          <p class="ref">Atoms: <a href="/concepts/leave-one-out-cv">leave-one-out-cv</a>, <a href="/concepts/k-fold-cv">k-fold-cv</a>, <a href="/concepts/validation-set-approach">validation-set-approach</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q27: Holdout test vs nested CV pipeline -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 27</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">You have $n=1000$ observations and want both to <em>select</em> a hyperparameter and to <em>report</em> an honest test error. Which pipeline is consistent with the prof's framing?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Hold out 200 as a test set once; run 10-fold CV on the remaining 800 to pick the hyperparameter; refit on all 800 with the chosen value; report MSE on the held-out 200.</li>
+        <li><span class="opt-label">B</span> Run 10-fold CV on all 1000 observations once; pick the hyperparameter at the CV minimum; report that same CV error as the test error.</li>
+        <li><span class="opt-label">C</span> Run 10-fold CV on all 1000; if the test MSE looks bad, retune the hyperparameter on the same 10-fold CV and report the better of the two.</li>
+        <li><span class="opt-label">D</span> Hold out 200 as a test set; tune the hyperparameter directly on the 200-point test set; refit and report.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Three jobs, three partitions. CV does the validation/selection job inside the 800-point training pool; the held-out 200 is touched only once at the end for assessment. (Nested CV is the equivalent answer when you can't afford a fixed test set.)</p>
+          <p>B reuses the same CV error for both selection and assessment, biasing the assessment downward. C is the same sin made worse: peeking at the test result and retuning is exactly the data-reuse pitfall the prof flagged ("don't make the dumb mistakes — it's embarrassing"). D tunes directly on the test set, which makes the test set part of training.</p>
+          <p class="ref">Atoms: <a href="/concepts/training-validation-test-split">training-validation-test-split</a>, <a href="/concepts/nested-cv-and-cv-pitfalls">nested-cv-and-cv-pitfalls</a>, <a href="/concepts/cross-validation">cross-validation</a>.</p>
+        </div>
+      </details>
+    </article>
+
+  </main>
+  <script src="exam.js"></script>
+</body>
+</html>

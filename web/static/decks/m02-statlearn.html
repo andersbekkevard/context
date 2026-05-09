@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 02 — Statistical Learning · TMA4268</title>
+
+  <!-- Sync theme with the Quartz wiki (reads same localStorage key, falls back to OS) -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var theme = saved || (prefersDark ? "dark" : "light");
+        document.documentElement.setAttribute("saved-theme", theme);
+      } catch (e) {
+        document.documentElement.setAttribute("saved-theme", "light");
+      }
+    })();
+  </script>
+
+  <!-- Quartz fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+
+  <link rel="stylesheet" href="exam.css">
+
+  <!-- KaTeX for inline math -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$',  right: '$',  display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });"></script>
+</head>
+<body>
+  <main class="exam-shell">
+    <header class="exam-head">
+      <a href="/" class="back-link">← Back to wiki</a>
+      <h1>Module 02 — Statistical Learning</h1>
+      <p class="meta">25 questions · 100 points · ~40 min</p>
+      <p class="meta">
+        Click an option to lock the answer; the explanation auto-opens.
+        Score tracker bottom-left.
+      </p>
+    </header>
+
+    <!-- ── Q1: parametric-vs-nonparametric — SC recall ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 1</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Which of the following methods is best described as <em>nonparametric</em>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Linear regression with a polynomial basis of fixed degree.</li>
+        <li><span class="opt-label">B</span> Linear discriminant analysis with pooled covariance.</li>
+        <li><span class="opt-label">C</span> $K$-nearest neighbors with $K$ chosen by cross-validation.</li>
+        <li><span class="opt-label">D</span> Logistic regression with two predictors.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>KNN assumes no functional form for $f$; the "model" is the training data plus the rule "average / vote over the $K$ nearest neighbors." That is the prof's canonical nonparametric example.</p>
+          <p>A is parametric: even with polynomial features the model is linear in $\beta$ and you estimate a finite parameter vector. B (LDA) and D (logistic regression) are also parametric — both posit a specific Gaussian / Bernoulli-GLM form for the data and estimate a finite-dimensional $\theta$. The "$K$" in KNN is a hyperparameter, not a structural parameter of an assumed family.</p>
+          <p class="ref">Atoms: <a href="/concepts/parametric-vs-nonparametric">parametric-vs-nonparametric</a>, <a href="/concepts/knn-classification">knn-classification</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q2: reducible-vs-irreducible — SC formula ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 2</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Assume $Y = f(X) + \varepsilon$ with $\mathbb E[\varepsilon] = 0$, $\mathrm{Var}(\varepsilon) = \sigma^2$, and $\varepsilon \perp X$. Predict $\hat Y = \hat f(X)$ at a fixed $x$. Which expression equals $\mathbb E[(Y - \hat Y)^2 \mid X = x]$ before taking any further expectation over the training set?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $(f(x) - \hat f(x))^2$</li>
+        <li><span class="opt-label">B</span> $(f(x) - \hat f(x))^2 + \sigma^2$</li>
+        <li><span class="opt-label">C</span> $(f(x) - \hat f(x))^2 - \sigma^2$</li>
+        <li><span class="opt-label">D</span> $(f(x) - \hat f(x))^2 + 2\sigma^2$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Substitute $Y = f(x) + \varepsilon$ and expand the square: the cross term $-2(f(x)-\hat f(x))\varepsilon$ vanishes under expectation because $\mathbb E[\varepsilon] = 0$, and $\mathbb E[\varepsilon^2] = \mathrm{Var}(\varepsilon) = \sigma^2$. So the pointwise error splits into a reducible $(f - \hat f)^2$ and an irreducible $\sigma^2$.</p>
+          <p>A drops the noise floor entirely; the irreducible term never goes away. C subtracts the variance, which sign-flips the noise contribution. D double-counts $\sigma^2$, the standard mistake when students confuse $\mathbb E[\varepsilon^2]$ with $2\,\mathrm{Var}(\varepsilon)$.</p>
+          <p class="ref">Atoms: <a href="/concepts/reducible-vs-irreducible-error">reducible-vs-irreducible-error</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q3: bias-variance derivation — SC cross-term ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 3</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">CE1 P1b</span>
+      </header>
+      <p class="q-text">In the bias-variance derivation, after writing $f(x_0) - \hat f(x_0) = (f(x_0) - \mathbb E[\hat f(x_0)]) + (\mathbb E[\hat f(x_0)] - \hat f(x_0))$ and squaring, the cross term vanishes because:</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $f(x_0)$ and $\hat f(x_0)$ are independent.</li>
+        <li><span class="opt-label">B</span> $\mathbb E[\,\mathbb E[\hat f(x_0)] - \hat f(x_0)\,] = 0$ by the tower property.</li>
+        <li><span class="opt-label">C</span> The noise $\varepsilon$ has expected value zero.</li>
+        <li><span class="opt-label">D</span> The training set is assumed to be Gaussian.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The cross term is $2(f(x_0) - \mathbb E[\hat f(x_0)]) \cdot (\mathbb E[\hat f(x_0)] - \hat f(x_0))$. The first factor is a deterministic constant. Taking expectation over the training set, the second factor's mean is $\mathbb E[\hat f(x_0)] - \mathbb E[\hat f(x_0)] = 0$. That kills the cross term and leaves Bias$^2$ + Variance.</p>
+          <p>A confuses $f$ (the unknown truth) with $\hat f$ (a function of the training data) — they're not independent in the relevant sense. C is the cross term that vanishes in the <em>earlier</em> step (separating reducible vs irreducible), not in the bias/variance split. D is irrelevant: the decomposition does not require Gaussian errors at all.</p>
+          <p class="ref">Atoms: <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>, <a href="/concepts/reducible-vs-irreducible-error">reducible-vs-irreducible-error</a>. Lecture: <a href="/lectures/L03-statlearn-2">L03-statlearn-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q4: TF — direction of effect, polynomial degree ↑ ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 4</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">A polynomial regression is fit to a fixed dataset for degrees $d = 1, 2, \dots, 20$. Mark each statement as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Training MSE is non-increasing as $d$ grows.</span>
+          <label><input type="radio" name="q4-a" value="true"> True</label>
+          <label><input type="radio" name="q4-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Test MSE is also non-increasing as $d$ grows.</span>
+          <label><input type="radio" name="q4-b" value="true"> True</label>
+          <label><input type="radio" name="q4-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) The squared bias of $\hat f(x_0)$ typically decreases as $d$ grows.</span>
+          <label><input type="radio" name="q4-c" value="true"> True</label>
+          <label><input type="radio" name="q4-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) The variance of $\hat f(x_0)$ typically decreases as $d$ grows.</span>
+          <label><input type="radio" name="q4-d" value="true"> True</label>
+          <label><input type="radio" name="q4-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — each more-flexible model contains the previous as a special case (set the higher coefficients to zero), so on the data it was fit to, MSE never increases.</li>
+            <li><strong>False</strong> — test MSE is U-shaped: it falls while bias dominates, then rises as variance takes over.</li>
+            <li><strong>True</strong> — more flexibility lets $\mathbb E[\hat f]$ approach the truth; bias drops with $d$.</li>
+            <li><strong>False</strong> — variance rises with flexibility because the high-degree fit chases noise; this is the right side of the U.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/flexibility-overfitting-underfitting">flexibility-overfitting-underfitting</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>, <a href="/concepts/polynomial-regression">polynomial-regression</a>. Lecture: <a href="/lectures/L03-statlearn-2">L03-statlearn-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q5: KNN classification — hand calc ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 5</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Ex4.1</span>
+      </header>
+      <p class="q-text">
+        A 7-point training set has predictors $(X_1, X_2)$ and class $Y$:
+        $(3,3,A), (2,0,A), (1,1,A), (0,1,B), (-1,0,B), (2,1,B), (1,0,B)$.
+        Using Euclidean distance and $K = 4$ majority vote, classify the test point $(X_1, X_2) = (1, 2)$.
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Class A, by a 3-to-1 vote among the four nearest neighbours.</li>
+        <li><span class="opt-label">B</span> Class B, by a 3-to-1 vote among the four nearest neighbours.</li>
+        <li><span class="opt-label">C</span> Tied 2-to-2; the prediction is undetermined without a tiebreaker.</li>
+        <li><span class="opt-label">D</span> Class A, because the closest single training point belongs to class A.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Euclidean distances to $(1,2)$: $(3,3)\!\to\!\sqrt 5$, $(2,0)\!\to\!\sqrt 5$, $(1,1)\!\to\!1$, $(0,1)\!\to\!\sqrt 2$, $(-1,0)\!\to\!\sqrt 8$, $(2,1)\!\to\!\sqrt 2$, $(1,0)\!\to\!2$. Sorted ascending: $1,\sqrt 2,\sqrt 2, 2, \sqrt 5, \sqrt 5, \sqrt 8$. The four nearest are $(1,1)$ class A, $(0,1)$ class B, $(2,1)$ class B, $(1,0)$ class B → vote 1 A vs 3 B → predict <strong>B</strong>.</p>
+          <p>A flips the vote count and picks the wrong class. C invents a tie that doesn't occur with $K = 4$ on this data. D is the $K = 1$ answer ($(1,1)$ is closest, class A) — correct only if you forgot the question said $K = 4$, the canonical "wrong-$K$" trap from this exercise.</p>
+          <p class="ref">Atoms: <a href="/concepts/knn-classification">knn-classification</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q6: KNN — direction-of-effect ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 6</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">A KNN classifier is fit to a fixed training set. Mark each statement about increasing $K$ as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Increasing $K$ makes the decision boundary smoother.</span>
+          <label><input type="radio" name="q6-a" value="true"> True</label>
+          <label><input type="radio" name="q6-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Increasing $K$ increases the flexibility of the fit.</span>
+          <label><input type="radio" name="q6-b" value="true"> True</label>
+          <label><input type="radio" name="q6-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Increasing $K$ tends to lower the variance of $\hat f(x_0)$ across resamples.</span>
+          <label><input type="radio" name="q6-c" value="true"> True</label>
+          <label><input type="radio" name="q6-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Setting $K$ equal to the training size $n$ gives the global majority class for any test point.</span>
+          <label><input type="radio" name="q6-d" value="true"> True</label>
+          <label><input type="radio" name="q6-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — averaging over more neighbours blurs out local wobbles.</li>
+            <li><strong>False</strong> — small $K$ is the flexible regime (KNN's flexibility knob is inverted; that's the canonical T/F trap).</li>
+            <li><strong>True</strong> — averaging more $y$'s reduces $\mathrm{Var}(\hat f(x_0))$; this is the standard variance-reduction-by-averaging story.</li>
+            <li><strong>True</strong> — at $K = n$ every point has the same neighbour set (the entire training data), so the prediction is the global majority class everywhere.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/knn-classification">knn-classification</a>, <a href="/concepts/flexibility-overfitting-underfitting">flexibility-overfitting-underfitting</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q7: random vector — correlation from Σ ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 7</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">CE1 P1f</span>
+      </header>
+      <p class="q-text">
+        Let $\mathbf X$ be a 2-dimensional random vector with covariance matrix
+        $$\boldsymbol\Sigma = \begin{bmatrix} 16 & 0.6 \\ 0.6 & 9 \end{bmatrix}.$$
+        What is the correlation $\rho_{12}$ between $X_1$ and $X_2$?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $0.05$</li>
+        <li><span class="opt-label">B</span> $0.15$</li>
+        <li><span class="opt-label">C</span> $0.0042$</li>
+        <li><span class="opt-label">D</span> $0.20$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>$\rho_{12} = \sigma_{12} / \sqrt{\sigma_1^2 \sigma_2^2} = 0.6 / \sqrt{16 \cdot 9} = 0.6 / \sqrt{144} = 0.6 / 12 = 0.05$.</p>
+          <p>B comes from dividing by $\sigma_1 + \sigma_2 = 4 + 3 = 7 \;... \approx 0.086$ — wrong combination, but close to a remembered "hand-mash" mistake. C divides by $\sigma_1^2 \sigma_2^2 = 144$ instead of the square root: $0.6/144 \approx 0.0042$ — the canonical "forgot the square root" trap. D drops the variance scaling and just halves: $0.6 / 3 = 0.2$.</p>
+          <p class="ref">Atoms: <a href="/concepts/random-vector-and-covariance">random-vector-and-covariance</a>, <a href="/concepts/multivariate-normal">multivariate-normal</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q8: contour matching — multivariate normal ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 8</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">CE1 P1g</span>
+      </header>
+      <p class="q-text">
+        $\mathbf X$ is bivariate normal with mean $\boldsymbol\mu = (0, 0)^\top$ and covariance
+        $$\boldsymbol\Sigma = \begin{bmatrix} 1 & -1.5 \\ -1.5 & 4 \end{bmatrix}.$$
+        Which qualitative description matches the contour plot of the density?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Circular contours centred at the origin, no diagonal pull.</li>
+        <li><span class="opt-label">B</span> Axis-aligned ellipse stretched along the $X_2$ axis, no diagonal tilt.</li>
+        <li><span class="opt-label">C</span> Tilted ellipse stretched along $X_2$, with the long axis pointing upper-left to lower-right.</li>
+        <li><span class="opt-label">D</span> Tilted ellipse stretched along $X_1$, with the long axis pointing lower-left to upper-right.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>The diagonal entries $1, 4$ say $X_2$ has larger variance, so the ellipse stretches along $X_2$. The off-diagonal $-1.5$ is negative, so $\rho < 0$ and the ellipse tilts upper-left to lower-right (negative-correlation diagonal).</p>
+          <p>A would correspond to $\boldsymbol\Sigma = c\,\mathbf I$ (equal variances, zero correlation). B drops the negative covariance and gives the axis-aligned shape that occurs only when $\rho = 0$. D has the tilt direction backwards and the wrong stretching axis (would require $\sigma_1^2 > \sigma_2^2$ and $\rho > 0$).</p>
+          <p class="ref">Atoms: <a href="/concepts/multivariate-normal">multivariate-normal</a>, <a href="/concepts/random-vector-and-covariance">random-vector-and-covariance</a>. Lecture: <a href="/lectures/L05-linreg-1">L05-linreg-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q9: TF — random vector / covariance algebra ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 9</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement about a $p$-dimensional random vector $\mathbf X$ with covariance matrix $\boldsymbol\Sigma$ as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) For a constant matrix $C$, $\mathrm{Cov}(C\mathbf X) = C\,\boldsymbol\Sigma\, C^\top$.</span>
+          <label><input type="radio" name="q9-a" value="true"> True</label>
+          <label><input type="radio" name="q9-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) If $\mathrm{Cov}(X_i, X_j) = 0$, then $X_i$ and $X_j$ are independent.</span>
+          <label><input type="radio" name="q9-b" value="true"> True</label>
+          <label><input type="radio" name="q9-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) The diagonal entries of $\boldsymbol\Sigma$ are the variances $\mathrm{Var}(X_i)$.</span>
+          <label><input type="radio" name="q9-c" value="true"> True</label>
+          <label><input type="radio" name="q9-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) $\boldsymbol\Sigma$ is always invertible whenever $p \geq 2$.</span>
+          <label><input type="radio" name="q9-d" value="true"> True</label>
+          <label><input type="radio" name="q9-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — direct from $\mathrm{Cov}(\mathbf Z) = \mathbb E[(\mathbf Z - \mathbb E\mathbf Z)(\mathbf Z - \mathbb E\mathbf Z)^\top]$ with $\mathbf Z = C\mathbf X$.</li>
+            <li><strong>False</strong> — covariance only measures <em>linear</em> co-variation. Zero covariance implies independence only under joint normality. The classic counterexample is $Y = X^2$ with $X$ symmetric around zero.</li>
+            <li><strong>True</strong> — by definition $\Sigma_{ii} = \mathrm{Cov}(X_i, X_i) = \mathrm{Var}(X_i)$.</li>
+            <li><strong>False</strong> — if some linear combination $\mathbf b^\top \mathbf X$ has zero variance (i.e. one component is a deterministic linear function of the others), $\boldsymbol\Sigma$ is singular. This is the multicollinearity / "$|\boldsymbol\Sigma| = 0$" pathology.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/random-vector-and-covariance">random-vector-and-covariance</a>, <a href="/concepts/multivariate-normal">multivariate-normal</a>, <a href="/concepts/collinearity">collinearity</a>. Lecture: <a href="/lectures/L04-statlearn-3">L04-statlearn-3</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q10: contrasts — Cov(CX) computation ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 10</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        Let $\mathbf X = (X_1, X_2)^\top$ have covariance matrix
+        $\boldsymbol\Sigma = \begin{bmatrix} 4 & 1 \\ 1 & 9 \end{bmatrix}$,
+        and define the contrast $Y = X_1 - X_2$ (so $C = (1, -1)$). What is $\mathrm{Var}(Y)$?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $11$</li>
+        <li><span class="opt-label">B</span> $13$</li>
+        <li><span class="opt-label">C</span> $5$</li>
+        <li><span class="opt-label">D</span> $15$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>$\mathrm{Var}(Y) = C\,\boldsymbol\Sigma\,C^\top = \sigma_1^2 + \sigma_2^2 - 2\sigma_{12} = 4 + 9 - 2(1) = 11$.</p>
+          <p>B forgets the minus sign on the cross term: $4 + 9 + 2(1) = 13$ — that's $\mathrm{Var}(X_1 + X_2)$, not the contrast. C drops the second variance entirely. D ignores the covariance and adds $4 + 9 + 2 \cdot 1 \cdot ?$ via a wrong sign convention.</p>
+          <p class="ref">Atoms: <a href="/concepts/contrasts">contrasts</a>, <a href="/concepts/random-vector-and-covariance">random-vector-and-covariance</a>. Lecture: <a href="/lectures/L04-statlearn-3">L04-statlearn-3</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q11: bias-variance — CE1.1d misconception TF ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 11</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">CE1 P1d</span>
+      </header>
+      <p class="q-text">Mark each statement about the bias-variance tradeoff as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) The bias-variance tradeoff is more relevant to inference than to prediction.</span>
+          <label><input type="radio" name="q11-a" value="true"> True</label>
+          <label><input type="radio" name="q11-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) As the training sample size $n$ grows, the expected test MSE approaches zero.</span>
+          <label><input type="radio" name="q11-b" value="true"> True</label>
+          <label><input type="radio" name="q11-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Given two estimators of $f$, the one with lower squared bias always gives the better test predictions.</span>
+          <label><input type="radio" name="q11-c" value="true"> True</label>
+          <label><input type="radio" name="q11-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) When $\sigma^2$ (the noise variance) is very large, a more flexible method is preferable for estimating $f$.</span>
+          <label><input type="radio" name="q11-d" value="true"> True</label>
+          <label><input type="radio" name="q11-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>False</strong> — bias-variance is fundamentally about prediction error $\mathbb E[(y_0 - \hat f(x_0))^2]$. Inference focuses on the sampling distribution of $\hat\beta$, which is a different concern.</li>
+            <li><strong>False</strong> — the $\sigma^2$ floor stays fixed regardless of $n$. Variance shrinks with more data, but the irreducible noise is "irreducible" by definition.</li>
+            <li><strong>False</strong> — lower bias often comes paired with higher variance. The relevant comparison is the sum bias$^2$ + variance + $\sigma^2$, not bias alone.</li>
+            <li><strong>False</strong> — large $\sigma^2$ means the noise floor is already high; adding flexibility just inflates variance on top. You want a <em>less</em> flexible (more biased, lower variance) method.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>, <a href="/concepts/reducible-vs-irreducible-error">reducible-vs-irreducible-error</a>, <a href="/concepts/flexibility-overfitting-underfitting">flexibility-overfitting-underfitting</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q12: bias-variance — KNN plot reading SC ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 12</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">CE1 P1e</span>
+      </header>
+      <p class="q-text">
+        On a bias-variance plot for KNN regression with $K$ on the $x$-axis, four curves are drawn: squared bias, variance, irreducible error, and total expected test error. Which curve is monotonically decreasing as $K$ increases (within a moderate range)?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Squared bias.</li>
+        <li><span class="opt-label">B</span> Variance.</li>
+        <li><span class="opt-label">C</span> Irreducible error.</li>
+        <li><span class="opt-label">D</span> Total expected test error.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Larger $K$ averages over more neighbours, shrinking $\mathrm{Var}(\hat f(x_0))$. Variance falls monotonically with $K$.</p>
+          <p>A goes the wrong direction: bias <em>grows</em> with $K$ because a smoother fit cannot track local wiggles in $f$. C is the flat horizontal line $\sigma^2$ (the floor; not strictly monotone). D is the U-shape — falls then rises — not monotone.</p>
+          <p class="ref">Atoms: <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>, <a href="/concepts/knn-regression">knn-regression</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q13: KNN-regression — pseudocode-style SC ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 13</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        For KNN regression at a test point $x_0$ with neighbour set $\mathcal N_0$ of size $K$, the prediction is
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $\hat f(x_0) = \arg\max_j \frac{1}{K}\sum_{i \in \mathcal N_0} I(y_i = j)$.</li>
+        <li><span class="opt-label">B</span> $\hat f(x_0) = \frac{1}{K} \sum_{i \in \mathcal N_0} y_i$.</li>
+        <li><span class="opt-label">C</span> $\hat f(x_0) = \frac{1}{K}\sum_{i \in \mathcal N_0} (y_i - \bar y)$.</li>
+        <li><span class="opt-label">D</span> $\hat f(x_0) = \min_{i \in \mathcal N_0} y_i$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>KNN regression averages the $y$-values of the $K$ nearest training points: $\hat f(x_0) = \frac{1}{K}\sum_{\mathcal N_0} y_i$.</p>
+          <p>A is the KNN <em>classification</em> rule (majority vote, $\arg\max$ over class labels). C centres on the global mean $\bar y$, which has expected value zero — it's not a regression prediction. D returns the smallest $y$ among neighbours; ignores all but one point and discards the averaging benefit.</p>
+          <p class="ref">Atoms: <a href="/concepts/knn-regression">knn-regression</a>, <a href="/concepts/knn-classification">knn-classification</a>. Lecture: <a href="/lectures/L10-resample-1">L10-resample-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q14: bias-variance derivation — irreducible identification ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 14</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        On a plot of expected test MSE vs. flexibility (showing bias$^2$, variance, and a horizontal dashed line that the total error curve never crosses), what does that horizontal dashed line represent?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> The training MSE at the optimal flexibility.</li>
+        <li><span class="opt-label">B</span> The squared bias at infinite flexibility.</li>
+        <li><span class="opt-label">C</span> The irreducible error $\mathrm{Var}(\varepsilon)$.</li>
+        <li><span class="opt-label">D</span> The cross-validated standard error of the optimal model.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>The horizontal asymptote is $\sigma^2 = \mathrm{Var}(\varepsilon)$. No estimator $\hat f$ can drive expected squared error below it because it captures noise that is, by assumption, independent of the predictors.</p>
+          <p>A is wrong: training MSE is on a different curve (always falling) and isn't an asymptote of the test curve. B confuses bias-at-infinite-flexibility with the noise floor — a fully flexible model can drive bias to zero, but $\sigma^2$ remains. D is a CV bookkeeping quantity, not a feature of the bias-variance plot.</p>
+          <p class="ref">Atoms: <a href="/concepts/reducible-vs-irreducible-error">reducible-vs-irreducible-error</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q15: parametric vs nonparametric — extrapolation scenario ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 15</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        A linear regression and a KNN regression are both fit to the same training set on $[0, 5]$. You then predict at $x_0 = 12$, far outside the training range. Which behaviour best describes the two predictions?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Linear regression extrapolates along its fitted slope; KNN returns an average of the rightmost training points and stops tracking any trend.</li>
+        <li><span class="opt-label">B</span> Both methods extrapolate along the local trend implied by the rightmost training points.</li>
+        <li><span class="opt-label">C</span> KNN extrapolates more accurately because it makes fewer assumptions about $f$.</li>
+        <li><span class="opt-label">D</span> Linear regression refuses to predict outside the training range; KNN gives the global mean.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>The linear model has a global form ($\hat\beta_0 + \hat\beta_1 x$) so it keeps going in the same direction past the data — sometimes useful, sometimes nonsense. KNN has no global structure: at $x_0 = 12$ its "nearest neighbours" are still the rightmost training points and the prediction is just their average. So KNN flatlines off to the side instead of extrapolating.</p>
+          <p>B confuses parametric extrapolation with nonparametric averaging — KNN doesn't know about a trend. C reverses the truth: nonparametric methods are <em>worse</em> at extrapolation, not better; "no assumption" cuts both ways. D is wrong on both halves: linear regression happily extrapolates (that's the trap, not the safety), and KNN returns a local average, not the global mean (unless $K = n$).</p>
+          <p class="ref">Atoms: <a href="/concepts/parametric-vs-nonparametric">parametric-vs-nonparametric</a>, <a href="/concepts/knn-regression">knn-regression</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q16: bias-variance — flexibility plot identification SC ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 16</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        Two regression methods, $A$ and $B$, are fit to the same dataset. Method $A$ has training MSE $0.20$ and test MSE $0.35$. Method $B$ has training MSE $0.05$ and test MSE $0.60$. Which diagnosis is most consistent with these numbers?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Both methods underfit; the test gap reflects irreducible error alone.</li>
+        <li><span class="opt-label">B</span> Method $A$ is overfitting; method $B$ is underfitting.</li>
+        <li><span class="opt-label">C</span> Method $B$ is overfitting relative to method $A$, and method $A$ is the safer choice for prediction.</li>
+        <li><span class="opt-label">D</span> Method $B$ should be preferred because it has the lowest training MSE.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>$B$'s training error is much lower than $A$'s, but its test error is much higher — the canonical overfit signature. $A$'s smaller train/test gap and lower test MSE make it the better predictor.</p>
+          <p>A misreads both methods as underfit; the differences in training MSE rule that out. B reverses which method is overfitting (overfit = good train, bad test, i.e. $B$). D is the standard "training MSE is what counts" trap; training MSE always falls with flexibility and is not a model-selection signal.</p>
+          <p class="ref">Atoms: <a href="/concepts/flexibility-overfitting-underfitting">flexibility-overfitting-underfitting</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q17: TF — direction-of-effect mix (KNN k ↑, polynomial degree ↑, smoothing-spline λ-style trap) ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 17</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each direction-of-effect statement as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Increasing the polynomial degree $d$ in polynomial regression typically increases the variance of $\hat f(x_0)$.</span>
+          <label><input type="radio" name="q17-a" value="true"> True</label>
+          <label><input type="radio" name="q17-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) For KNN, the variance of $\hat f(x_0)$ across resamples grows as $K$ grows.</span>
+          <label><input type="radio" name="q17-b" value="true"> True</label>
+          <label><input type="radio" name="q17-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) A method with high training MSE and similar test MSE is more likely underfitting than overfitting.</span>
+          <label><input type="radio" name="q17-c" value="true"> True</label>
+          <label><input type="radio" name="q17-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) For nonparametric methods, "no parameters" literally means the model has zero hyperparameters to choose.</span>
+          <label><input type="radio" name="q17-d" value="true"> True</label>
+          <label><input type="radio" name="q17-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — flexibility ↑ → variance ↑ in the classical regime; degree-20 polynomials wobble enormously across resamples.</li>
+            <li><strong>False</strong> — variance <em>falls</em> with $K$ because averaging more neighbours stabilises the prediction. KNN's flexibility knob is inverted.</li>
+            <li><strong>True</strong> — both errors high and roughly equal points to bias dominating: the model class can't capture the truth even on its own training data.</li>
+            <li><strong>False</strong> — nonparametric methods (KNN, smoothing splines, GAMs) still have hyperparameters ($K$, $\lambda$, df). What's missing is a global parametric form for $f$, not all knobs.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/flexibility-overfitting-underfitting">flexibility-overfitting-underfitting</a>, <a href="/concepts/knn-regression">knn-regression</a>, <a href="/concepts/parametric-vs-nonparametric">parametric-vs-nonparametric</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q18: KNN — wiggly-vs-smooth boundary scenario ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 18</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        A binary classification problem has a Bayes decision boundary that is highly non-linear and curls back on itself in several places. Among $K = 1$, $K = 7$, and $K = 50$ in KNN (training size $n = 200$), which is most likely to be near-optimal in test error, all else equal?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $K = 1$, because it has the lowest bias and tracks every wiggle.</li>
+        <li><span class="opt-label">B</span> $K = 7$, because a small-but-not-tiny $K$ tracks the wiggly truth without chasing every noisy point.</li>
+        <li><span class="opt-label">C</span> $K = 50$, because larger $K$ always wins by reducing variance.</li>
+        <li><span class="opt-label">D</span> All three should give roughly the same test error; the Bayes boundary's shape doesn't matter to KNN.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>A wiggly Bayes boundary needs a flexible classifier — small $K$ — but $K = 1$ over-commits to individual points and inflates variance. The intermediate $K \approx 7$ trades a little bias for much less variance and is typically near the U's minimum.</p>
+          <p>A confuses "low bias" with "low test error" — variance dominates at $K = 1$. C ignores the bias side: $K = 50$ on a wiggly boundary smooths the truth away. D is wrong: KNN's optimal $K$ depends on how complex the boundary is (small $K$ for wiggly, large $K$ for nearly-linear).</p>
+          <p class="ref">Atoms: <a href="/concepts/knn-classification">knn-classification</a>, <a href="/concepts/flexibility-overfitting-underfitting">flexibility-overfitting-underfitting</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q19: bias-variance — the squared-bias-buys-variance lever ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 19</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        The prof said in lecture: "if you increase the bias a little bit, you can reduce the variance a lot, because of the squared term." Which fact about the bias-variance decomposition does this argument rely on?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> A small absolute change in bias contributes only its <em>square</em> to the MSE, while variance enters linearly.</li>
+        <li><span class="opt-label">B</span> Variance is always larger than bias$^2$ at the optimal flexibility.</li>
+        <li><span class="opt-label">C</span> Bias and variance are uncorrelated, so any change in one cancels the other.</li>
+        <li><span class="opt-label">D</span> The cross term in the decomposition is bounded by twice the geometric mean of bias and variance.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Test MSE = $\sigma^2$ + Bias$^2$ + Variance. Bias enters squared, so a small absolute increase in bias has a tiny effect on MSE; variance enters linearly, so a comparable absolute decrease moves MSE much more. That asymmetry is why ridge / lasso / smoothing splines / dropout / bagging all work.</p>
+          <p>B is empirical and not the mechanism — it's a consequence of being near the U's minimum, not a fact about the decomposition. C confuses "uncorrelated" with "additive in MSE"; bias and variance are not random variables in the same sense. D invents a non-existent cross term: in the standard derivation cross terms vanish exactly, not by inequality.</p>
+          <p class="ref">Atoms: <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>, <a href="/concepts/regularization">regularization</a>. Lecture: <a href="/lectures/L13-modelsel-2">L13-modelsel-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q20: double-descent — second-descent identification ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 20</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        The prof showed simulations where polynomials of degree up to $100{,}000$ were fit to $n = 100$ points using the pseudoinverse. Test error rose sharply near $d \approx n$ and then <em>fell again</em> in the heavily over-parameterised regime. Which statement best captures his explanation of why this "second descent" happens?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Past the interpolation point, the optimisation picks the minimum-norm solution among infinitely many interpolators, which acts like implicit ridge regularisation.</li>
+        <li><span class="opt-label">B</span> The bias-variance decomposition stops holding past the interpolation point, allowing test error to drop without a corresponding increase elsewhere.</li>
+        <li><span class="opt-label">C</span> The model recovers the true $f$ exactly once the polynomial degree exceeds the number of data points.</li>
+        <li><span class="opt-label">D</span> Variance becomes negative for very large $p$, dragging the total MSE below the floor.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Past $p \approx n$ the data-fit constraint is satisfied by infinitely many models; the pseudoinverse / SGD selects the smallest-norm one. That implicit norm penalty is itself a variance-control mechanism — the prof's headline framing of double descent.</p>
+          <p>B is wrong: the decomposition stays exact at every $p$. The U-shape just isn't the only possible profile. C is wrong: the truth is generally not in the model class (the misspecified-model regime), and the prof explicitly showed that when the truth <em>is</em> in the class (e.g. $f(x) = x^2$), the second descent disappears. D is mathematically impossible — variance is non-negative.</p>
+          <p class="ref">Atoms: <a href="/concepts/double-descent">double-descent</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>, <a href="/concepts/regularization">regularization</a>. Lecture: <a href="/lectures/L04-statlearn-3">L04-statlearn-3</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q21: TF — multivariate normal properties ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 21</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement about a multivariate normal $\mathbf X \sim N_p(\boldsymbol\mu, \boldsymbol\Sigma)$ as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Any linear combination $C\mathbf X$ is also multivariate normal.</span>
+          <label><input type="radio" name="q21-a" value="true"> True</label>
+          <label><input type="radio" name="q21-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Each marginal $X_i$ is normally distributed.</span>
+          <label><input type="radio" name="q21-b" value="true"> True</label>
+          <label><input type="radio" name="q21-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) If $X_1$ and $X_2$ are each marginally normal, then $(X_1, X_2)$ is multivariate normal.</span>
+          <label><input type="radio" name="q21-c" value="true"> True</label>
+          <label><input type="radio" name="q21-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) If $\boldsymbol\Sigma$ is singular ($|\boldsymbol\Sigma| = 0$), the density formula does not exist on $\mathbb R^p$.</span>
+          <label><input type="radio" name="q21-d" value="true"> True</label>
+          <label><input type="radio" name="q21-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — one of the four key MVN properties: $C\mathbf X \sim N(C\boldsymbol\mu, C\boldsymbol\Sigma C^\top)$.</li>
+            <li><strong>True</strong> — marginals of an MVN are normal (just project onto the relevant coordinate axis in the density's argument).</li>
+            <li><strong>False</strong> — joint normality of $(X_1, X_2)$ is strictly stronger than each component being marginally normal. Counter-examples exist (e.g. construct $(X, Y)$ where each is standard normal but the joint isn't).</li>
+            <li><strong>True</strong> — the density has $|\boldsymbol\Sigma|^{1/2}$ in the denominator and $\boldsymbol\Sigma^{-1}$ in the exponent. If $\boldsymbol\Sigma$ is singular, the formula breaks down on $\mathbb R^p$ (the distribution lives on a lower-dimensional subspace).</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/multivariate-normal">multivariate-normal</a>, <a href="/concepts/random-vector-and-covariance">random-vector-and-covariance</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q22: bias-variance — "trade-off" critique ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 22</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        The prof is on record as critical of calling bias-variance a "trade-off". Which best captures his objection?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> The decomposition is mathematically incorrect; bias and variance are not additive in MSE.</li>
+        <li><span class="opt-label">B</span> The decomposition is exact, but a smarter model class (e.g. with regularisation) can flatten the variance curve without paying a full bias cost — and in the over-parameterised regime, both can decrease at once.</li>
+        <li><span class="opt-label">C</span> The "trade-off" framing implies bias is more important than variance; in modern ML the opposite is true.</li>
+        <li><span class="opt-label">D</span> Bias and variance are not actually estimable from data, so any "trade-off" claim is unfalsifiable.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The decomposition is exact at every $p$. The prof's objection is to the implication that movement on bias <em>requires</em> opposite movement on variance: regularisation can flatten the variance curve, and double descent shows both shrinking past the interpolation point. So "trade-off" is locally accurate near the U-minimum, but misleads as a global rule.</p>
+          <p>A reverses the prof's actual position: he cites the decomposition as exact when defending it. C invents a hierarchy between bias and variance that he never claims. D is wrong: in simulations where the truth is known you can estimate both terms exactly (Exercise 2.5). The objection is conceptual, not estimation-based.</p>
+          <p class="ref">Atoms: <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>, <a href="/concepts/double-descent">double-descent</a>, <a href="/concepts/regularization">regularization</a>. Lecture: <a href="/lectures/L04-statlearn-3">L04-statlearn-3</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q23: bias-variance application — Exercise2.5-style numbers ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 23</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Ex2.5</span>
+      </header>
+      <p class="q-text">
+        At a fixed test point $x_0$, $M = 100$ training-set replicates produce predictions $\hat f^{(m)}(x_0)$ for $m = 1, \dots, 100$. The empirical mean of those predictions is $1.80$, the empirical variance is $0.40$, the true value is $f(x_0) = 2.00$, and the noise variance is $\sigma^2 = 4$. Estimate the expected test MSE at $x_0$.
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $4.44$</li>
+        <li><span class="opt-label">B</span> $0.44$</li>
+        <li><span class="opt-label">C</span> $4.40$</li>
+        <li><span class="opt-label">D</span> $4.04$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>$\mathbb E[(y_0 - \hat f(x_0))^2] = \sigma^2 + \mathrm{Bias}^2 + \mathrm{Var}(\hat f) = 4 + (2.00 - 1.80)^2 + 0.40 = 4 + 0.04 + 0.40 = 4.44$.</p>
+          <p>B drops $\sigma^2$ — only the reducible part. C forgets to square the bias and uses $|2.00 - 1.80| = 0.20$ instead of $0.04$: $4 + 0.20 + 0.40 - 0.20 = 4.40$ (but there's a sign-mistake path that lands here too). D omits the variance term entirely: $4 + 0.04 = 4.04$, the standard "treated $\hat f$ as deterministic" mistake.</p>
+          <p class="ref">Atoms: <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>, <a href="/concepts/reducible-vs-irreducible-error">reducible-vs-irreducible-error</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q24: KNN — curse of dimensionality scenario ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 24</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        You consider KNN classification with $n = 500$ training points in $p$ predictors. Holding $K$ fixed, you observe that test error grows steeply as $p$ goes from 5 to 50. Which mechanism best explains this?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> KNN's bias scales with $p$, so each new predictor mechanically adds bias.</li>
+        <li><span class="opt-label">B</span> In high dimensions, pairwise Euclidean distances become more concentrated, so "nearest neighbour" stops carrying meaningful local information.</li>
+        <li><span class="opt-label">C</span> KNN's training error rises with $p$; this matches the decline in test performance.</li>
+        <li><span class="opt-label">D</span> Adding predictors changes the Bayes error rate, raising the irreducible classification floor.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The curse of dimensionality: as $p$ grows, the distribution of pairwise distances collapses around its mean, so the "$K$ nearest" set is barely closer than a random sample. KNN's mechanism (locality) breaks down.</p>
+          <p>A invents a direct $p$-bias relationship that doesn't exist; bias depends on the truth and on $K$, not on $p$ alone. C reverses the standard pattern (training error need not rise with $p$ for KNN). D conflates the curse with the Bayes error rate; the Bayes floor depends on overlap of class densities, not on the metric's behaviour.</p>
+          <p class="ref">Atoms: <a href="/concepts/curse-of-dimensionality">curse-of-dimensionality</a>, <a href="/concepts/knn-classification">knn-classification</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ── Q25: bias-variance scenario — choice between methods ── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 25</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        Two methods are compared on a regression task. Method $A$ has lower squared bias but higher variance than method $B$ at the same flexibility. Method $B$ is being considered as a regularised variant of $A$. Which conclusion is best supported by the bias-variance decomposition alone?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $A$ always gives better predictions because it has lower bias.</li>
+        <li><span class="opt-label">B</span> $B$ always gives better predictions because regularisation reduces test error.</li>
+        <li><span class="opt-label">C</span> Whichever method has the smaller bias$^2$ + variance sum at the test point gives lower expected test MSE; this depends on whether $B$'s variance reduction outpaces the bias it pays.</li>
+        <li><span class="opt-label">D</span> The two methods must give identical test MSE because the irreducible noise floor is the same.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>The decomposition is $\sigma^2 + \mathrm{Bias}^2 + \mathrm{Var}$; the noise floor is the same for both methods, so the comparison reduces to bias$^2$ + variance. Whichever sum is smaller wins, and that's an empirical question. The prof's framing of the 2025 lasso question is exactly this: "improved accuracy when the increase in bias is less than the decrease in variance."</p>
+          <p>A ignores variance — the standard "bias-only" trap from CE1.1d (iii). B asserts a universal regularisation win that is false in general (e.g. lasso lost to OLS in the prof's L27 walkthrough on Boston Housing). D confuses the noise floor with the total error: identical $\sigma^2$ does not imply identical MSE.</p>
+          <p class="ref">Atoms: <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>, <a href="/concepts/regularization">regularization</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>.</p>
+        </div>
+      </details>
+    </article>
+
+  </main>
+  <script src="exam.js"></script>
+</body>
+</html>

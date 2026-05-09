@@ -1,0 +1,897 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 04 — Classification · TMA4268</title>
+
+  <!-- Sync theme with the Quartz wiki (reads same localStorage key, falls back to OS) -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var theme = saved || (prefersDark ? "dark" : "light");
+        document.documentElement.setAttribute("saved-theme", theme);
+      } catch (e) {
+        document.documentElement.setAttribute("saved-theme", "light");
+      }
+    })();
+  </script>
+
+  <!-- Quartz fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+
+  <link rel="stylesheet" href="exam.css">
+
+  <!-- KaTeX for inline math -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$',  right: '$',  display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });"></script>
+</head>
+<body>
+  <main class="exam-shell">
+    <header class="exam-head">
+      <a href="/" class="back-link">← Back to wiki</a>
+      <h1>Module 04 — Classification</h1>
+      <p class="meta">28 questions · 100 points · ~45 min</p>
+      <p class="meta">
+        Click an option to lock the answer; the explanation auto-opens.
+        Score tracker bottom-left.
+      </p>
+    </header>
+
+    <!-- Q1: classification-setup, recall -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 1</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">In the classification setup, what is the <em>Bayes error rate</em>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> The training error of a fitted Bayes-network classifier on the data at hand.</li>
+        <li><span class="opt-label">B</span> The expected $0/1$ loss of the classifier $\hat y(x) = \arg\max_k \Pr(Y=k\mid X=x)$ that uses the true posterior, i.e. $1 - E[\max_k \Pr(Y=k\mid X)]$.</li>
+        <li><span class="opt-label">C</span> The classification analogue of the residual sum of squares: $\sum_i \mathbf 1(y_i \neq \hat y_i)$ on the training set.</li>
+        <li><span class="opt-label">D</span> The misclassification rate of naive Bayes when its conditional-independence assumption holds exactly.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The Bayes classifier picks $\arg\max_k \Pr(Y=k\mid X)$ using the <em>true</em> posterior; its expected $0/1$ loss is the irreducible floor, the classification analogue of $\sigma^2$ in regression.</p>
+          <p>A confuses the abstract Bayes classifier with a fitted Bayes-network model. C is the empirical training error, not the population-level rate. D conflates the Bayes classifier with naive Bayes — same word, different objects (one is the optimal abstraction, the other a specific generative model).</p>
+          <p class="ref">Atoms: <a href="/concepts/classification-setup">classification-setup</a>, <a href="/concepts/diagnostic-vs-sampling-paradigm">diagnostic-vs-sampling-paradigm</a>. Lecture: <a href="/lectures/L07-classif-1">L07-classif-1</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q2: odds-and-log-odds, computation, ISLR §4 Q9 -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 2</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">ISLR §4 Q9</span>
+      </header>
+      <p class="q-text">On average, what fraction of credit-card holders with odds $0.37$ of defaulting will in fact default?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $0.37$</li>
+        <li><span class="opt-label">B</span> $0.27$</li>
+        <li><span class="opt-label">C</span> $0.59$</li>
+        <li><span class="opt-label">D</span> $0.63$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Invert odds → probability: $p = \text{odds}/(1+\text{odds}) = 0.37/1.37 \approx 0.27$.</p>
+          <p>A reports the odds as if it were already a probability (the most common slip — odds and probability are different scales). C inverts the formula and uses $1/(1+\text{odds}) = 1/1.37 \approx 0.73$ then takes its complement incorrectly. D confuses odds with the log-odds via $e^{0.37}/(1+e^{0.37}) \approx 0.59$, which is another wrong scale-mixing.</p>
+          <p class="ref">Atoms: <a href="/concepts/odds-and-log-odds">odds-and-log-odds</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a> ("This is the kind of question I would ask. It's simple. You calculate it.").</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q3: odds-and-log-odds, computation, ISLR §4 Q9 part b -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 3</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Ex4.3</span>
+      </header>
+      <p class="q-text">An individual has a $16\%$ chance of defaulting on her credit-card payment. What are the odds that she will default?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $0.16$</li>
+        <li><span class="opt-label">B</span> $0.84$</li>
+        <li><span class="opt-label">C</span> $0.19$</li>
+        <li><span class="opt-label">D</span> $5.25$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>Odds $= p/(1-p) = 0.16/0.84 \approx 0.19$.</p>
+          <p>A reports the probability itself as the odds (no conversion). B reports $1-p$. D inverts the ratio: $0.84/0.16 \approx 5.25$ — the odds against rather than the odds for the event.</p>
+          <p class="ref">Atoms: <a href="/concepts/odds-and-log-odds">odds-and-log-odds</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q4: logistic-regression, computation, Ex4.4 -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 4</span>
+        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__src">Ex4.4</span>
+      </header>
+      <p class="q-text">A logistic model for $Y = I(\text{student gets an A})$ has $\hat\beta_0 = -6$, $\hat\beta_1 = 0.05$ (study hours), $\hat\beta_2 = 1$ (GPA). For a student with $40$ hours and GPA $3.5$, what is $\hat p$?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $\hat p \approx 0.38$</li>
+        <li><span class="opt-label">B</span> $\hat p \approx 0.5$</li>
+        <li><span class="opt-label">C</span> $\hat p \approx 0.62$</li>
+        <li><span class="opt-label">D</span> $\hat p \approx 0.73$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Linear predictor: $\hat\eta = -6 + 0.05\cdot 40 + 1\cdot 3.5 = -0.5$. Sigmoid: $\hat p = e^{-0.5}/(1+e^{-0.5}) = 1/(1+e^{0.5}) \approx 0.378$.</p>
+          <p>B drops the intercept and lands on $\hat p = \sigma(0) = 0.5$. C reports $\sigma(0.5) \approx 0.62$ — sign error on $\hat\eta$. D reports $\sigma(1)$, dropping the GPA contribution incorrectly.</p>
+          <p class="ref">Atoms: <a href="/concepts/logistic-regression">logistic-regression</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q5: logistic-regression, inversion to find x for p=0.5 -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 5</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Ex4.4</span>
+      </header>
+      <p class="q-text">Same model as Question 4 ($\hat\beta_0 = -6$, $\hat\beta_1 = 0.05$, $\hat\beta_2 = 1$). At GPA $3.5$, how many study hours give $\hat p = 0.5$?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $40$ hours</li>
+        <li><span class="opt-label">B</span> $50$ hours</li>
+        <li><span class="opt-label">C</span> $55$ hours</li>
+        <li><span class="opt-label">D</span> $90$ hours</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>$\hat p = 0.5$ iff $\hat\eta = 0$. Solve $-6 + 0.05 x + 1\cdot 3.5 = 0$ → $0.05 x = 2.5$ → $x = 50$.</p>
+          <p>A is the value used in Q4 (gave $\hat p \approx 0.38$, not $0.5$). C drops the $1\cdot \text{GPA}$ contribution and solves $-6 + 0.05 x = 0$. D mistakenly multiplies through, e.g. solves $-6 + 0.05 x + 3.5 = 1$ instead of $0$.</p>
+          <p class="ref">Atoms: <a href="/concepts/logistic-regression">logistic-regression</a>, <a href="/concepts/odds-and-log-odds">odds-and-log-odds</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q6: odds-and-log-odds, interaction trap, Exam 2025 Q7 inspired -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 6</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Exam 2025 P5</span>
+      </header>
+      <p class="q-text">A logistic model for default uses <code>SEX</code> (1 = male, 2 = female), <code>PAY_0</code>, and the interaction <code>SEX:PAY_0</code>. Output gives $\hat\beta_{\text{PAY}_0} = 0.80$ and $\hat\beta_{\text{SEX:PAY}_0} = 0.15$. Holding other covariates fixed, by what factor do the odds of default change for one additional month of delayed payment, separately for males and females?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Both groups: $e^{0.80} \approx 2.23$.</li>
+        <li><span class="opt-label">B</span> Males: $e^{0.80} \approx 2.23$; females: $e^{0.80 + 0.15} \approx 2.59$.</li>
+        <li><span class="opt-label">C</span> Males: $e^{0.80} \approx 2.23$; females: $e^{0.15} \approx 1.16$.</li>
+        <li><span class="opt-label">D</span> Both groups: $e^{0.80 + 0.15} \approx 2.59$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>With encoding $\texttt{SEX}=1$ for males and $\texttt{SEX}=2$ for females, increasing <code>PAY_0</code> by one unit changes the linear predictor by $\beta_{\text{PAY}_0} + \beta_{\text{SEX:PAY}_0}\cdot\texttt{SEX}$. Multiplied through into the odds, that is $e^{\beta_{\text{PAY}_0}}$ for males ($\texttt{SEX}=1$ contributes the baseline) and $e^{\beta_{\text{PAY}_0} + \beta_{\text{SEX:PAY}_0}}$ for females once you absorb the level shift. The exam keys give $2.22$ and $2.57$.</p>
+          <p>A ignores the interaction entirely — the canonical interaction trap the prof flagged in L27. C reports the interaction coefficient alone for females, forgetting that the main effect is still active. D applies the female factor to both groups.</p>
+          <p class="ref">Atoms: <a href="/concepts/odds-and-log-odds">odds-and-log-odds</a>, <a href="/concepts/logistic-regression">logistic-regression</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a> ("we need to be able to do it for the men and the women").</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q7: T/F multi, logistic-regression assumptions / interpretations -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 7</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">Mark each statement about logistic regression as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) For a one-unit increase in $x_j$ (no interaction), $\beta_j$ gives the <em>additive</em> change in the probability of $Y=1$.</span>
+          <label><input type="radio" name="q7-a" value="true"> True</label>
+          <label><input type="radio" name="q7-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) The maximum-likelihood estimate $\hat{\boldsymbol\beta}$ has a closed-form solution analogous to OLS's $(X^\top X)^{-1}X^\top y$.</span>
+          <label><input type="radio" name="q7-b" value="true"> True</label>
+          <label><input type="radio" name="q7-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Flipping the reference class (encoding the other class as 1) flips the sign of every coefficient.</span>
+          <label><input type="radio" name="q7-c" value="true"> True</label>
+          <label><input type="radio" name="q7-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Severe collinearity among the predictors can leave the MLE non-unique, the same failure mode as in OLS.</span>
+          <label><input type="radio" name="q7-d" value="true"> True</label>
+          <label><input type="radio" name="q7-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>False</strong> — $\beta_j$ is the change in <em>log-odds</em>; the corresponding probability change is non-constant (depends on where on the sigmoid you are). Reporting it as an additive probability change is the canonical pitfall.</li>
+            <li><strong>False</strong> — the score equations are non-linear in $\boldsymbol\beta$; fit by Newton-Raphson / Fisher scoring (no closed form).</li>
+            <li><strong>True</strong> — the linear predictor sign flips with the encoding; every $\beta_j$ flips. State your encoding when interpreting output.</li>
+            <li><strong>True</strong> — the prof: "the collinearity problem we talked about a minute ago, that can happen here, and then this thing's no longer having a single maximum and it gets weird."</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/logistic-regression">logistic-regression</a>, <a href="/concepts/odds-and-log-odds">odds-and-log-odds</a>. Lecture: <a href="/lectures/L08-classif-2">L08-classif-2</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q8: confusion-matrix + sensitivity-specificity, Exam 2025 P5 inspired -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 8</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Exam 2025 P5</span>
+      </header>
+      <p class="q-text">A KNN classifier with $K=35$ on credit-default data gives the test confusion matrix below (rows = true, columns = predicted):
+        <br><br>
+        $\begin{array}{c|cc} & \hat y = 0 & \hat y = 1 \\\hline y = 0 & 1820 & 60 \\ y = 1 & 380 & 240 \end{array}$
+        <br><br>
+        What are the sensitivity and specificity (positive class = default = 1)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Sensitivity $\approx 0.39$, specificity $\approx 0.97$.</li>
+        <li><span class="opt-label">B</span> Sensitivity $\approx 0.97$, specificity $\approx 0.39$.</li>
+        <li><span class="opt-label">C</span> Sensitivity $\approx 0.80$, specificity $\approx 0.83$.</li>
+        <li><span class="opt-label">D</span> Sensitivity $\approx 0.39$, specificity $\approx 0.86$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Sensitivity $= TP/(TP+FN) = 240/(240+380) \approx 0.387$. Specificity $= TN/(TN+FP) = 1820/(1820+60) \approx 0.968$.</p>
+          <p>B swaps the two — the classic "sniffs out positives / spares the negatives" mix-up. C reports overall accuracy split arbitrarily across both axes. D uses the wrong denominator on specificity ($TN/(TN+FN)$ — the negative-predictive-value formula, not specificity).</p>
+          <p class="ref">Atoms: <a href="/concepts/confusion-matrix">confusion-matrix</a>, <a href="/concepts/sensitivity-specificity">sensitivity-specificity</a>, <a href="/concepts/knn-classification">knn-classification</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q9: T/F sensitivity/specificity definitions/properties -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 9</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement about sensitivity and specificity as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Sensitivity $= TP/(TP+FN)$ is the fraction of true positives that the classifier successfully catches.</span>
+          <label><input type="radio" name="q9-a" value="true"> True</label>
+          <label><input type="radio" name="q9-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Lowering the classification threshold from $0.5$ to $0.2$ generally increases sensitivity and decreases specificity.</span>
+          <label><input type="radio" name="q9-b" value="true"> True</label>
+          <label><input type="radio" name="q9-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) The quantity $TP/(TP+FP)$ equals the sensitivity.</span>
+          <label><input type="radio" name="q9-c" value="true"> True</label>
+          <label><input type="radio" name="q9-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Under heavy class imbalance with $95\%$ negatives, a "predict 0 always" rule has accuracy $\approx 0.95$, sensitivity $0$, specificity $1$.</span>
+          <label><input type="radio" name="q9-d" value="true"> True</label>
+          <label><input type="radio" name="q9-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — by definition. Mnemonic: sensitivity "Sniffs out positives".</li>
+            <li><strong>True</strong> — more positive predictions → more $TP$ (sens ↑) but also more $FP$ (spec ↓).</li>
+            <li><strong>False</strong> — that's <em>precision</em> (positive predictive value). Sensitivity uses $FN$ in the denominator, not $FP$.</li>
+            <li><strong>True</strong> — exactly the prof's class-imbalance vignette: high accuracy hides the model never catches a positive.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/sensitivity-specificity">sensitivity-specificity</a>, <a href="/concepts/confusion-matrix">confusion-matrix</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q10: ROC interpretation, scenario, Exam 2025 P5 inspired -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 10</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Exam 2025 P5</span>
+      </header>
+      <p class="q-text">Which statement most accurately describes a ROC curve and AUC for a binary classifier producing scores $\hat p(x)$?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> The $y$-axis is sensitivity, the $x$-axis is specificity; the curve sweeps the threshold; AUC near $1$ is good.</li>
+        <li><span class="opt-label">B</span> The $y$-axis is sensitivity, the $x$-axis is $1-$specificity; the curve sweeps the threshold; AUC equals the probability that a random positive scores higher than a random negative.</li>
+        <li><span class="opt-label">C</span> The curve plots accuracy against the threshold; AUC is the area under that curve and equals $1$ for a perfect classifier.</li>
+        <li><span class="opt-label">D</span> The curve plots precision against recall; AUC near $0$ means the classifier is useless.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>The ROC plots TPR (= sensitivity) on the $y$-axis against FPR (= $1-$specificity) on the $x$-axis as the threshold sweeps from $1$ down to $0$. AUC is the probability $\Pr(\hat p(X^+) > \hat p(X^-))$.</p>
+          <p>A swaps the $x$-axis convention: with specificity on $x$ the diagonal would slope the wrong way (some software uses this; the prof's slide deck and ISLR Fig. 4.8 do not). C reports an accuracy-vs-threshold curve, which is a different object. D describes a precision-recall curve (information-retrieval style), and the AUC-near-zero claim is wrong (AUC $0.5$ is useless; AUC $0$ is perfectly inverted, hence informative).</p>
+          <p class="ref">Atoms: <a href="/concepts/roc-auc">roc-auc</a>, <a href="/concepts/sensitivity-specificity">sensitivity-specificity</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q11: T/F ROC/AUC -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 11</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">Mark each statement about ROC curves and AUC as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) A classifier with AUC $= 0.5$ is no better than random guessing.</span>
+          <label><input type="radio" name="q11-a" value="true"> True</label>
+          <label><input type="radio" name="q11-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) A classifier with AUC $= 0.2$ is worse than random and contains no useful information.</span>
+          <label><input type="radio" name="q11-b" value="true"> True</label>
+          <label><input type="radio" name="q11-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) For a fixed dataset, comparing two classifiers by AUC is independent of any specific threshold.</span>
+          <label><input type="radio" name="q11-c" value="true"> True</label>
+          <label><input type="radio" name="q11-c" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — the diagonal of the ROC plot.</li>
+            <li><strong>False</strong> — AUC $0.2$ means the scoring is informative but inverted; flipping all predictions gives AUC $0.8$. "Below the diagonal → invert your classifier."</li>
+            <li><strong>True</strong> — AUC summarizes the curve over <em>all</em> thresholds, you can pick an operating point afterwards.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/roc-auc">roc-auc</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q12: LDA discriminant linearity / where x'^Σ^-1 x cancels -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 12</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">In LDA, why is the discriminant $\delta_k(x)$ <em>linear</em> in $x$, while in QDA it is <em>quadratic</em>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> In LDA the priors $\pi_k$ are equal; in QDA they differ, which adds a quadratic correction.</li>
+        <li><span class="opt-label">B</span> LDA assumes Gaussian class-conditionals; QDA drops the Gaussian assumption and uses a kernel density, which is locally quadratic.</li>
+        <li><span class="opt-label">C</span> Pooling $\Sigma$ in LDA makes the term $-\tfrac12 x^\top\Sigma^{-1}x$ independent of $k$ and it cancels in $\arg\max_k$; QDA keeps a class-specific $\Sigma_k$, so $-\tfrac12 x^\top\Sigma_k^{-1}x$ depends on $k$ and survives.</li>
+        <li><span class="opt-label">D</span> LDA uses $\Sigma$ directly while QDA uses $\Sigma^{-1}$, and squaring the inverse introduces the quadratic term.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>Take the log of $\pi_k f_k(x)$. The exponent contains $-\tfrac12 x^\top\Sigma_k^{-1}x$. With pooled $\Sigma$ this term has no $k$ — drop it. With class-specific $\Sigma_k$ the term depends on $k$ and stays, making $\delta_k(x)$ quadratic. The prof flagged "where does the quadratic come from?" as a typical exam question.</p>
+          <p>A is irrelevant — both methods take general priors. B misstates QDA: QDA also assumes Gaussian class-conditionals, just with class-specific $\Sigma_k$. D garbles the algebra (both methods use $\Sigma_k^{-1}$ in the discriminant; squaring the inverse is not the mechanism).</p>
+          <p class="ref">Atoms: <a href="/concepts/quadratic-discriminant-analysis">quadratic-discriminant-analysis</a>, <a href="/concepts/linear-discriminant-analysis">linear-discriminant-analysis</a>, <a href="/concepts/discriminant-score-and-decision-boundary">discriminant-score-and-decision-boundary</a>. Lecture: <a href="/lectures/L09-classif-3">L09-classif-3</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q13: LDA boundary derivation, prof's worked example -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 13</span>
+        <span class="exam-q__points">5 points</span>
+      </header>
+      <p class="q-text">Two-class LDA with $\mu_A = (1,1)^\top$, $\mu_B = (3,3)^\top$, shared covariance $\Sigma = 2I$, equal priors $\pi_A = \pi_B = 0.5$. The decision boundary is:</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $x_1 + x_2 = 2$</li>
+        <li><span class="opt-label">B</span> $x_1 + x_2 = 4$</li>
+        <li><span class="opt-label">C</span> $x_1 - x_2 = 0$</li>
+        <li><span class="opt-label">D</span> $x_1^2 + x_2^2 = 8$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>$\Sigma^{-1} = \tfrac12 I$. Equating $\delta_A(x) = \delta_B(x)$: cross term coefficient $\Sigma^{-1}(\mu_A - \mu_B) = \tfrac12(-2,-2) = (-1,-1)$. Intercepts $-\tfrac12\mu_A^\top\Sigma^{-1}\mu_A = -\tfrac12$ and $+\tfrac12\mu_B^\top\Sigma^{-1}\mu_B = +\tfrac92$ sum to $4$. With equal priors, $\log\pi_A - \log\pi_B = 0$. So $-x_1 - x_2 + 4 = 0$, i.e. $x_1 + x_2 = 4$.</p>
+          <p>A picks the midpoint of the means as if the boundary equation were $\tfrac{\mu_A + \mu_B}{2}\cdot\mathbf 1 = 2$ (the midpoint of $\mu_A$, not the line through the midpoint). C is the perpendicular bisector's other line through the means — reverses sign of $\mu_B - \mu_A$ in $\Sigma^{-1}$. D imagines a quadratic boundary, which would only arise under QDA.</p>
+          <p class="ref">Atoms: <a href="/concepts/discriminant-score-and-decision-boundary">discriminant-score-and-decision-boundary</a>, <a href="/concepts/linear-discriminant-analysis">linear-discriminant-analysis</a>. Lecture: <a href="/lectures/L09-classif-3">L09-classif-3</a> ("I didn't ask for a line. I just equated the two things and then I solved for them and then it became a line.").</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q14: 1D LDA boundary at midpoint -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 14</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">In 1D LDA with two classes, $\mu_1 = 2$, $\mu_2 = 8$, shared variance $\sigma^2 = 9$, and equal priors. The decision threshold $x^\star$ where $\delta_1(x) = \delta_2(x)$ is:</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $x^\star = 5$</li>
+        <li><span class="opt-label">B</span> $x^\star = 3$</li>
+        <li><span class="opt-label">C</span> $x^\star = \tfrac{8 \cdot 2 + 2 \cdot 8}{9} \approx 3.6$</li>
+        <li><span class="opt-label">D</span> $x^\star = \sqrt{2 \cdot 8} \approx 4$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Solving $x\mu_1/\sigma^2 - \mu_1^2/(2\sigma^2) = x\mu_2/\sigma^2 - \mu_2^2/(2\sigma^2)$ with equal priors gives $x^\star = (\mu_1 + \mu_2)/2 = 5$ — the midpoint, independent of $\sigma^2$.</p>
+          <p>B, C, D mix in $\sigma^2$ as if it shifted the threshold. With equal priors and equal variances the variance terms cancel; only the means matter.</p>
+          <p class="ref">Atoms: <a href="/concepts/linear-discriminant-analysis">linear-discriminant-analysis</a>, <a href="/concepts/discriminant-score-and-decision-boundary">discriminant-score-and-decision-boundary</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q15: LDA boundary moves with prior -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 15</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">In LDA, you raise the prior $\pi_A$ from $0.5$ to $0.7$ (and lower $\pi_B$ to $0.3$) without changing the means or covariance. What happens to the decision boundary between classes $A$ and $B$?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> It shifts <em>away</em> from $\mu_A$, so more of the input space is classified as $A$.</li>
+        <li><span class="opt-label">B</span> It shifts <em>toward</em> $\mu_A$, so more of the input space is classified as $A$.</li>
+        <li><span class="opt-label">C</span> It is unchanged, since the boundary depends only on $\mu_k$ and $\Sigma$.</li>
+        <li><span class="opt-label">D</span> It rotates by an angle proportional to $\log(\pi_A/\pi_B)$.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>The boundary equation contains $\log\pi_A - \log\pi_B$. Increasing $\pi_A$ raises $\delta_A$ everywhere; the equality $\delta_A = \delta_B$ now holds at a point closer to $\mu_B$, i.e. the boundary shifts <em>away</em> from $\mu_A$, expanding the region classified as $A$.</p>
+          <p>B reverses the direction (a common sign-flip mistake on the prior term). C ignores the $\log\pi_k$ term entirely. D mistakenly imagines a rotation; for fixed $\mu_k, \Sigma$, the boundary is just translated parallel to itself.</p>
+          <p class="ref">Atoms: <a href="/concepts/linear-discriminant-analysis">linear-discriminant-analysis</a>, <a href="/concepts/discriminant-score-and-decision-boundary">discriminant-score-and-decision-boundary</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q16: T/F LDA vs QDA bias-variance -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 16</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">ISLR §4 Q5</span>
+      </header>
+      <p class="q-text">Mark each statement comparing LDA and QDA as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) When the true Bayes boundary is linear, QDA tends to give lower test error than LDA on small samples.</span>
+          <label><input type="radio" name="q16-a" value="true"> True</label>
+          <label><input type="radio" name="q16-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) On the training set, QDA's misclassification rate is generally no higher than LDA's, because QDA is strictly more flexible.</span>
+          <label><input type="radio" name="q16-b" value="true"> True</label>
+          <label><input type="radio" name="q16-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) As the sample size $n$ grows, QDA's relative test performance versus LDA tends to improve when the true class covariances differ.</span>
+          <label><input type="radio" name="q16-c" value="true"> True</label>
+          <label><input type="radio" name="q16-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) For fixed $p$, both LDA and QDA estimate the same number of covariance parameters per class.</span>
+          <label><input type="radio" name="q16-d" value="true"> True</label>
+          <label><input type="radio" name="q16-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>False</strong> — LDA's pooling reduces variance; on small samples with a truly linear boundary, LDA usually wins on test error. The iris example: LDA test 0.17 vs QDA test 0.32.</li>
+            <li><strong>True</strong> — strictly more flexible models cannot increase training misclassification for the fitted maximum-likelihood solution.</li>
+            <li><strong>True</strong> — with more data, QDA can afford the extra $K\cdot p(p+1)/2$ parameters, and the lower-bias model wins.</li>
+            <li><strong>False</strong> — LDA pools across classes for one $\Sigma$ ($p(p+1)/2$ total). QDA keeps $K$ separate $\Sigma_k$'s, $K \cdot p(p+1)/2$ total.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/quadratic-discriminant-analysis">quadratic-discriminant-analysis</a>, <a href="/concepts/linear-discriminant-analysis">linear-discriminant-analysis</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>. Lecture: <a href="/lectures/L09-classif-3">L09-classif-3</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q17: QDA parameter count -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 17</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">For $p = 10$ predictors and $K = 3$ classes, how many free covariance parameters does QDA estimate (counting only the class covariance matrices, not means or priors)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $55$</li>
+        <li><span class="opt-label">B</span> $100$</li>
+        <li><span class="opt-label">C</span> $165$</li>
+        <li><span class="opt-label">D</span> $300$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>Each $\Sigma_k$ is $p\times p$ symmetric → $p(p+1)/2 = 10 \cdot 11/2 = 55$ free parameters. With $K = 3$ class-specific covariances: $3 \cdot 55 = 165$.</p>
+          <p>A is one $\Sigma$ alone — that's the LDA pooled-covariance count. B forgets symmetry and reports $p^2 = 100$ for one matrix. D forgets symmetry and reports $K \cdot p^2 = 300$ — same mistake compounded.</p>
+          <p class="ref">Atoms: <a href="/concepts/quadratic-discriminant-analysis">quadratic-discriminant-analysis</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q18: naive Bayes assumption -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 18</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">What is the defining modeling assumption of (Gaussian) naive Bayes?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> The predictors $X_1, \dots, X_p$ are unconditionally independent.</li>
+        <li><span class="opt-label">B</span> The predictors $X_1, \dots, X_p$ are conditionally independent <em>given the class</em>; in the Gaussian case, this is equivalent to QDA with each $\Sigma_k$ restricted to be diagonal.</li>
+        <li><span class="opt-label">C</span> The class prior $\pi_k$ is uniform across classes.</li>
+        <li><span class="opt-label">D</span> The Bayes posterior is computed using a Bayesian network rather than the Bayes-classifier abstraction.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>$f_k(x) = \prod_j f_{kj}(x_j)$ — predictors are independent <em>within</em> each class. With Gaussian marginals plus class-specific variances, this is exactly QDA with diagonal $\Sigma_k$. The win is the parameter count, $O(p)$ vs $O(p^2)$.</p>
+          <p>A drops the "given class" qualifier — that would be a much stronger (essentially never holding) assumption. C is a uniform-prior assumption used by some other classifiers; naive Bayes still estimates $\pi_k$ from frequencies. D conflates the Bayes classifier abstraction with naive Bayes (same prof-flagged confusion).</p>
+          <p class="ref">Atoms: <a href="/concepts/naive-bayes">naive-bayes</a>, <a href="/concepts/diagnostic-vs-sampling-paradigm">diagnostic-vs-sampling-paradigm</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q19: T/F diagnostic vs sampling paradigm -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 19</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement about the diagnostic vs sampling (generative) paradigm as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Logistic regression and KNN sit in the diagnostic paradigm; LDA, QDA, and naive Bayes sit in the sampling/generative paradigm.</span>
+          <label><input type="radio" name="q19-a" value="true"> True</label>
+          <label><input type="radio" name="q19-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) The sampling paradigm models $f_k(x) = \Pr(X \mid Y = k)$ and $\pi_k$, then recovers $\Pr(Y \mid X)$ via Bayes' theorem.</span>
+          <label><input type="radio" name="q19-b" value="true"> True</label>
+          <label><input type="radio" name="q19-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Logistic regression and LDA both produce a log-odds that is linear in $x$, but estimate the parameters differently (direct MLE vs Gaussian-plug-in).</span>
+          <label><input type="radio" name="q19-c" value="true"> True</label>
+          <label><input type="radio" name="q19-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Naive Bayes belongs to the diagnostic paradigm because it directly estimates the class probabilities by counting.</span>
+          <label><input type="radio" name="q19-d" value="true"> True</label>
+          <label><input type="radio" name="q19-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — the canonical roster the prof drew up in L07/L09.</li>
+            <li><strong>True</strong> — the Bayes-flip $\Pr(Y=k\mid X) \propto \pi_k f_k(x)$ is the engine for LDA/QDA/naive Bayes.</li>
+            <li><strong>True</strong> — both yield a linear log-odds; LDA leans on a Gaussian $X$ assumption, logistic does not.</li>
+            <li><strong>False</strong> — naive Bayes is a generative (sampling) classifier: it models $\Pr(X \mid Y)$ via a product of marginals.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/diagnostic-vs-sampling-paradigm">diagnostic-vs-sampling-paradigm</a>, <a href="/concepts/logistic-regression">logistic-regression</a>, <a href="/concepts/linear-discriminant-analysis">linear-discriminant-analysis</a>, <a href="/concepts/naive-bayes">naive-bayes</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q20: KNN with K -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 20</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Ex4.1</span>
+      </header>
+      <p class="q-text">A 7-point training set with two predictors and labels $\{A, A, A, B, B, B, B\}$. We want to predict the class at $x_0 = (1,2)$ using KNN. The prof's exercise asks why $K = 7$ is a poor choice. The best explanation is:</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> With $K = 7$ on $7$ points, every training point is a neighbor; the prediction equals the majority class globally and ignores $x_0$.</li>
+        <li><span class="opt-label">B</span> With $K = 7$ the classifier overfits drastically because it uses too many neighbors.</li>
+        <li><span class="opt-label">C</span> $K = 7$ produces ties and is undefined for binary classification with majority voting.</li>
+        <li><span class="opt-label">D</span> $K = 7$ is fine; the issue is that Euclidean distance is invalid in two dimensions.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>$K = n$ collapses KNN to "predict the majority class everywhere" — pure underfit, not overfit. Here that majority is $B$ (4 of 7), regardless of where $x_0$ lives.</p>
+          <p>B inverts the bias-variance direction: large $K$ means more smoothing (high bias / low variance), not overfitting. C is a non-issue here ($4{:}3$ split, no tie). D is wrong on its face — Euclidean distance is well-defined in any dimension.</p>
+          <p class="ref">Atoms: <a href="/concepts/knn-classification">knn-classification</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q21: T/F KNN flexibility direction -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 21</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement about KNN classification as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Small $K$ (e.g. $K = 1$) gives high variance and low bias; large $K$ gives the reverse.</span>
+          <label><input type="radio" name="q21-a" value="true"> True</label>
+          <label><input type="radio" name="q21-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) If the true Bayes boundary is highly nonlinear, the optimal $K$ tends to be large (smoother fit).</span>
+          <label><input type="radio" name="q21-b" value="true"> True</label>
+          <label><input type="radio" name="q21-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Standardizing predictors before KNN is recommended because Euclidean distance is sensitive to scale differences across features.</span>
+          <label><input type="radio" name="q21-c" value="true"> True</label>
+          <label><input type="radio" name="q21-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Choosing $K$ by cross-validation on the test set is a valid procedure for honest test-error estimation.</span>
+          <label><input type="radio" name="q21-d" value="true"> True</label>
+          <label><input type="radio" name="q21-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — $K$ is the flexibility knob; small $K$ chases noise (overfit), large $K$ over-smooths (underfit).</li>
+            <li><strong>False</strong> — wiggly Bayes boundary needs a flexible KNN, i.e. <em>small</em> $K$ to track it. Exercise 4.1c.</li>
+            <li><strong>True</strong> — KNN is not scale-invariant; one feature in millimetres swamps another in years if you don't standardize.</li>
+            <li><strong>False</strong> — using the test set to tune $K$ leaks information; tune via CV on the training set, evaluate on a held-out test set.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/knn-classification">knn-classification</a>, <a href="/concepts/cross-validation">cross-validation</a>, <a href="/concepts/standardization">standardization</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q22: curse of dimensionality, ISLR §4 Q4 -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 22</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">ISLR §4 Q4</span>
+      </header>
+      <p class="q-text">Observations are uniformly distributed on the unit hypercube $[0,1]^p$. To predict at a new point we use only training observations whose coordinates each lie within a $10\%$ window centred on the test point's coordinate. As $p$ grows from $1$ to $100$, the average fraction of training points actually used shrinks roughly as:</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $0.1$ for any $p$, since each coordinate independently keeps the same window.</li>
+        <li><span class="opt-label">B</span> $0.1^p$ — exponentially toward zero, so at $p = 100$ essentially no training points qualify as "near".</li>
+        <li><span class="opt-label">C</span> $0.1 \cdot p$ — linearly growing, so the curse only kicks in at extremely large $p$.</li>
+        <li><span class="opt-label">D</span> $1 - 0.1^p$ — most points are nearby in high dimensions because the volume concentrates.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Each coordinate independently keeps a fraction $0.1$, so the joint event has probability $0.1^p$. At $p=100$ that is $10^{-100}$ — no training points are "local" to a test point. This is the geometric core of the curse of dimensionality and the reason KNN breaks in high $p$.</p>
+          <p>A treats the dimensions as if they shared a window rather than each contributing a factor. C is a linear model of an exponential phenomenon. D inverts the direction — in high $p$, the bulk of the volume is near the boundary, not near the centre.</p>
+          <p class="ref">Atoms: <a href="/concepts/curse-of-dimensionality">curse-of-dimensionality</a>, <a href="/concepts/knn-classification">knn-classification</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q23: T/F curse of dimensionality / method robustness -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 23</span>
+        <span class="exam-q__points">3 points</span>
+      </header>
+      <p class="q-text">Mark each statement about high-dimensional classification as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) Of the methods covered in module 4, KNN is the most strongly affected by the curse of dimensionality.</span>
+          <label><input type="radio" name="q23-a" value="true"> True</label>
+          <label><input type="radio" name="q23-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Standardizing the predictors removes the curse of dimensionality.</span>
+          <label><input type="radio" name="q23-b" value="true"> True</label>
+          <label><input type="radio" name="q23-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) Naive Bayes is often preferred to QDA when $p$ is large because its parameter count is $O(p)$ rather than $O(p^2)$.</span>
+          <label><input type="radio" name="q23-c" value="true"> True</label>
+          <label><input type="radio" name="q23-c" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — distance-based methods like KNN take the biggest hit; parametric/generative methods make stronger assumptions and survive better.</li>
+            <li><strong>False</strong> — standardizing equalises feature scales (which KNN needs anyway), but does not change the geometric concentration of distances.</li>
+            <li><strong>True</strong> — diagonal $\Sigma_k$ replaces $K\cdot p(p+1)/2$ parameters with $\sim 2pK$, dodging the variance explosion.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/curse-of-dimensionality">curse-of-dimensionality</a>, <a href="/concepts/knn-classification">knn-classification</a>, <a href="/concepts/naive-bayes">naive-bayes</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q24: scenario, class imbalance -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 24</span>
+        <span class="exam-q__points">4 points</span>
+        <span class="exam-q__src">Exam 2025 P5</span>
+      </header>
+      <p class="q-text">In the credit-default data, only about $5\%$ of clients default. A trivial classifier that predicts "no default" for every client achieves around $95\%$ accuracy. The most useful conclusion to draw from this is:</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Accuracy is misleading under class imbalance; sensitivity is $0$ and specificity is $1$, so the classifier is useless for catching defaulters.</li>
+        <li><span class="opt-label">B</span> Accuracy is the right summary; any classifier with accuracy below $95\%$ should be discarded.</li>
+        <li><span class="opt-label">C</span> The trivial classifier has good sensitivity but poor specificity, since it never raises false alarms.</li>
+        <li><span class="opt-label">D</span> The class-imbalance issue can be resolved by computing AUC instead of accuracy; AUC is also $\approx 0.95$ here.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p>Predicting "no default" always gives $TP = 0, FN = $ all defaulters, $TN = $ all non-defaulters, $FP = 0$. So sensitivity $= 0/P = 0$ and specificity $= N/N = 1$. Accuracy is dominated by the majority class. The prof: "models that are really naive and only predict that it's going to be a zero are already going to do pretty well."</p>
+          <p>B treats accuracy as definitive — exactly the trap the prof flagged. C swaps sensitivity and specificity: sensitivity is $0$ (no positives caught) and specificity is $1$ (no false alarms). D is wrong on a numeric: a constant classifier has AUC $= 0.5$, not $0.95$ — it provides no ranking information.</p>
+          <p class="ref">Atoms: <a href="/concepts/sensitivity-specificity">sensitivity-specificity</a>, <a href="/concepts/confusion-matrix">confusion-matrix</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q25: in-sample vs test confusion matrix scenario -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 25</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">For an iris-like 2-predictor / 3-class dataset, you observe the following error rates:
+        <br><br>
+        $\begin{array}{lcc} \text{Method} & \text{Train error} & \text{Test error} \\\hline \text{LDA} & 0.19 & 0.17 \\ \text{QDA} & 0.17 & 0.32 \end{array}$
+        <br><br>
+        Which method should you prefer, and why?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> QDA: it has the lowest training error, which is the most reliable indicator of generalisation.</li>
+        <li><span class="opt-label">B</span> QDA: it is strictly more flexible, so any apparent training-error advantage will translate to test-error advantage with enough regularisation.</li>
+        <li><span class="opt-label">C</span> LDA: its test error is lower, suggesting the extra parameters in QDA hurt more (variance) than they help (bias) on this sample size.</li>
+        <li><span class="opt-label">D</span> Either; the difference between $0.17$ and $0.32$ is too small to matter without a formal hypothesis test.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>Test error is the only honest generalisation signal. QDA's tighter training fit but worse test fit is the canonical bias-variance overfit pattern; pooling $\Sigma$ in LDA is paying off on this sample size. The prof's iris example, verbatim.</p>
+          <p>A treats training error as truth — the classic overfitting trap. B is hand-waving: regularising QDA to look like LDA just becomes LDA. D is wrong about the magnitude — nearly doubling test error is large; you don't need a formal test to pick the better generaliser.</p>
+          <p class="ref">Atoms: <a href="/concepts/quadratic-discriminant-analysis">quadratic-discriminant-analysis</a>, <a href="/concepts/linear-discriminant-analysis">linear-discriminant-analysis</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>, <a href="/concepts/confusion-matrix">confusion-matrix</a>. Lecture: <a href="/lectures/L09-classif-3">L09-classif-3</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q26: ISLR §4 Q7, Bayes-flip computation -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 26</span>
+        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__src">ISLR §4 Q7</span>
+      </header>
+      <p class="q-text">A 1D LDA setup: companies that issued a dividend ($Y = 1$) had $\bar X = 10$, those that did not had $\bar X = 0$, with shared $\hat\sigma^2 = 36$. The prior is $\pi_1 = 0.8$. Assuming Gaussian class-conditionals, what is $\Pr(Y = 1 \mid X = 4)$?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $\approx 0.20$</li>
+        <li><span class="opt-label">B</span> $\approx 0.50$</li>
+        <li><span class="opt-label">C</span> $\approx 0.75$</li>
+        <li><span class="opt-label">D</span> $\approx 0.94$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: C</span>
+          <p>Bayes' theorem: $\Pr(Y=1\mid X=4) = \dfrac{\pi_1 f_1(4)}{\pi_1 f_1(4) + \pi_0 f_0(4)}$.<br>
+          $f_1(4) \propto \exp(-(4-10)^2/(2\cdot 36)) = \exp(-0.5)$.<br>
+          $f_0(4) \propto \exp(-(4-0)^2/(2\cdot 36)) = \exp(-8/36) = \exp(-2/9)$.<br>
+          Numerator: $0.8 \exp(-0.5) \approx 0.4852$.<br>
+          Denominator: $0.4852 + 0.2 \exp(-2/9) \approx 0.4852 + 0.1602 = 0.6454$.<br>
+          Ratio: $\approx 0.752$.</p>
+          <p>A flips numerator and denominator (computes $\Pr(Y=0\mid X=4)$). B drops the prior and gets $\approx 0.5$. D forgets the $f_0$ density entirely (just the prior).</p>
+          <p class="ref">Atoms: <a href="/concepts/linear-discriminant-analysis">linear-discriminant-analysis</a>, <a href="/concepts/diagnostic-vs-sampling-paradigm">diagnostic-vs-sampling-paradigm</a>, <a href="/concepts/multivariate-normal">multivariate-normal</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q27: T/F multivariate-normal / LDA assumption -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 27</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">Mark each statement about LDA's class-conditional density assumption as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) LDA assumes $X \mid Y = k$ is multivariate normal with class-specific mean $\mu_k$ and a covariance $\Sigma$ that is the same across classes.</span>
+          <label><input type="radio" name="q27-a" value="true"> True</label>
+          <label><input type="radio" name="q27-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) The pooled covariance estimator is $\hat\Sigma = \sum_k \frac{n_k - 1}{n - K}\hat\Sigma_k$.</span>
+          <label><input type="radio" name="q27-b" value="true"> True</label>
+          <label><input type="radio" name="q27-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) The LDA decision rule depends on $\mu_0 - \mu_1$ alone; the covariance $\Sigma$ does not affect the boundary's orientation.</span>
+          <label><input type="radio" name="q27-c" value="true"> True</label>
+          <label><input type="radio" name="q27-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) When the Gaussian-with-shared-$\Sigma$ assumption is correct, LDA is the maximum-likelihood Bayes-optimal classifier.</span>
+          <label><input type="radio" name="q27-d" value="true"> True</label>
+          <label><input type="radio" name="q27-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>True</strong> — exactly the LDA assumption set.</li>
+            <li><strong>True</strong> — the standard pooled estimator, an unbiased combination of within-class sample covariances.</li>
+            <li><strong>False</strong> — the boundary's normal direction is $\Sigma^{-1}(\mu_0 - \mu_1)$; the covariance rotates and rescales it. They coincide only when $\Sigma \propto I$.</li>
+            <li><strong>True</strong> — under the model assumptions LDA equals the Bayes classifier with plug-in MLEs; no other procedure does asymptotically better.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/linear-discriminant-analysis">linear-discriminant-analysis</a>, <a href="/concepts/multivariate-normal">multivariate-normal</a>, <a href="/concepts/discriminant-score-and-decision-boundary">discriminant-score-and-decision-boundary</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- Q28: scenario, ROC interpretation, AUC comparison, Ex4.5c -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 28</span>
+        <span class="exam-q__points">3 points</span>
+        <span class="exam-q__src">Ex4.5</span>
+      </header>
+      <p class="q-text">Two competing classifiers $p(x)$ and $q(x)$ produce probabilities of disease for the same population. On independent validation sets, $p(x)$ has AUC $0.6$ and $q(x)$ has AUC $0.7$. Which method would you prefer, and why?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $p(x)$: lower AUC corresponds to better separation since the curve sits closer to the diagonal.</li>
+        <li><span class="opt-label">B</span> $q(x)$: higher AUC means a larger probability that a random positive scores higher than a random negative, summarising better trade-offs across all thresholds.</li>
+        <li><span class="opt-label">C</span> Cannot tell: AUCs from independent validation sets are never comparable.</li>
+        <li><span class="opt-label">D</span> $p(x)$: AUC $0.6$ is closer to the chance level $0.5$, which is the safe choice.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Higher AUC = better discrimination across all thresholds. AUC $= \Pr(\hat p(X^+) > \hat p(X^-))$, so $q(x)$'s $0.7$ beats $p(x)$'s $0.6$.</p>
+          <p>A inverts the direction (closer to $1$ is better, not closer to the diagonal). C is too strong — comparing AUCs across validation sets is harder than on the same set, but the prof's exercise (Ex4.5c) does ask you to prefer the higher one. D mistakes "close to chance" for "safe".</p>
+          <p class="ref">Atoms: <a href="/concepts/roc-auc">roc-auc</a>.</p>
+        </div>
+      </details>
+    </article>
+
+  </main>
+  <script src="exam.js"></script>
+</body>
+</html>
