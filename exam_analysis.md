@@ -1,4 +1,4 @@
-# TMA4268 Exam Analysis — May 18, 2026
+# TMA4268 Exam Analysis: May 18, 2026
 
 Synthesized from 27 lecture transcripts (Jan 5 – Apr 28, 2026). Two subagent passes: first wave (7 thematic agents) covered explicit exam mentions; second wave (13 agents) deep-read the silent middle of the semester (Jan 19 – Mar 17) for implicit signals.
 

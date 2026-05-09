@@ -5,22 +5,14 @@ module: 11-nnet
 title: Neural Networks 2 (CNNs)
 slides: modules/11NNet/11Nnet.md
 topics:
-  - gradient-descent
-  - stochastic-gradient-descent
-  - mini-batch
+  - gradient-descent-and-sgd
   - backpropagation
   - regularization
   - benign-overfitting
-  - l1-regularization
-  - l2-regularization
-  - data-augmentation
-  - label-smoothing
-  - early-stopping
-  - dropout
-  - transfer-learning
+  - nn-regularization
   - convolutional-neural-network
   - pooling
-  - relu
+  - activation-functions
 tags:
   - lecture
   - module/11-nnet
@@ -30,7 +22,7 @@ aliases:
 
 # L24 — Neural Networks 2 (CNNs)
 
-The prof finished the feed-forward training story (gradient descent → mini-batch SGD → [[backpropagation]]), spent the bulk of the second half on regularization (L1/L2, data augmentation, label smoothing, early stopping, [[dropout]], transfer learning), then introduced [[convolutional-neural-network]]s — motivation from the eye, learned filters as the CNN twist on classical edge detectors, pooling, and why CNNs are "just a feed-forward network" so backprop drops in for free. RNNs and double descent are deferred to next time.
+The prof finished the feed-forward training story (gradient descent → mini-batch SGD → [[backpropagation]]), spent the bulk of the second half on regularization (L1/L2, data augmentation, label smoothing, early stopping, [[nn-regularization|dropout]], transfer learning), then introduced [[convolutional-neural-network]]s — motivation from the eye, learned filters as the CNN twist on classical edge detectors, pooling, and why CNNs are "just a feed-forward network" so backprop drops in for free. RNNs and double descent are deferred to next time.
 
 ## Key takeaways
 

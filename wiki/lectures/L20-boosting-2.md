@@ -11,18 +11,13 @@ topics:
   - residuals
   - basis-functions
   - steepest-descent
-  - quadratic-loss
-  - absolute-loss
-  - huber-loss
-  - binomial-deviance
-  - multinomial-deviance
-  - weak-learner
-  - learning-rate
+  - boosting-loss-functions
+  - weak-learner-and-learning-rate
   - early-stopping
   - stochastic-gradient-boosting
   - bagging
   - xgboost
-  - dropout
+  - nn-regularization
   - regularization
   - bias-variance-tradeoff
 tags:

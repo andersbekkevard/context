@@ -6,16 +6,12 @@ title: Unsupervised Learning 1 (PCA)
 slides: modules/10Unsuper/10Unsuper.md
 topics:
   - xgboost
-  - dropout
+  - nn-regularization
   - partial-dependence-plots
   - interpretability
-  - unsupervised-learning
-  - pca
-  - svd
-  - principal-components
-  - loadings
-  - explained-variance
-  - scree-plot
+  - supervised-vs-unsupervised
+  - principal-component-analysis
+  - explained-variance-and-scree-plot
   - standardization
   - eigenfaces
   - clustering
@@ -29,7 +25,7 @@ aliases:
 
 # L21 — Unsupervised Learning 1 (PCA)
 
-The prof closes module 9 with [[xgboost]] (second-order gradients, parallelization, regularization, [[dropout]]), recent variants (LightGBM, CatBoost), and [[partial-dependence-plots]] as a way to claw some [[interpretability]] back from tree ensembles. After the break he opens module 10 on [[unsupervised-learning]] — flags how easily it leads to dishonest statistics — and walks through [[pca]] from scratch: the optimization view (find rotations of maximal variance), the linear-algebra view ([[svd]] of the covariance matrix), [[loadings]], [[explained-variance]] / [[scree-plot]], the *USArrests* and *eigenfaces* examples, why [[standardization]] matters, and ends by sketching where PCA fails (curved data) as motivation for [[clustering]] tomorrow.
+The prof closes module 9 with [[xgboost]] (second-order gradients, parallelization, regularization, [[nn-regularization|dropout]]), recent variants (LightGBM, CatBoost), and [[partial-dependence-plots]] as a way to claw some interpretability back from tree ensembles. After the break he opens module 10 on [[supervised-vs-unsupervised|unsupervised learning]] — flags how easily it leads to dishonest statistics — and walks through [[principal-component-analysis|PCA]] from scratch: the optimization view (find rotations of maximal variance), the linear-algebra view ([[principal-component-analysis|SVD]] of the covariance matrix), [[principal-component-analysis|loadings]], [[explained-variance-and-scree-plot|explained variance]] / [[explained-variance-and-scree-plot|scree plot]], the *USArrests* and *eigenfaces* examples, why [[standardization]] matters, and ends by sketching where PCA fails (curved data) as motivation for [[clustering]] tomorrow.
 
 ## Key takeaways
 
@@ -37,7 +33,7 @@ The prof closes module 9 with [[xgboost]] (second-order gradients, parallelizati
 - **Tree ensembles kill interpretability** — "this is really like the first case in this course where we have a model that we can't understand." [[partial-dependence-plots]] are the patch: marginalize the model over all variables except $X_j$ by **averaging the prediction across the data with $X_j$ fixed**.
 - **Unsupervised learning is dangerous scientifically**: no labels, no goal, no ground truth, and "inevitably you will find something." If you do enough exploring you can lie your way to "statistical significance." Defensible only when tied to a downstream supervised task you can validate.
 - **PCA = find rotations of maximal variance**, subject to $\|\phi\| = 1$ (so you rotate, not rescale). The first PC is the direction of largest variance; each subsequent PC is orthogonal to the previous and has the largest remaining variance.
-- **The PCA optimization is exactly the eigenvalue/eigenvector problem of the covariance matrix** ([[svd]]). $\phi_1$ = eigenvector of largest eigenvalue, etc. — the algorithm just hands you a sorted decomposition.
+- **The PCA optimization is exactly the eigenvalue/eigenvector problem of the covariance matrix** ([[principal-component-analysis|SVD]]). $\phi_1$ = eigenvector of largest eigenvalue, etc. — the algorithm just hands you a sorted decomposition.
 - **Loadings** ($\phi_{jm}$) tell you how much variable $j$ participates in PC $m$ — they let you interpret PCs in terms of original variables.
 - **Standardize before PCA.** PCA chases total variance, so a variable measured in km vs. cm will dominate purely because of units. Mean-center and scale to unit variance.
 - **Scree plot / cumulative variance explained** tells you where to chop. Often the first 1–2 PCs explain 60–90% of the variance; the tail is "probably noise anyway."

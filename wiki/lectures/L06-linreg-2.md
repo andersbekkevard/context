@@ -6,24 +6,17 @@ title: Linear Regression 2
 slides: modules/3LinReg/3LinReg.md
 topics:
   - r-squared
-  - multiple-linear-regression
-  - design-matrix
-  - hat-matrix
-  - normal-equations
-  - maximum-likelihood
+  - linear-regression
+  - design-matrix-and-hat-matrix
+  - least-squares-and-mle
   - sampling-distribution-of-beta
   - collinearity
   - f-test
-  - model-selection
-  - adjusted-r-squared
-  - confidence-interval
-  - prediction-interval
-  - categorical-encoding
-  - reference-category
-  - interactions
+  - subset-selection
+  - confidence-and-prediction-intervals
+  - categorical-encoding-and-interactions
   - polynomial-regression
   - residual-diagnostics
-  - qq-plot
 tags:
   - lecture
   - module/03-linreg
@@ -33,19 +26,19 @@ aliases:
 
 # L06 — Linear Regression 2
 
-The prof picks up R² from L05, then commits the rest of the lecture to **multiple linear regression** in matrix form: derives the [[normal-equations]] and the [[hat-matrix]], derives the sampling distribution of β̂, and previews how the X'X factor blows up under [[collinearity]]. He surveys the four canonical "important questions" in multiple regression (using the [[f-test]] for the first, deferring [[model-selection]] to module 6), then extends the linear model to **categorical predictors**, **interactions**, and **non-linear transformations** (still linear in the parameters). Closes with a fast tour of [[residual-diagnostics]] and the [[qq-plot]]. Ends mid-list of broken assumptions; will resume next week (a guest covers classification tomorrow).
+The prof picks up R² from L05, then commits the rest of the lecture to **multiple linear regression** in matrix form: derives the [[design-matrix-and-hat-matrix|normal equations]] and the [[design-matrix-and-hat-matrix|hat matrix]], derives the sampling distribution of β̂, and previews how the X'X factor blows up under [[collinearity]]. He surveys the four canonical "important questions" in multiple regression (using the [[f-test]] for the first, deferring [[subset-selection|model selection]] to module 6), then extends the linear model to **categorical predictors**, **interactions**, and **non-linear transformations** (still linear in the parameters). Closes with a fast tour of [[residual-diagnostics]] and the [[residual-diagnostics|QQ plot]]. Ends mid-list of broken assumptions; will resume next week (a guest covers classification tomorrow).
 
 ## Key takeaways
 
 - Multiple regression = simple regression in matrix form. The closed form β̂ = (XᵀX)⁻¹Xᵀy is the **maximum likelihood estimator** under the same Gaussian-error assumption — and it's special: most ML problems don't have a one-shot closed form.
-- The [[hat-matrix]] H = X(XᵀX)⁻¹Xᵀ exists because ŷ = Hy "puts the hats on" — the prof's pun, but the matrix recurs later in the course.
+- The [[design-matrix-and-hat-matrix|hat matrix]] H = X(XᵀX)⁻¹Xᵀ exists because ŷ = Hy "puts the hats on" — the prof's pun, but the matrix recurs later in the course.
 - β̂ is multivariate normal, centered on β, with covariance σ²(XᵀX)⁻¹. **The X'X factor is what explodes under [[collinearity]]** — variances trade off between near-duplicate predictors.
 - Four "important questions" in multiple regression. Q1 (any predictor useful?) → [[f-test]] on H₀: all β = 0 (won't be on the exam to compute, but he might ask **why** you'd use it).
 - "Only checking individual p-values is dangerous" — variables can be correlated so individual tests look insignificant while the joint F-test is highly significant. **Ask sequentially**: F first, then individual.
 - For K-level categorical predictors: use **K − 1 dummies + a reference category**. If you include all K, the model is unidentifiable.
 - **Interactions**: if you include the product term β·X·Z, you must also include the **main effects** X and Z. Non-negotiable.
 - "Linear regression" is linear in the **parameters**, not in X. You can include x², log x, sin x, √x — all still linear regression.
-- [[qq-plot]] is the diagnostic worth learning: visual check that residuals are Gaussian. The prof said this is the kind of thing he might put on a test.
+- [[residual-diagnostics|QQ plot]] is the diagnostic worth learning: visual check that residuals are Gaussian. The prof said this is the kind of thing he might put on a test.
 
 ## Recap: R² and goodness of fit
 
@@ -57,7 +50,7 @@ Numerator: residuals from the model. Denominator: deviations from the mean. "How
 
 > "It seems easy — you're just like, 'just tell me the error.' Yes, but… should you look at the data that you fit the model on, should you look at held-out data, should you penalize it in some way? These are all questions that are interesting to ask."
 
-Caveat that lands later in the lecture: R² **never gets worse when you add a parameter** (on training data), so it's a biased measure of model improvement. This sets up [[adjusted-r-squared]] later.
+Caveat that lands later in the lecture: R² **never gets worse when you add a parameter** (on training data), so it's a biased measure of model improvement. This sets up [[r-squared|adjusted R²]] later.
 
 ## Multiple linear regression in matrix form
 
@@ -146,7 +139,7 @@ Then **ŷ = Hy**. Why "hat"? Because H is the matrix that puts the hat on Y.
 
 > "In math we call it a hat. It's a pointy hat. But it's a hat. And so this matrix H has all the shit you need to get your hats for your parameters. So it's called the hat matrix."
 
-The [[hat-matrix]] recurs later in the course (leverage, diagnostics).
+The [[design-matrix-and-hat-matrix|hat matrix]] recurs later in the course (leverage, diagnostics).
 
 ### LM in R, and reproducing the answer manually
 
@@ -229,10 +222,10 @@ In a typical case with reasonable n the t looks essentially Gaussian. You get so
 
 ## Model selection and adjusted R²
 
-Anders had asked about model choice. Pre-req for [[model-selection]] (covered in module 6) is having a **good objective criterion** for "how good is this model." Candidates listed:
+Anders had asked about model choice. Pre-req for [[subset-selection|model selection]] (covered in module 6) is having a **good objective criterion** for "how good is this model." Candidates listed:
 
 - AIC, BIC, Mallow's Cₚ — flagged but not covered today.
-- [[adjusted-r-squared]].
+- [[r-squared|Adjusted R²]].
 - R² (he'd add to the list, but with the caveat about it never decreasing).
 
 ### Why R² alone fails
@@ -257,8 +250,8 @@ The bigger point: any model-comparison metric must account for the parameter-cou
 
 Two different intervals you can place around ŷ.
 
-- [[confidence-interval]]: where the **true mean** Y(x) lies, given the model. Narrow.
-- [[prediction-interval]]: where a **future observation** y_new would land at this x. Wider, because it includes the irreducible noise σ².
+- [[confidence-and-prediction-intervals|Confidence interval]]: where the **true mean** Y(x) lies, given the model. Narrow.
+- [[confidence-and-prediction-intervals|Prediction interval]]: where a **future observation** y_new would land at this x. Wider, because it includes the irreducible noise σ².
 
 Both come from the same machinery (problem 2 of the recommended exercises again — derive these). Plot interpretation: both intervals are narrowest where data is dense, fanning out at the extremes; the prediction interval is always wider than the confidence interval because it eats the noise too.
 
@@ -303,7 +296,7 @@ Why not K dummies? **Identifiability**:
 
 > "If they're all no, you know — that doesn't happen, right? Then the world ends. The reality is if you have all of those things, then you have actually too many parameters that become too interrelated, and then actually the model is not identifiable. The reason being that you can determine the value of one of them from the other two."
 
-Mathematical statement: the columns become linearly dependent, XᵀX is singular, no inverse. See [[categorical-encoding]], [[reference-category]].
+Mathematical statement: the columns become linearly dependent, XᵀX is singular, no inverse. See [[categorical-encoding-and-interactions|categorical encoding]], [[categorical-encoding-and-interactions|reference category]].
 
 ### Worked example: credit-card data (with a digression)
 

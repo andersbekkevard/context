@@ -13,7 +13,7 @@ topics:
   - lasso
   - high-dimensional-regression
   - curse-of-dimensionality
-  - multicollinearity
+  - collinearity
   - bias-variance-tradeoff
 tags:
   - lecture
@@ -35,7 +35,7 @@ The prof closes module 6 by finishing [[principal-component-regression]] (PCA re
 - **PCR ≈ a discretized [[ridge-regression]].** Both shrink the small-eigenvalue directions; ridge does it smoothly via $\lambda$, PCR does it abruptly by truncating components. *"PCR is doing it more abruptly because it simply says okay, direction, direction, direction, new axes, new data, everything that's shared go here."*
 - **PLS = PCR but using $\text{Cov}(X, Y)$ instead of $\text{Var}(X)$** as the maximization target — "the same idea as PCA, only now you're finding the principal components not as the directions of maximal variance of $X$, but the maximal covariance of $X$ and $Y$." Algorithm: regress each $X_j$ on $Y$ to get the $\phi_j$'s, deflate, repeat.
 - **PLS verdict (verbatim, prof's editorial):** *"PLS often performs no better than ridge regression or PCR but it's Swedish."* Common in chemometrics; he's never really used it.
-- **High-dim is the whole reason this module exists.** When $p > n$, OLS fits training data perfectly even when nothing predicts anything; CP/AIC/BIC are unreliable because $\hat\sigma^2$ is hard; the true coefficients are essentially unrecoverable due to extreme [[multicollinearity]]; *"we can never know exactly which variables, if any, truly are predictive of the outcome."*
+- **High-dim is the whole reason this module exists.** When $p > n$, OLS fits training data perfectly even when nothing predicts anything; CP/AIC/BIC are unreliable because $\hat\sigma^2$ is hard; the true coefficients are essentially unrecoverable due to extreme [[collinearity|multicollinearity]]; *"we can never know exactly which variables, if any, truly are predictive of the outcome."*
 - **Adding noise features always hurts** test error eventually, even with regularization. "Noise" means actual noise OR features that are real but irrelevant.
 - **Aside on science vs. fishing.** This entire module is *exploratory* — finding which relationships are strongest. Real science formulates a hypothesis first and then tests it on a different sample. Don't confuse the two.
 
@@ -43,7 +43,7 @@ The prof closes module 6 by finishing [[principal-component-regression]] (PCA re
 
 Three families of tools so far for taming variance with too many predictors:
 
-1. **Subset selection** — best subset, [[forward-selection]], [[backward-selection]]. Pick the variables.
+1. **Subset selection** — best subset, [[subset-selection|forward selection]], [[subset-selection|backward selection]]. Pick the variables.
 2. **Shrinkage / regularization** — [[ridge-regression]], [[lasso]], [[elastic-net]]. Penalize the coefficients.
 3. **Dimensionality reduction** — *"a way of kind of cheating where you would actually reduce the number of variables you have before you even go to regression."* You go from $X$ ($n \times p$) to $Z$ ($n \times M$, $M < p$), throw stuff away, then do standard regression on $Z$.
 
@@ -115,7 +115,7 @@ Same family of curves shown for ridge and lasso, plotted against a *shrinkage fa
 Slide summary on the simulated data: *"PCR needed five components. The results are only slightly better than Lasso and very similar to Ridge."*
 
 > [!important] PCR is **not** a variable-selection method
-> "Just like Ridge, it doesn't actually select the parameters — it gives you components, and each component is a combination of the original axes." Use PCR/ridge when you want predictive power and don't care which raw variables drive it. Use [[lasso]] or [[best-subset-selection|subset selection]] when you need *"this or that one."*
+> "Just like Ridge, it doesn't actually select the parameters — it gives you components, and each component is a combination of the original axes." Use PCR/ridge when you want predictive power and don't care which raw variables drive it. Use [[lasso]] or [[subset-selection|subset selection]] when you need *"this or that one."*
 
 ### PCR as a discretized ridge regression
 
@@ -258,7 +258,7 @@ The slide author was *"Brazilian, so of course he's going to exaggerate everythi
 
 > "Sometimes you can say, oh actually everything can be reduced onto this one variable and it's super clear. I agree that's not the typical setting — the typical setting is it's just a big mess, but sometimes it works."
 
-[[multicollinearity]] = linear correlation between predictors. In high dim it becomes pathological.
+[[collinearity|Multicollinearity]] = linear correlation between predictors. In high dim it becomes pathological.
 
 ### Curse of dimensionality
 

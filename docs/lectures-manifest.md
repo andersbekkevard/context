@@ -6,7 +6,7 @@ truth for the parallel `wiki/lectures/L<NN>-<slug>.md` compression pass — ever
 agent looks up its row here so numbers, slugs, and module tags don't drift.
 
 Titles reflect what the prof **actually taught** (read from the transcripts),
-not what the published `course-information.md` schedule claimed. The two
+not what the published schedule claimed. The two
 diverge: the prof ran a session behind for most of the semester, the Module 6
 sessions were pushed from Feb 16/17 to Feb 23/24, the Compulsory-Exercise-1
 weeks (Feb 9–10) were used as regular Resampling lectures, and the
@@ -47,7 +47,7 @@ Compulsory-Exercise-2 / Easter weeks have no transcripts.
 - **The official schedule is one slot off from what was actually delivered.**
   The prof self-reports being "a little behind" around Mar 9. Decisions are
   made from transcript content (opening recap + "today we'll talk about…"),
-  not from `course-information.md`. Examples worth knowing:
+  not from the published schedule. Examples worth knowing:
   - Jan 19 is *Statistical Learning part 3*, not Linear Regression 1 — prof
     explicitly says "still module two, but now part two."
   - Module 6 (Model Selection) ran Feb 23, Feb 24, Mar 2, Mar 3 (four

@@ -7,15 +7,10 @@ slides: modules/6ModelSel/selection_regularization_presentation_lecture1.md
 topics:
   - regularization
   - bias-variance-tradeoff
-  - best-subset-selection
-  - forward-stepwise-selection
-  - backward-stepwise-selection
-  - hybrid-stepwise-selection
+  - subset-selection
   - cross-validation
-  - mallows-cp
-  - aic
-  - bic
-  - adjusted-r-squared
+  - aic-bic-conceptual
+  - r-squared
   - ridge-regression
   - shrinkage
   - standardization
@@ -280,7 +275,7 @@ To fit ridge: take the total loss (RSS + penalty), differentiate w.r.t. each $\b
 
 > "We'll talk more about this tomorrow. We'll finish up this part of the module six. And then we will also talk about the next part, which has to do with using some dimensionality reduction. So you actually take your $p$ predictors, you squish them into a smaller set of predictors and then use those. And there's different ways of squishing them. That's the gist of that one."
 
-Tomorrow ([[L13-modelsel-2]]): finish ridge (closed form, choosing $\lambda$, shrinkage geometry), then [[lasso-regression|lasso]] / L1, then start dimensionality reduction (PCR / PLS).
+Tomorrow ([[L13-modelsel-2]]): finish ridge (closed form, choosing $\lambda$, shrinkage geometry), then [[lasso]] / L1, then start dimensionality reduction (PCR / PLS).
 
 ## Recommended exercises flagged
 

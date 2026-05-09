@@ -48,7 +48,7 @@ The prof reframes the whole unsupervised module before diving in:
 
 > "Sometimes you don't want to use labels. Sometimes you don't want to specifically try to predict a $y$, right? ... Often this is a form of a visualization or mining or seeing what sticks. So many times this is accompanied with very bad science and bad statistics, some cheating, but it also can lead to breakthroughs."
 
-This sits on the **explore** side of the explore/confirm dichotomy in scientific discovery. Last lecture covered [[pca]] — the standard "first" dimensionality-reduction tool. There are "hundreds, thousands, infinite" other dimensionality-reduction methods, but they all share the goal of compactly representing high-dimensional data.
+This sits on the **explore** side of the explore/confirm dichotomy in scientific discovery. Last lecture covered [[principal-component-analysis|PCA]] — the standard "first" dimensionality-reduction tool. There are "hundreds, thousands, infinite" other dimensionality-reduction methods, but they all share the goal of compactly representing high-dimensional data.
 
 > "Whereas dimensionality reduction tries to reduce, collapse the dimensions, clustering tries to go the other way and sort of cluster together things."
 

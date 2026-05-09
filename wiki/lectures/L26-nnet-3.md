@@ -6,8 +6,7 @@ title: Neural Networks 3 (RNNs and Double Descent)
 slides: modules/11NNet/11Nnet.md
 topics:
   - recurrent-neural-network
-  - weight-sharing
-  - autocorrelation
+  - gaussian-error-assumptions
   - regularization
   - interpretability
   - bias-variance-tradeoff
@@ -81,7 +80,7 @@ You'd expect a model carrying state across $L$ steps to have a huge number of pa
 > [!important] The same $B, U, W$ at every step
 > "If you notice here we just say B and U and W every time it's because we don't have if it was like this that would be a very different model if the weights were changing every time but they don't in fact we assume the same weights B, U, and W every single time. … And that also why the gradients behave well why the training behaves well is because it not a model with so many parameters that it starts collapsing or getting weird."
 
-A form of [[weight-sharing]] (same flavor as the patch-weights of CNNs). $b, U, W, \beta$ are learned during training but do **not** change with position in the sequence.
+A form of [[recurrent-neural-network|weight sharing]] (same flavor as the patch-weights of CNNs). $b, U, W, \beta$ are learned during training but do **not** change with position in the sequence.
 
 ### Loss and training
 
@@ -110,7 +109,7 @@ $$X_1 = (v_{t-L}, r_{t-L}, z_{t-L})^\top, \quad \dots, \quad X_L = (v_{t-1}, r_{
 — "$L$ is very much like the token length in a large language model. You want it to know about the previous $L$ things for your prediction to work."
 
 > [!note] Why time series is hard
-> All three series have **high [[autocorrelation]]** — successive time points are not independent. Any model has to account for this dependency in both the fit and the uncertainty quantification. Stocks in particular: "often it's less about how the mean is changing and more about how the variance is changing. You have to consider both things."
+> All three series have **high [[gaussian-error-assumptions|autocorrelation]]** — successive time points are not independent. Any model has to account for this dependency in both the fit and the uncertainty quantification. Stocks in particular: "often it's less about how the mean is changing and more about how the variance is changing. You have to consider both things."
 
 Why use a black-box model at all? When the goal is purely forecasting, and a hand-built statistical model would be too delicate to construct, an expressive ML model that "you don't really care how it works" is attractive. The prof recalled an old time-series course where students compared RNNs to classical models on cryptocurrencies — "they were equally bad. But I think that was really just the data problem because no one should be using Bitcoin. It is stupid."
 
@@ -139,7 +138,7 @@ A thousand parameters "is peanuts" by modern ML standards (current LLMs are at t
 
 Forms of regularization the course has covered:
 - Explicit: L1 / L2 ([[lasso]], [[ridge-regression]])
-- Implicit: mini-batch [[stochastic-gradient-descent]] (from L24)
+- Implicit: mini-batch [[gradient-descent-and-sgd|stochastic gradient descent]] (from L24)
 - Dropout (randomly remove nodes during training, "forces the model to not rely on any specific part")
 
 The slide's setup is therefore **contrived** in the prof's view: "I think other people teaching the same course would not call this contrived but call it real and i would say this is if you constructed your model this way you doing it wrong."
@@ -199,7 +198,7 @@ Bias and variance still always sum to (test MSE − irreducible error). The U-sh
 
 [Slide: §"Double descent" with sine example, fig 10.21 / 10.20]
 
-Generative model: $y_i = \sin(x_i) + \varepsilon_i$, $\varepsilon_i \sim \mathcal{N}(0, 0.3^2)$, 20 noisy observations. Fit with [[natural-splines]] of varying degree:
+Generative model: $y_i = \sin(x_i) + \varepsilon_i$, $\varepsilon_i \sim \mathcal{N}(0, 0.3^2)$, 20 noisy observations. Fit with [[regression-splines|natural splines]] of varying degree:
 
 - Degree 8 — fits well, looks reasonable
 - Degree 20 — starts blowing up, classical overfit warning territory

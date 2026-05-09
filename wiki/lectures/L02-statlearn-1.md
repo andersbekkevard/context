@@ -43,7 +43,7 @@ New term, new instructor: "I am not Stephanie. I am Ben." Course is **module 2, 
 
 Statistical learning = the process of learning structures from data about the real world. The term, he warns, is "arguably… poorly defined." He polls the room: science people (want to discover) vs prediction/engineering people (want to forecast or build). Most of the room leans prediction.
 
-His framing — and a bit of personal slant — is that statistical learning specifically refers to the [[misspecification|misspecified-model]] setting:
+His framing — and a bit of personal slant — is that statistical learning specifically refers to the [[statistical-learning|misspecified-model]] setting:
 
 > "You don't really have access to the parameters directly or you don't have access to all the right parameters — maybe you have some of them with noise… Our model is misspecified because they're missing a lot of things or they're typically misspecified. And we just assume they're not. And then we try to work from there."
 
@@ -144,7 +144,7 @@ Often what *looks* like unsupervised is really supervised in disguise. Best exam
 
 > "It was just trained to predict the next word. What's the next word a therapist would say?"
 
-Difficulties of the genuinely unsupervised: hard to know how well you're doing, hard to know when you're done. Course examples (saved for **module 10**): [[clustering]] and [[pca]].
+Difficulties of the genuinely unsupervised: hard to know how well you're doing, hard to know when you're done. Course examples (saved for **module 10**): [[clustering]] and [[principal-component-analysis]].
 
 ## Overall philosophy from the book (with caveats)
 
@@ -235,7 +235,7 @@ where $X = (X^{(1)}, \ldots, X^{(p)})$ are the predictors, $f$ is the underlying
 
 > "Our goal is typically to estimate f. And sometimes things about epsilon."
 
-Picture: data points scattered around the curve $f(x)$; the vertical distance from each point to the curve is its $\varepsilon_i$. (He sketches this on the board — same picture that comes back in [[least-squares]] in L05.)
+Picture: data points scattered around the curve $f(x)$; the vertical distance from each point to the curve is its $\varepsilon_i$. (He sketches this on the board — same picture that comes back in [[least-squares-and-mle]] in L05.)
 
 ## Closing example: ad spend → sales
 
@@ -245,4 +245,4 @@ His critique of the plotting choice: x-axes should really be **money spent** on 
 
 > "I would not recommend buying any ads for the newspaper. I don't think anyone reads it."
 
-Ran out of time mid-deck. Continues tomorrow at noon (L03 — [[statlearn-2]]) with the second half of `2StatLearn.1.md` and into the bias–variance trade-off proper.
+Ran out of time mid-deck. Continues tomorrow at noon (L03 — [[L03-statlearn-2]]) with the second half of `2StatLearn.1.md` and into the bias–variance trade-off proper.

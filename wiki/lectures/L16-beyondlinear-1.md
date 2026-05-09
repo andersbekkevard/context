@@ -9,8 +9,6 @@ topics:
   - polynomial-regression
   - step-functions
   - regression-splines
-  - cubic-spline
-  - natural-spline
   - smoothing-splines
   - local-regression
   - generalized-additive-models

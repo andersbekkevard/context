@@ -5,18 +5,13 @@ module: 04-classif
 title: Classification 2 (LinReg wrap-up + LDA)
 slides: modules/4Classif/4Classif.md
 topics:
-  - residual-plots
-  - qq-plot
-  - leverage
-  - hat-matrix
-  - studentized-residuals
+  - residual-diagnostics
+  - design-matrix-and-hat-matrix
   - collinearity
-  - variance-inflation-factor
   - principal-component-regression
   - logistic-regression
-  - bayes-classifier
-  - bayes-error-rate
-  - knn-classifier
+  - classification-setup
+  - knn-classification
   - curse-of-dimensionality
   - linear-discriminant-analysis
 tags:
@@ -34,11 +29,11 @@ A two-module session: the prof first wraps up the leftover Module 3 diagnostics 
 
 - **Residual plots, QQ plots, leverage and studentized residuals are diagnostics, not new fits** — they're how you check the linear-regression assumptions hold.
 - **Leverage = the diagonal of the hat matrix H = X(XᵀX)⁻¹Xᵀ.** A point with high leverage *and* a large residual is the dangerous combination: "fat kid at the end of the seesaw." The exercise class verifies the formula.
-- **Collinearity** lets the βs trade off against each other → unstable fits, blown-up p-values. Detect with [[variance-inflation-factor]] (self-study). Fix with PCA / [[principal-component-regression]] or by dropping a variable; LDA also reduces dimension.
+- **Collinearity** lets the βs trade off against each other → unstable fits, blown-up p-values. Detect with [[collinearity|variance inflation factor]] (self-study). Fix with PCA / [[principal-component-regression]] or by dropping a variable; LDA also reduces dimension.
 - **Logistic regression** is a Bernoulli GLM: linear η = β₀ + βᵀx fed through a logistic link to give P(Y=1|x), fit by maximum likelihood. Same assumptions as linear regression — collinearity wrecks it the same way.
 - **Bayes classifier** is theoretically optimal (smallest possible test error, irreducible noise sets the floor) but assumes you know the true posterior, which you never do. Estimates are "probably bullshit" — still a useful benchmark.
 - **KNN**: non-parametric majority vote of the K nearest Euclidean neighbours; can produce wildly complicated decision boundaries with islands. Choose K by test error (bias-variance again). Killed in high dimensions by the **curse of dimensionality** — distances become uniform, no neighbour is meaningfully "closest."
-- **LDA flips the modelling**: instead of modelling P(Y|X) directly, model P(X|Y) (Gaussian in each class) and the priors P(Y), then combine via Bayes' rule. Yields the [[discriminant-score]] you maximise over k. Decision boundary moves with the prior.
+- **LDA flips the modelling**: instead of modelling P(Y|X) directly, model P(X|Y) (Gaussian in each class) and the priors P(Y), then combine via Bayes' rule. Yields the [[discriminant-score-and-decision-boundary|discriminant score]] you maximise over k. Decision boundary moves with the prior.
 
 ## Module 3 wrap-up: residual diagnostics
 
@@ -62,7 +57,7 @@ Plot theoretical quantiles of N(0, σ²) against the empirical quantiles of the 
 
 > "A QQ plot is a visual illustration of how close your histogram is to your distribution… if the theoretical quantiles match those quantiles from the histogram then it's like, bink, and then you're very happy because your assumptions are good."
 
-Deviations almost always show up in the **tails**. The classic "S-shape" (undercutting then overcutting) is the other characteristic failure pattern. Tests exist (Shapiro–Wilk etc.) — "we're not going to talk about it, but, you know, like people love to do tests." See [[qq-plot]].
+Deviations almost always show up in the **tails**. The classic "S-shape" (undercutting then overcutting) is the other characteristic failure pattern. Tests exist (Shapiro–Wilk etc.) — "we're not going to talk about it, but, you know, like people love to do tests." See [[residual-diagnostics|QQ plot]].
 
 ### Recap of the four assumptions
 
@@ -81,7 +76,7 @@ The residuals-vs-fitted plot checks (1), (2), and gives a hint about (4). The QQ
 
 ## Leverage and the hat matrix
 
-A point has high leverage when its **x-value** sits far from the bulk — note this is an x-only quantity, not involving y. Formally, for [[simple-linear-regression]],
+A point has high leverage when its **x-value** sits far from the bulk — note this is an x-only quantity, not involving y. Formally, for [[linear-regression|simple linear regression]],
 
 $$h_{ii} = \frac{1}{n} + \frac{(x_i - \bar x)^2}{\sum_j (x_j - \bar x)^2}.$$
 
@@ -95,13 +90,13 @@ A single x-outlier far from the centre of mass pulls the regression line by a lo
 
 ### The hat matrix
 
-The same H that gave us leverage is the **hat matrix** from [[ols]]:
+The same H that gave us leverage is the **hat matrix** from [[linear-regression|OLS]]:
 
 $$\hat{\boldsymbol\beta} = (X^\top X)^{-1} X^\top y, \quad \hat{y} = H y, \quad H = X(X^\top X)^{-1}X^\top.$$
 
 > "This matrix H is also known as the hat matrix. The reason we call it a hat matrix is that it's where all the hats come from."
 
-Leverage hᵢᵢ is then literally the **diagonal of H**. He briefly mentions the [[moore-penrose-pseudoinverse]] as the natural object when X isn't square — flagged for context, not for the exam.
+Leverage hᵢᵢ is then literally the **diagonal of H**. He briefly mentions the Moore-Penrose pseudoinverse as the natural object when X isn't square — flagged for context, not for the exam.
 
 > "One exercise you can do for your exercise class is figuring out / verify this formula comes from linear regression."
 
@@ -141,8 +136,8 @@ Perfect collinearity → infinitely many solutions. Even mild collinearity → h
 
 ### Diagnose and fix
 
-- **Detect**: [[variance-inflation-factor]] (VIF). The book covers it, prof says **read it as self-study**.
-- **Fix**: drop the offending variable, or combine the collinear ones. Combining is most cleanly done with [[pca]] / [[principal-component-regression]]:
+- **Detect**: [[collinearity|variance inflation factor]] (VIF). The book covers it, prof says **read it as self-study**.
+- **Fix**: drop the offending variable, or combine the collinear ones. Combining is most cleanly done with [[principal-component-analysis|PCA]] / [[principal-component-regression]]:
 
 > "PCA is a way of compressing your variables into fewer variables with some loss. … in this case X1 and X2 would turn into… one would be this trend, basically, and then the other one would be the one that's moving around — the shit around it. … because then they all become orthogonal."
 
@@ -173,7 +168,7 @@ Switch into Chapter 4 of ISL. Goal: predict a categorical Y (spam/ham, eye colou
 Three methods to be covered today / tomorrow:
 
 - [[logistic-regression]]
-- [[knn-classifier]]
+- [[knn-classification|KNN classifier]]
 - [[linear-discriminant-analysis]] / [[quadratic-discriminant-analysis]]
 
 He says he'll recap Valdemar's logistic regression material first, then move to KNN and LDA.
@@ -219,7 +214,7 @@ Briefly mentioned: multi-class logistic regression (one-vs-rest binary trick or 
 
 ## Bayes classifier
 
-Restate logistic-regression's outputs as posterior probabilities P(Y | X). The [[bayes-classifier]] assigns the class with the highest posterior — for two classes, whichever side of 0.5.
+Restate logistic-regression's outputs as posterior probabilities P(Y | X). The [[classification-setup|Bayes classifier]] assigns the class with the highest posterior — for two classes, whichever side of 0.5.
 
 ### Why it's both beautiful and annoying
 
@@ -227,7 +222,7 @@ It is **provably optimal**: smallest possible test error, optimal decision bound
 
 > "The annoying thing is, like, you're making more assumptions. They have all these prior distributions and those are always wrong. … It's optimal if you're right, but you're probably wrong."
 
-The unavoidable error floor is the [[bayes-error-rate]] — the analogue of irreducible error from regression. Same vocabulary you've seen since Module 2: training error, test error, loss function. Training error here is the **misclassification rate** — a 0/1 indicator of "did the prediction match the label," not a continuous residual.
+The unavoidable error floor is the [[classification-setup|Bayes error rate]] — the analogue of irreducible error from regression. Same vocabulary you've seen since Module 2: training error, test error, loss function. Training error here is the **misclassification rate** — a 0/1 indicator of "did the prediction match the label," not a continuous residual.
 
 > "Here this error rate, we don't use the value, the continuous value … we actually binarized the orange one to be whatever the Bayes classifier suggests, and then just look at this indicator: did it guess right or wrong? Whereas the likelihood would be the one that accounts for the continuous variable."
 
@@ -253,7 +248,7 @@ Small K (e.g. K=1) → super wiggly, overfits each training point. Large K → t
 
 ### The curse of dimensionality
 
-The biggest problem with [[knn-classifier]]:
+The biggest problem with [[knn-classification|KNN classifier]]:
 
 > "If there's a number of dimensions and you look at the average distance between points, of course as you add more dimensions that average distance is going to be bigger. But the weird thing is that the variance — like how much those distances vary just by chance — gets smaller and smaller. … So that in this million-dimensional space, the points that are close together have almost the same distance value as points that are far away."
 
@@ -295,8 +290,8 @@ What survives is the **discriminant score** δ_k(x). Classify x to whichever k m
 
 > "You can also think of this as a way of reducing the dimensionalities of your data, where now instead of the axes being the X's, now it's actually the categories. … you can also use it as a way to transform your data into one that has different dimensions, which are these discriminant score things."
 
-This is the second answer to the collinearity question from earlier ([[pca]] was the first).
+This is the second answer to the collinearity question from earlier ([[principal-component-analysis|PCA]] was the first).
 
 ## Closing
 
-Out of time at the end of the LDA setup. Continues tomorrow (L09 — [[classif-3]]) finishing LDA (and on into QDA / Naive Bayes / ROC). Reminder to attend the lab session — TA "is great."
+Out of time at the end of the LDA setup. Continues tomorrow (L09 — [[L09-classif-3]]) finishing LDA (and on into QDA / Naive Bayes / ROC). Reminder to attend the lab session — TA "is great."

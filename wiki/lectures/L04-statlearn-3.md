@@ -9,9 +9,7 @@ topics:
   - benign-overfitting
   - double-descent
   - ridge-regression
-  - random-vector
-  - covariance-matrix
-  - correlation-matrix
+  - random-vector-and-covariance
   - multivariate-normal
   - marginal-distribution
   - contrasts
@@ -25,7 +23,7 @@ aliases:
 
 # L04 — Statistical Learning 3
 
-The prof opens with a short recap of the [[bias-variance-tradeoff]] from last lecture, then spends about a third of the class on a **digression into the over-parameterized regime** — fitting a step function with a 100,000-degree polynomial via the [[pseudo-inverse]] to motivate **benign overfitting** / [[double-descent]] and to foreshadow [[ridge-regression]] and model averaging. He then transitions into Module 2 part 2 proper: [[random-vector]]s, expectation/[[covariance-matrix]] rules, the [[correlation-matrix]], [[contrasts]], and the [[multivariate-normal]] distribution. He runs out of time and cuts off in the middle of the multivariate-normal contour exercise — that's tomorrow.
+The prof opens with a short recap of the [[bias-variance-tradeoff]] from last lecture, then spends about a third of the class on a **digression into the over-parameterized regime** — fitting a step function with a 100,000-degree polynomial via the [[pseudo-inverse]] to motivate **benign overfitting** / [[double-descent]] and to foreshadow [[ridge-regression]] and model averaging. He then transitions into Module 2 part 2 proper: [[random-vector-and-covariance|random vector]]s, expectation/[[random-vector-and-covariance|covariance matrix]] rules, the [[random-vector-and-covariance|correlation matrix]], [[contrasts]], and the [[multivariate-normal]] distribution. He runs out of time and cuts off in the middle of the multivariate-normal contour exercise — that's tomorrow.
 
 ## Key takeaways
 
@@ -33,7 +31,7 @@ The prof opens with a short recap of the [[bias-variance-tradeoff]] from last le
 - **Benign overfitting / double descent.** When p ≫ n and you fit with the [[pseudo-inverse]], the test MSE explodes near p = n but then *decreases again* and can beat the classical sweet spot. "It's overfitting, but it's okay." Doesn't break the math; explained by implicit [[ridge-regression]] and model averaging — both treated later in the course.
 - The over-parameterized win **only happens when the true model is not in the assumed function class**. If the true f is a polynomial, fitting with a polynomial gives no benefit from going huge.
 - Random vectors and matrices follow the same expectation rules as the univariate case: E(X+Y)=E(X)+E(Y), E(AXB)=A·E(X)·B. Proof of the second was done element-wise on the board.
-- [[covariance-matrix]] Σ has variances on the diagonal and covariances off; [[correlation-matrix]] is Σ rescaled by the standard-deviation diagonal V so the diagonal is 1. Cov measures linear co-variation — "*we're sort of assuming a linear line*."
+- [[random-vector-and-covariance|Covariance matrix]] Σ has variances on the diagonal and covariances off; [[random-vector-and-covariance|correlation matrix]] is Σ rescaled by the standard-deviation diagonal V so the diagonal is 1. Cov measures linear co-variation — "*we're sort of assuming a linear line*."
 - [[multivariate-normal]] generalizes the bell curve: x − μ becomes a vector, σ² becomes Σ, and σ² in the exponent becomes Σ⁻¹. det(Σ) = 0 is bad (singular).
 - The connection that's the whole point: minimizing the negative log-likelihood of a normal model with mean parameterized by some f(x) **is** linear regression. The multivariate normal is the route into multiple regression.
 
@@ -110,7 +108,7 @@ The reason regression is the next thing: "*it's like the simplest data model we 
 
 ### Definition and setup
 
-A [[random-vector]] **X** is a p-dimensional vector of random variables. Examples:
+A [[random-vector-and-covariance|random vector]] **X** is a p-dimensional vector of random variables. Examples:
 
 - Cork-deposit weights in 4 directions (N, E, S, W) — the running dataset for the lecture.
 - Body-fat predictors: BMI, age, weight, hip circumference.
@@ -167,7 +165,7 @@ Reading: "*if they have a high covariance then they're varying together; if they
 
 When i = j: it's the **variance**. He called this out as a quiz-style fact ("*what would be the covariance of X_i with X_i?*").
 
-Stack into a [[covariance-matrix]] Σ: variances on the diagonal, covariances off-diagonal. Convenient matrix-algebra identity:
+Stack into a [[random-vector-and-covariance|covariance matrix]] Σ: variances on the diagonal, covariances off-diagonal. Convenient matrix-algebra identity:
 
 $$\Sigma = E(XX^T) - \mu\mu^T$$
 

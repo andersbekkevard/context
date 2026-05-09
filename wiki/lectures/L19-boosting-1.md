@@ -13,8 +13,7 @@ topics:
   - boosting
   - adaboost
   - gradient-boosting
-  - weak-learner
-  - learning-rate
+  - weak-learner-and-learning-rate
 tags:
   - lecture
   - module/08-trees

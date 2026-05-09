@@ -27,7 +27,6 @@ Read all of these. **Do not read `notes/` — it is off-limits per `../overview`
 - Recommended exercises: `exercises/Exercise2/` through `exercises/Exercise11/` (each folder contains the exercise + solution `.md` files)
 - Compulsory exercises: `exercises/compulsory-exercise-1.md` and `exercises/compulsory-exercise-2.md`
 - `exam_analysis.md` — useful synthesis but **not canonical**. Source of truth = slides + lectures + exercises. Use as cross-check only.
-- `course-information.md` — schedule, module listing
 - `docs/lectures-manifest.md` — which lecture maps to which module
 
 You may use both Read and Bash (e.g. `rg` to grep for terms) freely. Read the lectures top-to-bottom; you can skim slides more strategically.

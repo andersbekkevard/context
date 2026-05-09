@@ -12,13 +12,13 @@ topics:
   - training-validation-test-split
   - cross-validation
   - validation-set-approach
-  - leave-one-out-cross-validation
-  - k-fold-cross-validation
+  - leave-one-out-cv
+  - k-fold-cv
   - one-standard-error-rule
-  - aic-bic
+  - aic-bic-conceptual
   - data-reuse
-  - independence-assumption
-  - hat-matrix
+  - gaussian-error-assumptions
+  - design-matrix-and-hat-matrix
 tags:
   - lecture
   - module/05-resample
@@ -28,7 +28,7 @@ aliases:
 
 # L10 — Resampling 1
 
-The prof closes module 4 with a recap of [[sensitivity-specificity]], the [[confusion-matrix]], and [[roc-auc|ROC/AUC]] curves, then opens module 5 on resampling. He motivates why we need [[cross-validation]] (assumptions of [[aic-bic|AIC/BIC]] are typically wrong), partitions data into training/validation/test, and walks through three CV schemes — the [[validation-set-approach]], [[leave-one-out-cross-validation|LOOCV]], and [[k-fold-cross-validation|k-fold CV]] — with heavy emphasis on the [[independence-assumption|independence trap]] in spatial/temporal data. Ends mid-classification-CV, just before model assessment vs. model selection.
+The prof closes module 4 with a recap of [[sensitivity-specificity]], the [[confusion-matrix]], and [[roc-auc|ROC/AUC]] curves, then opens module 5 on resampling. He motivates why we need [[cross-validation]] (assumptions of [[aic-bic-conceptual|AIC/BIC]] are typically wrong), partitions data into training/validation/test, and walks through three CV schemes — the [[validation-set-approach]], [[leave-one-out-cv|LOOCV]], and [[k-fold-cv|k-fold CV]] — with heavy emphasis on the [[gaussian-error-assumptions|independence trap]] in spatial/temporal data. Ends mid-classification-CV, just before model assessment vs. model selection.
 
 ## Key takeaways
 
@@ -43,7 +43,7 @@ The prof closes module 4 with a recap of [[sensitivity-specificity]], the [[conf
 
 ## Wrap-up of module 4 — classification recap
 
-Quick run through what last week covered: [[logistic-regression]] for binary (and multiclass) classification, [[k-nearest-neighbors]] as a non-parametric alternative. Same problem, very different mechanism. Both need a **threshold** decision; both need a way to measure how good the classifier is.
+Quick run through what last week covered: [[logistic-regression]] for binary (and multiclass) classification, [[knn-classification|k-nearest neighbors]] as a non-parametric alternative. Same problem, very different mechanism. Both need a **threshold** decision; both need a way to measure how good the classifier is.
 
 > "Even with just these two, you already see like rather different mechanisms by which you can build a classification, right? So it makes sense you'd want to understand how good is my classifier."
 
@@ -84,7 +84,7 @@ Module 5 is **bootstrap and cross-validation** (ISLR ch. 5; some additional mate
 
 ### Why not just AIC/BIC?
 
-Both [[aic-bic|AIC and BIC]] are penalties for model complexity, derived under nice assumptions:
+Both [[aic-bic-conceptual|AIC and BIC]] are penalties for model complexity, derived under nice assumptions:
 
 - AIC from information theory.
 - BIC from Bayesian arguments.
@@ -107,7 +107,7 @@ Anders flagged the standard concern that picking the model at the test-set minim
 
 ### KNN regression as the running model-selection example
 
-Recall [[k-nearest-neighbors]] regression: $\hat f(x_0) = \frac{1}{K} \sum_{i \in \mathcal N_0} y_i$ where $\mathcal N_0$ is the K nearest training points. K small → high complexity (jagged, K=1 hits every training point); K large → low complexity (smooth, K=number-of-points = horizontal mean).
+Recall [[knn-regression|k-nearest neighbors]] regression: $\hat f(x_0) = \frac{1}{K} \sum_{i \in \mathcal N_0} y_i$ where $\mathcal N_0$ is the K nearest training points. K small → high complexity (jagged, K=1 hits every training point); K large → low complexity (smooth, K=number-of-points = horizontal mean).
 
 Slide example: true curve $f(x) = -x + x^2 + x^3$, $x \in [-3, 3]$, $n=61$ training points, K swept from 1 to 25, experiment repeated $M=1000$ times.
 
@@ -149,8 +149,8 @@ Slide makes the point: with a *truly* large data set you can blindly partition i
 Three approaches we'll cover:
 
 1. The **[[validation-set-approach]]** (not strictly *cross*-validation).
-2. **[[leave-one-out-cross-validation|LOOCV]]**.
-3. **[[k-fold-cross-validation|k-fold CV]]**, typically $k=5$ or $10$.
+2. **[[leave-one-out-cv|LOOCV]]**.
+3. **[[k-fold-cv|k-fold CV]]**, typically $k=5$ or $10$.
 
 All three are about resampling within the data you have, not about the test set (which is held out separately for assessment).
 

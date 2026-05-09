@@ -14,7 +14,7 @@ You receive the module slug (e.g. `06-modelsel`) and produce one MOC file. Read:
 - `wiki/concepts/<slug>.md` for every atom in your module — to write tight one-liners and verify cross-cutting links
 - `wiki/lectures/L<NN>-<your-module-slug>*.md` — the lectures covering your module; use to write the per-lecture one-liners
 - `docs/scope.md` — canonical authority for what's out of scope; pull module-relevant exclusions verbatim with the lecture wikilink anchor
-- `course-information.md` and `docs/lectures-manifest.md` — for module dates and lecture mapping
+- `docs/lectures-manifest.md` — for module dates and lecture mapping
 
 You do **not** read raw slides or transcripts directly — by the time you run, the lectures pass and the concepts pass have already distilled them. Your job is composition, not analysis.
 

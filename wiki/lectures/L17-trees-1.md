@@ -8,8 +8,7 @@ topics:
   - generalized-additive-models
   - logistic-regression
   - polynomial-regression
-  - cubic-spline
-  - natural-spline
+  - regression-splines
   - local-regression
   - regression-tree
   - recursive-binary-splitting
@@ -47,7 +46,7 @@ The prof opens by reminding us we ended yesterday on [[generalized-additive-mode
 
 $$Y = \beta_0 + f_1(X_1) + f_2(X_2) + \cdots + f_p(X_p) + \varepsilon$$
 
-where each $f_j$ can be **any** of the basis-expansion methods covered yesterday: piecewise constant intervals, cubic spline with chosen knots, [[natural-spline]] (linear at the boundaries), smoothing spline (penalising $\int (f''(x))^2 dx$), or piecewise / [[local-regression|local linear]]. You pick the $f_j$ per variable based on the data:
+where each $f_j$ can be **any** of the basis-expansion methods covered yesterday: piecewise constant intervals, cubic spline with chosen knots, [[regression-splines|natural spline]] (linear at the boundaries), smoothing spline (penalising $\int (f''(x))^2 dx$), or piecewise / [[local-regression|local linear]]. You pick the $f_j$ per variable based on the data:
 
 > "Maybe one you just want to keep as intervals because you're worried it's going to be a very unruly function or there's not a lot of data."
 
@@ -56,7 +55,7 @@ where each $f_j$ can be **any** of the basis-expansion methods covered yesterday
 Each panel is the **contribution** of one variable to wage, with the other variables held at their means.
 
 - **age**: cubic spline with knots at two values; peaks around 47 ("which sucks because that's today for me").
-- **year**: [[natural-spline]] with a knot at 2006; basically linear, "makes sense, it's going to go up every time, just because of inflation."
+- **year**: [[regression-splines|natural spline]] with a knot at 2006; basically linear, "makes sense, it's going to go up every time, just because of inflation."
 - **education**: piecewise — broken into the four education intervals.
 
 Crucially, each panel is a contribution, not a prediction:
@@ -85,7 +84,7 @@ The fitted curve is now $P(\text{wage} > 250k \mid \text{age})$. Probability is 
 
 ### Splines inside a logistic regression
 
-Same model, replace the polynomial with a [[cubic-spline]] basis on age:
+Same model, replace the polynomial with a [[regression-splines|cubic spline]] basis on age:
 
 $$\log\frac{P}{1-P} = b_0 + b_1 B_1(\text{age}) + b_2 B_2(\text{age}) + \cdots$$
 

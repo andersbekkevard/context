@@ -5,19 +5,15 @@ module: 03-linreg
 title: Linear Regression 1
 slides: modules/3LinReg/3LinReg.md
 topics:
-  - simple-linear-regression
-  - least-squares
-  - gaussian-errors
-  - maximum-likelihood
+  - linear-regression
+  - least-squares-and-mle
+  - gaussian-error-assumptions
   - residuals
   - standard-error
-  - confidence-interval
-  - t-test
-  - p-value
+  - confidence-and-prediction-intervals
+  - t-test-and-significance
   - r-squared
-  - statistical-vs-practical-significance
-  - independence-assumption
-  - categorical-encoding
+  - categorical-encoding-and-interactions
   - multivariate-normal
 tags:
   - lecture
@@ -28,12 +24,12 @@ aliases:
 
 # L05 — Linear Regression 1
 
-The prof opens by finishing last lecture's [[multivariate-normal]] slides, then makes the conceptual switch from joint distribution of (X, Y) to the conditional model Y given X — that's what regression *is*. He motivates [[simple-linear-regression]] with a body-fat / BMI example, derives the model and its assumptions, ties [[least-squares]] to MLE under Gaussian errors (Legendre vs. Gauss), then walks through standard errors, confidence intervals, the t-test, and finishes on R². The recurring theme he keeps returning to: **statistical vs. practical significance**, and the assumption you will break — independence.
+The prof opens by finishing last lecture's [[multivariate-normal]] slides, then makes the conceptual switch from joint distribution of (X, Y) to the conditional model Y given X — that's what regression *is*. He motivates [[linear-regression|simple linear regression]] with a body-fat / BMI example, derives the model and its assumptions, ties [[least-squares-and-mle|least squares]] to MLE under Gaussian errors (Legendre vs. Gauss), then walks through standard errors, confidence intervals, the t-test, and finishes on R². The recurring theme he keeps returning to: **statistical vs. practical significance**, and the assumption you will break — independence.
 
 ## Key takeaways
 
 - Regression is **Y given X**, not the joint distribution — different mindset from last lecture's multivariate normal.
-- [[least-squares]] minimization is *equivalent* to MLE under the assumption that errors are i.i.d. N(0, σ²). Legendre got the minimization, Gauss got the distributional understanding.
+- [[least-squares-and-mle|Least squares]] minimization is *equivalent* to MLE under the assumption that errors are i.i.d. N(0, σ²). Legendre got the minimization, Gauss got the distributional understanding.
 - The two assumptions you will break and shouldn't: **independence of errors from other variables**, and **independence of errors from each other**. The Gaussian / zero-mean / common-variance assumptions don't screw things up nearly as badly.
 - Standard error of β̂₁ = σ / √(Σ(xᵢ − x̄)²) — so you reduce uncertainty by **more samples** and **wider spread of x**. This is how the equation tells you to design your experiment.
 - Big n makes everything look significant — one of the reasons "significance is just sample size" is becoming a real problem.
@@ -63,7 +59,7 @@ He skipped the embedded multivariate-normal exercise questions to avoid getting 
 
 The prof's defense of linear regression as worth the time:
 
-- It's a [[parametric-model]] — you have parameters you fit to the data, and you can construct, modify, and reason about them.
+- It's a [[parametric-vs-nonparametric|parametric model]] — you have parameters you fit to the data, and you can construct, modify, and reason about them.
 - It still captures phenomena that more complicated models exhibit. His example: the second descent in the [[bias-variance-tradeoff]] when you scale up parameters — credited for much of deep learning's success — *can be seen and understood from the simple regression lens*. Complicated deep models are unreachable theoretically; regression is.
 - It's interpretable. The slope has meaning. You don't get lost.
 - Methodological minimalism: "I always aim to minimize the length of my method sections." If you add complexity you don't know whether the complexity gave you the answer or whether it's true.
@@ -76,7 +72,7 @@ He pointed out next-word language modeling is structurally not so different — 
 
 Y is quantitative; X can be either. Quantitative = measurable like height/weight. Qualitative = categorical like red/green/blue, encoded numerically.
 
-For a binary category (black/white) → 0/1. For three categories (black/white/blue) → use **two** dummy variables (e.g. 00, 01, 10), **never** 0/1/2 because that imposes an ordering between the categories. See [[categorical-encoding]]. He'll come back to this in later examples.
+For a binary category (black/white) → 0/1. For three categories (black/white/blue) → use **two** dummy variables (e.g. 00, 01, 10), **never** 0/1/2 because that imposes an ordering between the categories. See [[categorical-encoding-and-interactions]]. He'll come back to this in later examples.
 
 ## Motivating example: body fat ~ BMI
 
@@ -87,7 +83,7 @@ Looking at scatter plots of body fat vs. (BMI, age, neck width, hip width), you 
 ### Interesting questions you can ask
 
 - How good is BMI as a predictor of body fat?
-- How strong is the relationship — and "strength" is **ambiguous**: it could mean how well the line fits the data, OR how steep the slope is. Two different things. The first is statistical reliability; the second is practical effect size. He flags this as a setup for [[statistical-vs-practical-significance]].
+- How strong is the relationship — and "strength" is **ambiguous**: it could mean how well the line fits the data, OR how steep the slope is. Two different things. The first is statistical reliability; the second is practical effect size. He flags this as a setup for [[t-test-and-significance|statistical vs practical significance]].
 - Is the relationship linear? You can also still do "linear" regression with X² as your covariate — still linear in parameters.
 - Are other variables associated with body fat? (Multivariate.)
 - Can we predict an *individual's* body fat?
@@ -108,7 +104,7 @@ i indexes the n samples (the prof switches between little and big n freely). β�
 
 ### Fitting it: least squares, and a little history
 
-Many ways to fit a line. The classical one is [[least-squares]]: minimize
+Many ways to fit a line. The classical one is [[least-squares-and-mle|least squares]]: minimize
 
 $$\sum_i (y_i - \beta_0 - \beta_1 x_i)^2.$$
 
@@ -118,7 +114,7 @@ You could just as well minimize the absolute value (least absolute deviations) �
 
 ### Least squares ⇔ Gaussian MLE
 
-Implicitly, least squares assumes εᵢ ~ N(0, σ²) i.i.d. Minimizing the sum of squared residuals is **equivalent** to maximizing the likelihood under that Gaussian assumption — that's the link Gauss is credited for. See [[maximum-likelihood]].
+Implicitly, least squares assumes εᵢ ~ N(0, σ²) i.i.d. Minimizing the sum of squared residuals is **equivalent** to maximizing the likelihood under that Gaussian assumption — that's the link Gauss is credited for. See [[least-squares-and-mle|maximum likelihood]].
 
 > "If you minimize this least squares error, it's equivalent to minimizing this likelihood function… So this is why — Legendre, he figured that out, and this one was Gauss, and that was convenient because then he could say that I'm assuming that my epsilon are normally distributed with a zero mean and a fixed variance."
 
@@ -150,7 +146,7 @@ He flags **(4) and (5) as the dangerous ones**:
 
 Concrete failure mode: temperature samples over time → neighboring time bins are correlated, so sampling more finely makes the relationship *look* stronger because you're inflating effective sample size you don't actually have. He confessed his own third paper had a figure with wrong numbers because he assumed independence when he shouldn't have.
 
-The other three (Gaussian / zero mean / common variance) "I don't think those are so bad. They're so common… I don't think that screws up so much." See [[independence-assumption]].
+The other three (Gaussian / zero mean / common variance) "I don't think those are so bad. They're so common… I don't think that screws up so much." See [[gaussian-error-assumptions|independence assumption]].
 
 ## Geometric / graphical view
 
@@ -204,7 +200,7 @@ So in the limit of large n, *anything* becomes statistically significant — one
 
 ## Residual standard error
 
-[[residual-sum-of-squares]] RSS = Σeᵢ². The unbiased estimator of σ is
+[[least-squares-and-mle|Residual sum of squares]] RSS = Σeᵢ². The unbiased estimator of σ is
 
 $$\hat\sigma = \sqrt{\frac{\mathrm{RSS}}{n - 2}}.$$
 
@@ -268,4 +264,4 @@ He flags this as just the first of many model-accuracy measures — "kind of jus
 
 ## Closing
 
-Out of time mid-slide-deck. Continues on Monday (L06 — [[linreg-2]]) on the same module 3 material, picking up from R² and moving toward multivariate regression (where the matrix derivation lives).
+Out of time mid-slide-deck. Continues on Monday (L06 — [[L06-linreg-2]]) on the same module 3 material, picking up from R² and moving toward multivariate regression (where the matrix derivation lives).

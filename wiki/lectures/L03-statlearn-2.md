@@ -5,16 +5,13 @@ module: 02-statlearn
 title: Statistical Learning 2
 slides: modules/2StatLearn/2StatLearn.1.md
 topics:
-  - supervised-learning
+  - supervised-vs-unsupervised
   - reducible-vs-irreducible-error
   - prediction-vs-inference
   - parametric-vs-nonparametric
   - linear-regression
   - knn-classification
-  - flexibility
-  - overfitting
-  - underfitting
-  - training-vs-test-mse
+  - flexibility-overfitting-underfitting
   - bias-variance-tradeoff
   - regularization
 tags:
@@ -26,7 +23,7 @@ aliases:
 
 # L03 — Statistical Learning 2
 
-The prof recaps the supervised setup Y = f(X) + ε, derives the [[reducible-vs-irreducible-error]] split, then walks parametric vs non-parametric estimation (linear regression vs [[knn-classification]]). The back half is the toy polynomial-regression simulation that motivates the [[training-vs-test-mse]] U-shape, and a full board derivation of the [[bias-variance-tradeoff]] — which he insists on calling a **decomposition**, not a trade-off, and flags as very likely to appear on the exam.
+The prof recaps the supervised setup Y = f(X) + ε, derives the [[reducible-vs-irreducible-error]] split, then walks parametric vs non-parametric estimation (linear regression vs [[knn-classification]]). The back half is the toy polynomial-regression simulation that motivates the [[flexibility-overfitting-underfitting|training-vs-test-mse]] U-shape, and a full board derivation of the [[bias-variance-tradeoff]] — which he insists on calling a **decomposition**, not a trade-off, and flags as very likely to appear on the exam.
 
 ## Key takeaways
 
@@ -158,8 +155,8 @@ This is the seed for [[regularization]] (ridge / lasso / shrinkage in M6) and is
 
 ### Overfitting and underfitting
 
-- **[[overfitting]]**: every training point sits on the curve, the fit gets wiggly, doesn't generalize. Like KNN with k = 1.
-- **[[underfitting]]**: model too rigid / too few parameters. Curve in the data but you fit a line — missing structure.
+- **[[flexibility-overfitting-underfitting|Overfitting]]**: every training point sits on the curve, the fit gets wiggly, doesn't generalize. Like KNN with k = 1.
+- **[[flexibility-overfitting-underfitting|Underfitting]]**: model too rigid / too few parameters. Curve in the data but you fit a line — missing structure.
 
 Some models are *designed* so overfitting isn't such a problem; others have a strong tendency to overfit. The degree depends on the model.
 

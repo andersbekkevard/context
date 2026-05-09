@@ -10,11 +10,9 @@ topics:
   - leave-one-out-cv
   - k-fold-cv
   - bias-variance-tradeoff
-  - nested-cv
-  - cv-wrong-way
+  - nested-cv-and-cv-pitfalls
   - bootstrap
   - bagging
-  - empirical-distribution
   - standard-error
 tags:
   - lecture
@@ -25,13 +23,13 @@ aliases:
 
 # L11 — Resampling 2
 
-The prof finishes module 5: a tight recap of validation set / [[leave-one-out-cv|LOOCV]] / [[k-fold-cv|k-fold CV]] through the bias-variance lens, an explanation of last lecture's mysterious upturn in the classification CV plot, [[nested-cv]] for combined model selection + assessment, the right vs wrong way to do CV (the "filter predictors first" trap), then the [[bootstrap]] in detail with the histogram-of-the-median framing and a sneak preview of [[bagging]] as a bias/variance-reducing precursor to module 8.
+The prof finishes module 5: a tight recap of validation set / [[leave-one-out-cv|LOOCV]] / [[k-fold-cv|k-fold CV]] through the bias-variance lens, an explanation of last lecture's mysterious upturn in the classification CV plot, [[nested-cv-and-cv-pitfalls|nested CV]] for combined model selection + assessment, the right vs wrong way to do CV (the "filter predictors first" trap), then the [[bootstrap]] in detail with the histogram-of-the-median framing and a sneak preview of [[bagging]] as a bias/variance-reducing precursor to module 8.
 
 ## Key takeaways
 
 - **CV recap as bias-variance**: validation set = high bias, low variance; LOOCV = low bias, high variance (training sets nearly identical → estimates correlated); $k$-fold (5 or 10) = the practical sweet spot. *"Typically in this setting, you're winning by having less variance"* because what you really want is a model that generalizes across data sets.
 - **Why the classification CV plot ticks back up at higher polynomial degree**: not just bias-variance — *"the thing that they're using to evaluate the model is different than the thing that they're fitting with the model."* Logistic regression maximizes likelihood, not [[misclassification-rate]], so adding parameters can technically make misclassification worse.
-- **Use [[nested-cv]] when you need both model selection and model assessment.** Outer fold = assessment, inner folds = selection. Reusing the same held-out data for both *"tends to overfit the test data, and the bias will be underestimated."*
+- **Use [[nested-cv-and-cv-pitfalls|nested CV]] when you need both model selection and model assessment.** Outer fold = assessment, inner folds = selection. Reusing the same held-out data for both *"tends to overfit the test data, and the bias will be underestimated."*
 - **Right vs wrong CV — verbatim trap**: if you preselect predictors using $y$ (e.g. correlation filter), step 1 is part of training and **must** be inside the CV loop. Doing it outside can give misclassification ≈ 0 on pure noise.
 - **The bootstrap's central idea**: *"Your best model for the real world… is the data itself."* Resample with replacement to get the empirical sampling distribution of any statistic. Picture: a histogram of medians, not a derived formula.
 - **Sample with replacement.** Without replacement just permutes the data → useless.
@@ -57,14 +55,14 @@ So training error is useless for model selection. Only test error eventually goe
 
 CV doesn't only apply to regression. For classification we just swap MSE for [[misclassification-rate]] (0/1 loss): each fold contributes $\text{Err}_j = \frac{1}{n_j}\sum_{i \in C_j} \mathbb{1}(y_i \neq \hat y_i)$.
 
-The prof recaps the ISL classification example. The **purple dashed [[bayes-decision-boundary|Bayes decision boundary]]** is *"the optimal decision boundary"* — what you'd use if you knew all the distributions. We approximate it with [[logistic-regression]] and let the boundary depend on polynomial features:
+The prof recaps the ISL classification example. The **purple dashed [[discriminant-score-and-decision-boundary|Bayes decision boundary]]** is *"the optimal decision boundary"* — what you'd use if you knew all the distributions. We approximate it with [[logistic-regression]] and let the boundary depend on polynomial features:
 
-- degree 1: just $\beta_0 + \beta_1 x + \beta_2 y$ in the [[linear-predictor|linear predictor]] — a straight-line boundary;
+- degree 1: just $\beta_0 + \beta_1 x + \beta_2 y$ in the [[linear-regression|linear predictor]] — a straight-line boundary;
 - degree 2: add $\beta_3 x^2 + \beta_4 y^2$ → curved boundary, can produce circles/ellipses depending on coefficients.
 
 > "I didn't ask for a circle. The curve you're making, remember, it has y squared and x squared, so you could get a circle, of course. It all just depends on how these parameters come out to be when you train it."
 
-[[Misclassification-rate]] vs polynomial degree: it drops, then **rises** at the highest degree.
+[[misclassification-rate|Misclassification rate]] vs polynomial degree: it drops, then **rises** at the highest degree.
 
 Last lecture the prof was confused by the rise. He went home, played with it, and gave the explanation today:
 
@@ -88,7 +86,7 @@ Once you've used CV to **select** a model (tune hyperparameters, pick polynomial
 
 > "Using the test set for both model selection and estimation tends to overfit the test data, and the bias will be underestimated."
 
-Solution: two layers of CV, aka [[nested-cv]]. The prof drew it on the board:
+Solution: two layers of CV, aka [[nested-cv-and-cv-pitfalls|nested CV]]. The prof drew it on the board:
 
 - **Outer split** — partition the data into folds for *assessment*. In each outer iteration, hold one fold out as a true held-out test set (the "pink/purple" stuff in his drawing).
 - **Inner CV on the rest** — within the remaining outer-training data, run another CV (e.g. 5-fold) to do *selection*. This inner CV picks the model / hyperparameter that the outer iteration will use.
@@ -134,7 +132,7 @@ The prof's broader frame: *"This is an example of how to lie with — we'll say 
 
 Pivot from cross-validation to a different resampling philosophy. *"In all these cross-validation approaches — leave one out, K-fold, whatever — we were always partitioning the data so that you took each time point and either put it in a training, a test, or a validation set. Always each data point goes somewhere, and only once. In the bootstrap we're going to do something different."* The [[bootstrap]] **resamples with replacement at the same length as the original**, treating each resample as a fresh draw from the population.
 
-Invented by [[bradley-efron|Efron]] in 1979. *"It's funny because it's kind of the obvious thing you would do instead of all this fancy statistics that we've been developing for like the last hundred years. So I'm pretty sure Fisher, if he had a better computer, would have done bootstrap instead of all the distribution stuff."*
+Invented by Efron in 1979. *"It's funny because it's kind of the obvious thing you would do instead of all this fancy statistics that we've been developing for like the last hundred years. So I'm pretty sure Fisher, if he had a better computer, would have done bootstrap instead of all the distribution stuff."*
 
 ### Why "bootstrap"
 
@@ -148,7 +146,7 @@ Why Efron picked the name:
 
 > "Your best model for the real world — like for the real data, not just the sample that you have but the bigger sample everywhere — your best model for that is the data itself. And so if you want to look at different realizations of the data, you resample from that same data with replacement, because it's always going to be the best model for the world."
 
-The [[empirical-distribution]] $\hat f$ puts mass $1/n$ on each observed point; **sampling from $\hat f$ with replacement is the bootstrap**. We can't sample more from the unknown $f$, but we can sample as much as we want from $\hat f$ — and $\hat f$ is the best estimate of $f$ we have. *"Just keep it as it is, repick points, take the same number of points, and now you have a new data set. It's different from the original one, and it's as close to what you can expect as possible because you're just resampling your best estimate of the true process."*
+The [[bootstrap|empirical distribution]] $\hat f$ puts mass $1/n$ on each observed point; **sampling from $\hat f$ with replacement is the bootstrap**. We can't sample more from the unknown $f$, but we can sample as much as we want from $\hat f$ — and $\hat f$ is the best estimate of $f$ we have. *"Just keep it as it is, repick points, take the same number of points, and now you have a new data set. It's different from the original one, and it's as close to what you can expect as possible because you're just resampling your best estimate of the true process."*
 
 > "It's like taking a picture and then taking a picture of the picture 100 times and then averaging them, and somehow it's better than the original picture. It doesn't sound like it makes sense, but it does."
 
@@ -193,7 +191,7 @@ Without replacement at full size: just a permutation. With replacement: genuinel
 
 Bootstrapped distribution → confidence interval (e.g. percentile method), standard error, hypothesis test.
 
-**Regression example:** for [[multiple-linear-regression|multiple linear regression]] we already know the closed form $\text{Cov}(\hat\beta) = \sigma^2(X^TX)^{-1}$ — but only **under** the standard distributional assumptions on the residuals. *"All these distributional assumptions are assumptions, and for those to be right your data has to be of a certain type, and maybe they're not. So often using a bootstrap will be better — will be making fewer assumptions and can give you a different result."* You can also use the bootstrap to build confidence intervals for the $\beta_j$'s and prediction intervals for new $y$'s. (Worked in the recommended exercises — *"OK to look at an example where we know the truth."*)
+**Regression example:** for [[linear-regression|multiple linear regression]] we already know the closed form $\text{Cov}(\hat\beta) = \sigma^2(X^TX)^{-1}$ — but only **under** the standard distributional assumptions on the residuals. *"All these distributional assumptions are assumptions, and for those to be right your data has to be of a certain type, and maybe they're not. So often using a bootstrap will be better — will be making fewer assumptions and can give you a different result."* You can also use the bootstrap to build confidence intervals for the $\beta_j$'s and prediction intervals for new $y$'s. (Worked in the recommended exercises — *"OK to look at an example where we know the truth."*)
 
 In R there's a built-in `boot::boot()` function (and a `cv.glm()` for CV), but the prof emphasizes:
 

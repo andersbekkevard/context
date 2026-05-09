@@ -9,8 +9,6 @@ topics:
   - cart
   - cost-complexity-pruning
   - classification-tree
-  - gini-index
-  - cross-entropy
   - confusion-matrix
   - bagging
   - random-forest
@@ -25,7 +23,7 @@ aliases:
 
 # L18 — Tree-based Methods 2
 
-The prof recapped CART regression trees (greedy splitting on RSS, build out then prune via cost complexity), then moved to classification trees (majority vote / class probabilities, split by [[gini-index]] or [[cross-entropy]] not misclassification, prune on misclassification). Closed by motivating [[bagging]] and introducing [[random-forest]] / out-of-bag error; deferred boosting to next lecture.
+The prof recapped CART regression trees (greedy splitting on RSS, build out then prune via cost complexity), then moved to classification trees (majority vote / class probabilities, split by [[classification-tree|Gini index]] or [[classification-tree|cross-entropy]] not misclassification, prune on misclassification). Closed by motivating [[bagging]] and introducing [[random-forest]] / out-of-bag error; deferred boosting to next lecture.
 
 ## Key takeaways
 
@@ -53,7 +51,7 @@ $$\sum_{j} \sum_{i \in R_j} (y_i - \hat y_{R_j})^2$$
 
 where $\hat y_{R_j}$ is the mean of training $y$ in region $R_j$ (median works too). The sum is over the points $i$ within region $j$ — "compare every point relative to the mean within its region." For each candidate split: check every block, every variable, every threshold; pick the one giving the most RSS improvement, then recurse.
 
-Greedy = not optimal, but tractable: "we can't try every possible combination. It's just too much. It's impossible." Same flavor as forward [[model-selection]] — "that's what those kinds of algorithms are called." With continuous variables ties are essentially impossible ("I'm sure there's an example where it's down to machine precision, but it's extremely rare, if not impossible"), so a single split always wins — but slight data perturbations can flip it, and "then it plays out very differently." This data-set sensitivity becomes the variance problem bagging will fix.
+Greedy = not optimal, but tractable: "we can't try every possible combination. It's just too much. It's impossible." Same flavor as forward [[subset-selection|model selection]] — "that's what those kinds of algorithms are called." With continuous variables ties are essentially impossible ("I'm sure there's an example where it's down to machine precision, but it's extremely rare, if not impossible"), so a single split always wins — but slight data perturbations can flip it, and "then it plays out very differently." This data-set sensitivity becomes the variance problem bagging will fix.
 
 ### Visualization vs. tree representation
 
@@ -117,8 +115,8 @@ $$\hat p_{mk} = \frac{1}{N_m} \sum_{i: x_i \in R_m} \mathbb{1}(y_i = k)$$
 
 Two standard impurity criteria:
 
-- **[[gini-index]]**: $\sum_k \hat p_{mk}(1 - \hat p_{mk})$. ("I really should have looked up where the name comes from … Ginny is like a cute name. I don't know.")
-- **[[cross-entropy]]**: $-\sum_k \hat p_{mk} \log \hat p_{mk}$. From information theory / thermodynamics, "originally … Napoleonic Wars and things, and steam engines."
+- **[[classification-tree|Gini index]]**: $\sum_k \hat p_{mk}(1 - \hat p_{mk})$. ("I really should have looked up where the name comes from … Ginny is like a cute name. I don't know.")
+- **[[classification-tree|Cross-entropy]]**: $-\sum_k \hat p_{mk} \log \hat p_{mk}$. From information theory / thermodynamics, "originally … Napoleonic Wars and things, and steam engines."
 
 Why not just use misclassification error? Two reasons:
 

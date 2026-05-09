@@ -9,13 +9,10 @@ topics:
   - logistic-regression
   - logit-link
   - bernoulli-distribution
-  - maximum-likelihood
+  - least-squares-and-mle
   - newtons-method
-  - odds
-  - odds-ratio
-  - bayes-classifier
-  - bayes-decision-boundary
-  - bayes-error-rate
+  - odds-and-log-odds
+  - discriminant-score-and-decision-boundary
   - misclassification-rate
   - knn-classification
   - curse-of-dimensionality
@@ -29,7 +26,7 @@ aliases:
 
 # L07 — Classification 1
 
-Substitute lecture: a PhD student from Ben's group covers the first half of module 4 (Ben is in Oslo). He motivates classification via the `Default` credit-card dataset, shows why naive linear regression on a 0/1 response is unsatisfying, then walks through [[logistic-regression]] end-to-end (model, link function, MLE, odds-ratio interpretation, prediction). Closes with the [[bayes-classifier]], the test/train error setup, and [[knn-classification]]. Stops short of LDA/QDA, which Ben will pick up next time. The substitute speaks fast and "tells less stories" than Ben — denser but lower on personality signals.
+Substitute lecture: a PhD student from Ben's group covers the first half of module 4 (Ben is in Oslo). He motivates classification via the `Default` credit-card dataset, shows why naive linear regression on a 0/1 response is unsatisfying, then walks through [[logistic-regression]] end-to-end (model, link function, MLE, odds-ratio interpretation, prediction). Closes with the [[classification-setup|Bayes classifier]], the test/train error setup, and [[knn-classification]]. Stops short of LDA/QDA, which Ben will pick up next time. The substitute speaks fast and "tells less stories" than Ben — denser but lower on personality signals.
 
 ## Key takeaways
 
@@ -39,7 +36,7 @@ Substitute lecture: a PhD student from Ben's group covers the first half of modu
 - It's still called a "linear model" because the linear predictor η is linear in the βs even though p(η) is not.
 - MLE has **no closed form**; you solve the score equations numerically with **Newton's method** (Newton–Raphson / Fisher scoring).
 - Coefficients interpret as **log odds-ratios**: increasing xⱼ by one unit multiplies the odds by exp(βⱼ). This is *the* story for reading logistic-regression output.
-- The [[bayes-classifier]] (assign to argmax pₖ(x)) has the smallest test error rate — the **base error rate** is the classification analogue of irreducible error.
+- The [[classification-setup|Bayes classifier]] (assign to argmax pₖ(x)) has the smallest test error rate — the **base error rate** is the classification analogue of irreducible error.
 - KNN: non-parametric, hyperparameter K, majority vote among the K nearest neighbors (Euclidean by default). Suffers from **curse of dimensionality** and is hard to interpret per-covariate.
 - Two paradigms for estimating Pr(Y = k | X): **diagnostic** (logistic, KNN — model the posterior directly) vs **sampling / generative** (LDA, QDA — model class-conditional densities + prior, flip via Bayes).
 
@@ -94,7 +91,7 @@ A student asks **why this link function specifically** — is it just convenient
 
 ### Maximum likelihood estimation
 
-Estimate the βs by [[maximum-likelihood]]. Likelihood is a product of Bernoulli pmfs:
+Estimate the βs by [[least-squares-and-mle|maximum likelihood]]. Likelihood is a product of Bernoulli pmfs:
 
 $$L(\boldsymbol\beta) = \prod_i p_i^{y_i}(1 - p_i)^{1-y_i},$$
 
@@ -163,7 +160,7 @@ Interactions work exactly as in linear regression — include x₁, x₂, and x�
 
 We've estimated p(x) = Pr(Y | X) with logistic regression, but haven't said precisely how to *use* this for classification beyond "0.5 is probably a decent cutoff."
 
-The [[bayes-classifier]] makes that precise: **assign each observation to the most likely class given its predicted values**. In binary, that's the 0.5 cutoff. For K classes, it's argmaxₖ pₖ(x).
+The [[classification-setup|Bayes classifier]] makes that precise: **assign each observation to the most likely class given its predicted values**. In binary, that's the 0.5 cutoff. For K classes, it's argmaxₖ pₖ(x).
 
 ### Bayes error rate (the irreducible error of classification)
 
@@ -249,7 +246,7 @@ Estimate it indirectly. Model:
 - Class-conditional densities **fₖ(x) = Pr(X = x | Y = k)** — the distribution of the covariates *within* each class.
 - Class **priors** πₖ = Pr(Y = k) — usually estimated as nₖ / n.
 
-Then flip via [[bayes-theorem]]:
+Then flip via Bayes' theorem:
 
 $$\Pr(Y = k \mid X = x) = \frac{f_k(x)\,\pi_k}{\sum_l f_l(x)\,\pi_l}.$$
 

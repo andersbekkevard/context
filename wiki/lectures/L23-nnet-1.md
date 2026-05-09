@@ -8,15 +8,10 @@ topics:
   - feedforward-network
   - hidden-layer
   - activation-functions
-  - relu
-  - sigmoid
-  - softmax
   - mnist
   - universal-approximation
-  - cross-entropy-loss
-  - gradient-descent
-  - stochastic-gradient-descent
-  - mini-batch
+  - nn-loss-functions
+  - gradient-descent-and-sgd
   - backpropagation
 tags:
   - lecture
@@ -27,7 +22,7 @@ aliases:
 
 # L23 — Neural Networks 1 (Feedforward)
 
-The prof opened Module 11 by laying out the anatomy of a [[feedforward-network]] (inputs, hidden layers with weights/biases, output), wrote out the nested equation, motivated non-linear activation functions ([[sigmoid]] → [[relu]] → GELU), introduced [[softmax]] for categorical outputs, stated the [[universal-approximation]] property, and ended with loss functions and optimization (gradient descent, [[stochastic-gradient-descent]], [[mini-batch]] with its implicit L2 regularization). Got through about half the deck — finishes tomorrow.
+The prof opened Module 11 by laying out the anatomy of a [[feedforward-network]] (inputs, hidden layers with weights/biases, output), wrote out the nested equation, motivated non-linear activation functions ([[activation-functions|sigmoid]] → [[activation-functions|relu]] → GELU), introduced [[activation-functions|softmax]] for categorical outputs, stated the [[universal-approximation]] property, and ended with loss functions and optimization (gradient descent, [[gradient-descent-and-sgd|stochastic gradient descent]], [[gradient-descent-and-sgd|mini-batch]] with its implicit L2 regularization). Got through about half the deck — finishes tomorrow.
 
 > [!note] Prof's editorial framing
 > "Today we're going to talk about feed-forward networks neural networks which are really fun which should have been like the bulk of the course honestly … the PCA part was boring as was the clustering totally irrelevant … I think it'd be way more interesting to talk more about neural networks and like kind of the interesting tricks that they figured out and kind of a statistical perspective on those." Module 11 is where he wishes the course lived.
@@ -89,7 +84,7 @@ Multilayer feedforward nets behave like single-layer ones — "you just repeat t
 
 - Continuous (real-valued) — regression.
 - Binary.
-- Categorical via **one-hot encoding** ("if you want to have three outcomes" → three output nodes, each a class). Combined with [[softmax]].
+- Categorical via **one-hot encoding** ("if you want to have three outcomes" → three output nodes, each a class). Combined with [[activation-functions|softmax]].
 
 The categorical trick: "instead of having to actually model a binary variable directly, you can use … something called a softmax, which is a function. So another set of tricks that another thing that machine learning has been really good at is finding funny-looking functions that behave really well."
 

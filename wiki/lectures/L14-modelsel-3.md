@@ -14,7 +14,7 @@ topics:
   - principal-component-regression
   - principal-component-analysis
   - partial-least-squares
-  - multicollinearity
+  - collinearity
   - cross-validation
   - bias-variance-tradeoff
 tags:
@@ -152,7 +152,7 @@ This **constrains the coefficients of the standard linear regression** — you'v
 
 ### Why bother — the multicollinearity angle
 
-If two $X_j$'s are nearly identical (or strongly correlated more generally — **[[multicollinearity]]**), the OLS fit can't tell them apart. *"Parameters can trade off of each other, which is bad."* You get many near-equivalent solutions, high coefficient variance, terrible generalization.
+If two $X_j$'s are nearly identical (or strongly correlated more generally — **[[collinearity|multicollinearity]]**), the OLS fit can't tell them apart. *"Parameters can trade off of each other, which is bad."* You get many near-equivalent solutions, high coefficient variance, terrible generalization.
 
 > "Even if you only have three [predictors], if two of them are identical, the model's not going to fit. They're not identical, but very close — which is this issue called multicollinearity."
 
@@ -233,7 +233,7 @@ This shows up on the slide as a bullet too. **Standardize, then PCA.**
 
 ## PCA's relationship to multicollinearity
 
-Three ways the course has now offered to deal with [[multicollinearity]]:
+Three ways the course has now offered to deal with [[collinearity|multicollinearity]]:
 
 - **L1 (lasso)**: pick one of the correlated variables, zero out the others.
 - **L2 (ridge)**: hold both back, share the load. *"Creates like a tug of war between the two — neither one — it penalizes both of them getting bigger, so it kind of holds them back."*

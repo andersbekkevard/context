@@ -7,9 +7,7 @@ slides: modules/6ModelSel/selection_regularization_presentation_lecture1.md
 topics:
   - bias-variance-tradeoff
   - subset-selection
-  - forward-stepwise
-  - backward-stepwise
-  - mallows-cp
+  - aic-bic-conceptual
   - ridge-regression
   - lasso
   - elastic-net
@@ -25,7 +23,7 @@ aliases:
 
 # L13 — Model Selection and Regularization 2 (Ridge)
 
-Session 2 of module 6. The prof reframes the whole module as **"reducing the variance,"** revisits the [[bias-variance-tradeoff]] from week 1 to motivate why penalising parameters helps, briefly notes [[mallows-cp]] (penalty $\propto$ expected variance increase per added parameter — not examinable), then walks through [[ridge-regression]] (L2) and [[lasso]] (L1) end-to-end: formulation, the lambda sweep, the figures, what each shape of penalty does to the geometry of the solution, and finishes with [[elastic-net]] as the practical compromise. The geometric "ellipse-meets-diamond" picture is the climax of the lecture.
+Session 2 of module 6. The prof reframes the whole module as **"reducing the variance,"** revisits the [[bias-variance-tradeoff]] from week 1 to motivate why penalising parameters helps, briefly notes [[aic-bic-conceptual|Mallow's Cp]] (penalty $\propto$ expected variance increase per added parameter — not examinable), then walks through [[ridge-regression]] (L2) and [[lasso]] (L1) end-to-end: formulation, the lambda sweep, the figures, what each shape of penalty does to the geometry of the solution, and finishes with [[elastic-net]] as the practical compromise. The geometric "ellipse-meets-diamond" picture is the climax of the lecture.
 
 ## Key takeaways
 
@@ -71,16 +69,16 @@ Notation: $p$ is the total number of regressors you *could* include; $d \leq p$ 
 
 Three families for picking $d$ out of $p$ parameters, all judged by [[cross-validation]]:
 
-- [[best-subset-selection]] — try every combination of $d$ predictors, pick the best. Combinatorial — $2^p$ models.
-- [[forward-stepwise]] — start with one parameter; greedy add the best next predictor; **always keep prior decisions**. Not guaranteed to find the global optimum but "often does pretty well."
-- [[backward-stepwise]] — start with all $p$; greedy remove. Same caveat.
+- [[subset-selection|best subset selection]] — try every combination of $d$ predictors, pick the best. Combinatorial — $2^p$ models.
+- [[subset-selection|forward stepwise]] — start with one parameter; greedy add the best next predictor; **always keep prior decisions**. Not guaranteed to find the global optimum but "often does pretty well."
+- [[subset-selection|backward stepwise]] — start with all $p$; greedy remove. Same caveat.
 - **Hybrid (forward-then-backward)** — can reverse decisions; go forward, then backward, then forward again until satisfied. "Often works well. I don't know why you don't see it that often in published articles. At least intuitively it works well."
 
 None of the greedy methods are guaranteed to find the right model.
 
 ### Mallow's $C_p$ aside (not examinable)
 
-Mentioned just to share an intuition. The penalty term in [[mallows-cp]] of the form $2 d$ — where $d$ is the number of parameters in the candidate model and $p$ is the total available — is, derivation aside, *literally* the expected increase in variance from adding one parameter. So the penalty is making the variance term explicit in the objective.
+Mentioned just to share an intuition. The penalty term in [[aic-bic-conceptual|Mallow's Cp]] of the form $2 d$ — where $d$ is the number of parameters in the candidate model and $p$ is the total available — is, derivation aside, *literally* the expected increase in variance from adding one parameter. So the penalty is making the variance term explicit in the objective.
 
 > "Their derivations are beyond the scope of the course and they all kind of suck in different ways. People use them, but whatever. I don't want to go through that whole story again."
 

@@ -9,23 +9,23 @@ topics:
   - exam-scope
   - bias-variance-tradeoff
   - linear-regression
-  - interactions
+  - categorical-encoding-and-interactions
   - lasso
   - neural-networks
-  - relu
+  - activation-functions
   - logistic-regression
-  - odds
+  - odds-and-log-odds
   - smoothing-splines
-  - pca
+  - principal-component-analysis
   - hierarchical-clustering
   - cross-validation
   - boosting
-  - gam
+  - generalized-additive-models
   - sensitivity-specificity
-  - roc-curve
+  - roc-auc
   - knn
   - random-forest
-  - maximum-likelihood
+  - least-squares-and-mle
 tags:
   - lecture
   - module/12-final
@@ -119,7 +119,7 @@ The lasso correct answer: less flexible than LS, improved accuracy when the incr
 
 ### Q3b — Neural network parameter count + forward pass
 
-Given a feed-forward [[neural-network]] with stated input/hidden/output sizes: "How many weights total, including biases?" Then: given specific weight values, inputs, and a [[relu]] activation, compute the output of the neuron.
+Given a feed-forward [[feedforward-network|neural network]] with stated input/hidden/output sizes: "How many weights total, including biases?" Then: given specific weight values, inputs, and a [[activation-functions|relu]] activation, compute the output of the neuron.
 
 > [!note] Question is technically ambiguous
 > "Actually, this is a good example of where the question is technically wrong … you could technically have skip connections, or connections between neurons within a layer. So here you could say, 'just to be clear, I'm assuming a feed-forward network,' even though I think everyone would."
@@ -146,7 +146,7 @@ Increasing $\lambda$ on a [[smoothing-splines|smoothing spline]] does **not** ma
 
 ### Q3e — PCA: explained variance + loadings
 
-Five standardized variables, [[pca|PCA]] gives PCs with explained variances and loadings. Three sub-questions:
+Five standardized variables, [[principal-component-analysis|PCA]] gives PCs with explained variances and loadings. Three sub-questions:
 1. Total variance explained by the first 4 components → just sum the four eigenvalue ratios.
 2. Number of PCs needed for 90% of total variance → cumulative sum: 0.54 + 0.30 = 0.84 (not enough), +0.10 → past 0.90, so **3 PCs**.
 3. Compute the score for a given observation on a given PC → plug observation into the loading vector.
@@ -216,7 +216,7 @@ He'll give you the test MSE that boosting achieved (smaller than linear regressi
 
 ### Q6d — GAM with B-splines
 
-[[gam|Generalized additive models]] = sums of splines on different variables. Fair questions:
+[[generalized-additive-models|Generalized additive models]] = sums of splines on different variables. Fair questions:
 - How many degrees of freedom does this B-spline have/consume? (count the knots)
 - Compare the GAM test MSE to other models (boosting wins, GAM beats plain regression).
 
@@ -235,7 +235,7 @@ Key gotcha: figure out the encoding (here male=1, female=2; default=male if sex=
 
 - **Define** [[sensitivity-specificity|sensitivity and specificity]] in plain English **for this specific model** (sensitivity = ability to identify defaulters; specificity = ability to identify non-defaulters).
 - **Write the equation** rather than computing — the formula counts as the answer.
-- He'll show the [[roc-curve|ROC curve]] and ask what it means / how to interpret it.
+- He'll show the [[roc-auc|ROC curve]] and ask what it means / how to interpret it.
 
 ### Q7 cont. — KNN classifier (limited reformulation)
 
@@ -259,7 +259,7 @@ Given the distribution of `default` (heavily imbalanced — most are zero), a na
 
 The example he showed: assume an additive Gaussian error model $y = f(x; \theta) + \varepsilon$ with $\varepsilon \sim N(0, \sigma^2)$. **Show that maximum likelihood and least squares are equivalent in $\theta$.**
 
-Sketch: write the [[maximum-likelihood|log-likelihood]] of $y_i = f(x_i;\theta) + \varepsilon_i$ under Gaussian noise:
+Sketch: write the [[least-squares-and-mle|log-likelihood]] of $y_i = f(x_i;\theta) + \varepsilon_i$ under Gaussian noise:
 
 $$\log L(\theta) = -\frac{n}{2}\log(2\pi\sigma^2) - \frac{1}{2\sigma^2}\sum_i (y_i - f(x_i;\theta))^2$$
 

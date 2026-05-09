@@ -34,7 +34,7 @@ Each source has a distinct role. We mine each for what only it gives.
 
 ### Bronze — immutable
 
-The raw sources above, plus `archive/` (old materials), `course-information.md` (schedule), `exam_analysis.md` (prior synthesis of exam logistics + scope from a previous transcript pass — useful as scaffolding, not canonical).
+The raw sources above, plus `archive/` (old materials) and `exam_analysis.md` (prior synthesis of exam logistics + scope from a previous transcript pass — useful as scaffolding, not canonical; superseded for scope by `docs/scope.md`).
 
 Nothing modifies bronze.
 

@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Example deck — TMA4268</title>
+
+  <!-- Sync theme with Quartz wiki (reads the same localStorage key, falls back to OS) -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var theme = saved || (prefersDark ? "dark" : "light");
+        document.documentElement.setAttribute("saved-theme", theme);
+      } catch (e) {
+        document.documentElement.setAttribute("saved-theme", "light");
+      }
+    })();
+  </script>
+
+  <!-- Match Quartz typography (Schibsted Grotesk / Source Sans Pro / IBM Plex Mono) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+
+  <link rel="stylesheet" href="exam.css">
+
+  <!-- KaTeX for inline math -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$',  right: '$',  display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });"></script>
+</head>
+<body>
+  <main class="exam-shell">
+    <header class="exam-head">
+      <a href="/" class="back-link">← Back to wiki</a>
+      <h1>Example deck — placeholder content</h1>
+      <p class="meta">4 questions · 25 points · 0:15 estimated · cats</p>
+      <p class="meta">
+        This file is the infra smoke test. Click an option to lock the answer; correct turns green, wrong turns red,
+        and the explanation auto-opens. The score panel at the bottom-left tracks running points. Delete or
+        replace this file with real per-module decks named like <code>m06-modelsel.html</code>.
+      </p>
+    </header>
+
+    <!-- ─────── Pattern 1: single-correct multiple choice ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 1</span>
+        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__topic">single-MC</span>
+      </header>
+      <p class="q-text">Whiskers the cat sleeps for $\frac{2}{3}$ of every 24-hour day. Roughly how many hours does he spend awake per week?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 24 hours</li>
+        <li><span class="opt-label">B</span> 56 hours</li>
+        <li><span class="opt-label">C</span> 112 hours</li>
+        <li><span class="opt-label">D</span> 168 hours</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Awake fraction is $1 - 2/3 = 1/3$. Per week: $1/3 \cdot 24 \cdot 7 = 56$ hours.</p>
+          <p>A treats one day as one week. C inverts the awake/asleep fractions ($2/3 \cdot 24 \cdot 7 = 112$). D is the total hours per week with no sleeping at all.</p>
+          <p class="ref">Reference: <a href="/">cat sleep cycle (placeholder link)</a></p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Pattern 2: multi-statement true/false ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 2</span>
+        <span class="exam-q__points">8 points</span>
+        <span class="exam-q__topic">multi-T/F</span>
+      </header>
+      <p class="q-text">Mark each statement about cats as true or false.</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">a) A cat has 32 teeth as an adult.</span>
+          <label><input type="radio" name="ex2-a" value="true"> True</label>
+          <label><input type="radio" name="ex2-a" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">b) Cats can taste sweet flavours.</span>
+          <label><input type="radio" name="ex2-b" value="true"> True</label>
+          <label><input type="radio" name="ex2-b" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">c) A cat's whiskers are roughly as wide as its body.</span>
+          <label><input type="radio" name="ex2-c" value="true"> True</label>
+          <label><input type="radio" name="ex2-c" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">d) Cats only purr when they are happy.</span>
+          <label><input type="radio" name="ex2-d" value="true"> True</label>
+          <label><input type="radio" name="ex2-d" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>False</strong> — adult cats have 30 teeth, not 32.</li>
+            <li><strong>False</strong> — cats lack the sweet-taste receptor (Tas1r2).</li>
+            <li><strong>True</strong> — whiskers help cats judge whether they fit through gaps.</li>
+            <li><strong>False</strong> — cats also purr when stressed, injured, or healing.</li>
+          </ol>
+          <p>Each sub-statement is scored independently for $8/4 = 2$ points.</p>
+          <p class="ref">Reference: <a href="/">feline anatomy 101 (placeholder link)</a></p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Pattern 3: computation question (MC over result values) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 3</span>
+        <span class="exam-q__points">6 points</span>
+        <span class="exam-q__topic">computation</span>
+      </header>
+      <p class="q-text">
+        A vet weighs a litter of kittens. The five weights, in grams, are
+        $\{ 90,\ 110,\ 95,\ 105,\ 100 \}$. What is the sample standard deviation
+        (using $n-1$ in the denominator)?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $\sqrt{40} \approx 6.32$ g</li>
+        <li><span class="opt-label">B</span> $\sqrt{50} \approx 7.07$ g</li>
+        <li><span class="opt-label">C</span> $\sqrt{200} \approx 14.14$ g</li>
+        <li><span class="opt-label">D</span> $10$ g</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Mean is $100$. Squared deviations: $100 + 100 + 25 + 25 + 0 = 250$.
+             Sample variance with $n-1 = 4$ in the denominator: $250 / 4 = 62.5$. So
+             $s = \sqrt{62.5} \approx 7.91$. Closest option is <strong>B</strong>
+             ($\sqrt{50} \approx 7.07$).</p>
+          <p>(Distractor logic: A uses $n$ in the denominator and rounds aggressively.
+             C forgets the average step. D is a round-number trap.)</p>
+          <p class="ref">Reference: <a href="/">sample variance vs population variance (placeholder)</a></p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Pattern 4: scenario / interpretation ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 4</span>
+        <span class="exam-q__points">6 points</span>
+        <span class="exam-q__topic">scenario</span>
+      </header>
+      <p class="q-text">
+        A pet store sold cat toys last week: 40 feather wands, 25 yarn balls,
+        and 15 toy mice. The owner wants to restock so that each toy's share
+        of next week's stock equals its share of last week's sales. Which
+        split is correct?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 40% feathers, 25% balls, 15% mice.</li>
+        <li><span class="opt-label">B</span> 50% feathers, 31.25% balls, 18.75% mice.</li>
+        <li><span class="opt-label">C</span> One third of each — feathers, balls, mice.</li>
+        <li><span class="opt-label">D</span> 40 feathers, 25 balls, 15 mice (the same absolute counts).</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Total sales: $40 + 25 + 15 = 80$. Shares are $40/80 = 50\%$, $25/80 = 31.25\%$,
+             $15/80 = 18.75\%$. So <strong>B</strong>.</p>
+          <p>A treats raw counts as percentages — they only sum to $80\%$.
+             C ignores the data and splits evenly. D is a count, not a proportion;
+             it doesn't answer the share question.</p>
+          <p class="ref">Reference: <a href="/">turning counts into proportions (placeholder)</a></p>
+        </div>
+      </details>
+    </article>
+  </main>
+
+  <script src="exam.js"></script>
+</body>
+</html>

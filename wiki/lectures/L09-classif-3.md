@@ -7,8 +7,8 @@ slides: modules/4Classif/4Classif.md
 topics:
   - linear-discriminant-analysis
   - quadratic-discriminant-analysis
-  - bayes-classifier
-  - discriminant-score
+  - classification-setup
+  - discriminant-score-and-decision-boundary
   - confusion-matrix
   - multivariate-normal
   - pooled-covariance
@@ -16,7 +16,7 @@ topics:
   - sensitivity-specificity
   - roc-auc
   - logistic-regression
-  - k-nearest-neighbors
+  - knn-classification
   - bias-variance-tradeoff
 tags:
   - lecture
@@ -27,11 +27,11 @@ aliases:
 
 # L09 — Classification 3
 
-The prof wraps up module 4 by finishing [[linear-discriminant-analysis]] (1D recap, then multivariate), introducing [[quadratic-discriminant-analysis]] as "what happens when you stop pooling the covariance," then comparing all five classifiers (logistic, KNN, LDA, QDA, naive Bayes). He flags multiple "good exam questions" along the way — most of them about deriving the [[discriminant-score]] or solving for the [[decision-boundary]]. Ends with a first pass at [[sensitivity-specificity]] / confusion matrices, which spills into next week.
+The prof wraps up module 4 by finishing [[linear-discriminant-analysis]] (1D recap, then multivariate), introducing [[quadratic-discriminant-analysis]] as "what happens when you stop pooling the covariance," then comparing all five classifiers (logistic, KNN, LDA, QDA, naive Bayes). He flags multiple "good exam questions" along the way — most of them about deriving the [[discriminant-score-and-decision-boundary|discriminant score]] or solving for the [[discriminant-score-and-decision-boundary|decision boundary]]. Ends with a first pass at [[sensitivity-specificity]] / confusion matrices, which spills into next week.
 
 ## Key takeaways
 
-- **LDA recap**: model $P(X|Y)$ as Gaussian with class-specific means but **pooled** variance, plus class priors $\pi_k$. Apply Bayes. Take logs and drop terms without $k$ → linear [[discriminant-score]] $\delta_k(x)$. Decision boundary: equate $\delta_k(x) = \delta_\ell(x)$ and solve for $x$.
+- **LDA recap**: model $P(X|Y)$ as Gaussian with class-specific means but **pooled** variance, plus class priors $\pi_k$. Apply Bayes. Take logs and drop terms without $k$ → linear [[discriminant-score-and-decision-boundary|discriminant score]] $\delta_k(x)$. Decision boundary: equate $\delta_k(x) = \delta_\ell(x)$ and solve for $x$.
 - **"That would be a typical exam question"** — given $\pi_k$, $\mu_k$, $\sigma$ for an LDA setting, **solve for the decision boundary**. The prof said this twice. Also good: derive the discriminant score from the Gaussian (show where the $x^2$ drops out in LDA, where it survives in QDA).
 - **QDA = LDA without pooling.** Sigma becomes class-specific → the $x^\top \Sigma_k^{-1} x$ term no longer cancels across $k$ → discriminant is **quadratic in $x$** → boundaries are curves, not lines. More flexible, more parameters, more prone to overfit.
 - **Confusion matrix**: in-sample (training) error is misleadingly low because of overfit. **Bayes-optimal does worse than fitted LDA on training data, but better out of sample.** Bias–variance trade-off again.
@@ -41,7 +41,7 @@ The prof wraps up module 4 by finishing [[linear-discriminant-analysis]] (1D rec
 
 ## Recap: where we are in module 4
 
-Three methods so far: [[logistic-regression]] (model $P(Y|X)$ directly via the sigmoid; Bernoulli likelihood), [[k-nearest-neighbors]] (non-parametric, very flexible boundary, but suffers in high $D$), and [[linear-discriminant-analysis]] which uses Bayes' theorem to flip the problem:
+Three methods so far: [[logistic-regression]] (model $P(Y|X)$ directly via the sigmoid; Bernoulli likelihood), [[knn-classification|k-nearest neighbors]] (non-parametric, very flexible boundary, but suffers in high $D$), and [[linear-discriminant-analysis]] which uses Bayes' theorem to flip the problem:
 
 $$P(Y|X) = \frac{P(X|Y) \, P(Y)}{P(X)}$$
 
@@ -95,7 +95,7 @@ Take the log of $\pi_k f_k(x)$ with $f_k$ Gaussian. Throw away **everything that
 
 $$\delta_k(x) = x \cdot \frac{\mu_k}{\sigma^2} - \frac{\mu_k^2}{2\sigma^2} + \log \pi_k$$
 
-This is the [[discriminant-score]]. **Linear in $x$**. Bigger $\delta_k$ wins.
+This is the [[discriminant-score-and-decision-boundary|discriminant score]]. **Linear in $x$**. Bigger $\delta_k$ wins.
 
 > "That would be another question one could ask if I was so inspired — show that this leads to this thing. I don't know if that's a very interesting question to ask, but one could ask it."
 
@@ -140,7 +140,7 @@ Now $X \in \mathbb{R}^p$ — many predictors. Replace the 1D Gaussian with a **m
 
 $$f_k(x) = \frac{1}{(2\pi)^{p/2} |\Sigma|^{1/2}} \exp\!\left(-\tfrac{1}{2} (x - \mu_k)^\top \Sigma^{-1} (x - \mu_k)\right)$$
 
-Same idea, lowercase $\sigma$ → uppercase $\Sigma$ ([[covariance-matrix]]), and $\mu_k$ becomes a $p$-vector. Still pooled across classes.
+Same idea, lowercase $\sigma$ → uppercase $\Sigma$ ([[random-vector-and-covariance|covariance matrix]]), and $\mu_k$ becomes a $p$-vector. Still pooled across classes.
 
 Plug into Bayes, take logs, kill anything without $k$, and the discriminant becomes:
 
@@ -195,7 +195,7 @@ This works because total probability has to equal 1.
 
 ## Quadratic Discriminant Analysis (QDA)
 
-Drop the pooled-variance assumption. Each class gets its own [[covariance-matrix]] $\Sigma_k$. Everything else identical: still multivariate Gaussian for $f_k$, still estimate $\pi_k$ from frequencies, still apply Bayes.
+Drop the pooled-variance assumption. Each class gets its own [[random-vector-and-covariance|covariance matrix]] $\Sigma_k$. Everything else identical: still multivariate Gaussian for $f_k$, still estimate $\pi_k$ from frequencies, still apply Bayes.
 
 The consequence is in the discriminant. The Gaussian's quadratic term is $-\tfrac{1}{2} x^\top \Sigma_k^{-1} x$. Before, $\Sigma$ had no $k$, so this term was constant across classes and we threw it away. **Now it depends on $k$ and we have to keep it.** The discriminant becomes:
 
@@ -244,7 +244,7 @@ QDA fits training data slightly better (as it must — strictly more flexible) b
 
 The same Bayesian-discriminant machinery generalizes:
 
-- **Naive Bayes**: assume the [[covariance-matrix]] is **diagonal** — the predictors are conditionally independent given the class. Drops all off-diagonal covariance parameters. *"You toss all the diagonal things, but you could still keep K"* — meaning you keep class-specific diagonal variances. Many fewer parameters.
+- **Naive Bayes**: assume the [[random-vector-and-covariance|covariance matrix]] is **diagonal** — the predictors are conditionally independent given the class. Drops all off-diagonal covariance parameters. *"You toss all the diagonal things, but you could still keep K"* — meaning you keep class-specific diagonal variances. Many fewer parameters.
 - **Other density choices**: nothing forces $f_k$ to be Gaussian. You could substitute a Student-$t$ or any density you have prior reason to use. The Bayes math still works.
 
 Naive Bayes is *"optimal or popular when $p$ is large"* because of the parameter count — fewer things to estimate, more robust. Same bias-variance argument.
@@ -253,7 +253,7 @@ Naive Bayes is *"optimal or popular when $p$ is large"* because of the parameter
 
 The lecture's closing synthesis. Five methods, three direct ($P(Y|X)$ explicit) and two indirect (via Bayes):
 
-- **Direct**: [[logistic-regression]], [[k-nearest-neighbors]].
+- **Direct**: [[logistic-regression]], [[knn-classification|k-nearest neighbors]].
 - **Indirect (via Bayes)**: LDA, QDA, naive Bayes.
 
 When to use what — picked by **which assumptions are met**:
@@ -266,7 +266,7 @@ When to use what — picked by **which assumptions are met**:
 
 > "The annoying thing about statistics is you don't really know when to use what."
 
-The escape: estimate generalization performance directly from data instead of arguing from assumptions — exactly the QDA-vs-LDA test-error comparison we just did. **That's the bridge into module 5 next week** ([[cross-validation]] and [[resampling-methods]]).
+The escape: estimate generalization performance directly from data instead of arguing from assumptions — exactly the QDA-vs-LDA test-error comparison we just did. **That's the bridge into module 5 next week** ([[cross-validation]] and resampling methods).
 
 ## Sensitivity, specificity, ROC — first pass
 

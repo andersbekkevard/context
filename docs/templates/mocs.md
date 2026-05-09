@@ -31,6 +31,9 @@ tags:
 ### Standard sections (in this order)
 
 ```markdown
+## Practice
+- <a href="/decks/m<NN>-<slug>.html" target="_blank" rel="noopener">Practice this module</a> — interactive MCQ deck covering this module's atoms (opens in new tab)
+
 ## Lectures
 - [[L<NN>-<slug>]] — <one-line, what this lecture covers in this module>
 - [[L<NN>-<slug>]] — <one-line>
@@ -54,6 +57,10 @@ tags:
 ## ISLR pointer
 Chapter <N>: <title>. The deep treatment of in-scope concepts in this module is in `book/<NN>-<slug>.md`. Specific atoms carry section-level `isl-ref:` pointers.
 ```
+
+The `## Practice` link points at the per-module MCQ deck served by the `web/` layer. The file may not exist yet — that's fine; the link is a forward declaration. When the deck is generated (see `web/prompts/deck-generation.md`), the link resolves automatically. Module 12 has no atoms and no deck — omit the section there.
+
+The link uses raw HTML with `target="_blank" rel="noopener"` rather than markdown link syntax. Decks are static pages outside Quartz's rendering pipeline; if you let Quartz's SPA router intercept the navigation, the deck loads with the wrong stylesheet until you hit refresh. Opening in a new tab forces a fresh page load.
 
 ## Filename
 
@@ -85,6 +92,9 @@ tags:
 # Module 06 — Model Selection and Regularization
 
 The prof's "central trick of statistical learning" module. Heavy ridge / lasso / PCR / PCA treatment across four lectures (Feb 23, 24, Mar 2, 3). The prof distrusts AIC/BIC/Cp and prefers cross-validation.
+
+## Practice
+- <a href="/decks/m06-modelsel.html" target="_blank" rel="noopener">Practice this module</a> — interactive MCQ deck covering this module's atoms (opens in new tab)
 
 ## Lectures
 - [[L12-modelsel-1]] — subset selection (best/forward/backward), shrinkage motivation

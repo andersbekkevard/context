@@ -1,4 +1,4 @@
-# TMA4268 — exam-prep context bank
+# TMA4268: exam-prep context bank
 
 Final exam: **2026-05-18**. Open-book, 4 hours.
 
@@ -36,10 +36,9 @@ Strengthened by the prof's own emphasis: **"especially the exercises."**
 1. This file — orientation (already loaded).
 2. [[docs/scope]] — canonical scope authority. Always load when scope is in question.
 3. [[exam_analysis]] — useful synthesis (tier rankings, direction-of-effect traps, dataset templates, procedural templates, opinionated takes). NOT canonical for scope; load for the synthesis content only.
-4. [[course-information]] — schedule + curriculum.
-5. [[wiki/README]] — module index.
-6. Relevant MOC → relevant atom(s) → relevant lecture(s). Drop into bronze (`transcripts/`, `modules/`, `exercises/`) only to verify a quote.
-7. `qmd` on the "exam" collection as secondary search when you can't pinpoint the right wiki file by name.
+4. [[wiki/README]] — module index.
+5. Relevant MOC → relevant atom(s) → relevant lecture(s). Drop into bronze (`transcripts/`, `modules/`, `exercises/`) only to verify a quote.
+6. `qmd` on the "exam" collection as secondary search when you can't pinpoint the right wiki file by name.
 
 ## Typical journey
 
@@ -78,3 +77,4 @@ The full system is documented in `docs/`:
 - [[docs/templates/lectures]], [[docs/templates/concepts]] — canonical page shapes
 - [[docs/lectures-manifest]] — deterministic transcript-to-lecture mapping
 - [[docs/concepts-manifest]] — deterministic atom-to-module mapping (produced by inventory pass)
+- [[web/README]] — practice layer: Quartz renders the wiki, hand-authored per-module MCQ decks at `web/static/decks/`. See [[web/templates/deck]] + [[web/prompts/deck-generation]] for the deck spec and agent brief.
