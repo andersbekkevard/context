@@ -113,7 +113,7 @@ A [[random-vector-and-covariance|random vector]] **X** is a p-dimensional vector
 - Cork-deposit weights in 4 directions (N, E, S, W): the running dataset for the lecture.
 - Body-fat predictors: BMI, age, weight, hip circumference.
 
-You stack n samples to get an n × p data matrix. There's a **joint distribution** f(x) over the whole vector, and you can **marginalize** by integrating over all but one coordinate to get f₁(x₁). "*The idea of integrating over the rest of the things and getting the marginal — it's very much calculus, simple calculus.*"
+You stack n samples to get an n × p data matrix. There's a **joint distribution** f(x) over the whole vector, and you can **marginalize** by integrating over all but one coordinate to get f₁(x₁). "*The idea of integrating over the rest of the things and getting the marginal - it's very much calculus, simple calculus.*"
 
 He's not going into much depth here, assumes you've seen this before in introductory stats.
 
@@ -220,7 +220,7 @@ Reduce to p = 1 and you get the univariate density back; "*you have to go really
 ### The key connection to regression
 
 > [!quote] Why we're doing this
-> "Do you guys know the relationship between the normal distribution and regression? … If you minimize the normal distribution — if you assume your data is normally distributed and you have it the mean parameterized by some model — then that's equivalent to linear regression. So this multivariate case is a way of understanding how we do regression in multiple variables."
+> "Do you guys know the relationship between the normal distribution and regression? … If you minimize the normal distribution - if you assume your data is normally distributed and you have it the mean parameterized by some model - then that's equivalent to linear regression. So this multivariate case is a way of understanding how we do regression in multiple variables."
 
 This is the bridge to module 3. Everything set up today (vectors, Σ, multivariate normal) is the language for multiple linear regression.
 
@@ -235,7 +235,7 @@ For the spectral / geometric understanding of these contours, "*you take this Li
 
 ## Cut-off: contour exercise
 
-The prof started showing contour plots — pairs of variables with different Σ patterns, asking students to match contours to covariance matrices — and ran out of time mid-exercise:
+The prof started showing contour plots (pairs of variables with different Σ patterns, asking students to match contours to covariance matrices) and ran out of time mid-exercise:
 
 > "We're going to call it a day here just because slides are different than I expected, so I'm a bit confused about what I'm saying. … We'll come back to this tomorrow."
 

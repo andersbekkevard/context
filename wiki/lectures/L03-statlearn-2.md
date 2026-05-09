@@ -220,7 +220,7 @@ $$2 \cdot \big(f(x_0) - \mathbb{E}[\hat f(x_0)]\big) \cdot \mathbb{E}\!\left[\ma
 
 is **zero**, because E[E[f̂(x₀)] − f̂(x₀)] = E[f̂(x₀)] − E[f̂(x₀)] = 0.
 
-> "We don't like cross terms — it's too much work to keep track of them. So conveniently we now have what's going on, we now have just those first two terms."
+> "We don't like cross terms - it's too much work to keep track of them. So conveniently we now have what's going on, we now have just those first two terms."
 
 What's left:
 

@@ -156,7 +156,7 @@ This breaks the dominance of strong predictors at the root: in some fraction of 
 
 (Bagging is the special case $m = p$.)
 
-### Number of trees — not a tuning parameter
+### Number of trees: not a tuning parameter
 
 > "It just has to be enough… as long as it's enough of them, you're fine. You don't typically estimate this, you don't typically run cross-validation — you can use the OOB error if you want, but really, it's just use enough of them."
 
@@ -212,7 +212,7 @@ The new idea (vs. bagging / RF):
 
 > "Trees are actually grown sequentially. You build one predictor, and then using that predictor you build a refinement predictor, so you're always trying to improve over the last one… a simple version, then a simple version to correct the simple version, then a simple version to correct the simple version of the simple version."
 
-Key consequence — number of trees becomes a real tuning parameter:
+Key consequence: number of trees becomes a real tuning parameter:
 
 > "In bagging and random forests you just pick a whole bunch of them. In this case, the number of models is going to be smaller."
 
@@ -317,12 +317,12 @@ $$\frac{\partial L}{\partial f(x_i)} = -2 \big(y_i - f(x_i)\big) = -2 r_i$$
 
 So boosting regression trees on residuals is **steepest descent in function space** for squared-error loss. The residual *is* (proportional to) the negative gradient.
 
-### Why this matters — generalization
+### Why this matters: generalization
 
-Once you see boosting as gradient steps on a loss, the framework extends to **any differentiable loss**: logistic loss for classification, Huber for robust regression, ranking losses, etc. That's the root of "gradient boosting" as the umbrella name, and why XGBoost / LightGBM / etc. — to be covered Monday — exist as a family.
+Once you see boosting as gradient steps on a loss, the framework extends to **any differentiable loss**: logistic loss for classification, Huber for robust regression, ranking losses, etc. That's the root of "gradient boosting" as the umbrella name, and why XGBoost / LightGBM / etc. (to be covered Monday) exist as a family.
 
 > "Now, with the notion that what we're boosting is the gradient of an improvement of the overall fit… that generalizes the idea of this boosting."
 
 ## Where we stop
 
-Time runs out mid-module-9. Next session is delayed a week — the Mar 23/24 slot is for project supervision (the prof is away; Siemens covers it). Module 9 picks back up after that and finishes the rest of boosting (XGBoost, practical considerations, regularization variants).
+Time runs out mid-module-9. Next session is delayed a week; the Mar 23/24 slot is for project supervision (the prof is away; Siemens covers it). Module 9 picks back up after that and finishes the rest of boosting (XGBoost, practical considerations, regularization variants).

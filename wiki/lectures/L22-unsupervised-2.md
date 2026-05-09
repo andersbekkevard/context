@@ -319,7 +319,7 @@ The prof quotes Chollet's framing: machine learning *can* be math/physics, but "
 
 ## Feedforward networks: first sketch
 
-This is the start of the actual NN material — to be expanded next lecture.
+This is the start of the actual NN material, to be expanded next lecture.
 
 ### Layer structure
 

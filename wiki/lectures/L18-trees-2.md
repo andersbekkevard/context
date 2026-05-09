@@ -38,7 +38,7 @@ The prof recapped CART regression trees (greedy splitting on RSS, build out then
 
 Trees take a different angle from regression with splines/interactions: "instead of treating years and hits as independent variables that you then find some function of either using just linear things or using some nonlinear stuff like we talked about with splines ... instead, you kind of say oh we could just break this stuff up and then call this one region call that another region call that another region and then give a parameter to every region. And that gives us a very powerful model that now has these combinations of variables."
 
-> [!note] The prof's framing — algorithm, not distributional model
+> [!note] The prof's framing: algorithm, not distributional model
 > "This is our first example of a real algorithm for building up a model, which as opposed to the classic statistical approach of, oh, I'm going to assume that this variable is this distribution and I'm going to make a model of it that has this specific form, it said, no, we're going to make an algorithm. We're going to think of it like a computer program."
 
 He placed CART historically in the 70s, when Fortran was making waves into math and engineering: "these guys were like, we have these algorithms that can do stuff every time. We don't have to always do stuff on pen and paper." Speculated on what stats would look like had Fisher had computers: "he tried to do stuff without assuming a distribution … but instead he developed all these tests and all these approximate distributions because we didn't have a computer to do it for us … or to do the hard work of counting things and doing these very boring things." Bremen ("the algorithm guy") developed CART.
@@ -120,7 +120,7 @@ Two standard impurity criteria:
 
 Why not just use misclassification error? Two reasons:
 
-1. **Sensitivity / impurity penalization.** Misclassification "isn't very sensitive to the right thing." Two splits can both yield 25% misclassification, but one produces purer nodes — Gini and cross-entropy reward the purer split, misclassification doesn't see the difference. "They penalize having impure probabilities or impure classifications."
+1. **Sensitivity / impurity penalization.** Misclassification "isn't very sensitive to the right thing." Two splits can both yield 25% misclassification, but one produces purer nodes; Gini and cross-entropy reward the purer split, misclassification doesn't see the difference. "They penalize having impure probabilities or impure classifications."
 2. **Differentiability.** Both Gini and cross-entropy are differentiable. The prof flagged this as a weaker argument: "the reality is now actually [misclassification] would be also pretty easy to make differentiable. Like … we could just do a soft max." So really the impurity-sensitivity argument is the load-bearing one.
 
 ### Brain injury example
@@ -152,7 +152,7 @@ Same algorithm 8.1 as for regression: grow out, then prune via cost complexity, 
 > [!important] Train one criterion, prune another
 > "This is actually an interesting note that you build out the tree using deviance or Gini index but then you actually prune it using misclassification criteria … because that's ultimately what you care about. So it seems weird that you would not train on misclassification error but it turns out to be better to train on the Gini index or the deviance and then prune with misclassification."
 
-`cv.tree` defaults to 10-fold. Plot misclassification vs. number of terminal nodes (a proxy for $\alpha$ in the cost-complexity formula since you're going backwards from a fully grown tree). Pick the smallest tree achieving the minimum. The example pruned a 100-node tree down to seven leaves with no harm — "we picked 7 because that was the smallest model with that level of misclassification error."
+`cv.tree` defaults to 10-fold. Plot misclassification vs. number of terminal nodes (a proxy for $\alpha$ in the cost-complexity formula since you're going backwards from a fully grown tree). Pick the smallest tree achieving the minimum. The example pruned a 100-node tree down to seven leaves with no harm: "we picked 7 because that was the smallest model with that level of misclassification error."
 
 After pruning the cross-entropy-grown tree, test misclassification was around 0.41: "very much the same number only it had a lot more breakups. So even though you don't see an improvement it is improved because the model is simpler … in fact it looks exactly the same it's a simpler model so it's better." Same procedure works for the Gini-grown tree.
 
@@ -194,7 +194,7 @@ The slides also showed the classic comparison: linear regression's diagonal/curv
 
 ## Bagging
 
-Fix the variance by averaging trees fit to bootstrap samples — [[bagging]] = bootstrap aggregation.
+Fix the variance by averaging trees fit to bootstrap samples: [[bagging]] = bootstrap aggregation.
 
 For each of $B$ rounds:
 1. Bootstrap sample (resample with replacement, same size as original training data).
@@ -225,7 +225,7 @@ Synonym: ensembling. "I think that's more common in machine learning, that term.
 
 The prof showed two bagged trees from the brain data: similar but different. "Here we get, in the first set, we have slightly different variables. Then here, it's going to split on age in one case and GCS in the other. And then you can see age is often a variable, but it comes in in different ways." Both use age but at different thresholds (63, 68.5, 64.5). "But in both cases, you've broken up your, you know, you've created a tree of classification. So in both cases, for every new test data set, you can say, what's my prediction according to model one and what's my prediction according to model two." Average them (regression) or majority-vote them (classification).
 
-Aside on combination rules: for classification you can also average estimated class probabilities — "that would end up being the same" as majority vote in most cases.
+Aside on combination rules: for classification you can also average estimated class probabilities, "that would end up being the same" as majority vote in most cases.
 
 ### Slide commentary
 
@@ -233,7 +233,7 @@ The prof was openly impatient with the slide volume here: "so many words, so man
 
 ### Variable importance
 
-Drawback of bagging: "it becomes difficult to interpret the results, because instead of having just one tree, which is very easy to read, you have like 10, right? And then you often want to bring it back to what the variables actually are." Ideally consolidate the trees into one — "but that's not always so easy."
+Drawback of bagging: "it becomes difficult to interpret the results, because instead of having just one tree, which is very easy to read, you have like 10, right? And then you often want to bring it back to what the variables actually are." Ideally consolidate the trees into one, "but that's not always so easy."
 
 Instead, use **variable importance plots**: "this would fall into the category of like explainable AI in the sense that you have a model that you don't quite understand. Each tree is understandable. The combination of 500 trees is not." Sort predictors by either:
 
@@ -244,6 +244,6 @@ Instead, use **variable importance plots**: "this would fall into the category o
 
 The prof ran short and stopped before [[boosting]], just naming it: "you make another tree and then you build another tree on its residuals, that's a bit more confusing. We did talk about it but … we'll talk about it more soon. I don't think we'll get there today." Plan: finish variable importance plots and move into the next chapter next session.
 
-Project 2 is out; Seaman runs the exercise session — "if any help you need on that, I'd recommend going to the exercise session. Seaman is really good at that. If not, let me know, we can talk about it. If you want to change groups that's fine you just have to contact him."
+Project 2 is out; Seaman runs the exercise session: "if any help you need on that, I'd recommend going to the exercise session. Seaman is really good at that. If not, let me know, we can talk about it. If you want to change groups that's fine you just have to contact him."
 
 Next lecture continues: variable importance, finish forests, then boosting.

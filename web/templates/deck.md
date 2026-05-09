@@ -108,7 +108,7 @@ Notes:
 `exam.js` supports two interactive question types: single-correct multiple choice and multi-statement true/false. Two further "shapes" are stylistic, they use the single-MC mechanic but vary the question body.
 
 > [!important] No topic tag on questions
-> Questions deliberately carry **no `exam-q__topic` span** in the header, only number and points. Naming the atom (e.g. "ridge-regression") or the question shape (e.g. "computation") telegraphs the answer space and makes the deck easier than the exam will be. The atom link belongs in the explanation's `<p class="ref">` block, where it appears *after* the student commits to an answer. Do not re-add a topic field "for organisation", that's what the score-tracker and explanation links are for.
+> Questions deliberately carry **no `exam-q__topic` span** in the header, only number, points, and (optionally) a *source* flag — see §3.5. Naming the atom (e.g. "ridge-regression") or the question shape (e.g. "computation") telegraphs the answer space and makes the deck easier than the exam will be. The atom link belongs in the explanation's `<p class="ref">` block, where it appears *after* the student commits to an answer. Do not re-add a topic field "for organisation", that's what the score-tracker and explanation links are for. *Source flags* in §3.5 are explicitly different — they say where the question came from, not what concept it tests, and are uncorrelated with the answer space.
 
 ### 3.1 Single-correct MC (the staple)
 

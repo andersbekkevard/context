@@ -87,7 +87,7 @@ XGBoost is "probably the first model in the course where we have a number of hyp
 
 > "This is really like the first case in this course where we have a model that we can't understand."
 
-A single tree is fine — you read it off. An ensemble of trees built by gradient boosting is opaque: you can't visualize how each tree contributes, what to do when they disagree, etc.
+A single tree is fine; you read it off. An ensemble of trees built by gradient boosting is opaque: you can't visualize how each tree contributes, what to do when they disagree, etc.
 
 Some people don't care; others do. "If you have a model that is predicting your behavior, wouldn't you want to know how it's doing that?" Tracing why an LLM produced an output is the extreme version. [[interpretability]] is a big topic in modern ML.
 

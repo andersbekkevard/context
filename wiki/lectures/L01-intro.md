@@ -211,9 +211,9 @@ The famous Fisher iris dataset. **Three species** of iris, **50 flowers each**, 
 
 Aside on Fisher: "He was a big eugenicist... he actually was the editor of the journal of eugenics. Anyways, so he was a eugenicist." Famous data set regardless.
 
-Plot any two variables: **setosa** separates cleanly from the other two; **versicolor** and **virginica** overlap heavily on the chosen pair. Fit [[linear-discriminant-analysis]] — get a **straight-line decision boundary** that misclassifies just one or two points. Fit **quadratic discriminant analysis** instead — boundary becomes a curve, slightly better.
+Plot any two variables: **setosa** separates cleanly from the other two; **versicolor** and **virginica** overlap heavily on the chosen pair. Fit [[linear-discriminant-analysis]]: get a **straight-line decision boundary** that misclassifies just one or two points. Fit **quadratic discriminant analysis** instead: boundary becomes a curve, slightly better.
 
-Punchline on **feature choice**: the variables shown in the worked plot are actually the *worst pair*. Pick a different two (visible from the pairs plot) and the classes separate trivially. "If you just use the other parameters, you do much better." This is the value of pair-plots before classifying — they tell you which features are informative.
+Punchline on **feature choice**: the variables shown in the worked plot are actually the *worst pair*. Pick a different two (visible from the pairs plot) and the classes separate trivially. "If you just use the other parameters, you do much better." This is the value of pair-plots before classifying: they tell you which features are informative.
 
 > [!important] Defining property of supervised
 > "Importantly, it's supervised in the sense that you know what you want to classify."

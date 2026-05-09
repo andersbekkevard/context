@@ -30,7 +30,7 @@ Ben (taking over from Stephanie) walks through the first half of Module 2, stick
 - Two variable types: **quantitative** (continuous or discrete numbers) vs **qualitative** (categorical, often coded numerically). Tokens in LLMs are an interesting in-between because they encode position/context, not just word identity.
 - [[supervised-vs-unsupervised|Supervised learning]] has a Y to aim at; [[supervised-vs-unsupervised|unsupervised learning]] just has X with no clear objective. Most of the course is supervised. Many "unsupervised" problems can be reframed as supervised: LLMs are the canonical example, trained only to predict the next word, yet appear to know therapy and Python.
 - Two reasons to estimate f: **prediction** (don't care what's inside, want Ŷ accurate) vs **inference / interpretation** (want to know which X's matter and how). Same model, very different design choices.
-- "If it's a math class or statistics — depends on what you call statistics. If it's math or not." Course is in the math department, "less mathematical than most math classes, but the goal is for mathematicians."
+- "If it's a math class or statistics - depends on what you call statistics. If it's math or not." Course is in the math department, "less mathematical than most math classes, but the goal is for mathematicians."
 - The bias–variance phrasing: he doesn't like the term, will keep saying so, and **expects an exam question on it** ("if I had to guess today what the exam question would be, it would be… criticize the term bias–variance trade-off, give two perspectives on it"). Today is just the *beginning* of that discussion.
 
 ## Setup and admin
@@ -43,7 +43,7 @@ New term, new instructor: "I am not Stephanie. I am Ben." Course is **module 2, 
 
 Statistical learning = the process of learning structures from data about the real world. The term, he warns, is "arguably… poorly defined." He polls the room: science people (want to discover) vs prediction/engineering people (want to forecast or build). Most of the room leans prediction.
 
-His framing — and a bit of personal slant — is that statistical learning specifically refers to the [[statistical-learning|misspecified-model]] setting:
+His framing (and a bit of personal slant) is that statistical learning specifically refers to the [[statistical-learning|misspecified-model]] setting:
 
 > "You don't really have access to the parameters directly or you don't have access to all the right parameters - maybe you have some of them with noise… Our model is misspecified because they're missing a lot of things or they're typically misspecified. And we just assume they're not. And then we try to work from there."
 
@@ -69,7 +69,7 @@ Side commentary on how science *should* vs *does* work: classically you state a 
 
 **Quantitative**: things you can quantify with numbers: weight in kg, height in cm, age, temperature, precipitation. Continuous or discrete (countable / integers). Mostly think about continuous in this course.
 
-**Qualitative**: types of fruit, education level, no inherent numerical value. To use them in a model you assign one: true/false → 0/1 (binary), apple/orange/banana → 0/1/2. "Depending on how we use those things, maybe that number ends up meaning something within the model." (Foreshadow of the categorical-encoding pitfall — but he doesn't ring the alarm here yet.)
+**Qualitative**: types of fruit, education level, no inherent numerical value. To use them in a model you assign one: true/false → 0/1 (binary), apple/orange/banana → 0/1/2. "Depending on how we use those things, maybe that number ends up meaning something within the model." (Foreshadow of the categorical-encoding pitfall; he doesn't ring the alarm here yet.)
 
 ### Aside: tokens in LLMs
 
@@ -89,7 +89,7 @@ Outcome variable Y; vector of predictors X = (X₁, …, X_p). Predictors go by 
 
 > "I wouldn't typically use the word *independent variables*. I would say this has more meaning than the others… because most things are not independent."
 
-Quick example: temperature outside vs hours of daylight — clearly correlated. Don't claim independence you don't have. Side note: *covariates* often implies time or space (things "co-vary" over something).
+Quick example: temperature outside vs hours of daylight, clearly correlated. Don't claim independence you don't have. Side note: *covariates* often implies time or space (things "co-vary" over something).
 
 **Two problem types:**
 - [[regression-vs-classification|Regression]]: Y is quantitative (price, blood pressure).
@@ -124,11 +124,11 @@ The medical example from L01 returns: if you want to know what indicators predic
 
 > "Like being fat, you die younger, right? Statistically, I think… So then don't do that, right? It's not that you want to predict your death. You're just trying to change it. You're trying to make decisions based off of a model that gives you an understanding."
 
-That's the inference goal — understand which inputs affect the outcomes and *how*.
+That's the inference goal: understand which inputs affect the outcomes and *how*.
 
 > "Inference is often the shorthand or the single word that we would use to describe trying to understand. We want to infer what parameters matter."
 
-Same model can serve either goal, but the design choices look different. Both goals also need (3) — assessing the quality of the prediction or the inference.
+Same model can serve either goal, but the design choices look different. Both goals also need (3), assessing the quality of the prediction or the inference.
 
 ## Unsupervised learning
 
@@ -197,7 +197,7 @@ Breiman's accusation: this 2%-not-98% split has produced **lots of irrelevant th
 
 Ben strongly endorses this part:
 
-> "Too many people dismiss these kinds of — the [things] machine learning people have figured out — instead of trying to say, hey, we could actually make this formal and understand what's going on here. They just say, oh yeah, you guys and your magic and you make these big models, but really they don't work as well as just the standard thing, so who cares right? Being that dismissive I think is a big mistake, because often they stumble across really good, clever ideas that can be very useful and go well beyond what we could do with simple models. And they don't understand what's going on. But we could try to help them."
+> "Too many people dismiss these kinds of - the [things] machine learning people have figured out - instead of trying to say, hey, we could actually make this formal and understand what's going on here. They just say, oh yeah, you guys and your magic and you make these big models, but really they don't work as well as just the standard thing, so who cares right? Being that dismissive I think is a big mistake, because often they stumble across really good, clever ideas that can be very useful and go well beyond what we could do with simple models. And they don't understand what's going on. But we could try to help them."
 
 The flip side of the same coin: a lot of the vocabulary the course will spend the semester building (bias, variance, model error, generalization, uncertainty) has meaning for these complex models too, *if we just get at it*. That's the bridge statistical learning is trying to build.
 
@@ -213,7 +213,7 @@ Ben's pushback on the slogan:
 
 > "Arguably machine learning models are the right answer to the wrong question. And that can be a good thing… Whereas a rough answer to the right question, I think can also be a very bad thing."
 
-A simple model can pick up things that have nothing to do with the real signal — properties of the data itself. Both directions can fail.
+A simple model can pick up things that have nothing to do with the real signal, just properties of the data itself. Both directions can fail.
 
 The point of dropping this paper in: the textbook is written by statisticians telling you a particular story. The math is right; the framing has caveats. Ben's job is to give you the combined view.
 
