@@ -25,7 +25,7 @@ Three disjoint subsets of the data with three distinct jobs:
 - **Validation set**: select among candidate models / pick hyperparameters (model selection).
 - **Test set**: report final performance (model assessment). *"This is the assessment you want to showcase."* - [[L10-resample-1]]
 
-> "Yeah, it makes sense though, that we would actually need three because these are different goals — to be able to select the model and then also say how good it is." - [[L10-resample-1]]
+> "Yeah, it makes sense though, that we would actually need three because these are different goals, to be able to select the model and then also say how good it is." - [[L10-resample-1]]
 
 ## Notation & setup
 

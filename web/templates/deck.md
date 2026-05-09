@@ -1,4 +1,4 @@
-# Deck template — per-module MCQ deck for TMA4268
+# Deck template: per-module MCQ deck for TMA4268
 
 This document defines the **shape and quality bar** of one per-module MCQ deck. Each deck is a standalone HTML file in `web/static/decks/m<NN>-<slug>.html` (e.g. `m06-modelsel.html`) that turns into an interactive practice page once Quartz copies it to the site root.
 
@@ -15,10 +15,10 @@ A deck is *not* a mock exam (those are deferred). It is a focused MC drill for o
 - **Interactive:** the page is one HTML file linking shared `exam.css` + `exam.js`. Clicking an option locks the question, colors right/wrong, and auto-opens the explanation. The fixed score-tracker FAB keeps a running points/percent count.
 - **Length per deck:** **20–30 questions**, totalling **100 points**. Bigger modules (03 linreg, 04 classif, 06 modelsel, 09 boosting, 11 nnet) lean toward 28–30; lighter modules (07 beyondlinear, 08 trees, 10 unsuper) toward 20–24.
 - **Estimated time:** ~30–45 minutes of focused work per deck. Tracked in the header.
-- **Difficulty:** challenge a student who has read the atoms — recall + application + reasoning, not just trivia. ~⅓ recall, ~⅓ application/computation, ~⅓ scenario/synthesis. See §6.
+- **Difficulty:** challenge a student who has read the atoms, recall + application + reasoning, not just trivia. ~⅓ recall, ~⅓ application/computation, ~⅓ scenario/synthesis. See §6.
 
 > [!important] Scope is non-negotiable
-> `docs/scope.md` is the canonical authority for what's in and out. Out-of-scope material gets **no question**. Past-exam questions on out-of-scope topics are silently dropped, not adapted. If a topic is out per scope.md but visible in old exams, that's the prof retiring it — respect that.
+> `docs/scope.md` is the canonical authority for what's in and out. Out-of-scope material gets **no question**. Past-exam questions on out-of-scope topics are silently dropped, not adapted. If a topic is out per scope.md but visible in old exams, that's the prof retiring it, respect that.
 
 ---
 
@@ -93,22 +93,22 @@ Each deck is a self-contained HTML page at `web/static/decks/m<NN>-<slug>.html`.
 Notes:
 
 - **Relative paths** to `exam.css` and `exam.js` (same folder). No absolute paths inside `static/decks/`.
-- **Theme-sync inline script** must appear *before* any stylesheet link so the `saved-theme` attribute is set before paint — otherwise dark-mode users get a flash of light theme on first load.
+- **Theme-sync inline script** must appear *before* any stylesheet link so the `saved-theme` attribute is set before paint, otherwise dark-mode users get a flash of light theme on first load.
 - **Quartz fonts** are loaded from Google Fonts (Schibsted Grotesk / Source Sans Pro / IBM Plex Mono) so deck typography matches the rendered wiki. `exam.css` references them via `--bodyFont` / `--headerFont` / `--codeFont`.
 - **KaTeX is required.** Decks are static HTML and don't inherit Quartz's site-wide KaTeX. The three KaTeX `<script>` / `<link>` tags load it from a CDN and run auto-render on `DOMContentLoaded`. Copy them verbatim from `_example.html`. Without them, every `$…$` shows up as raw source.
 - **No Quartz chrome.** Decks are full-page focused exam UIs; Quartz's explorer/backlinks panels stay in `wiki/`-derived pages only. The deck's only nav is the `Back to wiki` link in the header.
 - **One `<main class="exam-shell">`** wraps everything for layout.
-- **Color tokens** (`var(--dark)`, `var(--secondary)`, `var(--correct-fg)`, …) are defined in `exam.css` and switch automatically with `[saved-theme="dark"]`. Do not hardcode hex values in deck HTML — let the stylesheet handle theming.
-- **No `<section>`-level grouping** (Del 1 / Del 2 framing from the databaser template doesn't apply — TMA4268 doesn't split a single-module deck).
+- **Color tokens** (`var(--dark)`, `var(--secondary)`, `var(--correct-fg)`, …) are defined in `exam.css` and switch automatically with `[saved-theme="dark"]`. Do not hardcode hex values in deck HTML, let the stylesheet handle theming.
+- **No `<section>`-level grouping** (Del 1 / Del 2 framing from the databaser template doesn't apply, TMA4268 doesn't split a single-module deck).
 
 ---
 
 ## 3. Per-question templates
 
-`exam.js` supports two interactive question types: single-correct multiple choice and multi-statement true/false. Two further "shapes" are stylistic — they use the single-MC mechanic but vary the question body.
+`exam.js` supports two interactive question types: single-correct multiple choice and multi-statement true/false. Two further "shapes" are stylistic, they use the single-MC mechanic but vary the question body.
 
 > [!important] No topic tag on questions
-> Questions deliberately carry **no `exam-q__topic` span** in the header — only number and points. Naming the atom (e.g. "ridge-regression") or the question shape (e.g. "computation") telegraphs the answer space and makes the deck easier than the exam will be. The atom link belongs in the explanation's `<p class="ref">` block, where it appears *after* the student commits to an answer. Do not re-add a topic field "for organisation" — that's what the score-tracker and explanation links are for.
+> Questions deliberately carry **no `exam-q__topic` span** in the header, only number and points. Naming the atom (e.g. "ridge-regression") or the question shape (e.g. "computation") telegraphs the answer space and makes the deck easier than the exam will be. The atom link belongs in the explanation's `<p class="ref">` block, where it appears *after* the student commits to an answer. Do not re-add a topic field "for organisation", that's what the score-tracker and explanation links are for.
 
 ### 3.1 Single-correct MC (the staple)
 
@@ -141,7 +141,7 @@ The literal substring `Correct answer: <LETTER>` inside `.fasit-correct` is what
 
 ### 3.2 Multi-statement true/false
 
-For "which of the following statements about $X$ are true?" — every statement is independently scored, points split evenly across statements within the question's total.
+For "which of the following statements about $X$ are true?", every statement is independently scored, points split evenly across statements within the question's total.
 
 ```html
 <article class="exam-q">
@@ -179,21 +179,21 @@ For "which of the following statements about $X$ are true?" — every statement 
 
 Constraints: each `name=` is unique per sub-statement; the explanation list has **exactly one** `<li>` per sub-statement, in order; the marker word is `<strong>True</strong>` or `<strong>False</strong>` (case-insensitive, also accepts `T`/`F`).
 
-> Prefer T/F multi-statement to single-MC whenever the question is "which of the following…" — `exam.js` doesn't natively support multi-correct MC, and forcing four exclusive options into a multi-truth question is the canonical way to make answers leak.
+> Prefer T/F multi-statement to single-MC whenever the question is "which of the following…", `exam.js` doesn't natively support multi-correct MC, and forcing four exclusive options into a multi-truth question is the canonical way to make answers leak.
 
 ### 3.3 Computation question (uses 3.1's mechanic)
 
 A single-MC question whose body is a numerical scenario and whose options are candidate answers. Standard recipe:
 
 1. Question gives concrete numbers (n, p, σ², λ, sample size, etc.).
-2. Options are *all four plausible values* — one correct, three from common arithmetic mistakes (forgetting a 2/3 factor, mixing up σ² and σ, off-by-one in degrees of freedom, wrong fold count, etc.).
+2. Options are *all four plausible values*, one correct, three from common arithmetic mistakes (forgetting a 2/3 factor, mixing up σ² and σ, off-by-one in degrees of freedom, wrong fold count, etc.).
 3. Explanation shows the full computation step by step, then names *which mistake* each distractor encodes.
 
-These are the densest learning signal — give them slightly more points (5–6 instead of 3–4).
+These are the densest learning signal, give them slightly more points (5–6 instead of 3–4).
 
 ### 3.4 Scenario question (uses 3.1's mechanic)
 
-A single-MC question whose body sets up a small scenario (a paragraph, small table, small SVG figure, or printed R-style output) and asks for an interpretation. Most TMA4268 exam questions are this shape — see `exam_analysis.md` §3 for canonical patterns.
+A single-MC question whose body sets up a small scenario (a paragraph, small table, small SVG figure, or printed R-style output) and asks for an interpretation. Most TMA4268 exam questions are this shape, see `exam_analysis.md` §3 for canonical patterns.
 
 Distractors should be **typical wrong interpretations** (e.g. confusing log-odds with probability; reading a coefficient as a marginal effect; matching the wrong direction of the bias-variance trade-off). Cite a verbatim prof signal in the explanation when the trap was flagged in lecture.
 
@@ -212,20 +212,20 @@ You don't write any JS in a deck. You write HTML and the parser does the rest.
 
 ---
 
-## 5. Option-quality rules — the single most important section
+## 5. Option-quality rules: the single most important section
 
-The most common leakage is that the correct answer is silently *recognisable from form* — student doesn't read the question, just the options, and still picks right. Catch this before publishing:
+The most common leakage is that the correct answer is silently *recognisable from form*, student doesn't read the question, just the options, and still picks right. Catch this before publishing:
 
-- **Length parity is the biggest one.** Correct answer must NOT be systematically the longest. Count the characters before publishing. Across the whole deck, "longest", "middle", and "shortest" should each be the correct answer roughly equal numbers of times. If you find correct is consistently long, either trim the correct answer or pump the distractors up to match (add qualifiers, examples, hedging — same density as the correct option).
+- **Length parity is the biggest one.** Correct answer must NOT be systematically the longest. Count the characters before publishing. Across the whole deck, "longest", "middle", and "shortest" should each be the correct answer roughly equal numbers of times. If you find correct is consistently long, either trim the correct answer or pump the distractors up to match (add qualifiers, examples, hedging, same density as the correct option).
 - **Position rotation.** Correct A/B/C/D should be roughly evenly distributed across the deck. If you're hitting "C-bias", swap orderings on a few questions.
 - **No tell-tale words.** *Always*, *never*, *only*, *all*, *none* in an option flag it as a textbook-wrong absolute. *Typically*, *usually*, *often* flag it as a hedged-correct. Avoid both, or use them in correct *and* wrong options to neutralise.
 - **Same grammatical form, same detail level.** If one option starts with a number, all do. If one is a full sentence, all are. If one uses jargon (e.g. "conflict-serializable", "irreducible error"), all do.
 - **Distractors must be plausible.** Each wrong option = a real misunderstanding the explanation can name ("forgets the 2/3 fill factor", "uses $n$ instead of $n-1$"). No filler. A student who doesn't know the material should not be able to eliminate any option on form alone.
 - **Independence of options.** No "A and B but not C". No two distractors that are nearly identical (effectively reduces it to a 3-choice). No four-options-all-variations-on-one-theme (student eliminates them as a group).
-- **"None of the above" is correct in at most 1 of every 10 questions** — overuse weakens it as a concept check.
+- **"None of the above" is correct in at most 1 of every 10 questions**, overuse weakens it as a concept check.
 
 > [!check] Form-only test (do this for every question before publishing)
-> Hide the question text. Read only the four options. Can you predict the correct answer? If yes — rewrite the options.
+> Hide the question text. Read only the four options. Can you predict the correct answer? If yes, rewrite the options.
 
 ---
 
@@ -247,15 +247,15 @@ Triviality test: ask "could a student who has only skimmed the atom headlines pa
 
 For module $N$ ($02$–$11$):
 
-1. **Atoms in `docs/concepts-manifest.md` under module $N$** — every atom must have **at least one** question. Big atoms (richly developed by the prof, lots of exercise instances) get 2–4 questions across recall + application + scenario.
+1. **Atoms in `docs/concepts-manifest.md` under module $N$**: every atom must have **at least one** question. Big atoms (richly developed by the prof, lots of exercise instances) get 2–4 questions across recall + application + scenario.
 
-2. **Specials (cross-cutting atoms) whose `modules:` list includes $N$** — touch each in the deck for module $N$ via at least one question, framed in *this module's* context. Example: a CV question in m06 should be CV-of-ridge ("how do you tune $\lambda$?"), not CV-mechanics in the abstract — that lives in m05's deck.
+2. **Specials (cross-cutting atoms) whose `modules:` list includes $N$**: touch each in the deck for module $N$ via at least one question, framed in *this module's* context. Example: a CV question in m06 should be CV-of-ridge ("how do you tune $\lambda$?"), not CV-mechanics in the abstract, that lives in m05's deck.
 
-3. **In-scope from `docs/scope.md`** — never out-of-scope. If a topic is on the explicit out-of-scope list for the module (with verbatim prof signal), do NOT write a question for it, even if you have a clever one in mind.
+3. **In-scope from `docs/scope.md`**: never out-of-scope. If a topic is on the explicit out-of-scope list for the module (with verbatim prof signal), do NOT write a question for it, even if you have a clever one in mind.
 
-4. **Exercise alignment** — when an atom has `exercises:` entries in the manifest, at least one of its questions should mirror an exercise problem (with numbers changed). The prof emphasised "especially the exercises" — let exercise patterns dominate.
+4. **Exercise alignment**: when an atom has `exercises:` entries in the manifest, at least one of its questions should mirror an exercise problem (with numbers changed). The prof emphasised "especially the exercises", let exercise patterns dominate.
 
-5. **Past-exam patterns** — translate per `docs/scope.md`'s past-exam translation rules. If a past-exam question is on an in-scope topic but free-text, MC-ify it: show 4 candidate answers / 4 candidate plots / 4 candidate decompositions, ask which is correct. If a past-exam question is on out-of-scope material, drop it.
+5. **Past-exam patterns**: translate per `docs/scope.md`'s past-exam translation rules. If a past-exam question is on an in-scope topic but free-text, MC-ify it: show 4 candidate answers / 4 candidate plots / 4 candidate decompositions, ask which is correct. If a past-exam question is on out-of-scope material, drop it.
 
 ---
 
@@ -266,7 +266,7 @@ Every question's explanation block ends with a `<p class="ref">…</p>` carrying
 - Atom links: `<a href="/concepts/<slug>">slug</a>` for every atom that's load-bearing for the question. Multiple atoms welcome.
 - Optionally a lecture link: `<a href="/lectures/L<NN>-<slug>">L<NN>-<slug></a>` if the explanation cites a verbatim prof quote.
 
-Quartz outputs the wiki at root URLs (`/concepts/<slug>`, `/lectures/L<NN>-<slug>`, `/mocs/m<NN>-<slug>`). The deck's links are root-relative absolute paths — they resolve cleanly when serving locally and survive any future deploy path move.
+Quartz outputs the wiki at root URLs (`/concepts/<slug>`, `/lectures/L<NN>-<slug>`, `/mocs/m<NN>-<slug>`). The deck's links are root-relative absolute paths, they resolve cleanly when serving locally and survive any future deploy path move.
 
 The reverse direction (MOC → deck) is wired in `docs/templates/mocs.md`'s `## Practice` section.
 
@@ -274,13 +274,13 @@ The reverse direction (MOC → deck) is wired in `docs/templates/mocs.md`'s `## 
 
 ## 9. Sources to draw on (when authoring questions)
 
-In priority order (matches `docs/scope.md`'s source hierarchy for *what's in scope* — but for *question content* exercises beat lectures):
+In priority order (matches `docs/scope.md`'s source hierarchy for *what's in scope*, but for *question content* exercises beat lectures):
 
-1. `exercises/Exercise<N>/` and `exercises/compulsory-exercise-1.md` — past problems on this module. Vary numbers, keep the underlying mechanic. The prof said "especially the exercises".
-2. `wiki/concepts/<slug>.md` for every atom in the module — formulas, prof framing, traps, exam signals. Direct lift of "Pitfalls" and "Exam signals" sections is golden — those *are* MC questions waiting to be formatted.
-3. `wiki/lectures/L<NN>-*.md` for the module's lectures — verbatim prof quotes give T/F traps and scenario questions.
-4. `exams/TMA4268_*_Exam.Rmd` — past exams. Cross-check against `docs/scope.md`'s translation rules. **Don't replicate verbatim** — change numbers, change scenarios, vary the trap angle.
-5. `wiki/mocs/m<NN>-<slug>.md` — its `## Out of scope` section tells you what NOT to write about.
+1. `exercises/Exercise<N>/` and `exercises/compulsory-exercise-1.md`: past problems on this module. Vary numbers, keep the underlying mechanic. The prof said "especially the exercises".
+2. `wiki/concepts/<slug>.md` for every atom in the module: formulas, prof framing, traps, exam signals. Direct lift of "Pitfalls" and "Exam signals" sections is golden, those *are* MC questions waiting to be formatted.
+3. `wiki/lectures/L<NN>-*.md` for the module's lectures: verbatim prof quotes give T/F traps and scenario questions.
+4. `exams/TMA4268_*_Exam.Rmd`: past exams. Cross-check against `docs/scope.md`'s translation rules. **Don't replicate verbatim**, change numbers, change scenarios, vary the trap angle.
+5. `wiki/mocs/m<NN>-<slug>.md`: its `## Out of scope` section tells you what NOT to write about.
 
 You do NOT touch `notes/` (off-limits), `book/` (deep treatment, not the prof's scope), or `archive/` (dead).
 
@@ -292,7 +292,7 @@ You do NOT touch `notes/` (off-limits), `book/` (deep treatment, not the prof's 
 - [ ] Links shared `exam.css` + `exam.js` from the same folder.
 - [ ] Header carries module name + question count + total points + estimated time.
 - [ ] Total points across all questions = **100**.
-- [ ] **20–30 questions** (size proportional to module — see §1).
+- [ ] **20–30 questions** (size proportional to module, see §1).
 - [ ] Every atom in the module's manifest slice has ≥ 1 question.
 - [ ] Every Special whose `modules:` includes this module has ≥ 1 question, framed in this module's context.
 - [ ] Out-of-scope items in `docs/scope.md` have **no** questions.
@@ -311,10 +311,10 @@ You do NOT touch `notes/` (off-limits), `book/` (deep treatment, not the prof's 
 
 ## 11. What this template does NOT cover
 
-- **Mock exam sets** — deferred. When you decide to add full mock exams, build a sibling template `web/templates/mock-exam.md` reusing the same HTML/JS contract, just longer and with a `<section>` for each "part" if the prof reintroduces parts.
-- **Numeric input questions** — out. MCQ over candidate values handles this.
-- **Multi-correct MC ("select all that apply")** — out (`exam.js` doesn't support it). Use multi-statement T/F instead.
-- **Open recall / flashcard mode** — out. The exam-page mechanic is the only deck UI.
+- **Mock exam sets**: deferred. When you decide to add full mock exams, build a sibling template `web/templates/mock-exam.md` reusing the same HTML/JS contract, just longer and with a `<section>` for each "part" if the prof reintroduces parts.
+- **Numeric input questions**: out. MCQ over candidate values handles this.
+- **Multi-correct MC ("select all that apply")**: out (`exam.js` doesn't support it). Use multi-statement T/F instead.
+- **Open recall / flashcard mode**: out. The exam-page mechanic is the only deck UI.
 
 ---
 
@@ -322,4 +322,4 @@ You do NOT touch `notes/` (off-limits), `book/` (deep treatment, not the prof's 
 
 - Decks: `m<NN>-<slug>.html`, where slug matches the MOC slug exactly. Examples: `m02-statlearn.html`, `m06-modelsel.html`, `m11-nnet.html`.
 - The leading `m` keeps decks sorted in module order under any alphabetical sort.
-- The example/placeholder file is `_example.html` — leading underscore signals "not a real deck", sorts first. Delete or replace when no longer needed.
+- The example/placeholder file is `_example.html`, leading underscore signals "not a real deck", sorts first. Delete or replace when no longer needed.

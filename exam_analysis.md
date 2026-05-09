@@ -461,7 +461,7 @@ If you only had one week, do them in this order:
 
 - Bring: textbook (or rely on PDF), A5 handwritten sheet, calculator, pens.
 - Strategy: open with multiple choice / fill-in to bank easy points, then interpretation, then the mathy derivation last.
-- Always show work — partial credit is on offer.
+- Always show work, partial credit is on offer.
 - If a question seems broken: state your interpretation in one line, then answer.
 - Watch the spline λ direction (more λ = smoother, less flexible) and logistic interaction interpretations, both are easy to flip.
 - Bias-variance is showing up. Don't skip it. Read that ISLR section twice.

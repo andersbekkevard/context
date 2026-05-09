@@ -62,7 +62,7 @@ This keeps the wiki improving as it's used. Anders never gets a degraded answer 
 - Bronze (`modules/`, `transcripts/`, `exercises/`, `exams/`, `archive/`, `book/`) is immutable. Never modify.
 - **`notes/` is off-limits.** This folder contains Anders's own private notes. Never read it, never reference it, never modify it. It is invisible to Claude.
 - `wiki/` is LLM-generated; Anders edits freely.
-- Verbatim quotes for prof signals — never paraphrase.
+- Verbatim quotes for prof signals, never paraphrase.
 - Importance is derived from signals, not declared. No tier system inside atoms.
 - Out-of-scope material (per [[docs/scope]], the canonical authority, derived from slides + lectures + exercises) gets no atom. Document the exclusion in the relevant MOC's `## Out of scope` section, sourced to a verbatim prof signal where possible.
 

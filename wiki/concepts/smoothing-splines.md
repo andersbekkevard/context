@@ -4,7 +4,7 @@ module: 07-beyondlinear
 lectures: [L16, L17, L27]
 isl-ref: 7.5
 exercises:
-  - Exercise7.5 — fit GAM with a smoothing-spline component s(acceleration, df=3) on Auto data
+  - Exercise7.5 - fit GAM with a smoothing-spline component s(acceleration, df=3) on Auto data
 related: [regression-splines, ridge-regression, cross-validation, regularization, generalized-additive-models, leave-one-out-cv]
 tags:
   - concept
@@ -17,7 +17,7 @@ aliases:
 
 # Smoothing splines and effective degrees of freedom
 
-A different objective: instead of choosing a basis and fitting OLS, **minimise RSS plus a curvature penalty over the space of all functions $g$**. The minimiser turns out to be a natural cubic spline with a knot at every unique $x_i$ — but shrunk by $\lambda$. This is the prof's favourite example of regularization escaping the "basis function" frame.
+A different objective: instead of choosing a basis and fitting OLS, **minimise RSS plus a curvature penalty over the space of all functions $g$**. The minimiser turns out to be a natural cubic spline with a knot at every unique $x_i$, but shrunk by $\lambda$. This is the prof's favourite example of regularization escaping the "basis function" frame.
 
 ## Definition (prof's framing)
 
@@ -28,9 +28,9 @@ $$\sum_{i=1}^{n} (y_i - g(x_i))^2 + \lambda \int g''(t)^2 \, dt.$$
 
 The first term is fit; the second term penalises **curvature** (integrated squared second derivative). $\lambda \ge 0$ controls the trade-off. Direct analogue to ridge:
 
-> "We've looked at situations where we have more than one objective before — we had regularizers... $Y - \beta X$ squared plus sum of $\beta$ squared, that was our ridge regression... a.k.a. $L_2$ norm or regularizer. Really what you're doing is you're adding another objective to your optimization." - [[L16-beyondlinear-1]]
+> "We've looked at situations where we have more than one objective before, we had regularizers... $Y - \beta X$ squared plus sum of $\beta$ squared, that was our ridge regression... a.k.a. $L_2$ norm or regularizer. Really what you're doing is you're adding another objective to your optimization." - [[L16-beyondlinear-1]]
 
-The optimization is over **functions $g$**, not over a finite parameter vector. **Solution**: $g$ turns out to be a natural cubic spline with a knot at every unique $x_i$ — then shrunk via $\lambda$. So smoothing splines are still splines, but with a *very* large basis (one knot per data point) and heavy shrinkage to keep them well-behaved.
+The optimization is over **functions $g$**, not over a finite parameter vector. **Solution**: $g$ turns out to be a natural cubic spline with a knot at every unique $x_i$, then shrunk via $\lambda$. So smoothing splines are still splines, but with a *very* large basis (one knot per data point) and heavy shrinkage to keep them well-behaved.
 
 ## Notation & setup
 
@@ -48,10 +48,10 @@ The optimization is over **functions $g$**, not over a finite parameter vector. 
 >
 > The 2025 exam (Problem 4d) tested this directly:
 > *"In smoothing splines, increasing the smoothing parameter $\lambda$ will:*
->   *(i) Make the fitted function more flexible and wiggly.* — **FALSE**
->   *(ii) Make the fitted function smoother and potentially underfit the data.* — **TRUE**
->   *(iii) Increase the penalty for wiggliness.* — **TRUE**
->   *(iv) Decrease the effective degrees of freedom.* — **TRUE**"
+>   *(i) Make the fitted function more flexible and wiggly.* **FALSE**
+>   *(ii) Make the fitted function smoother and potentially underfit the data.* **TRUE**
+>   *(iii) Increase the penalty for wiggliness.* **TRUE**
+>   *(iv) Decrease the effective degrees of freedom.* **TRUE**"
 >
 > $\mathrm{df}_\lambda$ moves the same direction as flexibility (high df → wiggly), so $\mathrm{df}_\lambda$ moves *opposite* to $\lambda$. Lecture: "high df → small $\lambda$ → wiggly. Low df → large $\lambda$ → close to straight."
 
@@ -68,7 +68,7 @@ $$\mathrm{RSS}_{\text{cv}}(\lambda) = \sum_{i=1}^{n} \left( \frac{y_i - \hat y_i
 
 > "Note that we only need one fit to do cross-validation!" - slide deck [[L16-beyondlinear-1]]
 
-The LOOCV shortcut is structurally identical to the OLS LOOCV shortcut $(y_i - \hat y_i)/(1 - h_{ii})$ — replace the hat-matrix diagonal by the smoother-matrix diagonal.
+The LOOCV shortcut is structurally identical to the OLS LOOCV shortcut $(y_i - \hat y_i)/(1 - h_{ii})$, replace the hat-matrix diagonal by the smoother-matrix diagonal.
 
 ## The two extremes (memorise direction)
 
@@ -103,7 +103,7 @@ This is also why "you can get non-integer values of degrees of freedom, which...
 
 > "How do I choose $\lambda$? One could be just a decision you make. Or [[cross-validation]], which is a thing I think is particularly useful, because you're still letting the data tell you or give you indications as to what to do." - [[L16-beyondlinear-1]]
 
-The book recommends **leave-one-out CV** because of the closed-form shortcut above — only one fit needed for the entire LOOCV computation. On the wage data the LOOCV-chosen $\lambda$ gave $\mathrm{df}_\lambda \approx 6.8$ — a smoother fit than the arbitrary $\mathrm{df} = 16$ comparison fit.
+The book recommends **leave-one-out CV** because of the closed-form shortcut above, only one fit needed for the entire LOOCV computation. On the wage data the LOOCV-chosen $\lambda$ gave $\mathrm{df}_\lambda \approx 6.8$, a smoother fit than the arbitrary $\mathrm{df} = 16$ comparison fit.
 
 ## Insights & mental models
 
@@ -122,7 +122,7 @@ The book recommends **leave-one-out CV** because of the closed-form shortcut abo
 
 The 2025 exam Problem 4d tested the direction trap explicitly (see callout above). The 2023 exam tested the **wrong-formula trap**:
 
-> "(iii) The smoothing spline ensures smoothness of its function, $g$, by having a penalty term $\int g'(t)^2 dt$ in its loss." — **FALSE**: penalty is $\int g''(t)^2 dt$ (second derivative, not first). 2023 Q3d.
+> "(iii) The smoothing spline ensures smoothness of its function, $g$, by having a penalty term $\int g'(t)^2 dt$ in its loss." **FALSE**: penalty is $\int g''(t)^2 dt$ (second derivative, not first). 2023 Q3d.
 
 So **memorize**: penalty integrand is $g''(t)^2$, second derivative squared.
 
@@ -139,22 +139,22 @@ So **memorize**: penalty integrand is $g''(t)^2$, second derivative squared.
 
 - **In scope:** the loss + curvature-penalty objective; behaviour at the two extremes; effective df = $\mathrm{tr}(\mathbf S)$; LOOCV shortcut; the analogy to ridge.
 - **Look up in ISLR:** §7.5.1 (objective and the "natural cubic spline at every $x_i$" claim), §7.5.2 (effective df, LOOCV formula). Both quite short.
-- **Skip in ISLR (and slides):** the **optional Section "Computing $\mathbf S$"** in the slide deck (Reinsch matrix construction, eigendecomposition trick) — explicitly optional and not lectured. The proof that the minimiser of $\sum(y_i - g(x_i))^2 + \lambda \int g''^2$ is a natural cubic spline with knots at $x_1, \ldots, x_n$ is stated but not derived in either source.
-- **Skip in ISLR (book-only material):** the "ridge connection" optional section in the slide deck is informative but not lectured — same conceptual point that the smoothing spline is "ridge in function space" *is* lectured, just not the algebra.
+- **Skip in ISLR (and slides):** the **optional Section "Computing $\mathbf S$"** in the slide deck (Reinsch matrix construction, eigendecomposition trick), explicitly optional and not lectured. The proof that the minimiser of $\sum(y_i - g(x_i))^2 + \lambda \int g''^2$ is a natural cubic spline with knots at $x_1, \ldots, x_n$ is stated but not derived in either source.
+- **Skip in ISLR (book-only material):** the "ridge connection" optional section in the slide deck is informative but not lectured; same conceptual point that the smoothing spline is "ridge in function space" *is* lectured, just not the algebra.
 
 ## Exercise instances
 
-- **Exercise 7.5** — fit a GAM with `s(acceleration, df = 3)` (a smoothing spline component for acceleration with effective df 3) alongside a cubic spline for displacement, polynomial for horsepower, linear for weight, factor for origin. The smoothing spline is one of five different $f_j$ choices in the GAM. Note that `df = 3` is on the *low* end → smooth-ish fit (high $\lambda$).
-- **Exercise 7.6 (advanced, optional)** — implement the smoother matrix $\mathbf S$ from scratch via the Reinsch decomposition. *Optional / explicitly out of exam scope.*
+- **Exercise 7.5**: fit a GAM with `s(acceleration, df = 3)` (a smoothing spline component for acceleration with effective df 3) alongside a cubic spline for displacement, polynomial for horsepower, linear for weight, factor for origin. The smoothing spline is one of five different $f_j$ choices in the GAM. Note that `df = 3` is on the *low* end, smooth-ish fit (high $\lambda$).
+- **Exercise 7.6 (advanced, optional)**: implement the smoother matrix $\mathbf S$ from scratch via the Reinsch decomposition. *Optional / explicitly out of exam scope.*
 
 ## How it might appear on the exam
 
-- **Direction T/F** — the 2025 Problem 4d pattern: which way does $\lambda$ push smoothness, df, wiggliness, fit quality? **Highest-confidence exam pattern for this atom.**
-- **Penalty-formula recognition** — 2023 Q3d-style: spot the wrong derivative ($g'$ vs $g''$) in a stated penalty term.
-- **Effective dof intuition** — "What is the effective df when $\lambda \to \infty$?" → 2 (straight line, two parameters: intercept + slope).
+- **Direction T/F**: the 2025 Problem 4d pattern: which way does $\lambda$ push smoothness, df, wiggliness, fit quality? **Highest-confidence exam pattern for this atom.**
+- **Penalty-formula recognition**: 2023 Q3d-style: spot the wrong derivative ($g'$ vs $g''$) in a stated penalty term.
+- **Effective dof intuition**: "What is the effective df when $\lambda \to \infty$?" → 2 (straight line, two parameters: intercept + slope).
 - **Why use LOOCV here?** Closed-form shortcut means LOOCV is essentially free for smoothing splines (and for OLS, via the hat matrix).
-- **Ridge analogy** — "Smoothing splines are to function fitting what ridge regression is to coefficient estimation." Stating this analogy is a high-confidence exam-quality answer.
-- **Method-comparison** — when prefer smoothing spline over regression spline? When you don't want to choose knots; when you want a continuous tuning parameter; when LOOCV is cheap.
+- **Ridge analogy**: "Smoothing splines are to function fitting what ridge regression is to coefficient estimation." Stating this analogy is a high-confidence exam-quality answer.
+- **Method-comparison**: when prefer smoothing spline over regression spline? When you don't want to choose knots; when you want a continuous tuning parameter; when LOOCV is cheap.
 
 ## Related
 

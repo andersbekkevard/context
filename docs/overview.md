@@ -32,7 +32,7 @@ Each source has a distinct role. We mine each for what only it gives.
 
 ## Layers
 
-### Bronze — immutable
+### Bronze: immutable
 
 The raw sources above, plus `archive/` (old materials) and `exam_analysis.md` (prior synthesis of exam logistics + scope from a previous transcript pass, useful as scaffolding, not canonical; superseded for scope by `docs/scope.md`).
 
@@ -42,7 +42,7 @@ Nothing modifies bronze.
 
 The `notes/` folder contains Anders's own private notes. **Claude does not read, reference, or modify this folder.** It is invisible to all agents and to the tutor. No file under `notes/` should appear in any wiki output, agent prompt, or tutor response.
 
-### Wiki — LLM-generated
+### Wiki: LLM-generated
 
 `wiki/` holds three kinds of file, each described in its own doc:
 

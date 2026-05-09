@@ -49,7 +49,7 @@ So the diagnostics in this section all answer one question: **do the residuals l
 
 ### Residuals vs fitted values
 
-Plot eᵢ either as a histogram or — more usefully — against ŷᵢ. You're looking for a centered cloud at zero with constant spread. If errors get big where fitted values are big, the constant-variance assumption is broken.
+Plot eᵢ either as a histogram or, more usefully, against ŷᵢ. You're looking for a centered cloud at zero with constant spread. If errors get big where fitted values are big, the constant-variance assumption is broken.
 
 ### QQ plot
 
@@ -57,7 +57,7 @@ Plot theoretical quantiles of N(0, σ²) against the empirical quantiles of the 
 
 > "A QQ plot is a visual illustration of how close your histogram is to your distribution… if the theoretical quantiles match those quantiles from the histogram then it's like, bink, and then you're very happy because your assumptions are good."
 
-Deviations almost always show up in the **tails**. The classic "S-shape" (undercutting then overcutting) is the other characteristic failure pattern. Tests exist (Shapiro–Wilk etc.) — "we're not going to talk about it, but, you know, like people love to do tests." See [[residual-diagnostics|QQ plot]].
+Deviations almost always show up in the **tails**. The classic "S-shape" (undercutting then overcutting) is the other characteristic failure pattern. Tests exist (Shapiro–Wilk etc.) - "we're not going to talk about it, but, you know, like people love to do tests." See [[residual-diagnostics|QQ plot]].
 
 ### Recap of the four assumptions
 
@@ -70,13 +70,13 @@ The diagnostics map to these:
 
 > "I think this is the assumption that more often we accidentally screw up and it screws up a lot of shit and people are like 'that's fine.' It's not."
 
-(He's pointing at independence — same flag as L05.)
+(He's pointing at independence, same flag as L05.)
 
 The residuals-vs-fitted plot checks (1), (2), and gives a hint about (4). The QQ plot checks (3).
 
 ## Leverage and the hat matrix
 
-A point has high leverage when its **x-value** sits far from the bulk — note this is an x-only quantity, not involving y. Formally, for [[linear-regression|simple linear regression]],
+A point has high leverage when its **x-value** sits far from the bulk; note this is an x-only quantity, not involving y. Formally, for [[linear-regression|simple linear regression]],
 
 $$h_{ii} = \frac{1}{n} + \frac{(x_i - \bar x)^2}{\sum_j (x_j - \bar x)^2}.$$
 
@@ -86,7 +86,7 @@ $$h_{ii} = \frac{1}{n} + \frac{(x_i - \bar x)^2}{\sum_j (x_j - \bar x)^2}.$$
 
 > "They should have called this the fat kid seesaw effect. That would have been way better. … Yeah, that won't be on the test."
 
-A single x-outlier far from the centre of mass pulls the regression line by a lot. The same y-outlier near the middle of x is much less harmful — there's no lever arm.
+A single x-outlier far from the centre of mass pulls the regression line by a lot. The same y-outlier near the middle of x is much less harmful; there's no lever arm.
 
 ### The hat matrix
 
@@ -96,7 +96,7 @@ $$\hat{\boldsymbol\beta} = (X^\top X)^{-1} X^\top y, \quad \hat{y} = H y, \quad 
 
 > "This matrix H is also known as the hat matrix. The reason we call it a hat matrix is that it's where all the hats come from."
 
-Leverage hᵢᵢ is then literally the **diagonal of H**. He briefly mentions the Moore-Penrose pseudoinverse as the natural object when X isn't square — flagged for context, not for the exam.
+Leverage hᵢᵢ is then literally the **diagonal of H**. He briefly mentions the Moore-Penrose pseudoinverse as the natural object when X isn't square, flagged for context, not for the exam.
 
 > "One exercise you can do for your exercise class is figuring out / verify this formula comes from linear regression."
 
@@ -112,15 +112,15 @@ The raw residuals don't actually have variance σ². Their joint distribution is
 
 $$\boldsymbol{e} \sim N\!\left(0,\; \sigma^2 (I - H)\right),$$
 
-so they can be correlated and have unequal variances — annoying for diagnostics. To get something that behaves more like the εᵢ we *assumed*, **standardise**:
+so they can be correlated and have unequal variances, annoying for diagnostics. To get something that behaves more like the εᵢ we *assumed*, **standardise**:
 
 $$r_i = \frac{e_i}{\hat\sigma \sqrt{1 - h_{ii}}}.$$
 
-**Studentized** residuals additionally drop point i when estimating σ̂² for that point — removes the circularity of using yᵢ both to fit and to evaluate.
+**Studentized** residuals additionally drop point i when estimating σ̂² for that point, removing the circularity of using yᵢ both to fit and to evaluate.
 
 > "My guess is, in practice, that these two numbers are going to look exactly the same if you have more than like 50 points or something. But still, it's still nice to be exact or correct."
 
-Wherever you used raw residuals before, you can swap in studentized ones for cleaner-looking diagnostic plots. They are diagnostics, not new estimators — the βs are unchanged.
+Wherever you used raw residuals before, you can swap in studentized ones for cleaner-looking diagnostic plots. They are diagnostics, not new estimators; the βs are unchanged.
 
 ## Collinearity
 
@@ -130,7 +130,7 @@ A topic the prof flags as "really interesting" but covers in one slide. [[collin
 
 If x₁ and x₂ are strongly correlated, the least-squares objective doesn't change much when you make β₁ bigger and β₂ smaller in compensation:
 
-> "We could trade between x1 and x2 — e.g. make β₁ bigger and β₂ smaller, while fit is similar."
+> "We could trade between x1 and x2 - e.g. make β₁ bigger and β₂ smaller, while fit is similar."
 
 Perfect collinearity → infinitely many solutions. Even mild collinearity → highly sensitive solution that swings around with tiny data perturbations: "going to go wah, wah." Predictions blow up out of sample because you end up with "a million minus a million."
 
@@ -139,9 +139,9 @@ Perfect collinearity → infinitely many solutions. Even mild collinearity → h
 - **Detect**: [[collinearity|variance inflation factor]] (VIF). The book covers it, prof says **read it as self-study**.
 - **Fix**: drop the offending variable, or combine the collinear ones. Combining is most cleanly done with [[principal-component-analysis|PCA]] / [[principal-component-regression]]:
 
-> "PCA is a way of compressing your variables into fewer variables with some loss. … in this case X1 and X2 would turn into… one would be this trend, basically, and then the other one would be the one that's moving around — the shit around it. … because then they all become orthogonal."
+> "PCA is a way of compressing your variables into fewer variables with some loss. … in this case X1 and X2 would turn into… one would be this trend, basically, and then the other one would be the one that's moving around - the shit around it. … because then they all become orthogonal."
 
-He also previews [[linear-discriminant-analysis]] as another dimensionality-reduction route — "hopefully we'll get to it today." See [[principal-component-regression]] and [[curse-of-dimensionality]] (foreshadowing).
+He also previews [[linear-discriminant-analysis]] as another dimensionality-reduction route - "hopefully we'll get to it today." See [[principal-component-regression]] and [[curse-of-dimensionality]] (foreshadowing).
 
 ### Aside: studentized residuals are diagnostics, not estimators
 
@@ -184,7 +184,7 @@ Y is binary (0/1). Fitting it with an OLS line gives a "terrible fit": predictio
 [[logistic-regression]] is the **Bernoulli GLM**. Setup:
 
 - Response yᵢ ∈ {0, 1}.
-- Linear predictor ηᵢ = β₀ + β₁xᵢ₁ + … + βₚxᵢₚ. (The prof writes ηᵢ — "I typically use the letter H because I can remember what that thing's called.")
+- Linear predictor ηᵢ = β₀ + β₁xᵢ₁ + … + βₚxᵢₚ. (The prof writes ηᵢ - "I typically use the letter H because I can remember what that thing's called.")
 - Link: pᵢ = 1 / (1 + exp(−ηᵢ)). η very negative → 0; η very positive → 1.
 - Inverse / log-odds form: log(pᵢ / (1 − pᵢ)) = ηᵢ.
 
@@ -210,11 +210,11 @@ Logistic regression inherits linear regression's assumptions on the linear predi
 
 > "The collinearity problem we talked about a minute ago, that can happen here, and then this thing's no longer having a single maximum and it gets weird."
 
-Briefly mentioned: multi-class logistic regression (one-vs-rest binary trick or a different distribution); odds and log-odds as another lens on the same fit; you can predict on new x and read off a class probability — handy, but "if you're a doctor, don't really trust this."
+Briefly mentioned: multi-class logistic regression (one-vs-rest binary trick or a different distribution); odds and log-odds as another lens on the same fit; you can predict on new x and read off a class probability, handy, but "if you're a doctor, don't really trust this."
 
 ## Bayes classifier
 
-Restate logistic-regression's outputs as posterior probabilities P(Y | X). The [[classification-setup|Bayes classifier]] assigns the class with the highest posterior — for two classes, whichever side of 0.5.
+Restate logistic-regression's outputs as posterior probabilities P(Y | X). The [[classification-setup|Bayes classifier]] assigns the class with the highest posterior; for two classes, whichever side of 0.5.
 
 ### Why it's both beautiful and annoying
 
@@ -222,11 +222,11 @@ It is **provably optimal**: smallest possible test error, optimal decision bound
 
 > "The annoying thing is, like, you're making more assumptions. They have all these prior distributions and those are always wrong. … It's optimal if you're right, but you're probably wrong."
 
-The unavoidable error floor is the [[classification-setup|Bayes error rate]] — the analogue of irreducible error from regression. Same vocabulary you've seen since Module 2: training error, test error, loss function. Training error here is the **misclassification rate** — a 0/1 indicator of "did the prediction match the label," not a continuous residual.
+The unavoidable error floor is the [[classification-setup|Bayes error rate]], the analogue of irreducible error from regression. Same vocabulary you've seen since Module 2: training error, test error, loss function. Training error here is the **misclassification rate**: a 0/1 indicator of "did the prediction match the label," not a continuous residual.
 
 > "Here this error rate, we don't use the value, the continuous value … we actually binarized the orange one to be whatever the Bayes classifier suggests, and then just look at this indicator: did it guess right or wrong? Whereas the likelihood would be the one that accounts for the continuous variable."
 
-Test error is the one we'll really care about — to be picked up in Module 5.
+Test error is the one we'll really care about, to be picked up in Module 5.
 
 ## K-nearest neighbours
 
@@ -238,7 +238,7 @@ Totally different idea: no parametric model. To classify a new point, look at it
 
 ### Decision boundary shape
 
-KNN can produce extremely complicated decision regions — including disconnected "islands" — even though the model itself is trivial.
+KNN can produce extremely complicated decision regions (including disconnected "islands") even though the model itself is trivial.
 
 > "Complicated shape. Easy model. … You can have islands in the middle of nowhere."
 
@@ -250,7 +250,7 @@ Small K (e.g. K=1) → super wiggly, overfits each training point. Large K → t
 
 The biggest problem with [[knn-classification|KNN classifier]]:
 
-> "If there's a number of dimensions and you look at the average distance between points, of course as you add more dimensions that average distance is going to be bigger. But the weird thing is that the variance — like how much those distances vary just by chance — gets smaller and smaller. … So that in this million-dimensional space, the points that are close together have almost the same distance value as points that are far away."
+> "If there's a number of dimensions and you look at the average distance between points, of course as you add more dimensions that average distance is going to be bigger. But the weird thing is that the variance - like how much those distances vary just by chance - gets smaller and smaller. … So that in this million-dimensional space, the points that are close together have almost the same distance value as points that are far away."
 
 So "nearest" stops being meaningful in high dimensions. He recommends **simulating it yourself**: sample uniform points in d dimensions, plot the distribution of pairwise distances as d grows. The fix is dimensionality reduction (PCA again), but it's "a bit hacky still."
 
@@ -258,11 +258,11 @@ So "nearest" stops being meaningful in high dimensions. He recommends **simulati
 
 ### Statisticians don't love KNN
 
-Hard to analyse — no clean asymptotic distribution of anything, no parametric story. "Not super appealing from a statistical perspective."
+Hard to analyse: no clean asymptotic distribution of anything, no parametric story. "Not super appealing from a statistical perspective."
 
 ## Linear discriminant analysis
 
-Conceptual pivot. Logistic regression and KNN both model **P(Y | X)** — the posterior — directly. [[linear-discriminant-analysis]] models things the **other way around** and uses Bayes' theorem to flip:
+Conceptual pivot. Logistic regression and KNN both model **P(Y | X)** (the posterior) directly. [[linear-discriminant-analysis]] models things the **other way around** and uses Bayes' theorem to flip:
 
 $$P(Y = k \mid X = x) = \frac{f_k(x)\, \pi_k}{\sum_l f_l(x)\, \pi_l}$$
 
@@ -272,9 +272,9 @@ where f_k(x) = P(X | Y = k) is the **class-conditional density** and π_k = P(Y 
 
 ### Two-class Gaussian example
 
-Two classes (orange, green), each with prior 0.5, each with a Gaussian density on x. The product π_k f_k(x) is the curve you visualise; the **decision boundary is where the two product-curves intersect** — i.e. where the posteriors are equal.
+Two classes (orange, green), each with prior 0.5, each with a Gaussian density on x. The product π_k f_k(x) is the curve you visualise; the **decision boundary is where the two product-curves intersect**, i.e. where the posteriors are equal.
 
-If you shift the priors to (0.3, 0.7) — orange more common — the orange product-curve grows, the green one shrinks, the intersection point **slides toward green**. So the prior literally moves the boundary.
+If you shift the priors to (0.3, 0.7, orange more common) the orange product-curve grows, the green one shrinks, the intersection point **slides toward green**. So the prior literally moves the boundary.
 
 > "More things are going to be labeled as orange because you have more mass over here, and that makes sense because the prior says the orange one has a higher prior probability."
 
@@ -294,4 +294,4 @@ This is the second answer to the collinearity question from earlier ([[principal
 
 ## Closing
 
-Out of time at the end of the LDA setup. Continues tomorrow (L09 — [[L09-classif-3]]) finishing LDA (and on into QDA / Naive Bayes / ROC). Reminder to attend the lab session — TA "is great."
+Out of time at the end of the LDA setup. Continues tomorrow ([[L09-classif-3]]) finishing LDA (and on into QDA / Naive Bayes / ROC). Reminder to attend the lab session; TA "is great."

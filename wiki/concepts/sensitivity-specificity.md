@@ -4,10 +4,10 @@ module: 04-classif
 lectures: [L09, L10, L27]
 isl-ref: 4.4.2
 exercises:
-  - Exercise4.5a — define sensitivity and specificity for a disease/non-disease classifier
-  - CE1 problem 3c — calculate sensitivity and specificity from a confusion matrix (logistic)
-  - CE1 problem 3f — same for LDA
-  - CE1 problem 3g — same for QDA
+  - Exercise4.5a - define sensitivity and specificity for a disease/non-disease classifier
+  - CE1 problem 3c - calculate sensitivity and specificity from a confusion matrix (logistic)
+  - CE1 problem 3f - same for LDA
+  - CE1 problem 3g - same for QDA
 related: [confusion-matrix, roc-auc, classification-setup, logistic-regression]
 tags:
   - concept
@@ -21,13 +21,13 @@ aliases:
 
 # Sensitivity and specificity
 
-The two binary-classification metrics derived from the confusion matrix. Each picks up *one type* of correctness — sensitivity = catching positives, specificity = sparing negatives. The prof's framing emphasizes the **trade-off** between them (justice-system analogy) and the exam-day instruction: **write the formula** even if you don't plug in numbers.
+The two binary-classification metrics derived from the confusion matrix. Each picks up *one type* of correctness, sensitivity = catching positives, specificity = sparing negatives. The prof's framing emphasizes the **trade-off** between them (justice-system analogy) and the exam-day instruction: **write the formula** even if you don't plug in numbers.
 
 ## Definition (prof's framing)
 
-> "Sensitivity is the proportion of correctly classified positive observations: $\text{TP}/\text{P}$." — slide deck
+> "Sensitivity is the proportion of correctly classified positive observations: $\text{TP}/\text{P}$." - slide deck
 
-> "Specificity is the proportion of correctly classified negative observations: $\text{TN}/\text{N}$." — slide deck
+> "Specificity is the proportion of correctly classified negative observations: $\text{TN}/\text{N}$." - slide deck
 
 In words:
 - **Sensitivity** = "of all *actual* positives, how many did we catch?": ability to detect disease/default/whatever.
@@ -55,25 +55,25 @@ $$1 - \text{specificity} = \frac{FP}{TN + FP} = \text{false positive rate (FPR)}
 
 These two quantities are what the [[roc-auc|ROC curve]] plots against each other (TPR on $y$, FPR = $1 - $ specificity on $x$, threshold-swept).
 
-> "On the exam, *write the formula* even if you don't plug in numbers." — manifest one-liner
+> "On the exam, *write the formula* even if you don't plug in numbers." - manifest one-liner
 
-The slide deck shows the canonical 2×2 layout — memorize the formula, then read entries off the matrix. The prof: "It's why you need a calculator."
+The slide deck shows the canonical 2×2 layout, memorize the formula, then read entries off the matrix. The prof: "It's why you need a calculator."
 
 ## Insights & mental models
 
 - **Trade-off:** higher sensitivity usually comes at lower specificity (and vice versa). The cutoff (default 0.5 for binary classifiers) is the knob.
 - **Prof's justice-system analogy:**
 
-> "Typically in the justice system, when we're convicting people, we want a bias towards not putting them in jail. So we're okay letting a few people who committed the crime walk free, because then it keeps the innocent people from going to jail. So if you want to put a lot of people in jail, you want a very sensitive way — your jury reacts in a very sensitive manner, very easily convinced. Whereas if you want to bias towards more specificity, you want them to be more likely to just get all the negative ones right." — [[L09-classif-3]]
+> "Typically in the justice system, when we're convicting people, we want a bias towards not putting them in jail. So we're okay letting a few people who committed the crime walk free, because then it keeps the innocent people from going to jail. So if you want to put a lot of people in jail, you want a very sensitive way, your jury reacts in a very sensitive manner, very easily convinced. Whereas if you want to bias towards more specificity, you want them to be more likely to just get all the negative ones right." - [[L09-classif-3]]
 
 - **Domain sets the priority.** Medicine: usually want high sensitivity ("don't miss the disease"). Spam filter: usually want high specificity ("don't quarantine the boss's email").
 - **Both depend on the cutoff.** For a probabilistic classifier, decreasing the cutoff (e.g., 0.5 → 0.2) → more positive predictions → sensitivity ↑, specificity ↓. The ROC curve traces every $(1-\text{spec}, \text{sens})$ pair.
-- **Class imbalance distorts overall accuracy but not sensitivity/specificity.** A "always predict 0" classifier on heavy class-0 data has high accuracy, sensitivity = 0, specificity = 1 — sens/spec correctly catch the failure.
+- **Class imbalance distorts overall accuracy but not sensitivity/specificity.** A "always predict 0" classifier on heavy class-0 data has high accuracy, sensitivity = 0, specificity = 1, sens/spec correctly catch the failure.
 - **The sensitivity-specificity pair is what doctors look at.** Slide deck: "in medicine for two-class problems logistic regression is often preferred (for interpretability) and (always) together with ROC and AUC (for model comparison)."
 
 ## Exam signals
 
-> "Write the equation rather than computing — the formula counts as the answer." - [[L27-summary]]
+> "Write the equation rather than computing, the formula counts as the answer." - [[L27-summary]]
 
 > "Define sensitivity and specificity in plain English **for this specific model**." - [[L27-summary]] (re: 2025 exam Q7)
 
@@ -95,15 +95,15 @@ The 2025 exam Q7 explicitly asked: define sensitivity/specificity for the defaul
 - **In scope:** Definitions, formulas, trade-off, threshold-dependence, justice-system intuition, class-imbalance interpretation, role in ROC.
 - **Look up in ISLR:** §4.4.2, pp. 149–151, Table 4.6 (the full type-I/type-II + sensitivity/specificity vocabulary cross-reference).
 - **Skip in ISLR:** Detailed type-I/type-II error connections (knowing sensitivity = 1 − Type II = power is enough); precision/recall/F1 from the information-retrieval tradition (never covered).
-- **Imbalanced-class asymmetric ROC analysis** — [[L07-classif-1]]: "I don't think the book talks much about that." Out of scope.
+- **Imbalanced-class asymmetric ROC analysis**: [[L07-classif-1]]: "I don't think the book talks much about that." Out of scope.
 
 ## Exercise instances
 
-- **Exercise4.5a** — define sensitivity and specificity for a disease/non-disease classifier. Plain-English plus formula.
-- **CE1 problem 3c** — compute sensitivity + specificity from the logistic-regression confusion matrix on the tennis test set.
-- **CE1 problem 3f** — same for LDA.
-- **CE1 problem 3g** — same for QDA.
-- **Exercise4.6j** — implicitly used inside the ROC plotting (sensitivity = $y$-axis).
+- **Exercise4.5a**: define sensitivity and specificity for a disease/non-disease classifier. Plain-English plus formula.
+- **CE1 problem 3c**: compute sensitivity + specificity from the logistic-regression confusion matrix on the tennis test set.
+- **CE1 problem 3f**: same for LDA.
+- **CE1 problem 3g**: same for QDA.
+- **Exercise4.6j**: implicitly used inside the ROC plotting (sensitivity = $y$-axis).
 
 ## How it might appear on the exam
 

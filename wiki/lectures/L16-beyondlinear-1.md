@@ -27,8 +27,8 @@ The prof opens module 7 and tries to "speed up a little bit" after admitting the
 
 ## Key takeaways
 
-- **The unifying trick of module 7**: replace $X$ with **basis functions** $b_j(X)$. Polynomials, indicators of intervals, and spline pieces are all just different choices of $b_j$. Fitting is still ordinary linear regression — "linear in the parameters $\beta$, but nonlinear in what you get."
-- **Splines come from shipbuilding** — knots are the pegs, the wood is the polynomial pieces. Statisticians (incl. Hastie) picked them up after Renault engineers in the 50s/60s used them for computer-aided design (Bézier).
+- **The unifying trick of module 7**: replace $X$ with **basis functions** $b_j(X)$. Polynomials, indicators of intervals, and spline pieces are all just different choices of $b_j$. Fitting is still ordinary linear regression, "linear in the parameters $\beta$, but nonlinear in what you get."
+- **Splines come from shipbuilding**: knots are the pegs, the wood is the polynomial pieces. Statisticians (incl. Hastie) picked them up after Renault engineers in the 50s/60s used them for computer-aided design (Bézier).
 - **Cubic spline** = piecewise cubic with continuous 0th, 1st, 2nd derivatives at the knots. The book's basis: $X, X^2, X^3$, plus one truncated cubic $(X - c_j)^3_+$ per knot. **Natural spline** adds boundary knots that force the function to go linear at the ends, killing the wild tail behaviour of plain cubic splines.
 - **Smoothing splines** drop the knot-and-basis story entirely. Add a second objective $\lambda \int g''(x)^2\,dx$ to the RSS. $\lambda = 0$ → arbitrarily wiggly fit; $\lambda \to \infty$ → straight line (second derivative forced to zero everywhere). Tune $\lambda$ by **leave-one-out CV**.
 - **Effective degrees of freedom** = trace of the smoother matrix $S$ (where $\hat y = Sy$). Lets you specify smoothness as a non-integer "df" instead of an opaque $\lambda$.
@@ -43,7 +43,7 @@ Module 7 is "relatively short." The prof opens by acknowledging the schedule sli
 
 The plan: finish module 7 today/tomorrow and start module 8.
 
-The motivation for the whole module: linear regression — really a Gaussian linear model — only does so much. We want to move beyond it. The route taken here is **not** "throw away linear regression"; it's "keep linear regression, but feed it transformed inputs."
+The motivation for the whole module: linear regression (really a Gaussian linear model) only does so much. We want to move beyond it. The route taken here is **not** "throw away linear regression"; it's "keep linear regression, but feed it transformed inputs."
 
 ## Basis functions: the unifying frame
 
@@ -54,14 +54,14 @@ $$y = \beta_0 + \beta_1 b_1(x) + \beta_2 b_2(x) + \ldots + \beta_k b_k(x) + \var
 
 > "Instead of looking at $x$ directly we're going through basis functions, and that's a very general term, a very powerful term that has many many versions."
 
-The fit is still least squares. The design matrix is built from $b_j(x_i)$ values. Everything we know about OLS — the closed form, the variance, the inference — carries over because the model is **linear in $\beta$**. This is the through-line for the entire module.
+The fit is still least squares. The design matrix is built from $b_j(x_i)$ values. Everything we know about OLS (the closed form, the variance, the inference) carries over because the model is **linear in $\beta$**. This is the through-line for the entire module.
 
 ## Polynomial regression
 
 Simplest choice: $b_j(x) = x^j$. So
 $$y = \beta_0 + \beta_1 x + \beta_2 x^2 + \ldots + \beta_d x^d + \varepsilon.$$
 
-Worked on the **wage-vs-age** data — "how much money people make as a function of age." It peaks around mid-career and drops off after 80 (in this dataset, "people over 80 don't typically make very much because... maybe they weren't so alive"). The prof also flagged the income-inequality outliers visible in the scatter ("we're looking at the wrong question") but shrugged it off and moved on.
+Worked on the **wage-vs-age** data, "how much money people make as a function of age." It peaks around mid-career and drops off after 80 (in this dataset, "people over 80 don't typically make very much because... maybe they weren't so alive"). The prof also flagged the income-inequality outliers visible in the scatter ("we're looking at the wrong question") but shrugged it off and moved on.
 
 A degree-4 polynomial fit looks reasonable. But push $d$ too high and you get the same wiggly-overfit story from day one of the course:
 
@@ -71,13 +71,13 @@ This is the same flexibility/overfit warning from L02-L04, applied to a richer h
 
 ## Step functions
 
-Now $b_j(x) = \mathbb{1}(c_{j-1} \leq x < c_j)$ — an indicator that $x$ falls in some interval. The cut points $c_j$ are picked manually (often equally spaced) but you can also move them around or pick them by hand. The fit is a piecewise-constant function:
+Now $b_j(x) = \mathbb{1}(c_{j-1} \leq x < c_j)$, an indicator that $x$ falls in some interval. The cut points $c_j$ are picked manually (often equally spaced) but you can also move them around or pick them by hand. The fit is a piecewise-constant function:
 
 > "I mean, this one is very stupid, but it's actually quite common, simply because you don't need that much information... so you don't have too many constraints that push things around. Even the step functions are actually pretty nice, even if they are a bit stupid looking."
 
-The downside, mathematically: "you don't have derivatives here. They're not even... it's piecewise constant, but it's not connected — it can jump."
+The downside, mathematically: "you don't have derivatives here. They're not even... it's piecewise constant, but it's not connected, it can jump."
 
-Used on the **wage-vs-education** data, broken up by years of schooling (high school, bachelor's, master's, "PhD something excessive"). Within each interval you fit a constant. Confidence intervals come for free "same as you would get the confidence intervals for the prediction in the linear model — because it's just a linear model only now on these basis functions, which in that case were just fixed intervals."
+Used on the **wage-vs-education** data, broken up by years of schooling (high school, bachelor's, master's, "PhD something excessive"). Within each interval you fit a constant. Confidence intervals come for free "same as you would get the confidence intervals for the prediction in the linear model, because it's just a linear model only now on these basis functions, which in that case were just fixed intervals."
 
 The connecting moral so far:
 
@@ -91,7 +91,7 @@ The bridge from "fixed intervals" to "smooth pieces of polynomial joined togethe
 
 > "This idea of splines... comes from the idea of in shipbuilding where you have... pegs and then you take a piece of wood and... bend it down over these pegs."
 
-The wood naturally maintains derivative continuity over the pegs. Splines really took off in the 50s–60s at Renault (the prof name-checks Bézier) for computer-aided design — before splines you got triangular airplanes because flat surfaces were all you could model. Statisticians (incl. Hastie) picked them up in the 70s.
+The wood naturally maintains derivative continuity over the pegs. Splines really took off in the 50s–60s at Renault (the prof name-checks Bézier) for computer-aided design. Before splines you got triangular airplanes because flat surfaces were all you could model. Statisticians (incl. Hastie) picked them up in the 70s.
 
 The cut points are now called **knots**. The basic idea: piecewise polynomials joined at the knots, with derivative continuity enforced.
 
@@ -99,10 +99,10 @@ The cut points are now called **knots**. The basic idea: piecewise polynomials j
 
 The prof sketched the spectrum on the slide:
 
-- **Piecewise polynomial** — pieces don't even meet at the knot.
-- **Continuous piecewise polynomial** — pieces meet, but a kink at the knot ("kind of looks like a butt crack").
-- **Cubic spline** — pieces are cubic, **second derivative is continuous**, third derivative not enforced. Smooth to the eye.
-- **Linear spline** — same idea, but with linear pieces (and you can't enforce continuous first derivative without collapsing it to a single straight line).
+- **Piecewise polynomial**: pieces don't even meet at the knot.
+- **Continuous piecewise polynomial**: pieces meet, but a kink at the knot ("kind of looks like a butt crack").
+- **Cubic spline**: pieces are cubic, **second derivative is continuous**, third derivative not enforced. Smooth to the eye.
+- **Linear spline**: same idea, but with linear pieces (and you can't enforce continuous first derivative without collapsing it to a single straight line).
 
 > "You can define a spline with degree 10 or something. It wouldn't look very good, but you can do it."
 
@@ -136,7 +136,7 @@ The math isn't in the book or slides, so the prof skips it: "in other courses th
 
 > "I recommend going into, if you've never played with splines before, find some visualization tool where they have knots with splines to play with and just start moving the points around."
 
-You'll see exactly when and why they get wiggly — same intuition as bending wood weirdly over the pegs. ("If you put two points like this and then you pull this one down here and you pull that one like here, it just goes wiggly, wiggly, wiggly.")
+You'll see exactly when and why they get wiggly, same intuition as bending wood weirdly over the pegs. ("If you put two points like this and then you pull this one down here and you pull that one like here, it just goes wiggly, wiggly, wiggly.")
 
 ### Note on naming
 
@@ -159,7 +159,7 @@ The first term is fit; the second penalizes curvature (integrated squared second
 
 > "We've looked at situations where we have more than one objective before — we had regularizers... $Y - \beta X$ squared plus sum of $\beta$ squared, that was our ridge regression... a.k.a. $L_2$ norm or regularizer. Really what you're doing is you're adding another objective to your optimization."
 
-Same "two objectives" structure. The first fits the data, the second imposes a property — here, smoothness via the curvature penalty.
+Same "two objectives" structure. The first fits the data, the second imposes a property: here, smoothness via the curvature penalty.
 
 ### The two extremes
 
@@ -170,15 +170,15 @@ So $\lambda$ slides between "very flexible" and "completely straight."
 
 ### Effective degrees of freedom
 
-R parameterizes smoothness by **effective df** instead of $\lambda$ — and lets you input either one. Construction:
+R parameterizes smoothness by **effective df** instead of $\lambda$, and lets you input either one. Construction:
 
 1. Let $\hat y$ be the vector of fitted values from the smoothing spline.
 2. Because the optimization is quadratic in $g$, $\hat y$ is linear in $y$: $\hat y = S y$ for some $n \times n$ smoother matrix $S$.
-3. **Effective df** = $\text{tr}(S)$ — sum of the diagonal entries.
+3. **Effective df** = $\text{tr}(S)$: sum of the diagonal entries.
 
 > "It's not obvious, but that's how they define it."
 
-You can specify a non-integer df (e.g. 6.8) and the package back-solves $\lambda$ — "my guess is the way to make this work is that they would try a different value of $\lambda$ until you get the degree of freedom you want." High df → small $\lambda$ → wiggly. Low df → large $\lambda$ → close to straight.
+You can specify a non-integer df (e.g. 6.8) and the package back-solves $\lambda$: "my guess is the way to make this work is that they would try a different value of $\lambda$ until you get the degree of freedom you want." High df → small $\lambda$ → wiggly. Low df → large $\lambda$ → close to straight.
 
 This is also why "you can get non-integer values of degrees of freedom, which... typically we think of degrees of freedom as being integer values. But here it's an effective degree of freedom."
 
@@ -186,7 +186,7 @@ This is also why "you can get non-integer values of degrees of freedom, which...
 
 > "How do I choose $\lambda$? One could be just a decision you make. Or [[cross-validation]], which is a thing I think is particularly useful, because you're still letting the data tell you or give you indications as to what to do."
 
-The book suggests **leave-one-out CV**: fit smoothing spline on $n-1$ points, predict the held-out one, sum squared errors over all $n$ choices of held-out point, minimize over $\lambda$. ("It's a computer, so it's fine.") This is how the prof speculates the demo's df ≈ 6.8 was chosen — it gives "arguably better" fit than the arbitrary high-df one.
+The book suggests **leave-one-out CV**: fit smoothing spline on $n-1$ points, predict the held-out one, sum squared errors over all $n$ choices of held-out point, minimize over $\lambda$. ("It's a computer, so it's fine.") This is how the prof speculates the demo's df ≈ 6.8 was chosen: it gives "arguably better" fit than the arbitrary high-df one.
 
 ## Local regression
 
@@ -222,28 +222,28 @@ So far everything's been one $X$. With multiple predictors, we want each one to 
 **Additive model**:
 $$y = \beta_0 + f_1(x_1) + f_2(x_2) + \ldots + f_p(x_p) + \varepsilon.$$
 
-Each $f_j$ can be any of the things from this lecture: polynomial, indicator (step), cubic spline, natural spline, smoothing spline, local regression. They're combined **additively** — no interactions across predictors.
+Each $f_j$ can be any of the things from this lecture: polynomial, indicator (step), cubic spline, natural spline, smoothing spline, local regression. They're combined **additively**, no interactions across predictors.
 
 > "You're assuming that they don't interact. Like it's not like you have to be educated and old, but rather the component that has to do with how old you are can be considered separate from education, right? They combine in how they predict, right? But they combine additively."
 
-The assumption is "often not a terrible one, either because the assumption is maybe a good one or because adding more terms could be bad — they could get unwieldy."
+The assumption is "often not a terrible one, either because the assumption is maybe a good one or because adding more terms could be bad, they could get unwieldy."
 
 ### Worked example
 
 Wage as function of:
-- $f_1(\text{age})$ — cubic spline with knots at e.g. 40, 60.
-- $f_2(\text{year})$ — natural spline with its own knots.
-- $f_3(\text{education})$ — indicators (because education is discrete: high school, some college, college grad, advanced degree).
+- $f_1(\text{age})$: cubic spline with knots at e.g. 40, 60.
+- $f_2(\text{year})$: natural spline with its own knots.
+- $f_3(\text{education})$: indicators (because education is discrete: high school, some college, college grad, advanced degree).
 
 Different predictors can use different basis types, different numbers and locations of knots, different domains.
 
 ### Fitting and naming
 
-When all the $f_j$ are basis-function expansions, you stack the basis matrices into one big $X$ and fit by OLS as usual. They are called **generalized additive models** — the prof:
+When all the $f_j$ are basis-function expansions, you stack the basis matrices into one big $X$ and fit by OLS as usual. They are called **generalized additive models**. The prof:
 
 > "Sounds better like GAMs, right? Because it sounds like you're, I don't know, like jelly or something."
 
-You get the usual outputs: coefficient estimates, predictions, confidence intervals — and because the components are additive, you can plot each $f_j$ individually as a function of its predictor (the prof points to a partial-dependence-style plot showing each $f_j$ separately).
+You get the usual outputs: coefficient estimates, predictions, confidence intervals. Because the components are additive, you can plot each $f_j$ individually as a function of its predictor (the prof points to a partial-dependence-style plot showing each $f_j$ separately).
 
 ## Closing
 

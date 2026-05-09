@@ -18,7 +18,7 @@ Imagine handing the atom to **another stat learning professor** who needs to bri
 
 That gap is what the atom fills.
 
-After loading the atom, Claude should be able to answer a reasonable exam question about the concept the way *this* exam would ask it — without traversing other files.
+After loading the atom, Claude should be able to answer a reasonable exam question about the concept the way *this* exam would ask it, without traversing other files.
 
 ## Division of labor between wiki and book
 

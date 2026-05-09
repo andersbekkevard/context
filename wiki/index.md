@@ -2,7 +2,7 @@
 title: TMA4268 - Statistical Learning
 ---
 
-# TMA4268 — Statistical Learning
+# TMA4268 Statistical Learning
 
 Exam-prep notes for **TMA4268 *Statistisk læring*** at NTNU.
 
@@ -79,3 +79,7 @@ Slide decks (annotated where available) and exercise PDFs from the original cour
 Every named idea (ridge regression, LDA, cross-validation, …) has its own page with the definition, the formulas to know, the traps the prof flagged, and a pointer to ISLR for the deeper treatment. Every lecture is compressed into a page that preserves the prof's voice where it matters.
 
 You'll usually land on these through a module page above, but the **search bar (left)** and the **graph view (right)** work too.
+
+## Source
+
+The full source for this site lives at <a href="https://github.com/andersbekkevard/context" target="_blank" rel="noopener">github.com/andersbekkevard/context</a>.

@@ -21,7 +21,7 @@ The prof's "lazy version" of cross-validation: random 50/50 split, fit once, eva
 
 Randomly partition the data into two halves: a **training set** (fit the model) and a **validation set** (estimate prediction error on held-out points). Used to compare models or pick a hyperparameter by reading off the validation MSE / misclassification rate.
 
-> "If you have a lot of data… screw it, just do this — because this is going to be more conservative than the other approaches. And it's also very easy to explain." - [[L10-resample-1]]
+> "If you have a lot of data… screw it, just do this, because this is going to be more conservative than the other approaches. And it's also very easy to explain." - [[L10-resample-1]]
 
 Strictly speaking it isn't *cross*-validation; there's only one split. The prof grouped it with CV because it's the simplest member of the family.
 
@@ -46,7 +46,7 @@ In bias-variance terms (per [[L11-resample-2]] recap): high bias (small training
 
 ## Exam signals
 
-> "If you have a lot of data… screw it, just do this — because this is going to be more conservative than the other approaches. And it's also very easy to explain." - [[L10-resample-1]]
+> "If you have a lot of data… screw it, just do this, because this is going to be more conservative than the other approaches. And it's also very easy to explain." - [[L10-resample-1]]
 
 > "No consensus which model really gives the lowest validation set MSE." - [[L10-resample-1]] (slide commentary on the 10-rerun Auto example)
 

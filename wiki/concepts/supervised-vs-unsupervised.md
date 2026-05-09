@@ -20,7 +20,7 @@ The first organizing axis of statistical learning: **do you have a $Y$ to aim at
 
 ## Definition (prof's framing)
 
-> "Supervised — you kind of know what you want to get out of it. Unsupervised — you're sort of fiddling around and seeing what falls out." - [[L01-intro]]
+> "Supervised, you kind of know what you want to get out of it. Unsupervised, you're sort of fiddling around and seeing what falls out." - [[L01-intro]]
 
 > "Supervised: labels to train against. Unsupervised: no labels, no goal." - [[L21-unsupervised-1]]
 
@@ -67,7 +67,7 @@ The healthy pattern: **unsupervised exploration → hypothesis-driven supervised
 
 This is the prof's distinctive point and it's worth catching:
 
-> "Often what looks like unsupervised is really supervised in disguise. Best example: large language models. The training task is just predict the next word — perfectly supervised, perfectly defined. But the model ends up 'knowing' who-did-it in a mystery, knowing program syntax, knowing therapy. It was just trained to predict the next word. What's the next word a therapist would say?" - [[L02-statlearn-1]]
+> "Often what looks like unsupervised is really supervised in disguise. Best example: large language models. The training task is just predict the next word, perfectly supervised, perfectly defined. But the model ends up 'knowing' who-did-it in a mystery, knowing program syntax, knowing therapy. It was just trained to predict the next word. What's the next word a therapist would say?" - [[L02-statlearn-1]]
 
 The reframing trick: even if your data has no obvious $y$, ask whether you can construct one from the data itself (next word, next pixel, masked token, click vs no click). If yes, it's supervised, and supervised methods are stronger because the loss is well-defined.
 
@@ -83,7 +83,7 @@ This is the deepest reason for the danger framing. Supervised methods get test M
 
 ## Exam signals
 
-> "I like this kind of question … it's conceptual, but you also don't have to write a whole book — you just have to know which words to fill in correctly." - [[L27-summary]]
+> "I like this kind of question … it's conceptual, but you also don't have to write a whole book, you just have to know which words to fill in correctly." - [[L27-summary]]
 
 (Q1 of the 2025 paper, walked through in [[L27-summary]], is a fill-in-the-blank using exactly the vocabulary "regression," "classification," "prediction," "inference", and supervised vs unsupervised is the same family of conceptual labels. Expect at least one tag-this-scenario question.)
 

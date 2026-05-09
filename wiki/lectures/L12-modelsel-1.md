@@ -22,17 +22,17 @@ aliases:
   - Lecture 12
 ---
 
-# L12 — Model Selection and Regularization 1
+# L12: Model Selection and Regularization 1
 
-The prof opens module 6 by framing **regularization as constraint** — a way to make over-parameterized models behave by trading a little bias for a lot of variance reduction. He covers the three subset-selection algorithms (best, forward, backward, plus hybrid), is explicit that the training-error penalties (Cp, AIC, BIC, adjusted $R^2$) are not exam material and that he doesn't trust them, then introduces [[ridge-regression]] (= L2) as the first shrinkage method. Stops mid-ridge; continues tomorrow.
+The prof opens module 6 by framing **regularization as constraint**, a way to make over-parameterized models behave by trading a little bias for a lot of variance reduction. He covers the three subset-selection algorithms (best, forward, backward, plus hybrid), is explicit that the training-error penalties (Cp, AIC, BIC, adjusted $R^2$) are not exam material and that he doesn't trust them, then introduces [[ridge-regression]] (= L2) as the first shrinkage method. Stops mid-ridge; continues tomorrow.
 
 ## Key takeaways
 
 - **Regularization is constraint.** "We're going to look at the regularizations or constraints on these models that they do the thing that we talk about." Often the constraint you write down (push betas to zero) is not directly what you want — but it produces the model behavior you want (low variance, generalizes).
-- **Bias-variance recap, applied to predictor count.** Standard linear: $n \gg p$ → low variance; $n \approx p$ → high variance; $n < p$ → variance explodes, model unusable without extra constraints. "Often we can substantially reduce the variance at the cost of a negligible increase in bias" — the prof flags he is *always* surprised how cheap the bias cost is.
+- **Bias-variance recap, applied to predictor count.** Standard linear: $n \gg p$ → low variance; $n \approx p$ → high variance; $n < p$ → variance explodes, model unusable without extra constraints. "Often we can substantially reduce the variance at the cost of a negligible increase in bias", the prof flags he is *always* surprised how cheap the bias cost is.
 - **Best subset selection** fits all $2^p$ models, picks best of each order $k$ by RSS / $R^2$, then chooses across orders by **cross-validation** (or the penalty criteria, which the prof distrusts). Verbatim: **"slow as shit for $p$ big."**
 - **Forward / backward / hybrid stepwise** are guided searches: $1 + p(p+1)/2$ fits, much cheaper, **not guaranteed** to find the best subset. Demonstrated on Credit data where adding `limit` flips the best 4-variable set from `{rating, ...}` to one with `cards` instead — predictors are correlated in annoying ways.
-- **Penalty criteria (Cp, AIC, BIC, adjusted $R^2$) — explicitly not exam material.** "I really don't think I'm going to ask any questions about this." All you need to know: they exist as ways to penalize training RSS by model complexity. Prof doesn't trust them; recommends cross-validation instead.
+- **Penalty criteria (Cp, AIC, BIC, adjusted $R^2$): explicitly not exam material.** "I really don't think I'm going to ask any questions about this." All you need to know: they exist as ways to penalize training RSS by model complexity. Prof doesn't trust them; recommends cross-validation instead.
 - **Ridge regression = L2.** Augment the RSS objective with $\lambda \sum_j \beta_j^2$. Tug-of-war: RSS pulls betas away from zero, the penalty pulls them back. $\lambda = 0$ → standard OLS; $\lambda = \infty$ → all betas → 0. **Standardize the X's first** — ridge is not scale-invariant.
 - **The general lens introduced today**: many of the "tricks" in this module are forms of variance reduction by adding constraints to the optimization. Subset selection does it discretely; shrinkage does it continuously.
 
@@ -80,9 +80,9 @@ The module's goal: improve prediction accuracy and/or interpretability **by repl
 
 The general term is **model selection**; the specific instance is feature/variable selection. The three families he lists from the slides:
 
-1. **Subset selection** — pick a subset of $X$'s, throw the rest away.
-2. **Shrinkage** — keep all $X$'s, regularize the coefficients toward zero.
-3. **Dimensionality reduction** — squish $p$ predictors into fewer composite ones (next lecture).
+1. **Subset selection**: pick a subset of $X$'s, throw the rest away.
+2. **Shrinkage**: keep all $X$'s, regularize the coefficients toward zero.
+3. **Dimensionality reduction**: squish $p$ predictors into fewer composite ones (next lecture).
 
 Today: subset selection in full, shrinkage started (ridge only).
 
@@ -120,11 +120,11 @@ His concrete example: pupil dilation fluctuates continuously; "rearing" is a bin
 
 > "I almost always in almost everything I do, I use cross-validation of some sort… because assumptions are always wrong, right? They're just so wrong."
 
-### The training-error penalty criteria — explicitly not exam material
+### The training-error penalty criteria: explicitly not exam material
 
 The slide deck lists $C_p$, $AIC$, $BIC$, adjusted $R^2$. All have the shape: training RSS plus a term that grows with the number of parameters (and often involves $\hat\sigma^2$, an unbiased noise estimate).
 
-> [!important] Verbatim — exam scope on penalties
+> [!important] Verbatim - exam scope on penalties
 > "I really don't think I'm going to ask any questions about this… I'm not going to ask you to use these. I'm not going to ask you to derive them. The derivations are actually, I would argue, the most interesting part. But that's not part of the course."
 
 What the prof wants you to take away:
@@ -156,9 +156,9 @@ Cost: $1 + p(p+1)/2$ fits. For $p = 20$, that's **211 fits** instead of the mill
 
 > "211 is a lot less than a million. And so you save a lot of time. And in this case, you know, with 20, you probably just made it feasible to actually do it."
 
-But it's a **guided search** — you can miss the true best subset:
+But it's a **guided search**; you can miss the true best subset:
 
-> "We building it up — so we might actually have the wrong combination."
+> "We building it up - so we might actually have the wrong combination."
 
 Demonstrated on Credit data (slide): the best 1-, 2-, and 3-variable subsets agree between best-subset and forward stepwise. At $k = 4$, the best-subset answer drops `rating` and adds `cards`, but forward stepwise can't backtrack — it carries `rating` along because `limit` came in at step 4.
 
@@ -187,11 +187,11 @@ Forward + backward interleaved. After adding a variable, check whether any previ
 
 So in principle, hybrid could recover the best-subset 4-variable answer that pure forward missed on the Credit data. The prof said he hadn't actually run it, but speculated.
 
-### Subset selection — wrap
+### Subset selection: wrap
 
 End of subset selection. Three approaches (best, forward/backward, hybrid). The discrete combinatorial problem of "which $X$'s belong" is what we just solved. Now we shift framing.
 
-## Shrinkage methods — introduction
+## Shrinkage methods: introduction
 
 The third approach to model reduction. Don't pick a subset of $X$'s — keep them all, but shrink the coefficients.
 

@@ -92,7 +92,7 @@ The variance shrinks like $1/n$, so any non-zero effect eventually becomes stati
 
 ### Why $\mathbf{X}^\top\mathbf{X}$ matters: collinearity
 
-The variance has the constant-$\sigma^2$ baked in, plus the data-dependent factor $(\mathbf{X}^\top\mathbf{X})^{-1}$. When two predictors are nearly the same, $\mathbf{X}^\top\mathbf{X}$ is near-singular, its inverse blows up, the diagonal entries grow without bound — variances explode. See [[collinearity]].
+The variance has the constant-$\sigma^2$ baked in, plus the data-dependent factor $(\mathbf{X}^\top\mathbf{X})^{-1}$. When two predictors are nearly the same, $\mathbf{X}^\top\mathbf{X}$ is near-singular, its inverse blows up, the diagonal entries grow without bound, variances explode. See [[collinearity]].
 
 > "This factor X transpose X comes into play in particular when two variables are basically the same, because then they can trade off each other and then this variance explodes." - [[L06-linreg-2]]
 
@@ -114,7 +114,7 @@ Strictly, the SE you can compute uses $\hat\sigma$ in place of the unknown $\sig
 - **Estimated vs known $\sigma$.** With unknown $\sigma$, use t with $n - p - 1$ df, not standard normal. The hat is implicit in how R reports SE.
 - **The multivariate covariance has off-diagonal entries.** $\hat\beta_0$ and $\hat\beta_1$ are *not* generally independent in simple LR. Their covariance becomes zero only if $\bar x = 0$.
 - **Bias is a function of the model, not the estimator.** $\hat{\boldsymbol\beta}$ is unbiased *for the true $\boldsymbol\beta$ in the assumed model.* If the true model is non-linear, the LS slope is unbiased for the *best linear approximation*, not for the curve.
-- **Inflation under collinearity.** A coefficient estimate may be near-zero with a huge SE — looks "insignificant" but the joint test (F) over the correlated set may still be highly significant. See [[t-test-and-significance]] and [[f-test]].
+- **Inflation under collinearity.** A coefficient estimate may be near-zero with a huge SE, looks "insignificant" but the joint test (F) over the correlated set may still be highly significant. See [[t-test-and-significance]] and [[f-test]].
 
 ## Scope vs ISLR
 
@@ -124,7 +124,7 @@ Strictly, the SE you can compute uses $\hat\sigma$ in place of the unknown $\sig
 
 ## Exercise instances
 
-- Exercise3.2a — full derivation: show $\hat{\boldsymbol\beta}$ has the stated distribution; what assumptions are needed; what does this imply for $\hat\beta_j$; how to compute $\mathrm{Var}(\hat\beta_j)$.
+- Exercise3.2a: full derivation: show $\hat{\boldsymbol\beta}$ has the stated distribution; what assumptions are needed; what does this imply for $\hat\beta_j$; how to compute $\mathrm{Var}(\hat\beta_j)$.
 
 ## How it might appear on the exam
 
@@ -135,11 +135,11 @@ Strictly, the SE you can compute uses $\hat\sigma$ in place of the unknown $\sig
 
 ## Related
 
-- [[linear-regression]] — the underlying model
-- [[least-squares-and-mle]] — derivation of $\hat{\boldsymbol\beta}$
-- [[design-matrix-and-hat-matrix]] — source of $(\mathbf{X}^\top\mathbf{X})^{-1}$
-- [[gaussian-error-assumptions]] — what gives us the multivariate-normal result
-- [[confidence-and-prediction-intervals]] — built directly from this distribution
-- [[t-test-and-significance]] — the standardized coefficient test
-- [[collinearity]] — what blows up the variance
-- [[multivariate-normal]] — the cross-cutting prerequisite distribution
+- [[linear-regression]]: the underlying model
+- [[least-squares-and-mle]]: derivation of $\hat{\boldsymbol\beta}$
+- [[design-matrix-and-hat-matrix]]: source of $(\mathbf{X}^\top\mathbf{X})^{-1}$
+- [[gaussian-error-assumptions]]: what gives us the multivariate-normal result
+- [[confidence-and-prediction-intervals]]: built directly from this distribution
+- [[t-test-and-significance]]: the standardized coefficient test
+- [[collinearity]]: what blows up the variance
+- [[multivariate-normal]]: the cross-cutting prerequisite distribution

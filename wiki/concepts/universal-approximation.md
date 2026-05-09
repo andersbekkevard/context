@@ -41,7 +41,7 @@ The prof did not write this formula on the board; he stated the result in words.
 
 ### Existence, not construction
 
-> "It's an existence result, not a recipe — says nothing about training." - [[L23-nnet-1]] paraphrase from the lecture's three caveats
+> "It's an existence result, not a recipe, says nothing about training." - [[L23-nnet-1]] paraphrase from the lecture's three caveats
 
 The theorem guarantees a network *exists* that approximates any $f$. It does **not** tell you (a) how wide $M$ has to be, (b) what the weights are, (c) how to train to find them, (d) whether SGD will converge to such weights. All those are separate problems.
 
@@ -59,7 +59,7 @@ Two takeaways the prof emphasized:
 
 2. **You need non-linearity in the hidden layer.** Without a squashing activation, the network collapses to linear regression, not universal. This is the conceptual punchline of [[activation-functions]].
 
-> "The surprising thing was you can do this with a feedforward network. … You don't need loops, you don't necessarily need anything else, you don't even need that many hidden layers — it needs to be big enough." - [[L23-nnet-1]]
+> "The surprising thing was you can do this with a feedforward network. … You don't need loops, you don't necessarily need anything else, you don't even need that many hidden layers, it needs to be big enough." - [[L23-nnet-1]]
 
 ## Exam signals
 

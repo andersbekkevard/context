@@ -32,7 +32,7 @@ $$t = \frac{\hat\beta_j - 0}{\mathrm{SE}(\hat\beta_j)} \sim t_{n - p - 1} \text{
 
 Two-sided p-value: $P(|T| \ge |t_{\text{obs}}|)$ under $t_{n-p-1}$.
 
-> "We assume the most boring thing and then we try to reject it being boring — you know, just like we do with people in jail. We assume they're innocent, which is boring, and then we try to argue that they're guilty, which is more interesting because everyone's innocent." - [[L05-linreg-1]]
+> "We assume the most boring thing and then we try to reject it being boring, you know, just like we do with people in jail. We assume they're innocent, which is boring, and then we try to argue that they're guilty, which is more interesting because everyone's innocent." - [[L05-linreg-1]]
 
 ## Notation & setup
 

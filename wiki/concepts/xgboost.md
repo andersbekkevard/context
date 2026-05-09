@@ -121,10 +121,10 @@ So: know **what XGBoost adds on top of vanilla GBM** at the conceptual level, bu
 
 ## Related
 
-- [[boosting]] — the parent concept.
-- [[gradient-boosting]] — the algorithm XGBoost is the engineering-tuned version of.
-- [[weak-learner-and-learning-rate]] — XGBoost still uses small trees + small $\nu$.
-- [[stochastic-gradient-boosting]] — XGBoost natively exposes both row- and column-subsampling.
-- [[ridge-regression]] / [[lasso]] — the L2 / L1 leaf-weight penalties are these in another costume.
-- [[regularization]] — XGBoost is the densest concentration of regularizers in the course.
-- [[nn-regularization]] — dropout originally Hinton's idea for neural networks; XGBoost imports it.
+- [[boosting]]: the parent concept.
+- [[gradient-boosting]]: the algorithm XGBoost is the engineering-tuned version of.
+- [[weak-learner-and-learning-rate]]: XGBoost still uses small trees + small $\nu$.
+- [[stochastic-gradient-boosting]]: XGBoost natively exposes both row- and column-subsampling.
+- [[ridge-regression]] / [[lasso]]: the L2 / L1 leaf-weight penalties are these in another costume.
+- [[regularization]]: XGBoost is the densest concentration of regularizers in the course.
+- [[nn-regularization]]: dropout originally Hinton's idea for neural networks; XGBoost imports it.

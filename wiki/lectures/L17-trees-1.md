@@ -62,7 +62,7 @@ Crucially, each panel is a contribution, not a prediction:
 
 > "It's not that you look at this and like, oh well, he's 47, so he makes eight whatever units. … this is just the contribution. … You also have to consider all these other ones."
 
-A subtle assumption baked into this additive form: **education is independent of year**. Extrapolating to 2025 assumes the wage premium for a degree hasn't changed over time — which historically it has ("when I was very young there weren't that many people who had masters or PhDs … now people are arguing it's going to matter less and less"). Prof flags this as motivation for letting variables interact, which is what trees will give us next.
+A subtle assumption baked into this additive form: **education is independent of year**. Extrapolating to 2025 assumes the wage premium for a degree hasn't changed over time, which historically it has ("when I was very young there weren't that many people who had masters or PhDs … now people are arguing it's going to matter less and less"). Prof flags this as motivation for letting variables interact, which is what trees will give us next.
 
 ## Logistic versions of the same models
 
@@ -76,7 +76,7 @@ and let $\eta$ be **anything we built yesterday**. "This idea extends to lots of
 
 ### Polynomial logistic regression
 
-Use `glm(... family=binomial)` (binomial = Bernoulli = logistic regression — all synonymous). Response: indicator wage > $250k. Predictor: age as a polynomial.
+Use `glm(... family=binomial)` (binomial = Bernoulli = logistic regression, all synonymous). Response: indicator wage > $250k. Predictor: age as a polynomial.
 
 > "Polynomial logistic regression extends the polynomial regression to logistic data. Just the exact same way."
 
@@ -88,7 +88,7 @@ Same model, replace the polynomial with a [[regression-splines|cubic spline]] ba
 
 $$\log\frac{P}{1-P} = b_0 + b_1 B_1(\text{age}) + b_2 B_2(\text{age}) + \cdots$$
 
-Now the probability curve has a different shape — peaks around 60 instead. The prof half-jokes:
+Now the probability curve has a different shape: peaks around 60 instead. The prof half-jokes:
 
 > "This is, of course, the model that I'm going to use because it tells the story I want to say, which is not how you do science at all, which is bad."
 
@@ -100,7 +100,7 @@ Combine into a multivariate logistic GAM:
 
 $$\log\frac{P(X_1, X_2)}{1 - P(X_1, X_2)} = \beta_0 + f_1(X_1) + f_2(X_2)$$
 
-In the demo: $f_{\text{age}}$ is a **local linear** (`lo`) fit, $f_{\text{year}}$ is just linear. What's plotted per panel is the **contribution to the log-odds**, with the other variable at its mean — same convention as the regression GAM.
+In the demo: $f_{\text{age}}$ is a **local linear** (`lo`) fit, $f_{\text{year}}$ is just linear. What's plotted per panel is the **contribution to the log-odds**, with the other variable at its mean, same convention as the regression GAM.
 
 > "These models will actually center all of the data and then when you predict for each value you're essentially having seeing the other variables set to their mean values."
 
@@ -144,7 +144,7 @@ Slide deck attributed to Stephanie. Topics for Module 8: decision trees, regress
 
 ### The motivating picture: hitters data
 
-Two predictors: **years** of playing experience and **hits**. Response $Y$: salary, shown as the colour of each point. The pattern is **interactive**: salary increases with years, but **only for players with high hit counts**. An additive model can't capture this — it would force years and hits each into a 1-D contribution and add them up.
+Two predictors: **years** of playing experience and **hits**. Response $Y$: salary, shown as the colour of each point. The pattern is **interactive**: salary increases with years, but **only for players with high hit counts**. An additive model can't capture this: it would force years and hits each into a 1-D contribution and add them up.
 
 Instead, just **chunk** the predictor space:
 
@@ -182,7 +182,7 @@ and minimise
 
 $$\sum_{i : x_i \in R_1(j, s)} (y_i - \hat y_{R_1})^2 + \sum_{i : x_i \in R_2(j, s)} (y_i - \hat y_{R_2})^2$$
 
-over all $(j, s)$ pairs. Note these are **sums of squares** (RSS), not means — explicitly:
+over all $(j, s)$ pairs. Note these are **sums of squares** (RSS), not means. Explicitly:
 
 > "We're summing up the squared difference between each point and the average of all the shit in its region. … I'm not taking any mean values here. If we did, we would have a different algorithm, and one that wouldn't behave very well."
 
@@ -196,21 +196,21 @@ After the first split, repeat the same procedure **inside each child region**. E
 
 Data: ozone concentration (response), with predictors **radiation** (Langleys), **temperature** (°F), **wind** (mph). First few rows shown on slide.
 
-The fitted tree splits **on temperature first**, then on temperature again, then again — "I guess temperature really matters" — and finally on wind, never on radiation. So the tree's induced partition lives in (temperature, wind) only; radiation is implicitly squished. If radiation had been chosen, the regions would become **3-D cuboids**, but the tree representation absorbs that gracefully:
+The fitted tree splits **on temperature first**, then on temperature again, then again ("I guess temperature really matters"), and finally on wind, never on radiation. So the tree's induced partition lives in (temperature, wind) only; radiation is implicitly squished. If radiation had been chosen, the regions would become **3-D cuboids**, but the tree representation absorbs that gracefully:
 
 > "These things are easier to generalize to higher dimensions, right? … Whereas this, you can always just say what you're splitting on, right? And then you can work up the tree to figure out what your region is."
 
-A leaf might say: "if temperature > 77.5 and < 84.5 and wind < 7.7 then expected ozone = …" — directly readable.
+A leaf might say: "if temperature > 77.5 and < 84.5 and wind < 7.7 then expected ozone = …", directly readable.
 
 ## Stopping criteria
 
 You **could** keep splitting until every leaf has one point (perfect training fit, zero variance within region). In practice the `tree` R package uses three stopping parameters (named approximately):
 
-- `mincut` — controls tree depth
-- `minsize` — minimum observations per leaf (e.g. don't split if either child would have < 10 points)
-- `mindev` — minimum reduction in deviance, expressed as a fraction of the root deviance (e.g. stop if a candidate split would reduce RSS by less than 1% of the root RSS)
+- `mincut`: controls tree depth
+- `minsize`: minimum observations per leaf (e.g. don't split if either child would have < 10 points)
+- `mindev`: minimum reduction in deviance, expressed as a fraction of the root deviance (e.g. stop if a candidate split would reduce RSS by less than 1% of the root RSS)
 
-Prof is hazy on the exact `mindev` formula in the slide and promises to clarify Monday — it's the minimum proportional reduction in within-node sum-of-squares that justifies a further split. Below that, "you're just splitting noise."
+Prof is hazy on the exact `mindev` formula in the slide and promises to clarify Monday: it's the minimum proportional reduction in within-node sum-of-squares that justifies a further split. Below that, "you're just splitting noise."
 
 > "More importantly, this isn't how we just decide our final model. Typically, this is more criteria to just stop splitting. We're then going to find another way of determining our tree."
 
@@ -220,11 +220,11 @@ So: **grow much bigger than you actually want**, stopping only at very lax crite
 
 ### Why prune
 
-A maximal tree overfits — high variance, hard to interpret. A smaller tree:
+A maximal tree overfits: high variance, hard to interpret. A smaller tree:
 
 - **Lower variance** → generalises better
 - **More interpretable**
-- **Higher bias** — bias-variance trade-off, again
+- **Higher bias** (bias-variance trade-off, again)
 
 > "It's good to think about [bias-variance] … we want to keep making sure smaller trees, but of course we don't want to go too far."
 
@@ -242,7 +242,7 @@ Solving the penalised problem exhaustively over all possible subtrees is again u
 
 > "Let's say when you first did the exhaustive one you ended up with 100 regions. As you go backwards you have one that has 99, then 98, then 97 … all the way to one. And then what that gives you is 100 different models."
 
-These subtrees correspond to the optimal solutions of the penalised problem at increasing values of $\alpha$ — small $\alpha$ → big tree; big $\alpha$ → small tree.
+These subtrees correspond to the optimal solutions of the penalised problem at increasing values of $\alpha$: small $\alpha$ → big tree; big $\alpha$ → small tree.
 
 ### Picking $\alpha$ via CV
 
@@ -250,7 +250,7 @@ Use **K-fold cross-validation**: hold out the $k$-th fold, grow + prune on the r
 
 ### CV plot on the ozone data (5-fold)
 
-Error is high at tree size 1 (just the global mean), drops, bottoms out at **tree size 5**, then rises again as overfitting kicks in. The chosen tree has 5 leaves, splits only on temperature (three times) and wind (once) — radiation is dropped entirely. Matches the partition shown earlier.
+Error is high at tree size 1 (just the global mean), drops, bottoms out at **tree size 5**, then rises again as overfitting kicks in. The chosen tree has 5 leaves, splits only on temperature (three times) and wind (once); radiation is dropped entirely. Matches the partition shown earlier.
 
 > "Our best model didn't include that third variable at all, whatever that was. … In this case, at least that's what the data suggests."
 
