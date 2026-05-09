@@ -84,7 +84,7 @@ Always-on rules (already encoded in the prompt):
 
 Add a deck index to `wiki/index.md` (or wherever you want navigation to land) listing all 10 modules. The MOC for each module already carries a `## Practice` section with the deck link (per `docs/templates/mocs.md`).
 
-**Always link to decks with raw HTML `<a href="/decks/m<NN>-<slug>.html" target="_blank" rel="noopener">…</a>` — not markdown link syntax.** Decks are static pages that bypass Quartz's SPA pipeline; in-tab navigation from a wiki page leaves the deck loading with the wrong stylesheet until you refresh. `target="_blank"` forces a fresh page load in a new tab and avoids the bug.
+**Always link to decks with raw HTML `<a href="/decks/m<NN>-<slug>.html" target="_blank" rel="noopener">…</a>`, not markdown link syntax.** Decks are static pages that bypass Quartz's SPA pipeline; in-tab navigation from a wiki page leaves the deck loading with the wrong stylesheet until you refresh. `target="_blank"` forces a fresh page load in a new tab and avoids the bug.
 
 ## Deleting `databaser/`
 
@@ -94,7 +94,7 @@ When you're satisfied that nothing in `web/` references the old reference repo, 
 trash ../databaser
 ```
 
-`web/` is fully self-contained — `exam.css`, `exam.js`, and `_example.html` were ported and translated; `databaser/MAL.md` was reworked into `web/templates/deck.md`; the chat widget was dropped. Nothing here imports from `databaser/`.
+`web/` is fully self-contained, `exam.css`, `exam.js`, and `_example.html` were ported and translated; `databaser/MAL.md` was reworked into `web/templates/deck.md`; the chat widget was dropped. Nothing here imports from `databaser/`.
 
 Verify before deleting:
 

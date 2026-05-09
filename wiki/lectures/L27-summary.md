@@ -37,7 +37,7 @@ aliases:
 
 # L27: Summary and Exam Review
 
-The final class before the exam. The prof skipped the wrap-up slides and instead spent the whole session walking through the 2025 exam (and one 2024 question), explaining how each question would be re-formatted for *his* version of the exam — no R/Python coding, results given as tables, calculations and interpretation only. Bookended by exam logistics and the canonical scope rule. This is the single highest-priority lecture for exam prep.
+The final class before the exam. The prof skipped the wrap-up slides and instead spent the whole session walking through the 2025 exam (and one 2024 question), explaining how each question would be re-formatted for *his* version of the exam: no R/Python coding, results given as tables, calculations and interpretation only. Bookended by exam logistics and the canonical scope rule. This is the single highest-priority lecture for exam prep.
 
 ## Key takeaways
 
@@ -48,14 +48,14 @@ The final class before the exam. The prof skipped the wrap-up slides and instead
 - **No language-specific code.** No R/Python package names to memorize. He may ask for **pseudocode** or math, and he'll **give you the regression output / table / plot** instead of making you generate it.
 - **There will be a question on the bias-variance decomposition.** Said multiple times in the course. "If you haven't learned anything in the course, I recommend reading that part of the book."
 - **Format mix:** mostly multiple choice + true/false + short interpretation, plus at least one mathy/derivation question, plus data-analysis style questions where output is provided. Probably uses paper-with-PDF (write "Q1: A" on paper); may try Inspera buttons but probably won't.
-- **Show your work.** Negative scoring not used ("I won't give negative points"). Partial credit if calculator slip but equation is right. If you think a question is broken or a trick, write that down — you can earn points by flagging it.
+- **Show your work.** Negative scoring not used ("I won't give negative points"). Partial credit if calculator slip but equation is right. If you think a question is broken or a trick, write that down; you can earn points by flagging it.
 - **No empty answers.** "If you have some idea I'll probably give you something for something." But don't dump "the history of the world."
 
 ## Exam logistics
 
 ### When and where
 
-May 18 at 09:00, 4-hour exam. He emphasized that his exams are usually shorter than 4 hours, but the open-book format makes it harder to keep them short — historically these exams "were probably designed to run out the clock … such that if you really didn't know something, you didn't have time to really learn it." He'll try not to do that, but it's still going to be substantial.
+May 18 at 09:00, 4-hour exam. He emphasized that his exams are usually shorter than 4 hours, but the open-book format makes it harder to keep them short. Historically these exams "were probably designed to run out the clock … such that if you really didn't know something, you didn't have time to really learn it." He'll try not to do that, but it's still going to be substantial.
 
 ### Aids
 
