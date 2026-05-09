@@ -55,6 +55,43 @@ The prof acknowledged the pitch on penalty criteria *"didn't land cleanly: 'Mayb
 
 So this atom is **deliberately a stub**: the conceptual existence statement is in scope; the algebra is not.
 
+## Formulas (reference only, not examined)
+
+The four shapes the prof flashed on the slide and immediately deflected. Listed here so you actually have the definitions in one place. **Do not memorize.** All assume a least-squares fit with $d$ predictors and $\hat\sigma^2$ estimated from the full model.
+
+### Mallows' $C_p$
+
+$$\boxed{C_p = \frac{1}{n}\left(\mathrm{RSS} + 2 d \hat\sigma^2\right)}$$
+
+Training RSS plus a penalty $2d\hat\sigma^2$ that grows linearly in the number of predictors. **Lower is better** (it estimates test MSE). Per [[L13-modelsel-2]] the prof noted that the $2d$ part is "literally the expected increase in variance from adding one parameter", so the penalty makes the variance term of the bias-variance decomposition explicit.
+
+### AIC (Akaike information criterion)
+
+$$\boxed{\mathrm{AIC} = \frac{1}{n}\left(\mathrm{RSS} + 2 d \hat\sigma^2\right)}$$
+
+For Gaussian-error least squares, **AIC is proportional to $C_p$** (up to constants the textbook drops). Derived from information theory; defined for a much wider class of MLE-fit models. **Lower is better.**
+
+### BIC (Bayesian information criterion)
+
+$$\boxed{\mathrm{BIC} = \frac{1}{n}\left(\mathrm{RSS} + \log(n)\, d \hat\sigma^2\right)}$$
+
+Same shape as $C_p$ / AIC, but the penalty multiplier $2$ is replaced by $\log n$. Since $\log n > 2$ for any $n > 7$, **BIC penalizes complexity more heavily than AIC** and therefore prefers smaller models. Derived from a Bayesian asymptotic argument. **Lower is better.**
+
+### Adjusted $R^2$
+
+$$\boxed{R^2_{\mathrm{adj}} = 1 - \frac{\mathrm{RSS}/(n - d - 1)}{\mathrm{TSS}/(n - 1)}}$$
+
+Plain $R^2$ with the variances replaced by their unbiased estimates so the $d$ shows up in the denominator. Unlike the other three, **higher is better.** Adding a useless predictor inflates $d$ without dropping RSS much → $R^2_{\mathrm{adj}}$ falls. (See [[r-squared]] for the full discussion of $R^2$ vs adjusted $R^2$.)
+
+### One-line comparison
+
+| Criterion | Penalty term | Direction | Notes |
+|---|---|---|---|
+| $C_p$ | $2d\hat\sigma^2$ | smaller better | least-squares only |
+| AIC | $2d\hat\sigma^2$ | smaller better | $\propto C_p$ for Gaussian LS; works for any MLE |
+| BIC | $\log(n)\, d\hat\sigma^2$ | smaller better | heavier penalty → smaller models |
+| $R^2_{\mathrm{adj}}$ | $(n-1)/(n-d-1)$ factor | **larger** better | weakest theory |
+
 ## Why the prof prefers CV
 
 > "Your assumptions have to be right. And they're not. They're not typically right." - [[L10-resample-1]]
