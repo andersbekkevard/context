@@ -24,9 +24,9 @@ aliases:
   - Lecture 14
 ---
 
-# L14 — Model Selection and Regularization 3 (PCR/PCA)
+# L14: Model Selection and Regularization 3 (PCR/PCA)
 
-The prof recaps L1/L2 [[regularization]] as the third leg of model selection (after best-subset and forward/backward), introduces **implicit regularization** as a teaser, gives the Bayesian-prior view of ridge and lasso, then pivots to **dimensionality reduction** — specifically [[principal-component-regression]] via [[principal-component-analysis|PCA]] — as a different way to tame too-many-correlated-predictors. Ends early (doctor's appointment) with [[partial-least-squares]] flagged for next time.
+The prof recaps L1/L2 [[regularization]] as the third leg of model selection (after best-subset and forward/backward), introduces **implicit regularization** as a teaser, gives the Bayesian-prior view of ridge and lasso, then pivots to **dimensionality reduction** (specifically [[principal-component-regression]] via [[principal-component-analysis|PCA]]) as a different way to tame too-many-correlated-predictors. Ends early (doctor's appointment) with [[partial-least-squares]] flagged for next time.
 
 ## Key takeaways
 
@@ -42,9 +42,9 @@ The prof recaps L1/L2 [[regularization]] as the third leg of model selection (af
 
 Module name is *model selection and regularization*. Three big families covered so far:
 
-1. **Best subset** — try all $2^p$ combinations. Optimal but explodes combinatorially.
-2. **Forward / backward / hybrid** — greedy approximations. Add one predictor at a time, or start full and prune. Much cheaper, not optimal.
-3. **Regularization (shrinkage)** — penalize $\|\beta\|$ to shrink unimportant coefficients toward (or to) zero.
+1. **Best subset**: try all $2^p$ combinations. Optimal but explodes combinatorially.
+2. **Forward / backward / hybrid**: greedy approximations. Add one predictor at a time, or start full and prune. Much cheaper, not optimal.
+3. **Regularization (shrinkage)**: penalize $\|\beta\|$ to shrink unimportant coefficients toward (or to) zero.
 
 The framing throughout: more predictors → better training fit but worse out-of-sample. The error decomposes into [[bias-variance-tradeoff|bias and variance]]; regularization and selection both attack the **variance** term. *"We'll lose a little bit of prediction accuracy on our training data, but we'll do better out of sample."*
 
@@ -58,7 +58,7 @@ Subset selection breaks at scale. *"If you had to go through and try to figure o
 
 > "I would argue this is the most important one that we talk about throughout, the most important form of this type of parameter selection."
 
-## Regularization recap — explicit and implicit
+## Regularization recap: explicit and implicit
 
 The combined optimization:
 
@@ -142,7 +142,7 @@ Then fit
 
 $$y = \sum_{m=1}^M \theta_m Z_m + \varepsilon$$
 
-— a smaller, easier regression. **Then back out the implied $\beta$'s** by composing the linear maps:
+a smaller, easier regression. **Then back out the implied $\beta$'s** by composing the linear maps:
 
 $$\beta_j = \sum_{m=1}^M \theta_m \phi_{jm}$$
 
@@ -162,8 +162,8 @@ Squishing to orthogonal $Z$'s **removes the redundancy**. Each $Z_m$ is independ
 
 We'll cover two ways to choose the $\phi$'s — both **linear** combinations:
 
-- **PCR — Principal Components Regression** (today): use [[principal-component-analysis|PCA]] to pick the $\phi$'s. **Unsupervised** — uses only $X$.
-- **PLS — Partial Least Squares** (next lecture): supervised — uses $y$ to guide the directions.
+- **PCR: Principal Components Regression** (today): use [[principal-component-analysis|PCA]] to pick the $\phi$'s. **Unsupervised**, uses only $X$.
+- **PLS: Partial Least Squares** (next lecture): supervised, uses $y$ to guide the directions.
 
 Local color on PLS: *"developed by a Swede"* (Herman Wold). *"Locally relevant because… commonly used in this field called chemometrics, and one guy who's fairly prominent in chemometrics and also in the development of these methods is actually Harold Martens, if anyone's heard of him. He was big in this partial least squares stuff. He wrote some of the early papers in the 70s."* Used widely on wide chemometrics data.
 
@@ -236,7 +236,7 @@ This shows up on the slide as a bullet too. **Standardize, then PCA.**
 Three ways the course has now offered to deal with [[collinearity|multicollinearity]]:
 
 - **L1 (lasso)**: pick one of the correlated variables, zero out the others.
-- **L2 (ridge)**: hold both back, share the load. *"Creates like a tug of war between the two — neither one — it penalizes both of them getting bigger, so it kind of holds them back."*
+- **L2 (ridge)**: hold both back, share the load. *"Creates like a tug of war between the two, neither one, it penalizes both of them getting bigger, so it kind of holds them back."*
 - **PCA / PCR**: rotate to an orthogonal basis where the correlation is gone by construction.
 
 Caveat: PCA only handles **linear** correlation. *"If your issue is actually not a linear correlation but some sort of complicated thing, then it might not find it. But linear works well."*

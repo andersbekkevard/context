@@ -23,7 +23,7 @@ aliases:
 
 ## Body shape
 
-- H1 with the lecture title: `# L<NN> — <Title>`
+- H1 with the lecture title: `# L<NN>: <Title>`
 - Immediately after H1: a 1–3 sentence prose summary of the lecture (what was covered, where it went, anything to flag at a glance)
 - `## Key takeaways` section with 3–6 bullets
 - `## <topic>` H2 for each major topic the prof transitioned into
@@ -32,7 +32,7 @@ aliases:
 
 ## Filename
 
-`wiki/lectures/L{NN}-{slug}.md` — sequential lecture number `01..27` plus a slug derived from the title. E.g. `L04-linreg-1.md`.
+`wiki/lectures/L{NN}-{slug}.md`, sequential lecture number `01..27` plus a slug derived from the title. E.g. `L04-linreg-1.md`.
 
 When two transcripts fall on the same date, give them adjacent numbers (`L24-…`, `L25-…`).
 

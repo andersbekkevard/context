@@ -19,11 +19,11 @@ The LLM-generated layer of the TMA4268 context bank. See [[../docs/overview]] fo
 
 ## Subfolders
 
-- `lectures/` — compressed lecture transcripts ([[../docs/lectures]])
-- `concepts/` — atomic concept briefings ([[../docs/concepts]])
-- `mocs/` — module routers ([[../docs/mocs]])
+- `lectures/`: compressed lecture transcripts ([[../docs/lectures]])
+- `concepts/`: atomic concept briefings ([[../docs/concepts]])
+- `mocs/`: module routers ([[../docs/mocs]])
 
 ## See also
 
-- [[../docs/scope]] — canonical scope authority (what's in / out, source hierarchy, question patterns)
-- [[../exam_analysis]] — useful synthesis (tier rankings, traps, datasets, opinionated takes)
+- [[../docs/scope]]: canonical scope authority (what's in / out, source hierarchy, question patterns)
+- [[../exam_analysis]]: useful synthesis (tier rankings, traps, datasets, opinionated takes)

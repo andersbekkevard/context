@@ -4,7 +4,7 @@ A lecture page is a **compressed lecture transcript**. One per class session, in
 
 ## What it is
 
-The same lecture, in a fraction of the tokens. Filler, repetition, banter, admin, and long-winded phrasings stripped. Every claim, example, intuition, idea, and signal preserved. Still reads like a lecture — flowing prose, just denser.
+The same lecture, in a fraction of the tokens. Filler, repetition, banter, admin, and long-winded phrasings stripped. Every claim, example, intuition, idea, and signal preserved. Still reads like a lecture, flowing prose, just denser.
 
 The order of presentation matters and stays. The prof's flow shows what builds on what.
 
@@ -21,7 +21,7 @@ Each lecture follows the canonical template at [[templates/lectures]]:
 - Frontmatter (lecture number, date, module, title, slides path, topics, tags, aliases)
 - H1 lecture title
 - A 1–3 sentence prose summary right after the H1
-- `## Key takeaways` — 3–6 bullets
+- `## Key takeaways`: 3–6 bullets
 - Body, with H2 headings marking the prof's actual topic transitions and H3 for sub-segments. Never H4.
 - Length: 250–500 lines
 
@@ -29,7 +29,7 @@ The headings reflect the lecture's natural shape, not an imposed template.
 
 ## Where it lives
 
-`wiki/lectures/L{NN}-{slug}.md` — e.g. `wiki/lectures/L04-linreg-1.md`. Sequential lecture number 01..27 plus a slug from the title.
+`wiki/lectures/L{NN}-{slug}.md`, e.g. `wiki/lectures/L04-linreg-1.md`. Sequential lecture number 01..27 plus a slug from the title.
 
 ## Linking
 

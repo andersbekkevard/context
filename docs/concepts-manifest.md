@@ -1,14 +1,14 @@
 # Concepts manifest
 
-Deterministic list of concept atoms for the TMA4268 wiki. Source of truth for the concepts fan-out pass — every downstream atom-writing agent reads its module slice from here. Slugs, ownership, and cross-cutting flags are fixed at this layer; do not invent new atoms or rename slugs in the fan-out pass.
+Deterministic list of concept atoms for the TMA4268 wiki. Source of truth for the concepts fan-out pass, every downstream atom-writing agent reads its module slice from here. Slugs, ownership, and cross-cutting flags are fixed at this layer; do not invent new atoms or rename slugs in the fan-out pass.
 
 Built by reading all 27 lecture pages, the 12 slide decks, the 10 recommended-exercise sheets (Exercise2 through Exercise11), the two compulsory exercises, `exam_analysis.md` (cross-check, not canonical), and `docs/lectures-manifest.md`. The `notes/` folder, `book/`, and `exams/` were not read (off-limits or out of scope at this stage per the brief).
 
-Operating principle: **the prof's scope rule** — slides + lectures + exercises = in scope; book-only = out. Exercise coverage carries the highest exam-relevance weight ("especially the exercises"). When in doubt about granularity, the agent leaned toward **fewer, broader atoms** — sub-concepts (e.g. studentized residuals, hat matrix's role in leverage, single-vs-complete linkage choice) live as sections inside a parent atom rather than as standalone files.
+Operating principle: **the prof's scope rule**, slides + lectures + exercises = in scope; book-only = out. Exercise coverage carries the highest exam-relevance weight ("especially the exercises"). When in doubt about granularity, the agent leaned toward **fewer, broader atoms**, with sub-concepts (e.g. studentized residuals, hat matrix's role in leverage, single-vs-complete linkage choice) living as sections inside a parent atom rather than as standalone files.
 
 ## Atoms by owning module
 
-### Module 01 — Introduction (`01-intro`)
+### Module 01: Introduction (`01-intro`)
 
 ```yaml
 - slug: statistical-learning
@@ -32,7 +32,7 @@ Operating principle: **the prof's scope rule** — slides + lectures + exercises
   one-liner: have a Y to aim at vs not; LLM example as "supervised in disguise"; unsupervised is "dangerous statistics" without a downstream check
 ```
 
-### Module 02 — Statistical Learning (`02-statlearn`)
+### Module 02: Statistical Learning (`02-statlearn`)
 
 ```yaml
 - slug: parametric-vs-nonparametric
@@ -92,7 +92,7 @@ Operating principle: **the prof's scope rule** — slides + lectures + exercises
   one-liner: a linear combination CX of the covariates (e.g. N−S on cork data); transformed via E(CX)=C·E(X), Cov(CX)=CΣCᵀ
 ```
 
-### Module 03 — Linear Regression (`03-linreg`)
+### Module 03: Linear Regression (`03-linreg`)
 
 ```yaml
 - slug: linear-regression
@@ -200,7 +200,7 @@ Operating principle: **the prof's scope rule** — slides + lectures + exercises
   one-liner: still linear regression — linear in the parameters β even though x is quadratic / cubic / ...; the standard simulation playground for bias-variance and double descent
 ```
 
-### Module 04 — Classification (`04-classif`)
+### Module 04: Classification (`04-classif`)
 
 ```yaml
 - slug: classification-setup
@@ -310,7 +310,7 @@ Operating principle: **the prof's scope rule** — slides + lectures + exercises
   one-liner: model P(Y|X) directly (logistic, KNN) vs model class-conditionals f_k(x) and priors π_k then flip via Bayes (LDA, QDA, Naive Bayes); the conceptual divider in module 4
 ```
 
-### Module 05 — Resampling (`05-resample`)
+### Module 05: Resampling (`05-resample`)
 
 ```yaml
 - slug: training-validation-test-split
@@ -392,7 +392,7 @@ Operating principle: **the prof's scope rule** — slides + lectures + exercises
   one-liner: ~1/3 of obs are excluded from each bootstrap sample (1 − 1/e ≈ 0.368) → free per-tree validation set; aggregate across trees → no separate test set required
 ```
 
-### Module 06 — Model Selection and Regularization (`06-modelsel`)
+### Module 06: Model Selection and Regularization (`06-modelsel`)
 
 ```yaml
 - slug: subset-selection
@@ -455,7 +455,7 @@ Operating principle: **the prof's scope rule** — slides + lectures + exercises
   one-liner: p > n breaks OLS — XᵀX singular, R² = 1 always, σ̂² unreliable; AIC/BIC/Cp don't save you; multicollinearity is pathological; regularization makes the problem well-posed and is *the* reason this module exists
 ```
 
-### Module 07 — Moving Beyond Linearity (`07-beyondlinear`)
+### Module 07: Moving Beyond Linearity (`07-beyondlinear`)
 
 ```yaml
 - slug: basis-functions
@@ -501,7 +501,7 @@ Operating principle: **the prof's scope rule** — slides + lectures + exercises
   one-liner: y = β₀ + Σⱼ fⱼ(xⱼ) + ε with each fⱼ chosen freely (poly, spline, LOESS, indicator); additive — no interactions; logistic GAM for binary Y is the same trick on the log-odds
 ```
 
-### Module 08 — Tree-Based Methods (`08-trees`)
+### Module 08: Tree-Based Methods (`08-trees`)
 
 ```yaml
 - slug: regression-tree
@@ -548,7 +548,7 @@ Operating principle: **the prof's scope rule** — slides + lectures + exercises
   one-liner: impurity-based (sum decrease in Gini/RSS across splits) vs randomization-based (permute predictor on OOB and measure drop); prof prefers randomization "because it makes more sense"; both valid
 ```
 
-### Module 09 — Boosting and Additive Trees (`09-boosting`)
+### Module 09: Boosting and Additive Trees (`09-boosting`)
 
 ```yaml
 - slug: boosting
@@ -611,7 +611,7 @@ Operating principle: **the prof's scope rule** — slides + lectures + exercises
   one-liner: average f̂(x_j, X_{−j}) over the data with x_j fixed → claw back interpretability from tree ensembles; fair-game on the exam to ask what they show
 ```
 
-### Module 10 — Unsupervised Learning (`10-unsuper`)
+### Module 10: Unsupervised Learning (`10-unsuper`)
 
 ```yaml
 - slug: principal-component-analysis
@@ -658,7 +658,7 @@ Operating principle: **the prof's scope rule** — slides + lectures + exercises
   one-liner: Euclidean groups infrequent shoppers; correlation (1−ρ) groups people with similar preferences; cosine, Manhattan, Wasserstein etc. exist; metric choice is the headline hyperparameter — different distances, different clusterings
 ```
 
-### Module 11 — Neural Networks (`11-nnet`)
+### Module 11: Neural Networks (`11-nnet`)
 
 ```yaml
 - slug: feedforward-network
@@ -738,7 +738,7 @@ Operating principle: **the prof's scope rule** — slides + lectures + exercises
   one-liner: hidden state A_t carries info across the sequence: A_t = σ(b + W X_t + U A_{t−1}); same weights at every step (weight sharing); precursor to language models; **architecture details out of scope** (LSTM/GRU gates, BPTT)
 ```
 
-### Module 12 — Final / Exam Review (`12-final`)
+### Module 12: Final / Exam Review (`12-final`)
 
 Module 12 holds no atoms of its own — it's the exam-review session. All exam-relevant content lives in the atoms above (cross-referenced from `wiki/lectures/L27-summary.md`). The MOC for module 12 will route to L27, the canonical scope rule, and the Specials atoms (especially `bias-variance-tradeoff`, `cross-validation`, and `regularization`).
 
@@ -820,58 +820,58 @@ These concepts genuinely span multiple modules and have no natural single owning
 
 The atoms below are *not* getting written. Each is something covered in ISLR or in the slides only in passing, that the prof explicitly excluded — mostly via L27's scope rule and the verbatim quotes from earlier lectures. These belong in each module's MOC under `## Out of scope`, sourced to a verbatim prof signal.
 
-### Module 02 — Statistical Learning
+### Module 02: Statistical Learning
 
-- **Pseudo-inverse mathematics.** L04 prof: "we'll get to it tomorrow" but he never did the formal derivation; in scope as a *concept* (the minimum-norm interpolator that explains double descent — captured in `double-descent`), out of scope as a derivation.
-- **Spectral / eigen-decomposition theory of covariance matrices.** L04 verbatim: "we don't talk about spectral decomposition" — deferred to Linear Statistical Models. Eigenvalue = PC variance is captured inside `principal-component-analysis`/`explained-variance-and-scree-plot`; the full spectral theory is out.
+- **Pseudo-inverse mathematics.** L04 prof: "we'll get to it tomorrow" but he never did the formal derivation; in scope as a *concept* (the minimum-norm interpolator that explains double descent, captured in `double-descent`), out of scope as a derivation.
+- **Spectral / eigen-decomposition theory of covariance matrices.** L04 verbatim: "we don't talk about spectral decomposition", deferred to Linear Statistical Models. Eigenvalue = PC variance is captured inside `principal-component-analysis`/`explained-variance-and-scree-plot`; the full spectral theory is out.
 
-### Module 03 — Linear Regression
+### Module 03: Linear Regression
 
 - **F-test mechanics / formulas.** L06 verbatim: "I probably won't ask any questions about an F-test… too boring for this class." The `f-test` atom is conceptual only.
 - **Variance Inflation Factor (VIF).** L08: marked self-study. No atom.
 - **Moore-Penrose pseudoinverse details.** L08: explicitly bracketed off. No atom.
 - **Heteroscedasticity tests / Shapiro-Wilk normality tests.** L08: "we're not going to talk about it." No atom.
 
-### Module 04 — Classification
+### Module 04: Classification
 
 - **Multi-class logistic regression.** L07/L08: "we're not going to talk about… mostly because LDA and KNN can deal with this case." No atom (binary logistic is in scope).
 - **GLM link-function theory beyond logit; probit, complementary log-log.** L07: "outside scope of this course… if you took the GLM course." No atom.
 - **Imbalanced-class detail / asymmetric ROC analysis.** L07: "I don't think the book talks much about that." Sensitivity/specificity in scope; deeper treatment is not.
 
-### Module 05 — Resampling
+### Module 05: Resampling
 
 - **Cp, AIC, BIC, adjusted-R² derivations and formulas.** L12/L13 verbatim: "I'm not going to ask you to use these. I'm not going to ask you to derive them." The `aic-bic-conceptual` atom captures the "they exist, here's why, prof distrusts them" bullet point only.
 
-### Module 06 — Model Selection and Regularization
+### Module 06: Model Selection and Regularization
 
 - **Bayesian interpretation of ridge / lasso (Gaussian / Laplace priors).** L14 verbatim: "I really don't think I'd put this on the test, just because it kind of assumes a lot of knowledge that maybe you don't have." No atom.
 - **L0 norm / "Optimal Brain Damage."** L14: "we won't go into it because it's not used in practice." No atom.
 - **Detailed PLS history and chemometrics-specific tuning.** L14/L15 mentioned only briefly; the PLS atom captures the algorithm and the "no better than ridge but Swedish" verdict, no separate history atom.
 
-### Module 07 — Moving Beyond Linearity
+### Module 07: Moving Beyond Linearity
 
 - **Natural-spline boundary-knot derivation.** L16 verbatim: "in other courses they go through the math of what these natural splines are. The book doesn't, so I won't either." Linear-extrapolation concept is captured in `regression-splines`.
 - **B-spline basis machinery (the `bs` label).** L16: "I don't know why they call it BS." Cosmetic; not on the exam.
 - **Bezier / shipbuilding history of splines.** L16: pedagogical context only.
 
-### Module 08 — Tree-Based Methods
+### Module 08: Tree-Based Methods
 
 - **NP-completeness proof / computational complexity of trees.** L17 mentioned in passing only.
 
-### Module 09 — Tree Boosting
+### Module 09: Tree Boosting
 
 - **Detailed boosting pseudocode line-by-line.** L20/L27 verbatim: "I won't have you memorize the names of the R functions, of course, but you should know what tree boosting is." The `boosting` and `gradient-boosting` atoms cover concept and high-level algorithm; line-by-line is not on the exam.
 - **CatBoost, LightGBM as separate algorithms.** L21: name-checked only, no atoms.
 
-### Module 10 — Unsupervised Learning
+### Module 10: Unsupervised Learning
 
 - **Non-negative matrix factorization (NMF) / "parts" version of eigenfaces.** L21: mentioned only as a contrast; no atom.
 - **K-means++ initialization, weighted KNN, Ward linkage formula, gap statistic.** L22: mentioned as alternatives only.
 - **Wasserstein, cosine distance derivations.** L22: name-checked only; the *idea* "distance choice matters" is captured in `distance-metrics`, the metric internals aren't.
 
-### Module 11 — Neural Networks
+### Module 11: Neural Networks
 
-- **CNN architecture details (filter math, padding, pooling variants, modern architectures like ResNet/Transformer).** L24/L27: high-level concept only — the `convolutional-neural-network` atom names max-pool and convolution but doesn't go deeper.
+- **CNN architecture details (filter math, padding, pooling variants, modern architectures like ResNet/Transformer).** L24/L27: high-level concept only, the `convolutional-neural-network` atom names max-pool and convolution but doesn't go deeper.
 - **RNN architecture details (LSTM/GRU gates, BPTT).** L26/L27 verbatim: "deferred and never examined; only the high-level 'hidden state propagates' idea is in scope." Captured in the RNN atom one-liner.
 - **Vanishing/exploding gradients, batch normalization, weight initialization (Xavier/He), Adam optimizer internals.** L24: "not discussed in any depth." No atoms.
 - **Skip connections / intra-layer connections.** L27: explicitly out.
@@ -914,4 +914,4 @@ A handful of judgment calls Anders should know about before fan-out launches:
 
 9. **Several module-3 atoms were merged from a more granular initial draft.** Specifically: `simple-linear-regression` + `multiple-linear-regression` + a separate `least-squares` were folded into `linear-regression` + `least-squares-and-mle`; `confidence-interval` + `prediction-interval` merged; `r-squared` + `adjusted-r-squared` merged; `hat-matrix` + `design-matrix` + `normal-equations` merged into `design-matrix-and-hat-matrix`; `residual-diagnostics` + `qq-plot` + `studentized-residuals` + `leverage` merged into `residual-diagnostics`; `categorical-encoding` + `reference-category` + `interactions` merged. Done because these are sub-concepts of the same exam question, not separately askable. If Anders wants finer atoms anywhere, the merges are easy to undo.
 
-10. **Subset selection (best, forward, backward, hybrid) is one atom.** Same logic — Anders won't ask "explain forward stepwise" without also asking about best-subset, and the prof treats them as one slide deck. The four sub-algorithms become four sections inside one atom.
+10. **Subset selection (best, forward, backward, hybrid) is one atom.** Same logic, as Anders won't ask "explain forward stepwise" without also asking about best-subset, and the prof treats them as one slide deck. The four sub-algorithms become four sections inside one atom.

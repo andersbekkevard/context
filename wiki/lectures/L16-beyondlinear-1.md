@@ -21,9 +21,9 @@ aliases:
   - Lecture 16
 ---
 
-# L16 — Moving Beyond Linearity 1
+# L16: Moving Beyond Linearity 1
 
-The prof opens module 7 and tries to "speed up a little bit" after admitting the course is "a little behind." He walks through the unifying idea of [[basis-functions]] — replace $X$ with $b_j(X)$ and you're still doing linear regression — and applies it to [[polynomial-regression]], [[step-functions]], [[regression-splines]] (cubic and natural), then drops the basis-function frame for [[smoothing-splines]] and [[local-regression]] (a second objective on the second derivative; locally weighted Gaussian fits), and closes with [[generalized-additive-models]] as the way to combine all of the above across multiple predictors.
+The prof opens module 7 and tries to "speed up a little bit" after admitting the course is "a little behind." He walks through the unifying idea of [[basis-functions]] (replace $X$ with $b_j(X)$ and you're still doing linear regression) and applies it to [[polynomial-regression]], [[step-functions]], [[regression-splines]] (cubic and natural), then drops the basis-function frame for [[smoothing-splines]] and [[local-regression]] (a second objective on the second derivative; locally weighted Gaussian fits), and closes with [[generalized-additive-models]] as the way to combine all of the above across multiple predictors.
 
 ## Key takeaways
 
@@ -67,7 +67,7 @@ A degree-4 polynomial fit looks reasonable. But push $d$ too high and you get th
 
 > "If you make $d$ very big, which intuitively gives you a very flexible model... if you make $d$ too big" you get the wiggly behavior. With degree 12 "it probably would have gotten a little bit wiggly, a little bit weird. There's enough data here that would probably keep it relatively contained."
 
-This is the same flexibility/overfit warning from L02–L04, applied to a richer hypothesis class. Polynomial regression "looks kind of okay but we can do better, or we can do something more interesting which is particularly interesting for other kinds of data."
+This is the same flexibility/overfit warning from L02-L04, applied to a richer hypothesis class. Polynomial regression "looks kind of okay but we can do better, or we can do something more interesting which is particularly interesting for other kinds of data."
 
 ## Step functions
 

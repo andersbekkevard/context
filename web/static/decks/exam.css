@@ -166,17 +166,6 @@ body {
   color: var(--gray);
 }
 
-.exam-q__topic {
-  margin-left: auto;
-  padding: 0.15rem 0.6rem;
-  background: var(--highlight);
-  color: var(--secondary);
-  border-radius: 4px;
-  font-size: 0.82rem;
-  font-family: var(--bodyFont);
-  font-weight: 600;
-}
-
 .q-text {
   margin: 0 0 1.1rem;
   line-height: 1.6;

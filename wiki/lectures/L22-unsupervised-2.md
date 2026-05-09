@@ -25,22 +25,22 @@ aliases:
   - Lecture 22
 ---
 
-# L22 — Unsupervised Learning 2 (Clustering)
+# L22: Unsupervised Learning 2 (Clustering)
 
-The prof closes module 10 by walking through [[k-means-clustering]] and [[hierarchical-clustering]] (agglomerative, with dendrograms, linkage choices, and the standardization warning), then takes a short break and pivots into module 11. The module-11 portion is a long history-of-AI tour (McCulloch & Pitts → Rosenblatt → AI winter → backprop → SVM winter → ImageNet/AlexNet → transformers/scale) plus the first sketch of a [[feedforward-network]] (input/hidden/output layers, weights, biases, activation functions). The clustering part is canonical Module 10 material; the NN portion is preview-only — the prof explicitly said the rest of the module-10 slides would be revisited "after Module 11" because they are just reinforcing examples.
+The prof closes module 10 by walking through [[k-means-clustering]] and [[hierarchical-clustering]] (agglomerative, with dendrograms, linkage choices, and the standardization warning), then takes a short break and pivots into module 11. The module-11 portion is a long history-of-AI tour (McCulloch & Pitts → Rosenblatt → AI winter → backprop → SVM winter → ImageNet/AlexNet → transformers/scale) plus the first sketch of a [[feedforward-network]] (input/hidden/output layers, weights, biases, activation functions). The clustering part is canonical Module 10 material; the NN portion is preview-only. The prof explicitly said the rest of the module-10 slides would be revisited "after Module 11" because they are just reinforcing examples.
 
 ## Key takeaways
 
-- **K-means** partitions data into $K$ disjoint clusters by minimizing within-cluster sum of pairwise squared Euclidean distances. The clusters $C_k$ satisfy $\bigcup_k C_k = \{1,\ldots,n\}$ and $C_k \cap C_{k'} = \emptyset$ — "each point only goes to one cluster and they have to go to a cluster."
+- **K-means** partitions data into $K$ disjoint clusters by minimizing within-cluster sum of pairwise squared Euclidean distances. The clusters $C_k$ satisfy $\bigcup_k C_k = \{1,\ldots,n\}$ and $C_k \cap C_{k'} = \emptyset$. "Each point only goes to one cluster and they have to go to a cluster."
 - **The K-means algorithm**: random init → compute centroid of each cluster → reassign every point to its nearest centroid → repeat until convergence. Converges to a **local minimum**, "this is often why people don't like K-means." Common workaround: rerun many times and pick the best, or **ensemble** the runs by counting co-cluster frequency.
-- **K is a hyperparameter you must pick** — "hyperparameters are death." Sometimes a feature, not a bug (you may *want* exactly 4 groups for downstream interpretability — prof's animal-behavior example).
+- **K is a hyperparameter you must pick**: "hyperparameters are death." Sometimes a feature, not a bug (you may *want* exactly 4 groups for downstream interpretability, as in the prof's animal-behavior example).
 - **Hierarchical clustering (agglomerative)** starts with every point in its own cluster, repeatedly merges the closest two clusters, gives you a **dendrogram** that you can cut at any height to read off any number of clusters. Naturally **nested**, unlike K-means.
-- **Distance between sets ≠ distance between points** — that's the **linkage**. Three options: complete (max pairwise), single (min), average (mean). Average is the most common; "I don't think single linkage is particularly common."
-- **Distance metric matters**: Euclidean vs **correlation** distance ($1 - \rho$) measures *different things* — Euclidean groups infrequent shoppers together, correlation groups people with similar preferences.
+- **Distance between sets ≠ distance between points**: that's the **linkage**. Three options: complete (max pairwise), single (min), average (mean). Average is the most common; "I don't think single linkage is particularly common."
+- **Distance metric matters**: Euclidean vs **correlation** distance ($1 - \rho$) measures *different things*. Euclidean groups infrequent shoppers together; correlation groups people with similar preferences.
 - **Always scale your variables** for both PCA and clustering. If one feature is in centimeters and another in nanograms, the bigger-scale one will dominate Euclidean distance regardless of meaning. Z-score (subtract mean, divide by sd) is the standard fix.
-- **There's no single right answer** for clustering — choice of K (or where to cut the dendrogram), choice of distance, choice of linkage are all decisions; "both annoying and a benefit if you want to look at it that way."
-- **Module 11 preview**: NN history is fair game only as "what key ingredients are there in machine learning"; the prof will not ask history-trivia questions. The fundamental ingredients enabling the current AI boom are **algorithms (backprop, transformers), compute (GPUs/TPUs), and data (ImageNet, Wikipedia)** — and arguably compute and data have mattered more than algorithmic novelty.
-- **Feedforward network**: input layer → hidden layer(s) → output layer, no loops, directional flow. Each neuron computes $z = a(\beta_0 + \sum_j \alpha_j x_j)$ — a weighted sum (just like regression) plus bias, passed through a nonlinear **activation function**. The nonlinearity is essential.
+- **There's no single right answer** for clustering: choice of K (or where to cut the dendrogram), choice of distance, choice of linkage are all decisions. "Both annoying and a benefit if you want to look at it that way."
+- **Module 11 preview**: NN history is fair game only as "what key ingredients are there in machine learning"; the prof will not ask history-trivia questions. The fundamental ingredients enabling the current AI boom are **algorithms (backprop, transformers), compute (GPUs/TPUs), and data (ImageNet, Wikipedia)**. Arguably compute and data have mattered more than algorithmic novelty.
+- **Feedforward network**: input layer → hidden layer(s) → output layer, no loops, directional flow. Each neuron computes $z = a(\beta_0 + \sum_j \alpha_j x_j)$, a weighted sum (just like regression) plus bias, passed through a nonlinear **activation function**. The nonlinearity is essential.
 
 ## Module 10 wrap: from PCA to clustering
 
@@ -48,7 +48,7 @@ The prof reframes the whole unsupervised module before diving in:
 
 > "Sometimes you don't want to use labels. Sometimes you don't want to specifically try to predict a $y$, right? ... Often this is a form of a visualization or mining or seeing what sticks. So many times this is accompanied with very bad science and bad statistics, some cheating, but it also can lead to breakthroughs."
 
-This sits on the **explore** side of the explore/confirm dichotomy in scientific discovery. Last lecture covered [[principal-component-analysis|PCA]] — the standard "first" dimensionality-reduction tool. There are "hundreds, thousands, infinite" other dimensionality-reduction methods, but they all share the goal of compactly representing high-dimensional data.
+This sits on the **explore** side of the explore/confirm dichotomy in scientific discovery. Last lecture covered [[principal-component-analysis|PCA]], the standard "first" dimensionality-reduction tool. There are "hundreds, thousands, infinite" other dimensionality-reduction methods, but they all share the goal of compactly representing high-dimensional data.
 
 > "Whereas dimensionality reduction tries to reduce, collapse the dimensions, clustering tries to go the other way and sort of cluster together things."
 
@@ -62,13 +62,13 @@ Two clustering approaches today: **K-means** and **hierarchical clustering**. "T
 
 ### The setup
 
-Partition the data into $K$ disjoint clusters $C_1, \ldots, C_K$ — sets of indices satisfying:
+Partition the data into $K$ disjoint clusters $C_1, \ldots, C_K$, sets of indices satisfying:
 
 $$\bigcup_{k=1}^K C_k = \{1, 2, \ldots, n\}, \qquad C_k \cap C_{k'} = \emptyset \text{ for } k \neq k'.$$
 
 > "It's a cool way of saying each point only goes to one cluster and they have to go to a cluster."
 
-You don't want $K$ too big — if $K = n$, each point is its own cluster and you've done nothing.
+You don't want $K$ too big. If $K = n$, each point is its own cluster and you've done nothing.
 
 ### The objective
 
@@ -80,13 +80,13 @@ Squared rather than just Euclidean because "there's no reason to take the square
 
 > "If you tried to group this one with this one, this score would be bullshit, right? It would blow up because it would try to put a point that's far away from all the other ones."
 
-Euclidean isn't sacred — you can swap in another metric, and the algorithm changes accordingly. The prof name-checks his favorite, the **Wasserstein distance** (a.k.a. Earth Mover's distance), purely "because it sounds cool" — it's not on the curriculum.
+Euclidean isn't sacred; you can swap in another metric and the algorithm changes accordingly. The prof name-checks his favorite, the **Wasserstein distance** (a.k.a. Earth Mover's distance), purely "because it sounds cool." It's not on the curriculum.
 
 > "Euclidean distances often will suck in high-dimensional spaces because of the curse of dimensionality makes all the points close together, whereas other distances are going to be less prone to that."
 
 ### Why we don't brute-force it
 
-There are $K^n$ partitions. With $n = 1000$ and $K = 10$ that's $10^{1000}$ — "obviously you don't want to try everything."
+There are $K^n$ partitions. With $n = 1000$ and $K = 10$ that's $10^{1000}$. "Obviously you don't want to try everything."
 
 ### The algorithm
 
@@ -100,7 +100,7 @@ There are $K^n$ partitions. With $n = 1000$ and $K = 10$ that's $10^{1000}$ — 
 
 The slide-deck example showed K=3 converging in ~3 iterations from a random start.
 
-### Local minima — the famous K-means weakness
+### Local minima: the famous K-means weakness
 
 > "It actually rather, especially in certain data sets, this random initialization can really screw you. Right? So if you only initialize once and you run K-means, you get a solution. And then if you rerun it again, you might get a very different solution, depending on the initialization."
 
@@ -126,7 +126,7 @@ Picking K is "often not necessarily something you can determine." But it can als
 
 ### What it gives you that K-means doesn't
 
-Same overall goal — find discrete clusters — but the algorithm produces a **dendrogram**, a tree you can cut at any height to read off any number of clusters.
+Same overall goal (find discrete clusters) but the algorithm produces a **dendrogram**, a tree you can cut at any height to read off any number of clusters.
 
 > "It's a nested set of clustering. You can think of it like that, it has, you know, first everyone is together and then it would split it and then split those splits."
 
@@ -142,7 +142,7 @@ The vertical position (height of the merge) carries the information. Horizontal 
 
 ### When hierarchical is wrong
 
-Some data has no hierarchical structure — gender vs. nationality, for example.
+Some data has no hierarchical structure (gender vs. nationality, for example).
 
 > "If you're trying to cluster data that doesn't necessarily have a hierarchical structure to it, then probably bad."
 
@@ -177,7 +177,7 @@ The prof also mentions median is occasionally used. Most common in practice: ave
 
 > "Average and complete tend to yield more balanced clusters."
 
-The same data with different linkage choices produces visibly different dendrograms — slide deck illustrates this.
+The same data with different linkage choices produces visibly different dendrograms, as the slide deck illustrates.
 
 ### Dissimilarity choice (the "distance" inside the linkage)
 
@@ -199,9 +199,9 @@ Pick the metric based on what you want it to be sensitive to. Other options he n
 
 > "This is true of so many algorithms that it's almost like a guarantee that you're going to have to do this. So both PCA and clustering, they're sensitive to the metric you're using."
 
-Concrete failure mode: cluster on three measurements, one in centimeters, one in nanograms. The nanogram column is numerically huge for any real-world object, so it dominates pairwise Euclidean distance — the algorithm "always going to use $x_2$ the most" regardless of substantive importance.
+Concrete failure mode: cluster on three measurements, one in centimeters, one in nanograms. The nanogram column is numerically huge for any real-world object, so it dominates pairwise Euclidean distance. The algorithm is "always going to use $x_2$ the most" regardless of substantive importance.
 
-If the units are arbitrary, **z-score** the variables: subtract the mean, divide by the standard deviation. Other normalizations (e.g. divide by max) are possible — pick what fits the data. The prof's grocery example: "the price of socks ... vs. computers" — without standardization, prices and quantities sit on incompatible scales.
+If the units are arbitrary, **z-score** the variables: subtract the mean, divide by the standard deviation. Other normalizations (e.g. divide by max) are possible; pick what fits the data. The prof's grocery example: "the price of socks ... vs. computers." Without standardization, prices and quantities sit on incompatible scales.
 
 ## Module-10 summary
 
@@ -214,7 +214,7 @@ The hyperparameters/decisions catalogue:
 
 After the break, the prof said the remaining Module 10 slides "are just repeats of the same stuff. It's just lots of examples and things." Decision: defer them until after Module 11 so there's some delay-based reinforcement.
 
-## Pivot: Module 11 — neural networks, deep learning, AI
+## Pivot: Module 11: neural networks, deep learning, AI
 
 > "So most of these slides were from Stephanie, some were from Mete, and some of it's, yeah, and other people."
 
@@ -228,13 +228,13 @@ So: pay attention to the *ingredients*, not the names and dates.
 
 ## A brief history (the bits worth keeping)
 
-### 1940s — McCulloch & Pitts, Hebb
+### 1940s: McCulloch & Pitts, Hebb
 
-McCulloch (young) and Pitts (old) modeled the **single neuron** as a computational unit. McCulloch was "one of these crazy geniuses" who envisioned much of modern NN architecture, then had a breakdown, burned his research, and died in an asylum — "people think that if he hadn't burned all his shit that we would be like way more advanced than we are now."
+McCulloch (young) and Pitts (old) modeled the **single neuron** as a computational unit. McCulloch was "one of these crazy geniuses" who envisioned much of modern NN architecture, then had a breakdown, burned his research, and died in an asylum. "People think that if he hadn't burned all his shit that we would be like way more advanced than we are now."
 
-**Donald Hebb** — Hebbian learning rule for how neurons form and update connections. The precursor to network-level learning.
+**Donald Hebb**: Hebbian learning rule for how neurons form and update connections. The precursor to network-level learning.
 
-### 1950s — Rosenblatt's Perceptron
+### 1950s: Rosenblatt's Perceptron
 
 > "He was thinking of perception. And so in his mind, he wanted something that worked like perception."
 
@@ -242,32 +242,32 @@ Funded by the Navy. The 1958 NYT article quoted by the prof made eerily prescien
 
 ### The first AI winter (~1960s–1970s)
 
-Minsky's paper showing a **single hidden layer can't learn XOR** — fundamental limitation of single-layer perceptrons. Killed the field for ~20 years. "He showed it was fundamentally limited."
+Minsky's paper showing a **single hidden layer can't learn XOR**, a fundamental limitation of single-layer perceptrons. Killed the field for ~20 years. "He showed it was fundamentally limited."
 
-### 1980s — backprop revival
+### 1980s: backprop revival
 
 Two big names:
 
-- **Hinton** — **backpropagation** as an efficient learning rule for *multiple* hidden layers. Once you can train >1 hidden layer, you can learn XOR and more. "Suddenly it was back to being useful again."
-- **Hopfield** — physics/statistical-mechanics view of NNs, energy/entropy, memory systems.
+- **Hinton**: **backpropagation** as an efficient learning rule for *multiple* hidden layers. Once you can train >1 hidden layer, you can learn XOR and more. "Suddenly it was back to being useful again."
+- **Hopfield**: physics/statistical-mechanics view of NNs, energy/entropy, memory systems.
 
 Both Hinton and Hopfield won the 2024 Nobel for NN work.
 
-### 1989 — LeCun and convolutional networks
+### 1989: LeCun and convolutional networks
 
-LeCun applied **convolutional neural networks** to classification — a big splash. Important attribution detail flagged by the prof:
+LeCun applied **convolutional neural networks** to classification, a big splash. Important attribution detail flagged by the prof:
 
 > "Notably, he didn't come up with the idea of convolutional neural networks, and he didn't attribute it to the right person. The right guy's name, I think, is Fukushima, a Japanese guy ... he was modeling in terms of like how the eye works."
 
-### Late-80s/90s — the SVM winter
+### Late-80s/90s: the SVM winter
 
 Support vector machines worked well on hard problems with the compute available. NN conferences flipped from majority-NN to "80% or 90% non-neural networks." Neural networks pushed aside by SVMs and **boosting**.
 
-The prof's diagnosis: it wasn't really algorithmic — it was hardware. "Believe me, I was alive back then in the nineties. My computer was bullshit."
+The prof's diagnosis: it wasn't really algorithmic, it was hardware. "Believe me, I was alive back then in the nineties. My computer was bullshit."
 
-### 2010s — ImageNet / AlexNet
+### 2010s: ImageNet / AlexNet
 
-Yearly image-classification competition where everyone had been making "minor improvements" — then NN-based **AlexNet** (2012) "just crushed everyone else." Same story arc later with **AlphaFold** for protein folding ("now I think the competition isn't a competition anymore because it's like 90% solved or 98% solved").
+Yearly image-classification competition where everyone had been making "minor improvements," then NN-based **AlexNet** (2012) "just crushed everyone else." Same story arc later with **AlphaFold** for protein folding ("now I think the competition isn't a competition anymore because it's like 90% solved or 98% solved").
 
 The hidden hero: **the dataset**. ImageNet was built by a postdoc whose whole project was to assemble a high-quality, large dataset:
 
@@ -277,11 +277,11 @@ The hidden hero: **the dataset**. ImageNet was built by a postdoc whose whole pr
 
 > "What's not here is I would say other big things was the transformer model which is the paper by some Google people called 'Attention is everything' or 'Attention is all you need.'"
 
-Transformers enabled scaling. Then ChatGPT was "kind of a bet on scale": train an enormous model, hope it works, otherwise go bankrupt. It worked. Now the field is in a "land of scaling" — more parameters, more GPUs/TPUs, more data, more modalities.
+Transformers enabled scaling. Then ChatGPT was "kind of a bet on scale": train an enormous model, hope it works, otherwise go bankrupt. It worked. Now the field is in a "land of scaling," more parameters, more GPUs/TPUs, more data, more modalities.
 
 The prof's recent-news tangent: the latest Anthropic model, given to non-cybersecurity engineers to test, found "like eight vulnerabilities" in major operating systems. "Crazy stuff. Scary, scary, scary."
 
-### The closing meta-point — examinable
+### The closing meta-point: examinable
 
 > "Importantly, it's not the corporations that figured this out. It was figured out by lots and lots of science."
 
@@ -289,23 +289,23 @@ Decades of low-funded, low-status research during the AI winters laid the ground
 
 Key ingredients summary (this is the type of thing he'd ask):
 
-- **Algorithms** (backprop, transformers, conv nets) — but often "come third."
-- **Hardware** (CPUs → GPUs → TPUs, more RAM, better interconnects) — critical and often gating.
+- **Algorithms** (backprop, transformers, conv nets), but often "come third."
+- **Hardware** (CPUs → GPUs → TPUs, more RAM, better interconnects), critical and often gating.
 - **Data** (ImageNet, Wikipedia, books, multi-modal data).
 
 ## What is a neuron / where the brain inspiration came from
 
-Inspiration came mostly from neuroscience — McCulloch, Pitts, Hebb were modeling biological neurons (frogs, squids, "all the same shit, really. We're just big animals"). The neuron is "the fundamental unit of the brain."
+Inspiration came mostly from neuroscience. McCulloch, Pitts, Hebb were modeling biological neurons (frogs, squids, "all the same shit, really. We're just big animals"). The neuron is "the fundamental unit of the brain."
 
 > "I don't care if you know the name, the parts of the neurons. I think it's irrelevant."
 
-For this course, model a neuron as a **circle (node)** with **directional connections** to other neurons. Statisticians were largely absent from the early NN history because "they barely understand our simple linear models. How the hell are we going to understand any of this?" — they treated it as "just a linear model, nonlinear model" and ignored it.
+For this course, model a neuron as a **circle (node)** with **directional connections** to other neurons. Statisticians were largely absent from the early NN history because "they barely understand our simple linear models. How the hell are we going to understand any of this?" They treated it as "just a linear model, nonlinear model" and ignored it.
 
 ### AI ⊃ ML ⊃ DL, with statistics orthogonal
 
 > "Statistics is really orthogonal to all of this."
 
-Statistical thinking still matters — sparsity, regularization, bias-variance — but it's a perspective applied to NNs, not a parent discipline. Hastie and Tibshirani are explicitly called out as "some of the few statisticians who are really trying to understand machine learning models or AI ... from a statistical perspective."
+Statistical thinking still matters (sparsity, regularization, bias-variance), but it's a perspective applied to NNs, not a parent discipline. Hastie and Tibshirani are explicitly called out as "some of the few statisticians who are really trying to understand machine learning models or AI ... from a statistical perspective."
 
 ### Engineering eats theory in deep learning
 
@@ -323,9 +323,9 @@ This is the start of the actual NN material — to be expanded next lecture.
 
 ### Layer structure
 
-- **Input layer** $X$ — your features (e.g. pixels of an image).
-- **Hidden layer(s)** $Z$ — values not directly observed; "stuff that have to be determined."
-- **Output layer** $Y$ — predictions (e.g. digit class).
+- **Input layer** $X$: your features (e.g. pixels of an image).
+- **Hidden layer(s)** $Z$: values not directly observed; "stuff that have to be determined."
+- **Output layer** $Y$: predictions (e.g. digit class).
 - **Connections** between consecutive layers, with **weights** (think regression coefficients $\beta$).
 - **Bias terms** added at each non-input layer (think $\beta_0$).
 
@@ -339,7 +339,7 @@ Translation: take inputs from previous layer, multiply by connection weights $\a
 
 > "It could just be a sum, and then the value of this thing would be a sum, but then that would be very boring. And often people kind of attribute the importance of having some kind of nonlinearity."
 
-Example activations the prof mentioned: a **threshold** (negative → 0, positive → identity) — i.e. ReLU-style. Full activation taxonomy ("threshold linear or whatever") deferred.
+Example activations the prof mentioned: a **threshold** (negative → 0, positive → identity), i.e. ReLU-style. Full activation taxonomy ("threshold linear or whatever") deferred.
 
 ### Why "feedforward"
 

@@ -2,7 +2,7 @@
 
 Deterministic mapping from transcript files in `transcripts/` to the lecture
 identity each one represents (number, date, module, title, slug). Source of
-truth for the parallel `wiki/lectures/L<NN>-<slug>.md` compression pass — every
+truth for the parallel `wiki/lectures/L<NN>-<slug>.md` compression pass, every
 agent looks up its row here so numbers, slugs, and module tags don't drift.
 
 Titles reflect what the prof **actually taught** (read from the transcripts),
@@ -48,7 +48,7 @@ Compulsory-Exercise-2 / Easter weeks have no transcripts.
   The prof self-reports being "a little behind" around Mar 9. Decisions are
   made from transcript content (opening recap + "today we'll talk about…"),
   not from the published schedule. Examples worth knowing:
-  - Jan 19 is *Statistical Learning part 3*, not Linear Regression 1 — prof
+  - Jan 19 is *Statistical Learning part 3*, not Linear Regression 1, as the prof
     explicitly says "still module two, but now part two."
   - Module 6 (Model Selection) ran Feb 23, Feb 24, Mar 2, Mar 3 (four
     sessions), pushing Module 7 to Mar 9 etc. Schedule had Module 6 on
@@ -56,7 +56,7 @@ Compulsory-Exercise-2 / Easter weeks have no transcripts.
   - Feb 9 / Feb 10 were used for Resampling (Module 5), not for Compulsory
     Exercise 1 work.
   - There are *no* transcripts for Jan 6 R-course, Mar 23/24 Compulsory
-    Exercise 2 weeks, or the Easter break — none get a lecture number.
+    Exercise 2 weeks, or the Easter break, and none get a lecture number.
 
 - **Two-module sessions are tagged by what the lecture mainly delivers.** A
   session that wraps the previous module in the first 10 minutes and then
@@ -76,17 +76,17 @@ Compulsory-Exercise-2 / Easter weeks have no transcripts.
   or stub it rather than try to summarize 10 characters.
 
 - **L24 (Apr 21) slug `nnet-2` covers convolutional networks**, not RNNs. The
-  prof defers RNNs to "next time" at the end — so L26 Apr 27 picks up RNNs
+  prof defers RNNs to "next time" at the end, so L26 Apr 27 picks up RNNs
   and double descent.
 
-- **L27 Apr 28 is the real "Summary and Outlook"** — exam logistics, scope,
+- **L27 Apr 28 is the real "Summary and Outlook"**: exam logistics, scope,
   Q&A. The schedule's "Apr 14 = Summary" entry is stale; Apr 14 is Unsupervised
   Learning 2.
 
 - **Module slugs match `modules/` folder names**, with the digit zero-padded
   and the trailing word lowercased. Note `modules/9SVM` exists but is **not**
-  used here — no transcript covers SVMs as a module focus, and `9TreeBoosting`
+  used here, no transcript covers SVMs as a module focus, and `9TreeBoosting`
   is the boosting module that maps to `09-boosting`.
 
-- **No tier/importance ranking is encoded** here — that's derived elsewhere
+- **No tier/importance ranking is encoded** here, that's derived elsewhere
   per the repo invariants. This file is purely identity.

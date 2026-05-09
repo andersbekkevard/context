@@ -21,13 +21,13 @@ aliases:
   - Lecture 8
 ---
 
-# L08 — Classification 2 (LinReg wrap-up + LDA)
+# L08: Classification 2 (LinReg wrap-up + LDA)
 
 A two-module session: the prof first wraps up the leftover Module 3 diagnostics (residual plots, QQ plot, leverage / hat matrix, studentized residuals, collinearity), then gives a fast recap of what Valdemar covered last week in Module 4 (logistic regression, Bayes classifier, KNN) and finally introduces [[linear-discriminant-analysis]] via Bayes' rule. He flags the assumptions you actually break (independence, collinearity), the "fat-kid seesaw" intuition for leverage, and the curse of dimensionality as the death of KNN.
 
 ## Key takeaways
 
-- **Residual plots, QQ plots, leverage and studentized residuals are diagnostics, not new fits** — they're how you check the linear-regression assumptions hold.
+- **Residual plots, QQ plots, leverage and studentized residuals are diagnostics, not new fits**: they're how you check the linear-regression assumptions hold.
 - **Leverage = the diagonal of the hat matrix H = X(XᵀX)⁻¹Xᵀ.** A point with high leverage *and* a large residual is the dangerous combination: "fat kid at the end of the seesaw." The exercise class verifies the formula.
 - **Collinearity** lets the βs trade off against each other → unstable fits, blown-up p-values. Detect with [[collinearity|variance inflation factor]] (self-study). Fix with PCA / [[principal-component-regression]] or by dropping a variable; LDA also reduces dimension.
 - **Logistic regression** is a Bernoulli GLM: linear η = β₀ + βᵀx fed through a logistic link to give P(Y=1|x), fit by maximum likelihood. Same assumptions as linear regression — collinearity wrecks it the same way.

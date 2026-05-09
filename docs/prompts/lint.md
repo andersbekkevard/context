@@ -1,6 +1,6 @@
-# Lint pass — agent brief
+# Lint pass: agent brief
 
-You are the wiki integrity checker. Run after lectures, concepts, and MOCs are all written. Your output is a single report at `wiki/lint-report.md`. **You do not modify wiki files** — Anders fixes flagged issues by re-running specific agents or editing by hand.
+You are the wiki integrity checker. Run after lectures, concepts, and MOCs are all written. Your output is a single report at `wiki/lint-report.md`. **You do not modify wiki files**, Anders fixes flagged issues by re-running specific agents or editing by hand.
 
 Read [[../overview]], [[../concepts]], [[../lectures]], [[../mocs]], and `docs/concepts-manifest.md` first to understand the schema.
 
@@ -27,7 +27,7 @@ Report dead links with file path and approximate line. If a dead link looks like
 
 - Every atom slug in `docs/concepts-manifest.md` must have a file at `wiki/concepts/<slug>.md`.
 - Every file in `wiki/concepts/` must have a manifest entry (in either a per-module section or the Specials section).
-- Slugs match exactly — no case differences, no underscore-vs-hyphen mismatches.
+- Slugs match exactly, no case differences, no underscore-vs-hyphen mismatches.
 
 ### 3. Frontmatter completeness (hard errors)
 
@@ -42,7 +42,7 @@ For each lecture (`wiki/lectures/L*.md`):
 - `topics:` slugs that don't yet have atom files → warning, not error (could be forward-reference)
 
 For each MOC (`wiki/mocs/m*.md`):
-- Validate against MOC template/conventions (loose — MOCs are routers)
+- Validate against MOC template/conventions (loose, MOCs are routers)
 
 ### 4. Cross-cutting (Specials) bidirectional links (warnings)
 
@@ -59,7 +59,7 @@ For each lecture, every slug in `topics:` should match a manifest entry (atom or
 ### 6. Out-of-scope consistency (hard errors)
 
 For each MOC's `## Out of scope` section, check:
-- The named topic does NOT have an atom in `wiki/concepts/`. (If it does → contradiction — either remove from out-of-scope or remove the atom.)
+- The named topic does NOT have an atom in `wiki/concepts/`. (If it does → contradiction, either remove from out-of-scope or remove the atom.)
 - The exclusion is sourced (has a lecture wikilink anchor or a verbatim quote anchor).
 
 ### 7. Filename and structural rules (hard errors)
@@ -72,7 +72,7 @@ For each MOC's `## Out of scope` section, check:
 ### 8. Length bounds (warnings)
 
 - Atoms: 80–250 lines (Specials may exceed; flag if > 350)
-- Lectures: 250–500 lines (flag any outside this range — but this was the lecture pass's job, so just info-level)
+- Lectures: 250–500 lines (flag any outside this range, but this was the lecture pass's job, so just info-level)
 - MOCs: no firm bound, but flag any MOC over 150 lines (MOCs are routers, not content)
 
 ### 9. Empty / placeholder content (hard errors)
@@ -83,7 +83,7 @@ For each MOC's `## Out of scope` section, check:
 
 ### 10. Quote anchoring (info-level)
 
-For each atom, scan blockquote lines (`>` prefix). Each verbatim quote should be near a lecture wikilink (`[[L<NN>-<slug>]]`) — within 2 lines before or after — so a reader can grep back to the bronze transcript. Flag isolated quotes as info.
+For each atom, scan blockquote lines (`>` prefix). Each verbatim quote should be near a lecture wikilink (`[[L<NN>-<slug>]]`), within 2 lines before or after, so a reader can grep back to the bronze transcript. Flag isolated quotes as info.
 
 ## How to work
 
@@ -92,7 +92,7 @@ Use `rg` (ripgrep), `fd`, and `Read` heavily. Most checks are mechanical:
 - Frontmatter parse: `Read` each file's first 30 lines and yaml-parse the frontmatter
 - Manifest parse: `Read` the full manifest, extract slugs from per-module + Specials sections
 
-The semantic checks (out-of-scope consistency, quote anchoring) need judgment — read in context.
+The semantic checks (out-of-scope consistency, quote anchoring) need judgment, read in context.
 
 ## Output
 
@@ -171,7 +171,7 @@ Total fix-effort estimate: ~N minutes.
 - Don't modify any wiki file. Report only.
 - Don't auto-fix typos. Even "obvious" suggestions go in the report for Anders to apply.
 - Don't re-run agents. The report tells Anders which agents to re-run; he decides.
-- Don't validate atom *content* (whether the prof's framing is captured correctly) — that's not a lint job. You check structure, not substance.
+- Don't validate atom *content* (whether the prof's framing is captured correctly), that's not a lint job. You check structure, not substance.
 
 ## Deliverable
 

@@ -21,21 +21,21 @@ A different objective: instead of choosing a basis and fitting OLS, **minimise R
 
 ## Definition (prof's framing)
 
-> "Now we're going to do something more than just finding betas." — [[L16-beyondlinear-1]]
+> "Now we're going to do something more than just finding betas." - [[L16-beyondlinear-1]]
 
 A smoothing spline is the function $g$ that minimises
 $$\sum_{i=1}^{n} (y_i - g(x_i))^2 + \lambda \int g''(t)^2 \, dt.$$
 
 The first term is fit; the second term penalises **curvature** (integrated squared second derivative). $\lambda \ge 0$ controls the trade-off. Direct analogue to ridge:
 
-> "We've looked at situations where we have more than one objective before — we had regularizers... $Y - \beta X$ squared plus sum of $\beta$ squared, that was our ridge regression... a.k.a. $L_2$ norm or regularizer. Really what you're doing is you're adding another objective to your optimization." — [[L16-beyondlinear-1]]
+> "We've looked at situations where we have more than one objective before — we had regularizers... $Y - \beta X$ squared plus sum of $\beta$ squared, that was our ridge regression... a.k.a. $L_2$ norm or regularizer. Really what you're doing is you're adding another objective to your optimization." - [[L16-beyondlinear-1]]
 
 The optimization is over **functions $g$**, not over a finite parameter vector. **Solution**: $g$ turns out to be a natural cubic spline with a knot at every unique $x_i$ — then shrunk via $\lambda$. So smoothing splines are still splines, but with a *very* large basis (one knot per data point) and heavy shrinkage to keep them well-behaved.
 
 ## Notation & setup
 
-- $\lambda \ge 0$: smoothing parameter. **Big $\lambda$ → smooth, small $\lambda$ → wiggly.** ([Direction trap](#direction-of-effect-trap-exam-bait) — see below.)
-- $\mathbf S_\lambda$: $n \times n$ smoother matrix; $\hat{\mathbf y} = \mathbf S_\lambda \mathbf y$. The fitted values are linear in $\mathbf y$ — smoothing splines are **linear smoothers**, just like OLS.
+- $\lambda \ge 0$: smoothing parameter. **Big $\lambda$ → smooth, small $\lambda$ → wiggly.** ([Direction trap](#direction-of-effect-trap-exam-bait), see below.)
+- $\mathbf S_\lambda$: $n \times n$ smoother matrix; $\hat{\mathbf y} = \mathbf S_\lambda \mathbf y$. The fitted values are linear in $\mathbf y$, smoothing splines are **linear smoothers**, just like OLS.
 - $\mathrm{df}_\lambda = \mathrm{tr}(\mathbf S_\lambda)$: **effective degrees of freedom**, sum of diagonal entries of the smoother matrix.
 
 ## Direction-of-effect trap (exam bait)
@@ -66,7 +66,7 @@ $$\mathrm{df}_\lambda = \mathrm{tr}(\mathbf S_\lambda)$$
 LOOCV shortcut:
 $$\mathrm{RSS}_{\text{cv}}(\lambda) = \sum_{i=1}^{n} \left( \frac{y_i - \hat y_i}{1 - \{\mathbf S_\lambda\}_{ii}} \right)^2$$
 
-> "Note that we only need one fit to do cross-validation!" — slide deck [[L16-beyondlinear-1]]
+> "Note that we only need one fit to do cross-validation!" - slide deck [[L16-beyondlinear-1]]
 
 The LOOCV shortcut is structurally identical to the OLS LOOCV shortcut $(y_i - \hat y_i)/(1 - h_{ii})$ — replace the hat-matrix diagonal by the smoother-matrix diagonal.
 
@@ -79,9 +79,9 @@ The LOOCV shortcut is structurally identical to the OLS LOOCV shortcut $(y_i - \
 
 The prof:
 
-> "If you zero out an objective then that thing doesn't do anything." — [[L16-beyondlinear-1]] (re $\lambda = 0$)
+> "If you zero out an objective then that thing doesn't do anything." - [[L16-beyondlinear-1]] (re $\lambda = 0$)
 
-> "$\lambda \to \infty$ → $f$ is the straight line we would get from linear least squares regression." — slide deck
+> "$\lambda \to \infty$ → $f$ is the straight line we would get from linear least squares regression." - slide deck
 
 In between, $g$ approximates the data while staying smooth. **$\lambda$ slides continuously between "very flexible" and "completely straight."**
 
@@ -91,17 +91,17 @@ Construction:
 1. Smoothing-spline fit is linear in $\mathbf y$: $\hat{\mathbf y} = \mathbf S_\lambda \mathbf y$ (smoothing splines are linear smoothers, like OLS).
 2. **Effective df** $= \mathrm{tr}(\mathbf S_\lambda)$.
 
-> "It's not obvious, but that's how they define it." — [[L16-beyondlinear-1]]
+> "It's not obvious, but that's how they define it." - [[L16-beyondlinear-1]]
 
 R parameterises smoothness via `df` (which you can pass as a non-integer like 6.8) **or** via `cv = TRUE` (let LOOCV pick $\lambda$). The package back-solves $\lambda$ for the requested df:
 
-> "My guess is the way to make this work is that they would try a different value of $\lambda$ until you get the degree of freedom you want." — [[L16-beyondlinear-1]]
+> "My guess is the way to make this work is that they would try a different value of $\lambda$ until you get the degree of freedom you want." - [[L16-beyondlinear-1]]
 
 This is also why "you can get non-integer values of degrees of freedom, which... typically we think of degrees of freedom as being integer values. But here it's an effective degree of freedom."
 
 ## Choosing $\lambda$
 
-> "How do I choose $\lambda$? One could be just a decision you make. Or [[cross-validation]], which is a thing I think is particularly useful, because you're still letting the data tell you or give you indications as to what to do." — [[L16-beyondlinear-1]]
+> "How do I choose $\lambda$? One could be just a decision you make. Or [[cross-validation]], which is a thing I think is particularly useful, because you're still letting the data tell you or give you indications as to what to do." - [[L16-beyondlinear-1]]
 
 The book recommends **leave-one-out CV** because of the closed-form shortcut above — only one fit needed for the entire LOOCV computation. On the wage data the LOOCV-chosen $\lambda$ gave $\mathrm{df}_\lambda \approx 6.8$ — a smoother fit than the arbitrary $\mathrm{df} = 16$ comparison fit.
 
@@ -114,11 +114,11 @@ The book recommends **leave-one-out CV** because of the closed-form shortcut abo
 
 ## Exam signals
 
-> "Now we're going to do something more than just finding betas." — [[L16-beyondlinear-1]]
+> "Now we're going to do something more than just finding betas." - [[L16-beyondlinear-1]]
 
-> "Adding another objective to your optimization." — [[L16-beyondlinear-1]] (the explicit ridge analogy)
+> "Adding another objective to your optimization." - [[L16-beyondlinear-1]] (the explicit ridge analogy)
 
-> "We can compute each of these leave-one-out fits using only $\hat g_\lambda$, the original fit to all of the data!" — slide deck (LOOCV shortcut as a clean exam-style fact)
+> "We can compute each of these leave-one-out fits using only $\hat g_\lambda$, the original fit to all of the data!" - slide deck (LOOCV shortcut as a clean exam-style fact)
 
 The 2025 exam Problem 4d tested the direction trap explicitly (see callout above). The 2023 exam tested the **wrong-formula trap**:
 
@@ -128,10 +128,10 @@ So **memorize**: penalty integrand is $g''(t)^2$, second derivative squared.
 
 ## Pitfalls
 
-- **Direction trap** (the one above): $\lambda \uparrow \Rightarrow$ smoother / lower df. Easy T/F mistake — opposite from polynomial degree.
+- **Direction trap** (the one above): $\lambda \uparrow \Rightarrow$ smoother / lower df. Easy T/F mistake, opposite from polynomial degree.
 - **Wrong derivative in the penalty**: it's $\int g''(t)^2 \, dt$, not $\int g'(t)^2 \, dt$ or $\int (g'(t))^2 \, dt$. Caught explicitly in 2023 exam Q3d.
 - **Effective dof is non-integer.** Don't expect $\mathrm{df}_\lambda$ to be an integer; "df = 6.8" is a normal answer.
-- **Smoothing spline ≠ regression spline** despite the name overlap. Regression spline = fixed knots, OLS, integer dof. Smoothing spline = knot at every $x_i$, penalised loss, non-integer dof. They give similar fits in practice, but the *machinery* is different — and the prof was careful to draw the distinction.
+- **Smoothing spline ≠ regression spline** despite the name overlap. Regression spline = fixed knots, OLS, integer dof. Smoothing spline = knot at every $x_i$, penalised loss, non-integer dof. They give similar fits in practice, but the *machinery* is different, and the prof was careful to draw the distinction.
 - **$\lambda \to \infty$ goes to the OLS straight line, not zero.** When the curvature penalty kills everything wiggly, you don't get the constant-mean fit, you get the *least-squares line*: that's the smoothest function that can still respond to data trend.
 - The optional smoother-matrix derivation (Reinsch matrix, eigendecomposition, the long algebra in slide §7.5.3 and Exercise 7.6) is **explicitly not on the exam**.
 
@@ -158,9 +158,9 @@ So **memorize**: penalty integrand is $g''(t)^2$, second derivative squared.
 
 ## Related
 
-- [[regression-splines]] — same family of functions (natural cubic splines), different fitting objective. The smoothing spline minimiser *is* a natural cubic spline.
-- [[ridge-regression]] — the canonical "loss + L2 penalty" structural analogue. The prof draws this analogy explicitly.
-- [[regularization]] — the cross-cutting Specials atom; smoothing-spline $\lambda$ is one of the prof's headline regularizers.
-- [[cross-validation]] — preferred way to choose $\lambda$; LOOCV is the standard because of the closed-form shortcut.
-- [[leave-one-out-cv]] — the LOOCV shortcut formula here is structurally identical to the OLS hat-matrix shortcut.
-- [[generalized-additive-models]] — smoothing splines slot in as one of the $f_j$ choices via `s(...)` in `gam()`.
+- [[regression-splines]]: same family of functions (natural cubic splines), different fitting objective. The smoothing spline minimiser *is* a natural cubic spline.
+- [[ridge-regression]]: the canonical "loss + L2 penalty" structural analogue. The prof draws this analogy explicitly.
+- [[regularization]]: the cross-cutting Specials atom; smoothing-spline $\lambda$ is one of the prof's headline regularizers.
+- [[cross-validation]]: preferred way to choose $\lambda$; LOOCV is the standard because of the closed-form shortcut.
+- [[leave-one-out-cv]]: the LOOCV shortcut formula here is structurally identical to the OLS hat-matrix shortcut.
+- [[generalized-additive-models]]: smoothing splines slot in as one of the $f_j$ choices via `s(...)` in `gam()`.

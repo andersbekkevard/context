@@ -22,16 +22,16 @@ A third regularization knob (on top of small trees and small $\nu$): subsample r
 
 ## Definition (prof's framing)
 
-> "Instead of always using all of the training data, you take a subsample of the data… By subsampling or resampling the data every time, then using a random subsample… you're encouraging diversity. Because again, one nice way of reducing the variance is by making the models be very different and ensembling them together." — [[L20-boosting-2]]
+> "Instead of always using all of the training data, you take a subsample of the data… By subsampling or resampling the data every time, then using a random subsample… you're encouraging diversity. Because again, one nice way of reducing the variance is by making the models be very different and ensembling them together." - [[L20-boosting-2]]
 
 Distinct from bagging in one detail the prof flagged: subsampling here is **without replacement**, not bootstrapping.
 
 ## Notation & setup
 
-- **`bag.fraction`** (the gbm-package name) — fraction of rows used per tree. Default `bag.fraction = 0.5`. The slide deck explicitly sets `bag.fraction = 1` for the deterministic baseline and `bag.fraction = 0.5` for the stochastic version.
-- **`sample_rate`** (h2o name) — same row-subsample fraction.
-- **`col_sample_rate`** / **`colsample_bytree`** — column-subsample fraction (analog of random-forest's $m$); applied either before each tree or before each split.
-- **Sub-fraction $\eta$** (Friedman 2002 notation) — proportion of $N$ used per tree; "typical value $\eta = N/2$, but can be much smaller when $N$ is large" per the slides.
+- **`bag.fraction`** (the gbm-package name): fraction of rows used per tree. Default `bag.fraction = 0.5`. The slide deck explicitly sets `bag.fraction = 1` for the deterministic baseline and `bag.fraction = 0.5` for the stochastic version.
+- **`sample_rate`** (h2o name): same row-subsample fraction.
+- **`col_sample_rate`** / **`colsample_bytree`**: column-subsample fraction (analog of random-forest's $m$); applied either before each tree or before each split.
+- **Sub-fraction $\eta$** (Friedman 2002 notation): proportion of $N$ used per tree; "typical value $\eta = N/2$, but can be much smaller when $N$ is large" per the slides.
 
 ## Variants
 
@@ -53,7 +53,7 @@ All three are available in `h2o` and `xgboost`; `gbm` only exposes #1.
   4. (XGBoost adds) L1/L2 leaf penalties + dropout (regularizations 4–5).
 - **Free speed-up.** Each tree sees less data → faster fit. Especially useful when $N$ is large.
 - **The actual gains are often modest.** On the Ames demo:
-  > "I don't know if that really was worth all the effort, but probably for somebody. I guess I would care about the $200." — [[L20-boosting-2]]
+  > "I don't know if that really was worth all the effort, but probably for somebody. I guess I would care about the $200." - [[L20-boosting-2]]
   RMSE dropped from ≈ 22600 to ≈ 22400 — small but measurable.
 
 ## Worked example — Ames housing (slide deck)
@@ -73,7 +73,7 @@ CV-RMSE drops from $22{,}600 (deterministic) to $22{,}400 (stochastic). Marginal
 
 The prof did not flag stochastic GBM as having a dedicated exam question, but it is in the slides + lectures + exercises (so in scope per the rule), and "row/column subsampling reduces variance" is exactly the kind of conceptual T/F or short-answer the exam likes.
 
-> "If it was covered either in the slides or in the exercises, then I would say fair game." — [[L27-summary]]
+> "If it was covered either in the slides or in the exercises, then I would say fair game." - [[L27-summary]]
 
 ## Pitfalls
 
@@ -107,11 +107,11 @@ The prof did not flag stochastic GBM as having a dedicated exam question, but it
 
 ## Related
 
-- [[boosting]] — the parent concept; stochastic GBM is one of the regularization knobs.
-- [[gradient-boosting]] — the algorithm stochastic GBM modifies (just resample inputs to step 2(b)).
-- [[weak-learner-and-learning-rate]] — the *other* two regularization knobs (small trees, small $\nu$).
-- [[xgboost]] — exposes both row- and column-subsampling natively.
-- [[bagging]] — the original "subsample → diversity" idea, applied at the ensemble level rather than per-iteration.
-- [[random-forest]] — same column-subsample logic ($m < p$ predictors per split); SGB just applies it per-tree-or-per-split inside boosting.
-- [[regularization]] — subsampling is just one more regularizer in the menu.
-- [[bias-variance-tradeoff]] — subsampling-induced diversity reduces ensemble variance.
+- [[boosting]]: the parent concept; stochastic GBM is one of the regularization knobs.
+- [[gradient-boosting]]: the algorithm stochastic GBM modifies (just resample inputs to step 2(b)).
+- [[weak-learner-and-learning-rate]]: the *other* two regularization knobs (small trees, small $\nu$).
+- [[xgboost]]: exposes both row- and column-subsampling natively.
+- [[bagging]]: the original "subsample → diversity" idea, applied at the ensemble level rather than per-iteration.
+- [[random-forest]]: same column-subsample logic ($m < p$ predictors per split); SGB just applies it per-tree-or-per-split inside boosting.
+- [[regularization]]: subsampling is just one more regularizer in the menu.
+- [[bias-variance-tradeoff]]: subsampling-induced diversity reduces ensemble variance.

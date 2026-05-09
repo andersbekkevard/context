@@ -26,18 +26,18 @@ aliases:
   - Lecture 17
 ---
 
-# L17 — Tree-based Methods 1 (BeyondLinear wrap-up)
+# L17: Tree-based Methods 1 (BeyondLinear wrap-up)
 
-A two-module session: the prof first finishes Module 7 by extending the [[generalized-additive-models]] machinery to the **logistic** (binary) case — polynomial logistic regression, splines inside a logistic regression, and finally a logistic GAM — using the same wage > $250k data. After the break he opens Module 8 with Breiman's "two cultures" framing of statistics, then walks through the **regression tree**: recursive binary splitting via CART, greedy minimisation of RSS, stopping criteria, and finally **cost-complexity pruning** chosen by CV.
+A two-module session: the prof first finishes Module 7 by extending the [[generalized-additive-models]] machinery to the **logistic** (binary) case (polynomial logistic regression, splines inside a logistic regression, and finally a logistic GAM) using the same wage > $250k data. After the break he opens Module 8 with Breiman's "two cultures" framing of statistics, then walks through the **regression tree**: recursive binary splitting via CART, greedy minimisation of RSS, stopping criteria, and finally **cost-complexity pruning** chosen by CV.
 
 ## Key takeaways
 
 - **All the BeyondLinear tricks lift to logistic regression unchanged**: replace $Y$ with the log-odds $\log(p/(1-p))$ and the same polynomial / cubic-spline / natural-spline / local-linear / GAM machinery applies. "Polynomial logistic regression extends the polynomial regression to logistic data. Just the exact same way."
-- **GAMs let one variable explain another away**: when you add a better-suited predictor, the contribution of a previously-important one can flatten out — exactly the mechanism the prof used in his rat-postural-coding paper to overturn an earlier claim.
-- **Breiman's two cultures (2001)**: *data-model* statistics (assume distribution, do MLE / inference) vs *algorithmic-model* ML (validate by prediction accuracy / CV). Trees are the prof's first **algorithmic** model — explicitly different in flavour from regression / splines / GLMs.
+- **GAMs let one variable explain another away**: when you add a better-suited predictor, the contribution of a previously-important one can flatten out. This is exactly the mechanism the prof used in his rat-postural-coding paper to overturn an earlier claim.
+- **Breiman's two cultures (2001)**: *data-model* statistics (assume distribution, do MLE / inference) vs *algorithmic-model* ML (validate by prediction accuracy / CV). Trees are the prof's first **algorithmic** model, explicitly different in flavour from regression / splines / GLMs.
 - **Regression tree = recursive binary splitting + region-mean prediction.** Predictor space is chopped into non-overlapping rectangles $R_1, \ldots, R_J$; the prediction in each region is the **mean of the training $y$'s** in that region. Loss is RSS (sum, not mean) over all regions.
 - **Splitting is greedy and one-variable-at-a-time.** Exhaustive optimal partitioning is **NP-complete**, so at each node we pick the (variable $j$, threshold $s$) that minimises the two-region RSS, and once split we never go back. This is the **CART** algorithm (Breiman again).
-- **Trees are highly interpretable.** Unlike GAMs which look at one variable at a time at the means of the others, a tree path directly couples conditions on multiple variables → "I want to be those guys who are older than X *and* hit more than Y."
+- **Trees are highly interpretable.** Unlike GAMs which look at one variable at a time at the means of the others, a tree path directly couples conditions on multiple variables, giving "I want to be those guys who are older than X *and* hit more than Y."
 - **Build deep, then prune.** Grow a maximal tree using lax stopping criteria, then apply **cost-complexity pruning**: minimise $\sum_{m=1}^{|T|} \sum_{x_i \in R_m}(y_i - \hat y_{R_m})^2 + \alpha |T|$. Walk back from the maximal tree, each step removing the leaf-merge that hurts least, generating a sequence of nested subtrees. Pick $\alpha$ (equivalently the tree size) by **K-fold CV**.
 
 ## Module 7 wrap-up: GAMs visualisation recap
@@ -56,7 +56,7 @@ Each panel is the **contribution** of one variable to wage, with the other varia
 
 - **age**: cubic spline with knots at two values; peaks around 47 ("which sucks because that's today for me").
 - **year**: [[regression-splines|natural spline]] with a knot at 2006; basically linear, "makes sense, it's going to go up every time, just because of inflation."
-- **education**: piecewise — broken into the four education intervals.
+- **education**: piecewise, broken into the four education intervals.
 
 Crucially, each panel is a contribution, not a prediction:
 
@@ -121,7 +121,7 @@ The prof goes back to a slide deck from earlier in the course to set up trees wi
 ### Data models vs algorithmic models
 
 - **Data-model culture (statistics)**: start with $Y = f(X) + \varepsilon$, declare a parametric form for $f$ (linear / logistic / etc.) and a noise distribution, do MLE, derive distributions of estimators, run inference. AIC, BIC, p-values, the whole scaffolding.
-- **Algorithmic-model culture (ML)**: define a procedure (algorithm) that maps inputs to predictions. Validate by **prediction accuracy on held-out data** — i.e. cross-validation. Don't commit to a generative story for the data.
+- **Algorithmic-model culture (ML)**: define a procedure (algorithm) that maps inputs to predictions. Validate by **prediction accuracy on held-out data** (i.e. cross-validation). Don't commit to a generative story for the data.
 
 Breiman's argument:
 

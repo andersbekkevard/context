@@ -22,11 +22,11 @@ The one-line preprocessing rule the prof restates in every module that uses it: 
 
 ## Definition (prof's framing)
 
-> "Importantly, ridge regression is **not scale-invariant**, meaning that it matters what the amplitude of the beta is." — [[L12-modelsel-1]]
+> "Importantly, ridge regression is **not scale-invariant**, meaning that it matters what the amplitude of the beta is." - [[L12-modelsel-1]]
 
-> "PCA is not scale invariant. So if you don't standardize them so that their mean is zero and their variance is one, then if one had a standard deviation of like a million, then that will be your strongest variable." — [[L14-modelsel-3]]
+> "PCA is not scale invariant. So if you don't standardize them so that their mean is zero and their variance is one, then if one had a standard deviation of like a million, then that will be your strongest variable." - [[L14-modelsel-3]]
 
-> "This is true of so many algorithms that it's almost like a guarantee that you're going to have to do this. So both PCA and clustering, they're sensitive to the metric you're using." — [[L22-unsupervised-2]]
+> "This is true of so many algorithms that it's almost like a guarantee that you're going to have to do this. So both PCA and clustering, they're sensitive to the metric you're using." - [[L22-unsupervised-2]]
 
 For each predictor $X_j$:
 
@@ -83,13 +83,13 @@ That's the whole formula. The thing to remember is **which methods need it**.
 
 When ridge / lasso / PCA / k-means gives a bizarre answer — one variable dominates everything, or one PC explains 99% of variance, or one cluster contains everyone — the **first thing to check is whether you standardized**.
 
-> "If one had a standard deviation of like a million, then that will be your strongest variable. That will be the thing that gives you the highest variance, which is annoying because you don't want it to just be that the scale of the variable is bigger." — [[L14-modelsel-3]]
+> "If one had a standard deviation of like a million, then that will be your strongest variable. That will be the thing that gives you the highest variance, which is annoying because you don't want it to just be that the scale of the variable is bigger." - [[L14-modelsel-3]]
 
 ### The "comparable betas" framing
 
 Standardize so that the $\beta$'s have **comparable magnitudes** — which is what makes the penalty fair. After standardization, $|\hat\beta_j|$ measures the predictor's contribution per *standard-deviation* change, not per *unit* change. So you can also use this to rank predictors after fitting.
 
-> "So the betas will also be comparable, be at similar scales." — [[L12-modelsel-1]]
+> "So the betas will also be comparable, be at similar scales." - [[L12-modelsel-1]]
 
 ### Standardizing the response (not usually)
 
@@ -105,19 +105,19 @@ Compute $\bar x_j$ and $s_j$ on the **training set only**, then apply the *same*
 
 ### Alternatives the prof mentions
 
-> "Other normalizations (e.g. divide by max) are possible — pick what fits the data." — [[L22-unsupervised-2]]
+> "Other normalizations (e.g. divide by max) are possible, pick what fits the data." - [[L22-unsupervised-2]]
 
 For bounded data (e.g. images on $[0, 255]$), dividing by max gives $[0, 1]$ ranges. For percentages, no scaling needed. The general principle: get all variables onto a common scale that makes the algorithm's geometric assumptions reasonable.
 
 ## Exam signals
 
-> "Importantly, ridge regression is **not scale-invariant**." — [[L12-modelsel-1]]
+> "Importantly, ridge regression is **not scale-invariant**." - [[L12-modelsel-1]]
 
-> "PCA is not scale invariant." — [[L14-modelsel-3]] (verbatim slide bullet)
+> "PCA is not scale invariant." - [[L14-modelsel-3]] (verbatim slide bullet)
 
-> "This is true of so many algorithms that it's almost like a guarantee that you're going to have to do this." — [[L22-unsupervised-2]]
+> "This is true of so many algorithms that it's almost like a guarantee that you're going to have to do this." - [[L22-unsupervised-2]]
 
-> "You don't want one variable to basically suck up all the variance, just like in the PCA." — [[L24-nnet-2]]
+> "You don't want one variable to basically suck up all the variance, just like in the PCA." - [[L24-nnet-2]]
 
 The exam_analysis "direction-of-effect" cheat sheet (§4b) has *"PCA without standardization → result dominated by largest-scale variable"* and *"KNN distance with mixed units → Euclidean becomes meaningless without scaling."* Both are canonical T/F flips.
 
@@ -158,16 +158,16 @@ The exam_analysis "direction-of-effect" cheat sheet (§4b) has *"PCA without sta
 
 ## Related
 
-- [[ridge-regression]] — first canonical example; standardization is a pre-step
-- [[lasso]] — same
-- [[elastic-net]] — same
-- [[principal-component-analysis]] — PCA without standardization is dominated by largest-unit variable
-- [[principal-component-regression]] — PCR pipeline starts with standardize-then-PCA
-- [[partial-least-squares]] — same
-- [[k-means-clustering]] — Euclidean distance needs comparable scales
-- [[hierarchical-clustering]] — same
-- [[knn-classification]] / [[knn-regression]] — Euclidean nearest neighbors
-- [[feedforward-network]] — input standardization for stable gradients
-- [[regularization]] — every regularizer in the course assumes you've standardized first
-- [[distance-metrics]] — clustering / KNN choice of distance is the corollary; standardization handles the units, distance choice handles the geometry
-- [[curse-of-dimensionality]] — in high dim, distances become uniform; standardization doesn't fix this but unstandardized data makes it worse
+- [[ridge-regression]]: first canonical example; standardization is a pre-step
+- [[lasso]]: same
+- [[elastic-net]]: same
+- [[principal-component-analysis]]: PCA without standardization is dominated by largest-unit variable
+- [[principal-component-regression]]: PCR pipeline starts with standardize-then-PCA
+- [[partial-least-squares]]: same
+- [[k-means-clustering]]: Euclidean distance needs comparable scales
+- [[hierarchical-clustering]]: same
+- [[knn-classification]] / [[knn-regression]]: Euclidean nearest neighbors
+- [[feedforward-network]]: input standardization for stable gradients
+- [[regularization]]: every regularizer in the course assumes you've standardized first
+- [[distance-metrics]]: clustering / KNN choice of distance is the corollary; standardization handles the units, distance choice handles the geometry
+- [[curse-of-dimensionality]]: in high dim, distances become uniform; standardization doesn't fix this but unstandardized data makes it worse

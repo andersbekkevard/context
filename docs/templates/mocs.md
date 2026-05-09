@@ -2,7 +2,7 @@
 
 The canonical shape for a Map-of-Content (MOC) page. The MOCs-pass agent fills this in for each of the 12 curriculum modules.
 
-A MOC is a **pure router** — it tells Claude which atom to load for a given question about the module, what's in scope vs. out, and where the bronze sits. It contains zero original explanation. If you find yourself writing a paragraph about ridge regression in a MOC, that paragraph belongs in the atom.
+A MOC is a **pure router**, it tells Claude which atom to load for a given question about the module, what's in scope vs. out, and where the bronze sits. It contains zero original explanation. If you find yourself writing a paragraph about ridge regression in a MOC, that paragraph belongs in the atom.
 
 ## Frontmatter
 
@@ -58,19 +58,19 @@ tags:
 Chapter <N>: <title>. The deep treatment of in-scope concepts in this module is in `book/<NN>-<slug>.md`. Specific atoms carry section-level `isl-ref:` pointers.
 ```
 
-The `## Practice` link points at the per-module MCQ deck served by the `web/` layer. The file may not exist yet — that's fine; the link is a forward declaration. When the deck is generated (see `web/prompts/deck-generation.md`), the link resolves automatically. Module 12 has no atoms and no deck — omit the section there.
+The `## Practice` link points at the per-module MCQ deck served by the `web/` layer. The file may not exist yet, that's fine; the link is a forward declaration. When the deck is generated (see `web/prompts/deck-generation.md`), the link resolves automatically. Module 12 has no atoms and no deck, omit the section there.
 
 The link uses raw HTML with `target="_blank" rel="noopener"` rather than markdown link syntax. Decks are static pages outside Quartz's rendering pipeline; if you let Quartz's SPA router intercept the navigation, the deck loads with the wrong stylesheet until you hit refresh. Opening in a new tab forces a fresh page load.
 
 ## Filename
 
-`wiki/mocs/m{NN}-{slug}.md` — e.g. `wiki/mocs/m06-modelsel.md`. Leading `m{NN}` keeps modules in curriculum order under any alphabetical sort.
+`wiki/mocs/m{NN}-{slug}.md`, e.g. `wiki/mocs/m06-modelsel.md`. Leading `m{NN}` keeps modules in curriculum order under any alphabetical sort.
 
 ## Length
 
-Target: **40–120 lines.** MOCs are routers, not content. Anything longer means original explanation has crept in — refactor that explanation into an atom.
+Target: **40–120 lines.** MOCs are routers, not content. Anything longer means original explanation has crept in, refactor that explanation into an atom.
 
-## Example skeleton — m06-modelsel
+## Example skeleton: m06-modelsel
 
 ```markdown
 ---

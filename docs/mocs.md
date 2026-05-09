@@ -22,4 +22,4 @@ Original explanation. Zero. They route; they don't teach. If you find yourself w
 
 ## Where it lives
 
-`wiki/mocs/m{NN}-{slug}.md` — e.g. `wiki/mocs/m03-linreg.md`. The leading `m{NN}` keeps modules in curriculum order under any alphabetical sort.
+`wiki/mocs/m{NN}-{slug}.md`, e.g. `wiki/mocs/m03-linreg.md`. The leading `m{NN}` keeps modules in curriculum order under any alphabetical sort.

@@ -22,9 +22,9 @@ aliases:
   - Lecture 15
 ---
 
-# L15 — Model Selection and Regularization 4 (PCR wrap)
+# L15: Model Selection and Regularization 4 (PCR wrap)
 
-The prof closes module 6 by finishing [[principal-component-regression]] (PCA recap → PCR on the credit data → why it looks like a discretized [[ridge-regression]]), introducing [[partial-least-squares]] as "PCR but with a $y$ in the covariance," and then a closing motivational segment on **why** all this regularization machinery exists: the high-dimensional setting where $p > n$ is now everywhere and standard regression breaks. Lots of intuition, no new formal derivations; treat the PCR↔ridge analogy and the high-dim cautions as the load-bearing content.
+The prof closes module 6 by finishing [[principal-component-regression]] (PCA recap, PCR on the credit data, why it looks like a discretized [[ridge-regression]]), introducing [[partial-least-squares]] as "PCR but with a $y$ in the covariance," and then a closing motivational segment on **why** all this regularization machinery exists: the high-dimensional setting where $p > n$ is now everywhere and standard regression breaks. Lots of intuition, no new formal derivations; treat the PCR↔ridge analogy and the high-dim cautions as the load-bearing content.
 
 ## Key takeaways
 
@@ -43,9 +43,9 @@ The prof closes module 6 by finishing [[principal-component-regression]] (PCA re
 
 Three families of tools so far for taming variance with too many predictors:
 
-1. **Subset selection** — best subset, [[subset-selection|forward selection]], [[subset-selection|backward selection]]. Pick the variables.
-2. **Shrinkage / regularization** — [[ridge-regression]], [[lasso]], [[elastic-net]]. Penalize the coefficients.
-3. **Dimensionality reduction** — *"a way of kind of cheating where you would actually reduce the number of variables you have before you even go to regression."* You go from $X$ ($n \times p$) to $Z$ ($n \times M$, $M < p$), throw stuff away, then do standard regression on $Z$.
+1. **Subset selection**: best subset, [[subset-selection|forward selection]], [[subset-selection|backward selection]]. Pick the variables.
+2. **Shrinkage / regularization**: [[ridge-regression]], [[lasso]], [[elastic-net]]. Penalize the coefficients.
+3. **Dimensionality reduction**: *"a way of kind of cheating where you would actually reduce the number of variables you have before you even go to regression."* You go from $X$ ($n \times p$) to $Z$ ($n \times M$, $M < p$), throw stuff away, then do standard regression on $Z$.
 
 This session finishes (3) — PCR and PLS — and then steps back to the high-dimensional motivation for the whole module.
 

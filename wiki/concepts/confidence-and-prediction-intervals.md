@@ -4,9 +4,9 @@ module: 03-linreg
 lectures: [L05, L06]
 isl-ref: 3.2.2
 exercises:
-  - Exercise3.2b — simulate to demonstrate the frequentist CI interpretation
-  - Exercise3.2c — simulate the PI at a fixed x₀
-  - Exercise3.2d — CI for x₀ᵀβ vs PI for Y at x₀
+  - Exercise3.2b  -  simulate to demonstrate the frequentist CI interpretation
+  - Exercise3.2c  -  simulate the PI at a fixed x₀
+  - Exercise3.2d  -  CI for x₀ᵀβ vs PI for Y at x₀
 related: [linear-regression, sampling-distribution-of-beta, t-test-and-significance, gaussian-error-assumptions]
 tags:
   - concept
@@ -29,7 +29,7 @@ For a fixed test point $\mathbf{x}_0$:
 - **Confidence interval** = uncertainty in $\hat y_0 = \mathbf{x}_0^\top \hat{\boldsymbol\beta}$ as an estimator of the *expected response* $\mathbf{x}_0^\top \boldsymbol\beta$.
 - **Prediction interval** = uncertainty in $\hat y_0$ as a *prediction of a future observation* $y_{\text{new}} = \mathbf{x}_0^\top \boldsymbol\beta + \varepsilon_{\text{new}}$ at $\mathbf{x}_0$, including the irreducible noise.
 
-> "Plotting the confidence and prediction intervals around all predicted values $\hat Y_0$ one obtains the **confidence range** or **confidence band** for the expected values of $Y$. … The prediction range is much broader than the confidence range." — module 3 slides
+> "Plotting the confidence and prediction intervals around all predicted values $\hat Y_0$ one obtains the **confidence range** or **confidence band** for the expected values of $Y$. … The prediction range is much broader than the confidence range." , module 3 slides
 
 CI for an individual coefficient $\beta_j$ ([[L05-linreg-1]]): $\hat\beta_j \pm t_{1-\alpha/2,\,n-p-1} \cdot \mathrm{SE}(\hat\beta_j)$. For 95% with reasonable $n$: $t \approx 1.96 \approx 2$.
 
@@ -54,7 +54,7 @@ Prediction interval for a future observation at $\mathbf{x}_0$:
 
 $$\mathbf{x}_0^\top \hat{\boldsymbol\beta} \pm t_{1-\alpha/2,\,n-p-1} \cdot \hat\sigma \sqrt{1 + \mathbf{x}_0^\top (\mathbf{X}^\top\mathbf{X})^{-1} \mathbf{x}_0}.$$
 
-The PI carries an extra **+1** under the square root — that's the irreducible $\sigma^2$ contribution. It's why PI > CI **always**.
+The PI carries an extra **+1** under the square root , that's the irreducible $\sigma^2$ contribution. It's why PI > CI **always**.
 
 ## Insights & mental models
 
@@ -64,29 +64,29 @@ CI accounts for: uncertainty in $\hat{\boldsymbol\beta}$ (only).
 
 PI accounts for: uncertainty in $\hat{\boldsymbol\beta}$ + irreducible noise $\varepsilon_0$.
 
-> "To answer this question [PI], we have to sum uncertainty over two components: (1) the uncertainty in the predicted value $\hat y_0$ (due to uncertainty in $\hat{\boldsymbol\beta}$); (2) the irreducible error $\varepsilon_0 \sim N(0, \sigma^2)$." — module 3 slides
+> "To answer this question [PI], we have to sum uncertainty over two components: (1) the uncertainty in the predicted value $\hat y_0$ (due to uncertainty in $\hat{\boldsymbol\beta}$); (2) the irreducible error $\varepsilon_0 \sim N(0, \sigma^2)$." , module 3 slides
 
 ### The frequentist CI interpretation
 
-> "There is a 95% probability that the interval [from the random procedure] will contain the *true* value of $\beta_j$." — module 3 slides
+> "There is a 95% probability that the interval [from the random procedure] will contain the *true* value of $\beta_j$." , module 3 slides
 
 Crucially: the *interval* is random, the parameter is fixed. Repeat the experiment many times → ~95% of the constructed intervals cover the true $\beta_j$. CE1 problem 2g (true/false on p-values) hammers the related "$1 - p$ is the probability $H_0$ is true" trap; CIs have the same misinterpretation risk.
 
 ### Interval shape
 
-Both CI and PI are narrowest near the centroid of the data and fan out at the extremes — the $\mathbf{x}_0^\top(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{x}_0$ term grows with distance from the mean. Visually: the CI band hugs the line; the PI band is a wide envelope.
+Both CI and PI are narrowest near the centroid of the data and fan out at the extremes , the $\mathbf{x}_0^\top(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{x}_0$ term grows with distance from the mean. Visually: the CI band hugs the line; the PI band is a wide envelope.
 
 ### Why CI for x₀ᵀβ ≠ PI for Y at x₀
 
-The CI is for the *mean* — the expected response. The PI is for an *individual* observation — a single random draw from $N(\mathbf{x}_0^\top\boldsymbol\beta, \sigma^2)$. Even with infinite data ($\hat{\boldsymbol\beta} \to \boldsymbol\beta$), the CI shrinks to a point but the PI stays wide because $\sigma^2 > 0$.
+The CI is for the *mean* , the expected response. The PI is for an *individual* observation , a single random draw from $N(\mathbf{x}_0^\top\boldsymbol\beta, \sigma^2)$. Even with infinite data ($\hat{\boldsymbol\beta} \to \boldsymbol\beta$), the CI shrinks to a point but the PI stays wide because $\sigma^2 > 0$.
 
 ## Exam signals
 
-> "We will discuss confidence and prediction ranges in the (more general) multiple linear regression setup." — module 3 slides
+> "We will discuss confidence and prediction ranges in the (more general) multiple linear regression setup." , module 3 slides
 
-> "**Confidence intervals (CIs) are a much more informative way to report results than $p$-values!**" — module 3 slides
+> "**Confidence intervals (CIs) are a much more informative way to report results than $p$-values!**" , module 3 slides
 
-(Both intervals are derived in **problem 2 of the recommended exercises**.) — [[L06-linreg-2]]
+(Both intervals are derived in **problem 2 of the recommended exercises**.) , [[L06-linreg-2]]
 
 ## Pitfalls
 
@@ -99,14 +99,14 @@ The CI is for the *mean* — the expected response. The PI is for an *individual
 ## Scope vs ISLR
 
 - **In scope:** difference between CI and PI; their derivation in matrix form; the t-distribution-based formulas; the band shape; the frequentist interpretation.
-- **Look up in ISLR:** §3.2.2 (pp. 81–82, *Predictions*) — concise treatment with the +1 in the PI; figure 3.6 shows the band shape.
-- **Skip in ISLR:** Bayesian credible intervals — out of scope. Bonferroni / multiple-testing corrections to the CI — never covered.
+- **Look up in ISLR:** §3.2.2 (pp. 81–82, *Predictions*) , concise treatment with the +1 in the PI; figure 3.6 shows the band shape.
+- **Skip in ISLR:** Bayesian credible intervals , out of scope. Bonferroni / multiple-testing corrections to the CI , never covered.
 
 ## Exercise instances
 
-- Exercise3.2b — simulate $Y = 1 + 3X + \varepsilon$ for $\sim 1000$ datasets; check empirically that the 95% CI covers $\beta_0$ and $\beta_1$ ~95% of the time
-- Exercise3.2c — same simulation philosophy, but for the PI at a fixed $x_0 = 0.4$
-- Exercise3.2d — construct CI for $\mathbf{x}_0^\top\boldsymbol\beta$; explain the connection between CI for $\beta_j$, CI for $\mathbf{x}_0^\top\boldsymbol\beta$, and PI for $Y$ at $\mathbf{x}_0$
+- Exercise3.2b: simulate $Y = 1 + 3X + \varepsilon$ for $\sim 1000$ datasets; check empirically that the 95% CI covers $\beta_0$ and $\beta_1$ ~95% of the time
+- Exercise3.2c: same simulation philosophy, but for the PI at a fixed $x_0 = 0.4$
+- Exercise3.2d: construct CI for $\mathbf{x}_0^\top\boldsymbol\beta$; explain the connection between CI for $\beta_j$, CI for $\mathbf{x}_0^\top\boldsymbol\beta$, and PI for $Y$ at $\mathbf{x}_0$
 
 ## How it might appear on the exam
 
@@ -118,7 +118,7 @@ The CI is for the *mean* — the expected response. The PI is for an *individual
 
 ## Related
 
-- [[linear-regression]] — the underlying model
-- [[sampling-distribution-of-beta]] — both intervals derive from this
-- [[t-test-and-significance]] — same machinery, different question
-- [[gaussian-error-assumptions]] — both intervals require these
+- [[linear-regression]]: the underlying model
+- [[sampling-distribution-of-beta]]: both intervals derive from this
+- [[t-test-and-significance]]: same machinery, different question
+- [[gaussian-error-assumptions]]: both intervals require these

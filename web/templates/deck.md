@@ -107,6 +107,9 @@ Notes:
 
 `exam.js` supports two interactive question types: single-correct multiple choice and multi-statement true/false. Two further "shapes" are stylistic — they use the single-MC mechanic but vary the question body.
 
+> [!important] No topic tag on questions
+> Questions deliberately carry **no `exam-q__topic` span** in the header — only number and points. Naming the atom (e.g. "ridge-regression") or the question shape (e.g. "computation") telegraphs the answer space and makes the deck easier than the exam will be. The atom link belongs in the explanation's `<p class="ref">` block, where it appears *after* the student commits to an answer. Do not re-add a topic field "for organisation" — that's what the score-tracker and explanation links are for.
+
 ### 3.1 Single-correct MC (the staple)
 
 ```html
@@ -114,7 +117,6 @@ Notes:
   <header class="exam-q__head">
     <span class="exam-q__num">Question 7</span>
     <span class="exam-q__points">4 points</span>
-    <span class="exam-q__topic">ridge-regression</span>
   </header>
   <p class="q-text">…question text, may include $\LaTeX$, code, tables, small data…</p>
   <ul class="exam-q__opts">
@@ -146,7 +148,6 @@ For "which of the following statements about $X$ are true?" — every statement 
   <header class="exam-q__head">
     <span class="exam-q__num">Question 12</span>
     <span class="exam-q__points">8 points</span>
-    <span class="exam-q__topic">cross-validation</span>
   </header>
   <p class="q-text">Mark each statement about $k$-fold cross-validation as true or false.</p>
   <ul class="exam-q__tf">
@@ -296,7 +297,6 @@ You do NOT touch `notes/` (off-limits), `book/` (deep treatment, not the prof's 
 - [ ] Every Special whose `modules:` includes this module has ≥ 1 question, framed in this module's context.
 - [ ] Out-of-scope items in `docs/scope.md` have **no** questions.
 - [ ] Difficulty mix ≈ ⅓ / ⅓ / ⅓ (recall / application / scenario).
-- [ ] Each question has a one-line topic tag matching an atom slug or Special slug.
 - [ ] Each `.fasit-correct` reads exactly `Correct answer: <LETTER>`.
 - [ ] Each explanation says **why each distractor is wrong**, not just why correct is right.
 - [ ] Each explanation has a `<p class="ref">` with at least one atom wikilink.

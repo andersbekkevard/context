@@ -21,9 +21,9 @@ aliases:
   - Lecture 18
 ---
 
-# L18 — Tree-based Methods 2
+# L18: Tree-based Methods 2
 
-The prof recapped CART regression trees (greedy splitting on RSS, build out then prune via cost complexity), then moved to classification trees (majority vote / class probabilities, split by [[classification-tree|Gini index]] or [[classification-tree|cross-entropy]] not misclassification, prune on misclassification). Closed by motivating [[bagging]] and introducing [[random-forest]] / out-of-bag error; deferred boosting to next lecture.
+The prof recapped CART regression trees (greedy splitting on RSS, build out then prune via cost complexity), then moved to classification trees (majority vote / class probabilities, split by [[classification-tree|Gini index]] or [[classification-tree|cross-entropy]] not misclassification, prune on misclassification). Closed by motivating [[bagging]] and introducing [[random-forest]] and out-of-bag error; deferred boosting to next lecture.
 
 ## Key takeaways
 
@@ -36,7 +36,7 @@ The prof recapped CART regression trees (greedy splitting on RSS, build out then
 
 ## Recap: regression trees and CART
 
-Trees take a different angle from regression with splines/interactions: "instead of treating years and hits as independent variables that you then find some function of either using just linear things or using some nonlinear stuff like we talked about with splines … instead, you kind of say oh we could just break this stuff up and then call this one region call that another region call that another region and then give a parameter to every region. And that gives us a very powerful model that now has these combinations of variables."
+Trees take a different angle from regression with splines/interactions: "instead of treating years and hits as independent variables that you then find some function of either using just linear things or using some nonlinear stuff like we talked about with splines ... instead, you kind of say oh we could just break this stuff up and then call this one region call that another region call that another region and then give a parameter to every region. And that gives us a very powerful model that now has these combinations of variables."
 
 > [!note] The prof's framing — algorithm, not distributional model
 > "This is our first example of a real algorithm for building up a model, which as opposed to the classic statistical approach of, oh, I'm going to assume that this variable is this distribution and I'm going to make a model of it that has this specific form, it said, no, we're going to make an algorithm. We're going to think of it like a computer program."
@@ -217,7 +217,7 @@ The prof flagged the slight oddness: "you have this strange dependency on the te
 
 ### Random forests
 
-[[random-forest]] = bagging + extra randomness: at each split, only a random subset of predictors is considered. This decorrelates the trees further. The prof framed bagging → forests via the analogy "you can see the forest through the trees." Set `B` (number of trees, e.g. 500) and `mtry` (predictors per split).
+[[random-forest]] = bagging + extra randomness: at each split, only a random subset of predictors is considered. This decorrelates the trees further. The prof framed bagging to forests via the analogy "you can see the forest through the trees." Set `B` (number of trees, e.g. 500) and `mtry` (predictors per split).
 
 Synonym: ensembling. "I think that's more common in machine learning, that term."
 

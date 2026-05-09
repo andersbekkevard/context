@@ -30,8 +30,8 @@ The two binary-classification metrics derived from the confusion matrix. Each pi
 > "Specificity is the proportion of correctly classified negative observations: $\text{TN}/\text{N}$." — slide deck
 
 In words:
-- **Sensitivity** = "of all *actual* positives, how many did we catch?" — ability to detect disease/default/whatever.
-- **Specificity** = "of all *actual* negatives, how many did we correctly leave alone?" — ability to avoid false alarms.
+- **Sensitivity** = "of all *actual* positives, how many did we catch?": ability to detect disease/default/whatever.
+- **Specificity** = "of all *actual* negatives, how many did we correctly leave alone?": ability to avoid false alarms.
 
 ## Notation & setup
 
@@ -73,11 +73,11 @@ The slide deck shows the canonical 2×2 layout — memorize the formula, then re
 
 ## Exam signals
 
-> "Write the equation rather than computing — the formula counts as the answer." — [[L27-summary]]
+> "Write the equation rather than computing — the formula counts as the answer." - [[L27-summary]]
 
-> "Define sensitivity and specificity in plain English **for this specific model**." — [[L27-summary]] (re: 2025 exam Q7)
+> "Define sensitivity and specificity in plain English **for this specific model**." - [[L27-summary]] (re: 2025 exam Q7)
 
-> "Models that are really naive and only predict that it's going to be a zero are already going to do pretty well, because the one class is almost all of the data. … Discuss in terms of sensitivity/specificity vs. error rate." — [[L27-summary]]
+> "Models that are really naive and only predict that it's going to be a zero are already going to do pretty well, because the one class is almost all of the data. … Discuss in terms of sensitivity/specificity vs. error rate." - [[L27-summary]]
 
 The 2025 exam Q7 explicitly asked: define sensitivity/specificity for the default-prediction setting **in plain English**, compute from the confusion matrix at the 0.5 cutoff. Both LDA and KNN versions of this question appeared.
 
@@ -116,7 +116,7 @@ The 2025 exam Q7 explicitly asked: define sensitivity/specificity for the defaul
 
 ## Related
 
-- [[confusion-matrix]] — the source table.
-- [[roc-auc]] — sweep the cutoff, plot $(1 - \text{spec}, \text{sens})$, summarize with AUC.
-- [[classification-setup]] — 0/1 loss is the aggregate; sensitivity/specificity is the per-class breakdown.
-- [[logistic-regression]] — the canonical companion in the prof's medical examples.
+- [[confusion-matrix]]: the source table.
+- [[roc-auc]]: sweep the cutoff, plot $(1 - \text{spec}, \text{sens})$, summarize with AUC.
+- [[classification-setup]]: 0/1 loss is the aggregate; sensitivity/specificity is the per-class breakdown.
+- [[logistic-regression]]: the canonical companion in the prof's medical examples.

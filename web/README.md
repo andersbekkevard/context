@@ -1,11 +1,11 @@
-# `web/` — TMA4268 exam-prep web layer
+# `web/`: TMA4268 exam-prep web layer
 
 The web layer is two things glued together:
 
 1. **Quartz** renders the Obsidian vault at `../wiki/` into a navigable static site (atoms, lectures, MOCs, with wikilinks, math, search, backlinks, graph view).
-2. **Per-module MCQ decks** sit alongside as standalone HTML pages in `static/decks/`, served at `/decks/m<NN>-<slug>.html`. They're a hand-authored interactive practice surface — click an option to lock the answer, get coloured feedback, watch the score panel tick up. One deck per in-scope module (02–11).
+2. **Per-module MCQ decks** sit alongside as standalone HTML pages in `static/decks/`, served at `/decks/m<NN>-<slug>.html`. They're a hand-authored interactive practice surface, click an option to lock the answer, get coloured feedback, watch the score panel tick up. One deck per in-scope module (02–11).
 
-Everything HTML/CSS/JS lives inside `web/`. The wiki lives outside (at `../wiki/`) and is referenced via Quartz's `-d` flag — never duplicated, never moved.
+Everything HTML/CSS/JS lives inside `web/`. The wiki lives outside (at `../wiki/`) and is referenced via Quartz's `-d` flag, never duplicated, never moved.
 
 ## Prerequisites
 
@@ -30,8 +30,8 @@ pnpm run build                # writes static site to public/
 
 `package.json` scripts:
 
-- `dev` → `quartz build --serve -d ../wiki` — live preview, watches the wiki for changes.
-- `build` → `quartz build -d ../wiki` — one-shot build into `public/`.
+- `dev` → `quartz build --serve -d ../wiki`, live preview, watches the wiki for changes.
+- `build` → `quartz build -d ../wiki`, one-shot build into `public/`.
 
 Both pass `-d ../wiki` so Quartz reads markdown source from outside this folder. The `content/` folder inside `web/` is unused; safe to ignore.
 
@@ -62,7 +62,7 @@ web/
 
 ## How to generate a new deck
 
-The per-module deck pipeline is **agent-driven** — a Claude agent reads a module's atoms, lectures, exercises, and past exams, then emits one HTML file under `static/decks/`.
+The per-module deck pipeline is **agent-driven**, a Claude agent reads a module's atoms, lectures, exercises, and past exams, then emits one HTML file under `static/decks/`.
 
 Per-module recipe:
 

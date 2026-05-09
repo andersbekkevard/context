@@ -19,7 +19,7 @@ The "stupid but actually pretty common" basis-function instance: cut the predict
 
 ## Definition (prof's framing)
 
-> "I mean, this one is very stupid, but it's actually quite common, simply because you don't need that much information... so you don't have too many constraints that push things around. Even the step functions are actually pretty nice, even if they are a bit stupid looking." — [[L16-beyondlinear-1]]
+> "I mean, this one is very stupid, but it's actually quite common, simply because you don't need that much information... so you don't have too many constraints that push things around. Even the step functions are actually pretty nice, even if they are a bit stupid looking." - [[L16-beyondlinear-1]]
 
 Pick cutpoints $c_1 < c_2 < \ldots < c_K$ in the range of $X$. Define indicator basis functions
 $$b_j(x) = \mathbb{1}(c_{j-1} \le x < c_j), \qquad j = 1, \ldots, K-1, \qquad b_K(x) = \mathbb{1}(c_K \le x).$$
@@ -51,17 +51,17 @@ Fitted prediction: $\hat\beta_0$ is the mean response in the first bin (where $X
 
 ## Insights & mental models
 
-- **Step functions = "regression on a factor variable."** When the original $X$ is already a factor (e.g. `education` with levels `<HS, HS, Some College, College, Advanced Degree`), `lm(wage ~ education)` is a step function for free — no `cut()` needed. The wage-vs-education demo in lecture is exactly this case.
+- **Step functions = "regression on a factor variable."** When the original $X$ is already a factor (e.g. `education` with levels `<HS, HS, Some College, College, Advanced Degree`), `lm(wage ~ education)` is a step function for free, no `cut()` needed. The wage-vs-education demo in lecture is exactly this case.
 - **No derivatives.** The fit is piecewise constant, which means jumps at every cutpoint:
 
-  > "You don't have derivatives here. They're not even... it's piecewise constant, but it's not connected — it can jump." — [[L16-beyondlinear-1]]
+  > "You don't have derivatives here. They're not even... it's piecewise constant, but it's not connected — it can jump." - [[L16-beyondlinear-1]]
 
 - **Cutpoint choice is manual.** R defaults to equally spaced bins (or even quantile-based via `breaks=`), but you can hand-pick the breaks. The book notes that 5-year age groups are routine in biostatistics / epidemiology.
 - **Why "a bit stupid":** between the cutpoints the model is forced to ignore variation. The first bin in the wage-vs-age demo "clearly misses the increasing trend" (book §7.2 / Figure 7.2 commentary).
 
 ## Exam signals
 
-> "Even the step functions are actually pretty nice, even if they are a bit stupid looking." — [[L16-beyondlinear-1]]
+> "Even the step functions are actually pretty nice, even if they are a bit stupid looking." - [[L16-beyondlinear-1]]
 
 Step functions are introduced as a pedagogical bridge from polynomial regression to splines. No prof quote flagging them as exam-likely on their own — but they are an explicit instance of [[basis-functions]], and "what is the design matrix for a step function with cutpoints at..." is a fair-game design-matrix-construction question.
 
@@ -92,7 +92,7 @@ None in the recommended-exercise sheet for module 7. Step functions appear *impl
 
 ## Related
 
-- [[basis-functions]] — step functions are the indicator instance.
-- [[regression-splines]] — the smooth alternative when discontinuities at the cutpoints are unacceptable.
-- [[categorical-encoding-and-interactions]] — step functions on a factor variable *are* dummy-coded categorical regression; the machinery is identical.
-- [[generalized-additive-models]] — step functions slot in as one of the $f_j$ choices, especially for qualitative predictors.
+- [[basis-functions]]: step functions are the indicator instance.
+- [[regression-splines]]: the smooth alternative when discontinuities at the cutpoints are unacceptable.
+- [[categorical-encoding-and-interactions]]: step functions on a factor variable *are* dummy-coded categorical regression; the machinery is identical.
+- [[generalized-additive-models]]: step functions slot in as one of the $f_j$ choices, especially for qualitative predictors.

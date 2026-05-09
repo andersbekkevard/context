@@ -107,15 +107,15 @@ This section makes the prof's escalating treatment visible in the Specials atom 
 
 ## Filename
 
-`wiki/concepts/{hyphen-case-slug}.md` — slug from `docs/concepts-manifest.md`. Never invent a slug; always use the manifest value.
+`wiki/concepts/{hyphen-case-slug}.md`, slug from `docs/concepts-manifest.md`. Never invent a slug; always use the manifest value.
 
 ## Length
 
-Target: **80–250 lines.** Below 80 means you stripped signal or the concept should be folded into another atom. Above 250 means it's actually two concepts — split.
+Target: **80–250 lines.** Below 80 means you stripped signal or the concept should be folded into another atom. Above 250 means it's actually two concepts. Split.
 
 The exception: cross-cutting atoms (bias-variance, regularization, CV) can run longer because they aggregate multiple lecture treatments.
 
-## Example skeleton — ridge-regression
+## Example skeleton: ridge-regression
 
 ```markdown
 ---
@@ -151,4 +151,4 @@ $$\hat\beta_{\text{ridge}} = \arg\min_\beta \left\{ \sum_i (y_i - x_i^\top \beta
 [...]
 ```
 
-(The example above is illustrative — agents should produce the full atom following the standard sections.)
+(The example above is illustrative, agents should produce the full atom following the standard sections.)
