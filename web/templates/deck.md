@@ -33,6 +33,7 @@ Each deck is a self-contained HTML page at `web/static/decks/m<NN>-<slug>.html`.
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Module 06 — Model selection &amp; regularisation · TMA4268</title>
+  <link rel="icon" type="image/png" href="/static/icon.png">
 
   <!-- Sync theme with the Quartz wiki (reads same localStorage key, falls back to OS) -->
   <script>
