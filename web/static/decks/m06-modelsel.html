@@ -65,14 +65,14 @@
         <li><span class="opt-label">A</span> $1 + p(p+1)/2 = 56$</li>
         <li><span class="opt-label">B</span> $2^p = 1024$</li>
         <li><span class="opt-label">C</span> $p! = 3{,}628{,}800$</li>
-        <li><span class="opt-label">D</span> $p^2 = 100$</li>
+        <li><span class="opt-label">D</span> $2^p - 1 = 1023$</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: B</span>
           <p>Best-subset enumerates every subset of $\{1,\dots,p\}$, including the empty (intercept-only) model. The count is $\sum_{k=0}^{p} \binom{p}{k} = 2^p$. With $p = 10$ that's $1024$. The prof flagged the formula on slide and added: <em>"Slow as shit for $p$ big, or even like impossibly slow."</em></p>
-          <p>A is the count for forward / backward / hybrid stepwise ($1 + p(p+1)/2$) — same as the C-line of the algorithms but a different one. C confuses subsets with permutations of predictors. D is a wrong combinatorial guess.</p>
+          <p>A is the count for forward / backward / hybrid stepwise ($1 + p(p+1)/2$). C confuses subsets with orderings (permutations) of predictors. D is the count of <em>non-empty</em> subsets — off by one because the question explicitly states the null model doesn't change the answer (best-subset compares all $2^p$ subsets, so the null model is implicitly counted in the procedure even if you exclude it from a per-size summary).</p>
           <p class="ref">Atoms: <a href="/concepts/subset-selection">subset-selection</a>. Lecture: <a href="/lectures/L12-modelsel-1">L12-modelsel-1</a>.</p>
         </div>
       </details>
@@ -134,14 +134,14 @@
         <li><span class="opt-label">A</span> $\arg\min_\beta \big\{\text{RSS} + \lambda \sum_{j=1}^p |\beta_j|\big\}$</li>
         <li><span class="opt-label">B</span> $\arg\min_\beta \big\{\text{RSS} + \lambda \sum_{j=0}^p \beta_j^2\big\}$</li>
         <li><span class="opt-label">C</span> $\arg\min_\beta \big\{\text{RSS} + \lambda \sum_{j=1}^p \beta_j^2\big\}$</li>
-        <li><span class="opt-label">D</span> $\arg\min_\beta \big\{\text{RSS} - \lambda \sum_{j=1}^p \beta_j^2\big\}$</li>
+        <li><span class="opt-label">D</span> $\arg\min_\beta \big\{\text{RSS} + \lambda \big(\sum_{j=1}^p |\beta_j|\big)^2\big\}$</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: C</span>
           <p>Ridge minimises RSS plus the $L^2$ penalty $\lambda \sum_{j=1}^p \beta_j^2$, where the sum runs over slope coefficients only — the intercept $\beta_0$ is <strong>not</strong> penalised (slide-flagged: <em>"if we included the intercept, $\beta^R$ would depend on the average of the response"</em>).</p>
-          <p>A is the lasso ($L^1$). B mistakenly penalises the intercept, which makes the fit depend on the response mean. D subtracts the penalty, so the optimiser would push $\|\beta\|$ to infinity — the wrong sign.</p>
+          <p>A is the lasso ($L^1$). B mistakenly penalises the intercept, which makes the fit depend on the response mean. D uses the squared $L^1$ norm instead of $L^2$ (sum of squares); these aren't the same penalty — the squared $L^1$ couples coefficients (cross-terms $|\beta_j||\beta_k|$ enter the objective), which is not ridge.</p>
           <p class="ref">Atoms: <a href="/concepts/ridge-regression">ridge-regression</a>. Lecture: <a href="/lectures/L12-modelsel-1">L12-modelsel-1</a>.</p>
         </div>
       </details>
@@ -200,9 +200,9 @@
       </header>
       <p class="q-text">Relative to ordinary least squares, the lasso is:</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> More flexible; improves prediction accuracy when its increase in variance is less than its decrease in bias.</li>
+        <li><span class="opt-label">A</span> Equally flexible; improves prediction accuracy whenever the design matrix has no exact collinearities.</li>
         <li><span class="opt-label">B</span> More flexible; improves prediction accuracy when its increase in bias is less than its decrease in variance.</li>
-        <li><span class="opt-label">C</span> Less flexible; improves prediction accuracy when its increase in variance is less than its decrease in bias.</li>
+        <li><span class="opt-label">C</span> Less flexible; improves prediction accuracy whenever the irreducible error $\sigma^2$ exceeds the OLS training MSE.</li>
         <li><span class="opt-label">D</span> Less flexible; improves prediction accuracy when its increase in bias is less than its decrease in variance.</li>
       </ul>
       <details class="fasit-details">
@@ -210,7 +210,7 @@
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: D</span>
           <p>Lasso shrinks coefficients (and zeros some), so it is <strong>less flexible</strong> than unconstrained OLS. It improves prediction accuracy precisely when the bias bump from shrinkage is outweighed by the variance reduction. Verbatim L27 framing of the prof's preferred 2025 Q3a answer: <em>"less flexible than LS, improved accuracy when the increase in bias is less than the decrease in variance."</em></p>
-          <p>A and B mis-classify lasso as <em>more</em> flexible — the canonical bias-variance flip. C swaps the bias/variance roles in the inequality. The pair (A,B) and (C,D) split the answer space on flexibility; only the bias-variance inequality in D matches the bias-variance hammer.</p>
+          <p>A is wrong on flexibility and substitutes a collinearity claim for the bias-variance trade. B mis-classifies lasso as <em>more</em> flexible. C correctly identifies lasso as less flexible but the qualifier ("$\sigma^2$ exceeds OLS training MSE") is unrelated to when shrinkage helps — irreducible error is a property of the data, not a comparison criterion. Only D names the actual bias-variance inequality.</p>
           <p class="ref">Atoms: <a href="/concepts/lasso">lasso</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>, <a href="/concepts/regularization">regularization</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>.</p>
         </div>
       </details>
@@ -277,7 +277,7 @@
       </header>
       <p class="q-text">You are shown two coefficient-trace plots from the Credit dataset. In <strong>plot X</strong>, every coefficient curve approaches but never crosses the zero line as $\lambda$ grows. In <strong>plot Y</strong>, several coefficient curves drop to exactly zero at finite $\lambda$ values and stay there. Which method produced which plot?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> X = lasso, Y = ridge.</li>
+        <li><span class="opt-label">A</span> X = elastic net (any $\alpha \in (0,1)$), Y = lasso — only elastic net has the smooth no-zero behaviour of plot X.</li>
         <li><span class="opt-label">B</span> X = ridge, Y = lasso.</li>
         <li><span class="opt-label">C</span> Both are ridge at different $\lambda$ resolutions.</li>
         <li><span class="opt-label">D</span> Both are lasso; the difference is just the standardisation choice.</li>
@@ -287,7 +287,7 @@
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: B</span>
           <p>The defining visual difference: ridge paths approach zero asymptotically but never touch (no kink in the $\beta^2$ penalty at zero); lasso paths drop to exactly zero and stay (the $|\beta|$ kink at zero is what produces sparsity).</p>
-          <p>A swaps the methods. C ignores the plot's distinguishing feature (zeros vs no zeros). D blames standardisation, which affects scale of the trace but not whether paths reach zero.</p>
+          <p>A misattributes ridge's smooth-no-zeros pattern to elastic net — but elastic net has an $L^1$ component, so it still produces exact zeros (just less aggressively than pure lasso). C ignores the plot's distinguishing feature (zeros vs no zeros). D blames standardisation, which affects scale of the trace but not whether paths reach zero.</p>
           <p class="ref">Atoms: <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/lasso">lasso</a>.</p>
         </div>
       </details>
@@ -362,7 +362,7 @@
       </header>
       <p class="q-text">PCA on a standardised design matrix returns five eigenvalues $\lambda_1 = 2.5,\ \lambda_2 = 1.2,\ \lambda_3 = 0.7,\ \lambda_4 = 0.4,\ \lambda_5 = 0.2$. What fraction of the total variance is explained by the first three principal components?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> $0.50$</li>
+        <li><span class="opt-label">A</span> $0.60$</li>
         <li><span class="opt-label">B</span> $0.74$</li>
         <li><span class="opt-label">C</span> $0.88$</li>
         <li><span class="opt-label">D</span> $0.94$</li>
@@ -372,7 +372,7 @@
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: C</span>
           <p>Total variance $\sum_j \lambda_j = 2.5 + 1.2 + 0.7 + 0.4 + 0.2 = 5.0$. First three: $2.5 + 1.2 + 0.7 = 4.4$. PVE $= 4.4 / 5.0 = 0.88$.</p>
-          <p>A returns just $\lambda_1 / \sum \lambda_j = 2.5/5 = 0.50$ — only the first PC. B returns the first two PCs ($3.7/5$). D returns the first four PCs ($4.8/5$).</p>
+          <p>A is $3/5 = 0.60$ — the share if you (wrongly) just count "3 out of 5 components" instead of summing eigenvalues. B returns the first two PCs ($3.7/5$). D returns the first four PCs ($4.8/5$).</p>
           <p class="ref">Atoms: <a href="/concepts/principal-component-regression">principal-component-regression</a>, <a href="/concepts/principal-component-analysis">principal-component-analysis</a>.</p>
         </div>
       </details>
@@ -588,17 +588,17 @@
       </header>
       <p class="q-text">Among the candidate $\lambda$ values along the CV grid, the one-standard-error rule selects:</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> The $\lambda$ closest to the median of the grid.</li>
+        <li><span class="opt-label">A</span> The smallest $\lambda$ whose mean CV-MSE is within one standard error of the minimum.</li>
         <li><span class="opt-label">B</span> The $\lambda$ at which CV-MSE is minimised.</li>
         <li><span class="opt-label">C</span> The largest $\lambda$ whose mean CV-MSE is within one standard error of the minimum.</li>
-        <li><span class="opt-label">D</span> The $\lambda$ that minimises training MSE on the full data.</li>
+        <li><span class="opt-label">D</span> The $\lambda$ at which the standard error of the per-fold MSEs is itself minimised.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: C</span>
           <p>Largest $\lambda$ (= simplest model) whose mean CV-MSE is within one SE of the minimum. The 2024 and 2025 past exams both demanded this rule. Picks the simplest model that's statistically indistinguishable from the best.</p>
-          <p>A is unrelated. B is the standard <code>lambda.min</code> rule — fine, but not the one-SE rule (which is more conservative). D drops cross-validation entirely; training MSE picks $\lambda = 0$.</p>
+          <p>A picks the <em>smallest</em> $\lambda$ within the one-SE band — that's near <code>lambda.min</code> on the low-$\lambda$ side, not the conservative simpler-model end. B is the standard <code>lambda.min</code> rule — fine, but not the one-SE rule (which deliberately picks a simpler model statistically indistinguishable from the best). D conflates SE of the CV-MSE estimate with the variance of fold-MSEs at a given $\lambda$ — that quantity tends to be smallest in regions where folds happen to agree, which has nothing to do with simplicity.</p>
           <p class="ref">Atoms: <a href="/concepts/cross-validation">cross-validation</a>, <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/lasso">lasso</a>.</p>
         </div>
       </details>
@@ -702,8 +702,8 @@
       <p class="q-text">As the ridge penalty $\lambda$ is increased from $0$, in what direction do the squared bias and variance of the ridge estimator typically move?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Squared bias goes up; variance goes down.</li>
-        <li><span class="opt-label">B</span> Squared bias goes down; variance goes down.</li>
-        <li><span class="opt-label">C</span> Squared bias goes down; variance goes up.</li>
+        <li><span class="opt-label">B</span> Both fall together initially, then both rise past a critical $\lambda$.</li>
+        <li><span class="opt-label">C</span> Squared bias stays constant; only variance moves, and it goes down.</li>
         <li><span class="opt-label">D</span> Squared bias goes up; variance goes up.</li>
       </ul>
       <details class="fasit-details">
@@ -711,7 +711,7 @@
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: A</span>
           <p>Increasing $\lambda$ shrinks coefficients toward zero, biasing the estimator (squared bias goes up) but stabilising it across resamples (variance goes down). The U-shape of test MSE is what you see when these two trends cross.</p>
-          <p>B is "free lunch" — both go down — which would defeat the whole bias-variance trade-off framing. C is the wrong-direction trap (this is what happens for the unregularised polynomial degree, not for $\lambda$). D contradicts the variance-reduction reason regularisation exists.</p>
+          <p>B describes a non-monotone path with no basis: both quantities are individually monotone in $\lambda$ for ridge. C falsely treats ridge as unbiased — ridge shrinks the OLS estimate by $1/(1+\lambda)$ even on orthogonal $X$, so it's biased the moment $\lambda > 0$. D contradicts the variance-reduction reason regularisation exists.</p>
           <p class="ref">Atoms: <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>, <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/regularization">regularization</a>.</p>
         </div>
       </details>
@@ -750,8 +750,8 @@
       <p class="q-text">On the Credit dataset, best-subset and forward stepwise both pick the same 3-variable model, but at $k = 4$ best-subset drops <code>rating</code> and adds <code>cards</code>, while forward stepwise keeps <code>rating</code> and adds <code>limit</code>. The most accurate explanation is:</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Forward stepwise is greedy and cannot drop a previously-added predictor, so it locks in early choices that best-subset is free to revisit.</li>
-        <li><span class="opt-label">B</span> Best-subset is biased toward smaller models because it uses Cp / BIC.</li>
-        <li><span class="opt-label">C</span> Best-subset always finds the model with the smallest test RSS at each $k$.</li>
+        <li><span class="opt-label">B</span> Forward stepwise standardises predictors internally while best-subset does not, so the two procedures see effectively different design matrices at $k = 4$.</li>
+        <li><span class="opt-label">C</span> The two methods are minimising different criteria at $k = 4$: best-subset minimises $C_p$, forward stepwise minimises training RSS, so divergence is expected.</li>
         <li><span class="opt-label">D</span> Forward stepwise produced a wrong answer because the predictors are correlated; the best-subset answer is the unique correct one.</li>
       </ul>
       <details class="fasit-details">
@@ -759,7 +759,7 @@
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: A</span>
           <p>Forward stepwise can only add. Once <code>rating</code> is in $\mathcal{M}_3$, it stays in $\mathcal{M}_4, \mathcal{M}_5, \dots$. Best-subset re-evaluates every $k$-subset independently, so it can swap variables between sizes. Hybrid / sequential-replacement stepwise was designed precisely to recover this flexibility.</p>
-          <p>B is wrong on direction: Cp/BIC penalise complexity but don't bias selection of <em>which</em> variables enter at fixed $k$. C confuses training RSS with test RSS — best-subset minimises training RSS at each $k$, not test RSS. D claims a uniqueness that doesn't exist: under collinearity, multiple "best" subsets are essentially indistinguishable on the data.</p>
+          <p>B invents a standardisation difference that doesn't exist: both procedures operate on the same design matrix once you've decided to standardise (or not). C garbles the criterion at fixed $k$: <em>both</em> best-subset and forward stepwise compare candidate $k$-models by training RSS at that $k$; $C_p$ enters only later when picking <em>across</em> different $k$. The divergence at $k = 4$ comes from the search strategy, not the within-$k$ criterion. D claims a uniqueness that doesn't exist: under collinearity, multiple subsets are essentially indistinguishable on the data.</p>
           <p class="ref">Atoms: <a href="/concepts/subset-selection">subset-selection</a>, <a href="/concepts/lasso">lasso</a>. Lecture: <a href="/lectures/L12-modelsel-1">L12-modelsel-1</a>.</p>
         </div>
       </details>
@@ -783,7 +783,7 @@
       </p>
       <p class="q-text">Which assignment is most consistent with the patterns?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> P = lasso, Q = ridge.</li>
+        <li><span class="opt-label">A</span> P = best-subset selection at $k = 5$ (all five variables retained), Q = lasso.</li>
         <li><span class="opt-label">B</span> P = ridge, Q = lasso.</li>
         <li><span class="opt-label">C</span> P = OLS on a smaller training set, Q = lasso.</li>
         <li><span class="opt-label">D</span> P = elastic net with $\alpha = 0$, Q = elastic net with $\alpha = 1$ — but the column patterns would be reversed.</li>
@@ -793,7 +793,7 @@
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: B</span>
           <p>Method P shrinks <em>every</em> coefficient toward zero but no coefficient is exactly zero — that's ridge. Method Q has two coefficients exactly at $0.00$ (<code>Rating</code>, <code>Age</code>) and the rest near OLS — that's lasso's variable-selection signature.</p>
-          <p>A swaps them. C ignores that ridge-style uniform shrinkage on a single training fit is precisely what column P shows. D's parenthetical is internally contradictory: $\alpha = 0$ in the standard glmnet parameterisation is ridge (no sparsity), $\alpha = 1$ is lasso (sparsity) — that matches B, not D's claim.</p>
+          <p>A is wrong on P: best-subset at $k = 5$ retaining all five variables would just give back the OLS column, not P's uniformly-shrunken pattern. C ignores that ridge-style uniform shrinkage on a single training fit is precisely what column P shows; OLS on a smaller subset would not produce that proportionality. D's parenthetical is internally contradictory: $\alpha = 0$ in the standard glmnet parameterisation is ridge (no sparsity), $\alpha = 1$ is lasso (sparsity) — that matches B, not D's claim.</p>
           <p class="ref">Atoms: <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/lasso">lasso</a>, <a href="/concepts/elastic-net">elastic-net</a>.</p>
         </div>
       </details>
@@ -868,7 +868,7 @@
       </header>
       <p class="q-text">Two predictors $X_1, X_2$ are nearly perfectly correlated. Each method is fit at a moderate penalty / constraint level. Which row best describes the typical behaviour?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Ridge zeros one of the two; lasso averages them at moderate values.</li>
+        <li><span class="opt-label">A</span> Both methods give nearly identical fits — under collinearity, $L^1$ and $L^2$ become equivalent up to rescaling of $\lambda$.</li>
         <li><span class="opt-label">B</span> Both methods zero both; only OLS keeps them at non-zero values.</li>
         <li><span class="opt-label">C</span> Both methods average them; the only difference is the magnitude of the joint coefficient.</li>
         <li><span class="opt-label">D</span> Lasso zeros one of the two; ridge averages them at moderate values.</li>
@@ -878,7 +878,7 @@
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: D</span>
           <p>The prof's "capitalist vs socialist" framing: lasso picks one and zeros the other (corner of the diamond on an axis); ridge averages them at moderate values (smooth circle, no corners). The choice of which coefficient lasso zeros is data-dependent and unstable across resamples — this is the failure mode elastic net was designed to fix.</p>
-          <p>A swaps the methods (the canonical exam trap). B zeros both, which neither method does at moderate $\lambda$. C misses lasso's sparsity.</p>
+          <p>A invents an "$L^1 \approx L^2$ under collinearity" equivalence that doesn't exist — the geometric difference (corner vs smooth ball) is exactly what makes their behaviour diverge most sharply on collinear predictors. B zeros both, which neither method does at moderate $\lambda$. C misses lasso's sparsity.</p>
           <p class="ref">Atoms: <a href="/concepts/lasso">lasso</a>, <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/ridge-vs-lasso-geometry">ridge-vs-lasso-geometry</a>, <a href="/concepts/elastic-net">elastic-net</a>. Lecture: <a href="/lectures/L13-modelsel-2">L13-modelsel-2</a>.</p>
         </div>
       </details>

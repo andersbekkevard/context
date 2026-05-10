@@ -183,7 +183,7 @@
         Using Euclidean distance and $K = 4$ majority vote, classify the test point $(X_1, X_2) = (1, 2)$.
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Class A, by a 3-to-1 vote among the four nearest neighbours.</li>
+        <li><span class="opt-label">A</span> Class A, by a 4-to-0 unanimous vote among the four nearest neighbours.</li>
         <li><span class="opt-label">B</span> Class B, by a 3-to-1 vote among the four nearest neighbours.</li>
         <li><span class="opt-label">C</span> Tied 2-to-2; the prediction is undetermined without a tiebreaker.</li>
         <li><span class="opt-label">D</span> Class A, because the closest single training point belongs to class A.</li>
@@ -193,7 +193,7 @@
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: B</span>
           <p>Euclidean distances to $(1,2)$: $(3,3)\!\to\!\sqrt 5$, $(2,0)\!\to\!\sqrt 5$, $(1,1)\!\to\!1$, $(0,1)\!\to\!\sqrt 2$, $(-1,0)\!\to\!\sqrt 8$, $(2,1)\!\to\!\sqrt 2$, $(1,0)\!\to\!2$. Sorted ascending: $1,\sqrt 2,\sqrt 2, 2, \sqrt 5, \sqrt 5, \sqrt 8$. The four nearest are $(1,1)$ class A, $(0,1)$ class B, $(2,1)$ class B, $(1,0)$ class B → vote 1 A vs 3 B → predict <strong>B</strong>.</p>
-          <p>A flips the vote count and picks the wrong class. C invents a tie that doesn't occur with $K = 4$ on this data. D is the $K = 1$ answer ($(1,1)$ is closest, class A) — correct only if you forgot the question said $K = 4$, the canonical "wrong-$K$" trap from this exercise.</p>
+          <p>A overstates A's support — only one of the four neighbours, $(1,1)$, is class A; a 4-0 sweep would require all four to share that class. C invents a tie that doesn't occur with $K = 4$ on this data. D is the $K = 1$ answer ($(1,1)$ is closest, class A) — correct only if you forgot the question said $K = 4$, the canonical "wrong-$K$" trap from this exercise.</p>
           <p class="ref">Atoms: <a href="/concepts/knn-classification">knn-classification</a>.</p>
         </div>
       </details>
@@ -625,17 +625,17 @@
         The prof said in lecture: "if you increase the bias a little bit, you can reduce the variance a lot, because of the squared term." Which fact about the bias-variance decomposition does this argument rely on?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> A small absolute change in bias contributes only its <em>square</em> to the MSE, while variance enters linearly.</li>
+        <li><span class="opt-label">A</span> Bias and variance are uncorrelated, so any change in one cancels the other.</li>
         <li><span class="opt-label">B</span> Variance is always larger than bias$^2$ at the optimal flexibility.</li>
-        <li><span class="opt-label">C</span> Bias and variance are uncorrelated, so any change in one cancels the other.</li>
+        <li><span class="opt-label">C</span> A small absolute change in bias contributes only its <em>square</em> to the MSE, while variance enters linearly.</li>
         <li><span class="opt-label">D</span> The cross term in the decomposition is bounded by twice the geometric mean of bias and variance.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: A</span>
+          <span class="fasit-correct">Correct answer: C</span>
           <p>Test MSE = $\sigma^2$ + Bias$^2$ + Variance. Bias enters squared, so a small absolute increase in bias has a tiny effect on MSE; variance enters linearly, so a comparable absolute decrease moves MSE much more. That asymmetry is why ridge / lasso / smoothing splines / dropout / bagging all work.</p>
-          <p>B is empirical and not the mechanism — it's a consequence of being near the U's minimum, not a fact about the decomposition. C confuses "uncorrelated" with "additive in MSE"; bias and variance are not random variables in the same sense. D invents a non-existent cross term: in the standard derivation cross terms vanish exactly, not by inequality.</p>
+          <p>A confuses "uncorrelated" with "additive in MSE"; bias and variance are not random variables being correlated — they are deterministic summands in the decomposition. B is empirical and not the mechanism — it's a consequence of being near the U's minimum, not a fact about the decomposition. D invents a non-existent cross term: in the standard derivation cross terms vanish exactly, not by inequality.</p>
           <p class="ref">Atoms: <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>, <a href="/concepts/regularization">regularization</a>. Lecture: <a href="/lectures/L13-modelsel-2">L13-modelsel-2</a>.</p>
         </div>
       </details>
@@ -654,14 +654,14 @@
         <li><span class="opt-label">A</span> Past the interpolation point, the optimisation picks the minimum-norm solution among infinitely many interpolators, which acts like implicit ridge regularisation.</li>
         <li><span class="opt-label">B</span> The bias-variance decomposition stops holding past the interpolation point, allowing test error to drop without a corresponding increase elsewhere.</li>
         <li><span class="opt-label">C</span> The model recovers the true $f$ exactly once the polynomial degree exceeds the number of data points.</li>
-        <li><span class="opt-label">D</span> Variance becomes negative for very large $p$, dragging the total MSE below the floor.</li>
+        <li><span class="opt-label">D</span> The irreducible error $\sigma^2$ shrinks past the interpolation point because the model fits the noise exactly on the training set.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: A</span>
           <p>Past $p \approx n$ the data-fit constraint is satisfied by infinitely many models; the pseudoinverse / SGD selects the smallest-norm one. That implicit norm penalty is itself a variance-control mechanism — the prof's headline framing of double descent.</p>
-          <p>B is wrong: the decomposition stays exact at every $p$. The U-shape just isn't the only possible profile. C is wrong: the truth is generally not in the model class (the misspecified-model regime), and the prof explicitly showed that when the truth <em>is</em> in the class (e.g. $f(x) = x^2$), the second descent disappears. D is mathematically impossible — variance is non-negative.</p>
+          <p>B is wrong: the decomposition stays exact at every $p$. The U-shape just isn't the only possible profile. C is wrong: the truth is generally not in the model class (the misspecified-model regime), and the prof explicitly showed that when the truth <em>is</em> in the class (e.g. $f(x) = x^2$), the second descent disappears. D confuses training fit with the irreducible floor — $\sigma^2 = \mathrm{Var}(\varepsilon)$ is a property of the data-generating process and does not change with $p$; what changes is how much of the noise the model absorbs in-sample.</p>
           <p class="ref">Atoms: <a href="/concepts/double-descent">double-descent</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>, <a href="/concepts/regularization">regularization</a>. Lecture: <a href="/lectures/L04-statlearn-3">L04-statlearn-3</a>.</p>
         </div>
       </details>

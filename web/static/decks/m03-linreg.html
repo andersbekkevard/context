@@ -121,7 +121,7 @@
       </p>
       <ul class="exam-q__tf">
         <li class="exam-q__tf-field">
-          <span class="tf-stmt">a) Female weight increases on average by $0.11$ kg per year of age.</span>
+          <span class="tf-stmt">a) Female weight increases on average by $0.79$ kg per year of age.</span>
           <label><input type="radio" name="q3-a" value="true"> True</label>
           <label><input type="radio" name="q3-a" value="false"> False</label>
         </li>
@@ -145,7 +145,7 @@
         <summary>Show answer</summary>
         <div class="fasit-body">
           <ol>
-            <li><strong>True</strong> — for females ($\text{sex}=0$), the slope on age is $0.11$.</li>
+            <li><strong>False</strong> — for females ($\text{sex}=0$) the age slope is $0.11$, not $0.79$. The value $0.79 = 0.11 + 0.68$ is the *male* age slope; this is the canonical "read the slope through the interaction" trap.</li>
             <li><strong>False</strong> — the $5.03$ coefficient is the male-vs-female gap *only when age $= 0$*. Since the interaction is $0.68$, the gap at age $a$ is $5.03 + 0.68\,a$, very different from $5.03$ across the data range. This is the prof's flagged 2025 Q2 interaction trap.</li>
             <li><strong>True</strong> — male age slope = $0.11 + 0.68 = 0.79$ kg/year.</li>
             <li><strong>True</strong> — the $\text{age}\cdot\text{sex}$ term is precisely what allows different age slopes per sex.</li>
@@ -351,9 +351,9 @@
         A regression on $n = 50{,}000$ observations gives $\hat\beta = 0.003$ kg/year for a body-fat predictor, with $p &lt; 10^{-6}$. The investigator concludes that the effect is large because the p-value is tiny. The best critique is:
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> A small p-value with large $n$ proves the model is correctly specified, so the conclusion is sound.</li>
-        <li><span class="opt-label">B</span> The effect is large because $p$ is small; effect size and significance carry the same information at large $n$.</li>
-        <li><span class="opt-label">C</span> The p-value is invalid because it is below the conventional reporting threshold of $0.001$.</li>
+        <li><span class="opt-label">A</span> A p-value below $10^{-6}$ on a sample this large proves that the linear model is correctly specified, so the conclusion about effect size is logically sound.</li>
+        <li><span class="opt-label">B</span> The effect must be large because the p-value is so small; at sample sizes in the tens of thousands, effect size and statistical significance carry essentially the same information.</li>
+        <li><span class="opt-label">C</span> The p-value is invalid because it falls below the conventional reporting threshold of $0.001$ and should be re-computed with a more conservative correction.</li>
         <li><span class="opt-label">D</span> A small p-value is evidence the effect is real, but the effect size is the slope, not the p-value; $0.003$ kg/year is practically negligible.</li>
       </ul>
       <details class="fasit-details">
@@ -378,7 +378,7 @@
       </p>
       <ul class="exam-q__tf">
         <li class="exam-q__tf-field">
-          <span class="tf-stmt">a) Doubling $n$ while keeping the spread of $x$ fixed approximately divides $\mathrm{SE}(\hat\beta_1)$ by $\sqrt{2}$.</span>
+          <span class="tf-stmt">a) Doubling $n$ while keeping the spread of $x$ fixed approximately divides $\mathrm{SE}(\hat\beta_1)$ by $2$.</span>
           <label><input type="radio" name="q11-a" value="true"> True</label>
           <label><input type="radio" name="q11-a" value="false"> False</label>
         </li>
@@ -402,7 +402,7 @@
         <summary>Show answer</summary>
         <div class="fasit-body">
           <ol>
-            <li><strong>True</strong> — variance scales like $1/n$, so SE scales like $1/\sqrt n$.</li>
+            <li><strong>False</strong> — variance scales like $1/n$, so SE scales like $1/\sqrt n$. Doubling $n$ divides SE by $\sqrt 2$, not by $2$ — this is the canonical "$\sqrt n$ rate" trap.</li>
             <li><strong>True</strong> — the denominator $\sum(x_i - \bar x)^2$ grows, shrinking SE; this is the prof's "design wider experiments" lever.</li>
             <li><strong>False</strong> — collinearity *inflates* SE: $\mathbf{X}^\top\mathbf{X}$ becomes near-singular, $(\mathbf{X}^\top\mathbf{X})^{-1}$ blows up.</li>
             <li><strong>True</strong> — SE is proportional to $\sigma$.</li>
@@ -454,7 +454,7 @@
           <label><input type="radio" name="q13-a" value="false"> False</label>
         </li>
         <li class="exam-q__tf-field">
-          <span class="tf-stmt">b) Adjusted $R^2$ can decrease when a useless predictor is added.</span>
+          <span class="tf-stmt">b) Adjusted $R^2$ is monotone non-decreasing in the number of predictors, just like ordinary $R^2$.</span>
           <label><input type="radio" name="q13-b" value="true"> True</label>
           <label><input type="radio" name="q13-b" value="false"> False</label>
         </li>
@@ -474,7 +474,7 @@
         <div class="fasit-body">
           <ol>
             <li><strong>True</strong> — the larger model contains the smaller as a special case ($\beta_{\text{new}} = 0$), so OLS minimisation cannot raise RSS.</li>
-            <li><strong>True</strong> — the $(n-1)/(n-p-1)$ penalty makes $R^2_{\text{adj}}$ fall when added parameters do not pull their weight.</li>
+            <li><strong>False</strong> — that's the property of ordinary $R^2$. Adjusted $R^2$ has the $(n-1)/(n-p-1)$ penalty, so it *can* fall when added parameters do not pull their weight; that's exactly what makes it a model-selection signal rather than just a goodness-of-fit number.</li>
             <li><strong>True</strong> — a standard simple-LR identity.</li>
             <li><strong>False</strong> — $R^2$ is the *fraction of variance* in $Y$ explained, not a classification accuracy.</li>
           </ol>
@@ -519,10 +519,10 @@
         After fitting an OLS regression you produce a QQ plot of standardised residuals against theoretical normal quantiles. The middle of the plot lies on the reference line, but both tails curl strongly upward at the high end and downward at the low end (heavy "S-shape"). Which assumption is most directly called into question?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Independence of the errors $\varepsilon_i$.</li>
+        <li><span class="opt-label">A</span> Independence of the errors $\varepsilon_i$ across observations in time or space.</li>
         <li><span class="opt-label">B</span> Normality of the errors — the residuals look heavy-tailed relative to a Gaussian.</li>
-        <li><span class="opt-label">C</span> Linearity of the conditional mean $E[Y\mid X]$.</li>
-        <li><span class="opt-label">D</span> Constancy of $\sigma^2$ across the range of fitted values.</li>
+        <li><span class="opt-label">C</span> Linearity of the conditional mean $E[Y\mid X]$ as a function of the predictors.</li>
+        <li><span class="opt-label">D</span> Constancy (homoscedasticity) of $\sigma^2$ across the full range of fitted values.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -613,7 +613,7 @@
           <label><input type="radio" name="q18-c" value="false"> False</label>
         </li>
         <li class="exam-q__tf-field">
-          <span class="tf-stmt">d) Predictions $\hat y$ on data similar to the training set can still be reasonably stable, even when individual coefficients are not.</span>
+          <span class="tf-stmt">d) Predictions $\hat y$ on data similar to the training set are unreliable, because high collinearity propagates the inflated coefficient variance into prediction MSE.</span>
           <label><input type="radio" name="q18-d" value="true"> True</label>
           <label><input type="radio" name="q18-d" value="false"> False</label>
         </li>
@@ -625,7 +625,7 @@
             <li><strong>True</strong> — collinearity makes $\mathbf{X}^\top\mathbf{X}$ near-singular, so $(\mathbf{X}^\top\mathbf{X})^{-1}$ has large diagonal entries → SE explodes.</li>
             <li><strong>False</strong> — under the classical assumptions, OLS is unbiased even under collinearity; only the variance is inflated.</li>
             <li><strong>True</strong> — the canonical reason to do the joint F-test before drilling into per-coefficient t's.</li>
-            <li><strong>True</strong> — the *sum* $\beta_1 x_1 + \beta_2 x_2$ is well-determined even when each coefficient isn't; predictions on similar data hold up.</li>
+            <li><strong>False</strong> — predictions are typically *stable*, not unreliable: even when individual coefficients have huge SEs, the *sum* $\beta_1 x_1 + \beta_2 x_2$ is well-determined, so $\hat y$ on data similar to the training set is fine. Collinearity hurts inference about individual $\beta_j$, not in-sample prediction.</li>
           </ol>
           <p class="ref">Atoms: <a href="/concepts/collinearity">collinearity</a>, <a href="/concepts/sampling-distribution-of-beta">sampling-distribution-of-beta</a>, <a href="/concepts/multivariate-normal">multivariate-normal</a> (the joint $N_{p+1}(\boldsymbol\beta, \sigma^2(\mathbf{X}^\top\mathbf{X})^{-1})$ distribution of $\hat{\boldsymbol\beta}$ is the foundation for inflated SEs under collinearity).</p>
         </div>
@@ -670,16 +670,16 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> $\hat Y = \hat\beta_0 + \hat\beta_1 X$.</li>
-        <li><span class="opt-label">B</span> $\hat Y = (\hat\beta_0 + \hat\beta_2) + \hat\beta_1 X$.</li>
-        <li><span class="opt-label">C</span> $\hat Y = (\hat\beta_0 + \hat\beta_3) + \hat\beta_1 X$.</li>
+        <li><span class="opt-label">B</span> $\hat Y = (\hat\beta_0 + \hat\beta_3) + \hat\beta_1 X$.</li>
+        <li><span class="opt-label">C</span> $\hat Y = (\hat\beta_0 + \hat\beta_2) + \hat\beta_1 X$.</li>
         <li><span class="opt-label">D</span> $\hat Y = (\hat\beta_0 + \hat\beta_2 + \hat\beta_3) + \hat\beta_1 X$.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: C</span>
+          <span class="fasit-correct">Correct answer: B</span>
           <p>For genus <code>Oc</code>, $\mathbf{1}_{G=N} = 0$ and $\mathbf{1}_{G=Oc} = 1$, so the dummy contribution is $\hat\beta_3$ added to the intercept. Slope $\hat\beta_1$ is the same across genera (no interaction).</p>
-          <p>A is the reference-genus equation (<code>L</code>). B is genus <code>N</code>. D adds <em>both</em> dummies as if they could be active simultaneously — but each observation belongs to exactly one genus.</p>
+          <p>A is the reference-genus equation (<code>L</code>). C is genus <code>N</code>. D adds <em>both</em> dummies as if they could be active simultaneously — but each observation belongs to exactly one genus.</p>
           <p class="ref">Atoms: <a href="/concepts/categorical-encoding-and-interactions">categorical-encoding-and-interactions</a>.</p>
         </div>
       </details>
@@ -696,9 +696,9 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Because the column of ones plus $4$ dummies is linearly dependent, so $\mathbf{X}^\top\mathbf{X}$ is singular and the fit is unidentifiable.</li>
-        <li><span class="opt-label">B</span> Because $4$ dummies would impose an arbitrary numerical ordering on the four otherwise unordered category labels.</li>
-        <li><span class="opt-label">C</span> Because R automatically reserves one design-matrix column for the residual-variance estimate $\hat\sigma^2$.</li>
-        <li><span class="opt-label">D</span> Because the relevant F-test on this factor consumes exactly $K-1$ degrees of freedom by definition.</li>
+        <li><span class="opt-label">B</span> Because using all $4$ dummies would force the four levels onto an artificial $0$-$1$-$2$-$3$ ordering, biasing the slope estimates of the unordered categories.</li>
+        <li><span class="opt-label">C</span> Because R automatically reserves one design-matrix column for the residual-variance estimate $\hat\sigma^2$ used in standard-error calculations.</li>
+        <li><span class="opt-label">D</span> Because the F-test for the joint significance of this factor uses exactly $K-1$ degrees of freedom by definition, so the design matrix must match.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -737,7 +737,7 @@
           <label><input type="radio" name="q22-c" value="false"> False</label>
         </li>
         <li class="exam-q__tf-field">
-          <span class="tf-stmt">d) A small p-value on the interaction term is evidence that the slopes for the two groups truly differ.</span>
+          <span class="tf-stmt">d) A small p-value on the interaction term is evidence that the *main effect* of $X$ is non-zero in the population.</span>
           <label><input type="radio" name="q22-d" value="true"> True</label>
           <label><input type="radio" name="q22-d" value="false"> False</label>
         </li>
@@ -749,7 +749,7 @@
             <li><strong>True</strong> — the prof's flagged "non-negotiable" main-effects rule. Including only $X\cdot Z$ is almost always wrong.</li>
             <li><strong>True</strong> — the canonical interaction trap. Don't read it as a global average.</li>
             <li><strong>False</strong> — interactions <em>are</em> what allow different slopes. The "different intercepts only" picture is the no-interaction model.</li>
-            <li><strong>True</strong> — that's exactly what the interaction coefficient measures: the slope difference between groups.</li>
+            <li><strong>False</strong> — the interaction t-test is on the *interaction coefficient*, which measures the slope *difference* between groups, not the main effect of $X$. A small p-value on $X\cdot Z$ tells you the slopes differ, not that the average slope is non-zero.</li>
           </ol>
           <p class="ref">Atoms: <a href="/concepts/categorical-encoding-and-interactions">categorical-encoding-and-interactions</a>. Lecture: <a href="/lectures/L06-linreg-2">L06-linreg-2</a>.</p>
         </div>
@@ -766,9 +766,9 @@
         Hourly temperature is regressed on time of day. Sampling resolution is then refined from hourly to every $5$ minutes (so $n$ grows by $\sim 12\times$). Reported t-statistics for the time slope shoot up; the p-value drops to $&lt;10^{-9}$. The most accurate critique is:
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> The point estimate $\hat\beta$ becomes biased once $n$ exceeds the number of distinct hours in the data.</li>
-        <li><span class="opt-label">B</span> $R^2$ exceeds $0.95$, so the fit must be overfitting; reduce model flexibility.</li>
-        <li><span class="opt-label">C</span> The Gaussian assumption fails because temperature is non-negative and bounded.</li>
+        <li><span class="opt-label">A</span> Once $n$ exceeds the number of distinct hours in the original data, the OLS point estimate $\hat\beta$ becomes biased and the slope estimate cannot be trusted.</li>
+        <li><span class="opt-label">B</span> An $R^2$ that exceeds $0.95$ on this many points indicates overfitting; the appropriate fix is to reduce model flexibility (drop predictors or use ridge).</li>
+        <li><span class="opt-label">C</span> The Gaussian-error assumption is broken because the response (temperature in Celsius) is bounded both below and above, so the t-distribution does not apply.</li>
         <li><span class="opt-label">D</span> Adjacent time bins are highly correlated; effective sample size is much smaller than $n$, so the SEs are underestimated and the reported significance is unreliable.</li>
       </ul>
       <details class="fasit-details">
@@ -803,7 +803,7 @@
           <label><input type="radio" name="q24-b" value="false"> False</label>
         </li>
         <li class="exam-q__tf-field">
-          <span class="tf-stmt">c) A flat band of residuals around zero, with no structure, is consistent with the OLS assumptions.</span>
+          <span class="tf-stmt">c) A flat, structureless band of residuals around zero proves that the errors are independent and Gaussian.</span>
           <label><input type="radio" name="q24-c" value="true"> True</label>
           <label><input type="radio" name="q24-c" value="false"> False</label>
         </li>
@@ -814,7 +814,7 @@
           <ol>
             <li><strong>True</strong> — fanning means $\mathrm{Var}(\varepsilon_i)$ scales with the fitted value, breaking common-variance.</li>
             <li><strong>True</strong> — systematic shape in residuals against fitted values says the conditional mean is mis-specified; add a transformation or polynomial.</li>
-            <li><strong>True</strong> — exactly the "no structure" pattern the assumptions predict.</li>
+            <li><strong>False</strong> — a flat band is *consistent with* the assumptions, not proof of them. Residuals-vs-fitted only checks linearity and constant variance; it can't see independence (look at order plots) and can't see normality (look at the QQ plot). "Consistent with" ≠ "proves".</li>
           </ol>
           <p class="ref">Atoms: <a href="/concepts/residual-diagnostics">residual-diagnostics</a>, <a href="/concepts/gaussian-error-assumptions">gaussian-error-assumptions</a>.</p>
         </div>
@@ -831,9 +831,9 @@
         Which statement best captures the difference between an *error* $\varepsilon_i$ and a *residual* $e_i = y_i - \hat y_i$ in the linear-regression model?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Errors are computed from the data; residuals are the parameters of the noise model.</li>
-        <li><span class="opt-label">B</span> Errors and residuals are identical when the model has an intercept.</li>
-        <li><span class="opt-label">C</span> Residuals are unbiased for $\sigma^2$; errors are biased.</li>
+        <li><span class="opt-label">A</span> Errors are computed from the data after the fit, while residuals are the parameters that define the noise model.</li>
+        <li><span class="opt-label">B</span> Errors and residuals coincide whenever the fitted model contains an intercept term, so the distinction is bookkeeping only.</li>
+        <li><span class="opt-label">C</span> Residuals are unbiased for $\sigma^2$ but errors are biased, which is why the textbook variance estimator divides by $n-p-1$ rather than $n$.</li>
         <li><span class="opt-label">D</span> Errors are unobservable random variables; residuals are observed predictions of those errors.</li>
       </ul>
       <details class="fasit-details">
@@ -885,9 +885,9 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> $\mathbf{X}^\top\mathbf{X}\,\hat{\boldsymbol\beta} = \mathbf{X}^\top\mathbf{y}$ (the normal equations).</li>
-        <li><span class="opt-label">B</span> $\mathbf{X}\,\hat{\boldsymbol\beta} = \mathbf{y}$.</li>
-        <li><span class="opt-label">C</span> $\hat{\boldsymbol\beta} = \mathbf{y}^\top\mathbf{X} / (\mathbf{X}^\top\mathbf{X})$.</li>
-        <li><span class="opt-label">D</span> $\hat{\boldsymbol\beta} = \mathbf{X}\,(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{y}$.</li>
+        <li><span class="opt-label">B</span> $\mathbf{X}\,\hat{\boldsymbol\beta} = \mathbf{y}$, i.e. the fitted values reproduce the observed response exactly with no residual.</li>
+        <li><span class="opt-label">C</span> $\hat{\boldsymbol\beta} = \mathbf{y}^\top\mathbf{X} / (\mathbf{X}^\top\mathbf{X})$, scalar division of the cross-product by the Gram matrix.</li>
+        <li><span class="opt-label">D</span> $\hat{\boldsymbol\beta} = \mathbf{X}\,(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{y}$, with the design matrix premultiplying the inverse.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -916,7 +916,7 @@
           <label><input type="radio" name="q28-a" value="false"> False</label>
         </li>
         <li class="exam-q__tf-field">
-          <span class="tf-stmt">b) The diagonal entries $h_{ii}$ measure leverage; they sum to $p+1$.</span>
+          <span class="tf-stmt">b) The diagonal entries $h_{ii}$ measure leverage; they sum to $n$ (the sample size).</span>
           <label><input type="radio" name="q28-b" value="true"> True</label>
           <label><input type="radio" name="q28-b" value="false"> False</label>
         </li>
@@ -931,7 +931,7 @@
         <div class="fasit-body">
           <ol>
             <li><strong>True</strong> — useful: leverage can be computed from the design alone, before $\mathbf{y}$ is observed.</li>
-            <li><strong>True</strong> — $\sum h_{ii} = \mathrm{tr}(\mathbf{H}) = p + 1$, the number of fitted parameters (counting the intercept).</li>
+            <li><strong>False</strong> — $\sum h_{ii} = \mathrm{tr}(\mathbf{H}) = p + 1$, the number of fitted parameters (counting the intercept), *not* $n$. The trace of a projection matrix equals the rank of its column space, and that's $p+1$ here.</li>
             <li><strong>True</strong> — $\mathbf{H}$ is the orthogonal projection onto the column space of $\mathbf{X}$.</li>
           </ol>
           <p class="ref">Atoms: <a href="/concepts/design-matrix-and-hat-matrix">design-matrix-and-hat-matrix</a>, <a href="/concepts/residual-diagnostics">residual-diagnostics</a>.</p>
@@ -949,10 +949,10 @@
         A regression of life expectancy on years of education estimates $\hat\beta = 0.6$ years of life per year of schooling, with a small p-value. Which of the following claims is best supported by this OLS fit alone?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Adding one year of schooling causes a person's life expectancy to rise by $0.6$ years on average.</li>
-        <li><span class="opt-label">B</span> Education is the dominant determinant of life expectancy in this population.</li>
+        <li><span class="opt-label">A</span> Holding all other factors fixed, increasing schooling by one year causes the average person's life expectancy to rise by $0.6$ years.</li>
+        <li><span class="opt-label">B</span> Among the predictors that influence life expectancy in this population, years of education is the single dominant driver.</li>
         <li><span class="opt-label">C</span> In the data, more-educated individuals have on average $0.6$ more years of life expectancy per year of schooling, controlling for whatever else is in the model.</li>
-        <li><span class="opt-label">D</span> Schooling and life expectancy are statistically independent in the population.</li>
+        <li><span class="opt-label">D</span> Years of schooling and life expectancy are statistically independent at the population level, despite the fitted slope.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>

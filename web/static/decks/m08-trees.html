@@ -68,14 +68,14 @@
         <li><span class="opt-label">A</span> $\sum_{i \in R_1(j,s)} (y_i - \hat y_{R_1})^2 + \sum_{i \in R_2(j,s)} (y_i - \hat y_{R_2})^2$, with $\hat y_{R_m}$ the in-region mean of $y$.</li>
         <li><span class="opt-label">B</span> $\sum_{i \in R_1(j,s)} (y_i - \bar y)^2 + \sum_{i \in R_2(j,s)} (y_i - \bar y)^2$, with $\bar y$ the overall mean of $y$ across the whole training set.</li>
         <li><span class="opt-label">C</span> The mean of $(y_i - \hat y_{R_m})^2$ across all training observations, taken over both regions $R_1$ and $R_2$.</li>
-        <li><span class="opt-label">D</span> $\sum_m |R_m|$, the total number of observations sitting in each candidate region.</li>
+        <li><span class="opt-label">D</span> $\sum_{i \in R_1(j,s)} |y_i - \hat y_{R_1}| + \sum_{i \in R_2(j,s)} |y_i - \hat y_{R_2}|$, the sum of <em>absolute</em> in-region deviations.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: A</span>
           <p>Each candidate split partitions the parent region into $R_1$ and $R_2$; the predictions in each are the in-region means. The criterion is the <em>sum</em> of squared deviations, computed region-by-region against the in-region mean. The prof: <em>"we're summing up the squared difference between each point and the average of all the shit in its region"</em>.</p>
-          <p>B measures deviations against the global mean — wrong reference; that's the total RSS, which the split can't change. C uses the mean of squared residuals (averages instead of sums), the prof flagged this verbatim as a different algorithm that "wouldn't behave very well". D ranks splits by region size, which has nothing to do with residual reduction.</p>
+          <p>B measures deviations against the global mean — wrong reference; that's the total RSS, which the split can't change. C uses the mean of squared residuals (averages instead of sums), the prof flagged this verbatim as a different algorithm that "wouldn't behave very well". D swaps squared deviations for absolute deviations — that's the L1/median-regression criterion, paired with median (not mean) predictions; CART uses squared error.</p>
           <p class="ref">Atoms: <a href="/concepts/regression-tree">regression-tree</a>. Lecture: <a href="/lectures/L17-trees-1">L17-trees-1</a>.</p>
         </div>
       </details>
@@ -137,7 +137,7 @@
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> $16.5$ (the median of the leaf's training $y$ values).</li>
         <li><span class="opt-label">B</span> $17.33$ (the mean of the training $y$ values in the leaf).</li>
-        <li><span class="opt-label">C</span> $25$ (the largest training $y$ in the leaf — the bound that decides the partition).</li>
+        <li><span class="opt-label">C</span> $18.5$ (the midrange $(\min + \max)/2$ of the training $y$ values in the leaf).</li>
         <li><span class="opt-label">D</span> $104$ (the sum of the training $y$ values in the leaf, which is what the splitter optimises).</li>
       </ul>
       <details class="fasit-details">
@@ -145,7 +145,7 @@
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: B</span>
           <p>The CART regression-tree prediction in region $R_m$ is $\hat y_{R_m} = \frac{1}{|R_m|}\sum_{i \in R_m} y_i$. Here $\hat y_R = (12+14+15+18+20+25)/6 = 104/6 \approx 17.33$.</p>
-          <p>A picks the median, which is a robust alternative the prof named but not the textbook rule. C confuses the leaf prediction with an extreme order statistic. D forgets to divide by $|R_m|$ — the splitter minimises a sum of squared deviations, but the prediction itself is still the in-region mean.</p>
+          <p>A picks the median, which is a robust alternative the prof named but not the textbook rule. C reports the midrange — a centre statistic, but not the one CART uses; the leaf prediction is the mean, not a min/max average. D forgets to divide by $|R_m|$ — the splitter minimises a sum of squared deviations, but the prediction itself is still the in-region mean.</p>
           <p class="ref">Atoms: <a href="/concepts/regression-tree">regression-tree</a>.</p>
         </div>
       </details>
@@ -454,9 +454,9 @@
         Consider a parent node with 400 of class A and 400 of class B. Two candidate splits both yield 25% misclassification error overall. Split 1 produces children $(100\text{A}, 300\text{B})$ and $(300\text{A}, 100\text{B})$. Split 2 produces children $(200\text{A}, 0\text{B})$ and $(200\text{A}, 400\text{B})$. Which is the strongest single reason the prof gave for preferring Gini over misclassification at the growth step?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Misclassification error scales worse with the number of classes than Gini does.</li>
-        <li><span class="opt-label">B</span> Gini is computationally cheaper to evaluate than misclassification at each candidate split.</li>
-        <li><span class="opt-label">C</span> Misclassification error penalises imbalanced parent nodes more than balanced ones, biasing the chosen splits.</li>
+        <li><span class="opt-label">A</span> Gini is differentiable in $\hat p_{mk}$, which CART's split-search routines need; misclassification error has kinks that the optimiser can't handle.</li>
+        <li><span class="opt-label">B</span> Misclassification error and Gini disagree only when the parent is class-imbalanced, so on a 50/50 parent like this one Gini is preferred for stability reasons.</li>
+        <li><span class="opt-label">C</span> Misclassification error tends to under-count splits whose smaller child is the minority class, so it systematically prefers asymmetric splits like Split 1.</li>
         <li><span class="opt-label">D</span> Gini rewards Split 2 because one child is fully pure, while misclassification cannot tell Split 1 from Split 2.</li>
       </ul>
       <details class="fasit-details">
@@ -464,7 +464,7 @@
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: D</span>
           <p>Both splits have the same misclassification rate (25%), so misclassification can't choose between them. Gini sees the difference: Split 2's pure $(200\text{A}, 0\text{B})$ child has Gini 0, which is much purer than any node from Split 1. The prof's load-bearing argument: <em>"the misclassification error is not sufficiently sensitive for tree growing"</em> — it is the impurity-sensitivity argument, not differentiability.</p>
-          <p>A is unrelated — both criteria generalise straightforwardly to $K &gt; 2$ classes. B is wrong: all three impurity measures are cheap to evaluate. C inverts the argument: misclassification is class-balanced in its definition; it is impurity-insensitive, not imbalance-biased.</p>
+          <p>A is the popular "differentiability" myth — CART does an exhaustive search over candidate cut-points, no gradient needed; the actual reason is sensitivity to purity, not smoothness. B is fabricated: the disagreement here happens with a perfectly 50/50 parent. C inverts the symptom: misclassification is <em>impurity-insensitive</em>, treating Split 1 and Split 2 as equally good; it doesn't preferentially pick one shape over the other.</p>
           <p class="ref">Atoms: <a href="/concepts/classification-tree">classification-tree</a>. Lecture: <a href="/lectures/L18-trees-2">L18-trees-2</a>.</p>
         </div>
       </details>
@@ -526,14 +526,14 @@
         <li><span class="opt-label">A</span> $m = p = 9$ — every predictor available at every split.</li>
         <li><span class="opt-label">B</span> $m = \lfloor \sqrt p \rfloor = 3$ — the classification default.</li>
         <li><span class="opt-label">C</span> $m = \lfloor p/3 \rfloor = 3$ — the regression default applied here.</li>
-        <li><span class="opt-label">D</span> $m = \log_2 p \approx 3.2$ — the entropy-based default.</li>
+        <li><span class="opt-label">D</span> $m = \lceil p/2 \rceil = 5$ — the symmetric "use about half the predictors" compromise rule.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: B</span>
           <p>Classification: $m \approx \sqrt p$. Regression: $m = p/3$. With $p = 9$ and a binary classifier, $\sqrt 9 = 3$, so mtry = 3 is the textbook classification default.</p>
-          <p>A picks $m = p$, which is plain bagging — no decorrelation, the variance floor stays at $\rho\sigma^2$. C uses the regression default ($p/3$); it happens to land on 3 here, but the rule is for the wrong task type — easy way to lose a point on a question with $p = 12$ where the two defaults give different numbers (4 for regression, $\approx 3$ for classification). D invents a $\log_2 p$ rule that isn't textbook.</p>
+          <p>A picks $m = p$, which is plain bagging — no decorrelation, the variance floor stays at $\rho\sigma^2$. C uses the regression default ($p/3$); it happens to land on 3 here, but the rule is for the wrong task type — easy way to lose a point on a question with $p = 12$ where the two defaults give different numbers (4 for regression, $\approx 3$ for classification). D invents a "use half the predictors" rule that isn't textbook; the canonical defaults are $\sqrt p$ and $p/3$, not $p/2$.</p>
           <p class="ref">Atoms: <a href="/concepts/random-forest">random-forest</a>.</p>
         </div>
       </details>
@@ -595,16 +595,16 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> About $0.5$, since on average half the indices are sampled and half are not.</li>
-        <li><span class="opt-label">B</span> About $0.632$, since the in-bag fraction is $1 - 1/e$ and that is the OOB fraction.</li>
+        <li><span class="opt-label">B</span> About $0.368 \approx 1/e$, since $(1 - 1/n)^n \to 1/e$ as $n \to \infty$.</li>
         <li><span class="opt-label">C</span> Exactly $1/n$, the probability of any single observation being drawn on a given draw.</li>
-        <li><span class="opt-label">D</span> About $0.368 \approx 1/e$, since $(1 - 1/n)^n \to 1/e$ as $n \to \infty$.</li>
+        <li><span class="opt-label">D</span> About $0.632$, since the in-bag fraction is $1 - 1/e$ and that is the OOB fraction.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: D</span>
+          <span class="fasit-correct">Correct answer: B</span>
           <p>Each of the $n$ draws independently fails to pick observation $i$ with probability $1 - 1/n$, so $P(i \text{ never drawn}) = (1 - 1/n)^n \to 1/e \approx 0.368$. So about 37% are out-of-bag for each tree, and about 63% are in-bag.</p>
-          <p>A guesses 50/50 with no derivation. B swaps in-bag and OOB — $1 - 1/e \approx 0.632$ is the in-bag fraction; OOB is the complement. C confuses the per-draw selection probability with the all-draws-fail probability, missing the exponentiation.</p>
+          <p>A guesses 50/50 with no derivation. D swaps in-bag and OOB — $1 - 1/e \approx 0.632$ is the in-bag fraction; OOB is the complement. C confuses the per-draw selection probability with the all-draws-fail probability, missing the exponentiation.</p>
           <p class="ref">Atoms: <a href="/concepts/out-of-bag-error">out-of-bag-error</a>, <a href="/concepts/bootstrap">bootstrap</a>.</p>
         </div>
       </details>
@@ -623,14 +623,14 @@
         <li><span class="opt-label">A</span> RF reduces $\sigma^2$ by considering only $m$ predictors per split, so each individual tree has lower variance.</li>
         <li><span class="opt-label">B</span> RF reduces $B$ to a smaller value, which lets the variance term $\sigma^2/B$ shrink faster across the ensemble.</li>
         <li><span class="opt-label">C</span> RF reduces $\rho$ — different trees pick different root splits — lowering the $\rho\sigma^2$ floor of the variance.</li>
-        <li><span class="opt-label">D</span> RF eliminates the bootstrap step, which removes the dependence between trees entirely so $\rho \to 0$.</li>
+        <li><span class="opt-label">D</span> RF replaces the bootstrap with subsampling without replacement, which is what makes the trees independent and drives $\rho \to 0$.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: C</span>
           <p>The $\rho \sigma^2$ floor doesn't shrink with $B$. To beat it you have to reduce $\rho$ — the per-tree pairwise correlation. RF does exactly this by hiding the strong predictor from a random subset of splits; trees diverge from the very first split. The prof: <em>"if you want to have a lot of opinions, don't clone the same person 50 times … figure out a way to add diversity into your pool."</em></p>
-          <p>A gets the mechanism wrong: per-tree variance $\sigma^2$ is roughly unchanged (RF trees can even be higher variance individually); the gain is decorrelation. B inverts the direction of $B$ (and treats $B$ as a tuning parameter, which it isn't). D ignores that RF still uses bootstrap aggregation — it's bagging plus per-split predictor restriction, not an alternative to bootstrapping.</p>
+          <p>A gets the mechanism wrong: per-tree variance $\sigma^2$ is roughly unchanged (RF trees can even be higher variance individually); the gain is decorrelation. B inverts the direction of $B$ (and treats $B$ as a tuning parameter, which it isn't). D mis-states the algorithm: RF still uses bootstrap with replacement (it is bagging plus per-split predictor restriction); subsampling without replacement is a separate variant, and even then the trees aren't actually independent — the gain is reducing $\rho$, not driving it to zero.</p>
           <p class="ref">Atoms: <a href="/concepts/random-forest">random-forest</a>, <a href="/concepts/bagging">bagging</a>.</p>
         </div>
       </details>

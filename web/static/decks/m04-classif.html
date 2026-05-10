@@ -88,16 +88,16 @@
       <p class="q-text">On average, what fraction of credit-card holders with odds $0.37$ of defaulting will in fact default?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> $0.37$</li>
-        <li><span class="opt-label">B</span> $0.27$</li>
+        <li><span class="opt-label">B</span> $0.63$</li>
         <li><span class="opt-label">C</span> $0.59$</li>
-        <li><span class="opt-label">D</span> $0.63$</li>
+        <li><span class="opt-label">D</span> $0.27$</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>Invert odds → probability: $p = \text{odds}/(1+\text{odds}) = 0.37/1.37 \approx 0.27$.</p>
-          <p>A reports the odds as if it were already a probability (the most common slip — odds and probability are different scales). C inverts the formula and uses $1/(1+\text{odds}) = 1/1.37 \approx 0.73$ then takes its complement incorrectly. D confuses odds with the log-odds via $e^{0.37}/(1+e^{0.37}) \approx 0.59$, which is another wrong scale-mixing.</p>
+          <p>A reports the odds as if it were already a probability (the most common slip — odds and probability are different scales). B inverts the formula and uses $1/(1+\text{odds}) = 1/1.37 \approx 0.73$ then takes its complement incorrectly, landing on $\approx 0.63$. C confuses odds with the log-odds via $e^{0.37}/(1+e^{0.37}) \approx 0.59$, which is another wrong scale-mixing.</p>
           <p class="ref">Atoms: <a href="/concepts/odds-and-log-odds">odds-and-log-odds</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a> ("This is the kind of question I would ask. It's simple. You calculate it.").</p>
         </div>
       </details>
@@ -163,16 +163,16 @@
       <p class="q-text">Same model as Question 4 ($\hat\beta_0 = -6$, $\hat\beta_1 = 0.05$, $\hat\beta_2 = 1$). At GPA $3.5$, how many study hours give $\hat p = 0.5$?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> $40$ hours</li>
-        <li><span class="opt-label">B</span> $50$ hours</li>
+        <li><span class="opt-label">B</span> $90$ hours</li>
         <li><span class="opt-label">C</span> $55$ hours</li>
-        <li><span class="opt-label">D</span> $90$ hours</li>
+        <li><span class="opt-label">D</span> $50$ hours</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>$\hat p = 0.5$ iff $\hat\eta = 0$. Solve $-6 + 0.05 x + 1\cdot 3.5 = 0$ → $0.05 x = 2.5$ → $x = 50$.</p>
-          <p>A is the value used in Q4 (gave $\hat p \approx 0.38$, not $0.5$). C drops the $1\cdot \text{GPA}$ contribution and solves $-6 + 0.05 x = 0$. D mistakenly multiplies through, e.g. solves $-6 + 0.05 x + 3.5 = 1$ instead of $0$.</p>
+          <p>A is the value used in Q4 (gave $\hat p \approx 0.38$, not $0.5$). B mistakenly multiplies through, e.g. solves $-6 + 0.05 x + 3.5 = 1$ instead of $0$, yielding $x = 90$. C drops the $1\cdot \text{GPA}$ contribution and solves $-6 + 0.05 x = 0$.</p>
           <p class="ref">Atoms: <a href="/concepts/logistic-regression">logistic-regression</a>, <a href="/concepts/odds-and-log-odds">odds-and-log-odds</a>.</p>
         </div>
       </details>
@@ -437,7 +437,7 @@
       <p class="q-text">In 1D LDA with two classes, $\mu_1 = 2$, $\mu_2 = 8$, shared variance $\sigma^2 = 9$, and equal priors. The decision threshold $x^\star$ where $\delta_1(x) = \delta_2(x)$ is:</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> $x^\star = 5$</li>
-        <li><span class="opt-label">B</span> $x^\star = 3$</li>
+        <li><span class="opt-label">B</span> $x^\star = (\mu_1 + \mu_2)/2 - \tfrac{\sigma^2}{\mu_2 - \mu_1} \approx 3.5$</li>
         <li><span class="opt-label">C</span> $x^\star = \tfrac{8 \cdot 2 + 2 \cdot 8}{9} \approx 3.6$</li>
         <li><span class="opt-label">D</span> $x^\star = \sqrt{2 \cdot 8} \approx 4$</li>
       </ul>
@@ -446,7 +446,7 @@
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: A</span>
           <p>Solving $x\mu_1/\sigma^2 - \mu_1^2/(2\sigma^2) = x\mu_2/\sigma^2 - \mu_2^2/(2\sigma^2)$ with equal priors gives $x^\star = (\mu_1 + \mu_2)/2 = 5$ — the midpoint, independent of $\sigma^2$.</p>
-          <p>B, C, D mix in $\sigma^2$ as if it shifted the threshold. With equal priors and equal variances the variance terms cancel; only the means matter.</p>
+          <p>B, C, D smuggle $\sigma^2$ into the threshold. B looks like the unequal-prior correction term ($\sigma^2/(\mu_2 - \mu_1) \cdot \log(\pi_2/\pi_1)$) but with the prior log-ratio replaced by $1$, so it shifts the midpoint for no reason. With equal priors and equal variances the variance terms cancel; only the means matter.</p>
           <p class="ref">Atoms: <a href="/concepts/linear-discriminant-analysis">linear-discriminant-analysis</a>, <a href="/concepts/discriminant-score-and-decision-boundary">discriminant-score-and-decision-boundary</a>.</p>
         </div>
       </details>
@@ -461,7 +461,7 @@
       <p class="q-text">In LDA, you raise the prior $\pi_A$ from $0.5$ to $0.7$ (and lower $\pi_B$ to $0.3$) without changing the means or the shared covariance. What happens to the decision boundary between classes $A$ and $B$?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> It shifts in space <em>away</em> from $\mu_A$ and toward $\mu_B$, so more of the input space is classified as class $A$.</li>
-        <li><span class="opt-label">B</span> It shifts in space <em>toward</em> $\mu_A$ and away from $\mu_B$, so more of the input space is classified as class $A$.</li>
+        <li><span class="opt-label">B</span> Its intercept moves by $\log(\pi_B/\pi_A)$ but its orientation is unchanged, so equal volumes of the input space are still classified as $A$ and $B$ — only the location of the divide drifts symmetrically.</li>
         <li><span class="opt-label">C</span> It is unchanged, since the LDA boundary depends only on the class means $\mu_k$ and the pooled covariance $\Sigma$.</li>
         <li><span class="opt-label">D</span> It rotates around the midpoint $(\mu_A + \mu_B)/2$ by an angle proportional to $\log(\pi_A/\pi_B)$.</li>
       </ul>
@@ -470,7 +470,7 @@
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: A</span>
           <p>The boundary equation contains $\log\pi_A - \log\pi_B$. Increasing $\pi_A$ raises $\delta_A$ everywhere; the equality $\delta_A = \delta_B$ now holds at a point closer to $\mu_B$, i.e. the boundary shifts <em>away</em> from $\mu_A$, expanding the region classified as $A$.</p>
-          <p>B reverses the direction (a common sign-flip mistake on the prior term). C ignores the $\log\pi_k$ term entirely. D mistakenly imagines a rotation; for fixed $\mu_k, \Sigma$, the boundary is just translated parallel to itself.</p>
+          <p>B gets the parallel-shift geometry right but botches the consequence: a parallel translation of the boundary in input space necessarily changes the volumes assigned to each class (the more-likely class claims more space). C ignores the $\log\pi_k$ term entirely. D mistakenly imagines a rotation; for fixed $\mu_k, \Sigma$, the boundary is just translated parallel to itself.</p>
           <p class="ref">Atoms: <a href="/concepts/linear-discriminant-analysis">linear-discriminant-analysis</a>, <a href="/concepts/discriminant-score-and-decision-boundary">discriminant-score-and-decision-boundary</a>.</p>
         </div>
       </details>
@@ -623,14 +623,14 @@
         <li><span class="opt-label">A</span> With $K = 7$ on a $7$-point training set, every training point is a neighbor; the prediction equals the global majority class and entirely ignores the location of $x_0$.</li>
         <li><span class="opt-label">B</span> With $K = 7$ the classifier overfits drastically because it uses too many neighbors and chases noise in the training labels.</li>
         <li><span class="opt-label">C</span> A choice of $K = 7$ on a $7$-point training set produces ties and leaves the majority-vote prediction mathematically undefined here.</li>
-        <li><span class="opt-label">D</span> $K = 7$ is fine in principle; the actual issue is that Euclidean distance is invalid for predictions in two dimensions.</li>
+        <li><span class="opt-label">D</span> $K = 7$ is fine in principle; the actual issue is that with only $7$ training points the local-neighbourhood estimate of $\Pr(Y\mid X)$ has too high variance to use any KNN at all here.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: A</span>
           <p>$K = n$ collapses KNN to "predict the majority class everywhere" — pure underfit, not overfit. Here that majority is $B$ (4 of 7), regardless of where $x_0$ lives.</p>
-          <p>B inverts the bias-variance direction: large $K$ means more smoothing (high bias / low variance), not overfitting. C is a non-issue here ($4{:}3$ split, no tie). D is wrong on its face — Euclidean distance is well-defined in any dimension.</p>
+          <p>B inverts the bias-variance direction: large $K$ means more smoothing (high bias / low variance), not overfitting. C is a non-issue here ($4{:}3$ split, no tie). D blames sample size rather than the specific failure of $K = n$; the prof's question pinpoints the locality-collapse, not a generic small-$n$ complaint.</p>
           <p class="ref">Atoms: <a href="/concepts/knn-classification">knn-classification</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>.</p>
         </div>
       </details>
@@ -753,14 +753,14 @@
         <li><span class="opt-label">A</span> Accuracy is misleading under class imbalance; sensitivity is $0$ and specificity is $1$, so the classifier is useless for catching defaulters.</li>
         <li><span class="opt-label">B</span> Accuracy is the right summary metric here; any candidate classifier whose accuracy is below this $95\%$ baseline should simply be discarded.</li>
         <li><span class="opt-label">C</span> The trivial classifier has good sensitivity but poor specificity, since it never raises false alarms but also catches every actual default.</li>
-        <li><span class="opt-label">D</span> The class-imbalance issue is resolved by reporting AUC instead of accuracy; the AUC of the trivial classifier is also $\approx 0.95$.</li>
+        <li><span class="opt-label">D</span> The trivial classifier's $95\%$ accuracy reflects a genuinely high specificity at the chosen threshold; on this dataset the operating point is simply too aggressive on negatives, and dialling the threshold down to $0.2$ would recover useful sensitivity from the same model.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: A</span>
           <p>Predicting "no default" always gives $TP = 0, FN = $ all defaulters, $TN = $ all non-defaulters, $FP = 0$. So sensitivity $= 0/P = 0$ and specificity $= N/N = 1$. Accuracy is dominated by the majority class. The prof: "models that are really naive and only predict that it's going to be a zero are already going to do pretty well."</p>
-          <p>B treats accuracy as definitive — exactly the trap the prof flagged. C swaps sensitivity and specificity: sensitivity is $0$ (no positives caught) and specificity is $1$ (no false alarms). D is wrong on a numeric: a constant classifier has AUC $= 0.5$, not $0.95$ — it provides no ranking information.</p>
+          <p>B treats accuracy as definitive — exactly the trap the prof flagged. C swaps sensitivity and specificity: sensitivity is $0$ (no positives caught) and specificity is $1$ (no false alarms). D conflates a constant classifier with a thresholded probabilistic one: the trivial rule has no score to threshold on, so changing a "threshold" cannot recover sensitivity here.</p>
           <p class="ref">Atoms: <a href="/concepts/sensitivity-specificity">sensitivity-specificity</a>, <a href="/concepts/confusion-matrix">confusion-matrix</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>.</p>
         </div>
       </details>
@@ -876,17 +876,17 @@
       </header>
       <p class="q-text">Two competing classifiers $p(x)$ and $q(x)$ produce probabilities of disease for the same population. On independent validation sets, $p(x)$ has AUC $0.6$ and $q(x)$ has AUC $0.7$. Which method would you prefer, and why?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> $p(x)$: lower AUC corresponds to better class separation, because the ROC curve lies closer to the chance diagonal.</li>
+        <li><span class="opt-label">A</span> $q(x)$, but only after the operating threshold is fixed: an AUC gap of $0.1$ is meaningless until you read off the corresponding sensitivities at one common threshold.</li>
         <li><span class="opt-label">B</span> $q(x)$: higher AUC means a larger probability that a random positive scores higher than a random negative, summarising better trade-offs across all thresholds.</li>
         <li><span class="opt-label">C</span> Cannot tell: AUCs computed on independent validation sets are not comparable across classifiers in any meaningful way.</li>
-        <li><span class="opt-label">D</span> $p(x)$: AUC $0.6$ is closer to the chance level of $0.5$, which makes it the more conservative and statistically safer choice.</li>
+        <li><span class="opt-label">D</span> Cannot tell: AUC is unreliable when the validation set has class imbalance, so without the prevalence we cannot know which classifier discriminates better.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: B</span>
           <p>Higher AUC = better discrimination across all thresholds. AUC $= \Pr(\hat p(X^+) > \hat p(X^-))$, so $q(x)$'s $0.7$ beats $p(x)$'s $0.6$.</p>
-          <p>A inverts the direction (closer to $1$ is better, not closer to the diagonal). C is too strong — comparing AUCs across validation sets is harder than on the same set, but the prof's exercise (Ex4.5c) does ask you to prefer the higher one. D mistakes "close to chance" for "safe".</p>
+          <p>A misreads AUC as a threshold-dependent metric — its whole point is that it summarises the ROC across all thresholds, so no operating point is needed to compare. C is too strong — comparing AUCs across validation sets is harder than on the same set, but the prof's exercise (Ex4.5c) does ask you to prefer the higher one. D leans on a real concern (PR vs ROC under heavy imbalance) but exaggerates it: AUC is well-defined regardless of prevalence, and the prof's exercise treats the comparison as direct.</p>
           <p class="ref">Atoms: <a href="/concepts/roc-auc">roc-auc</a>.</p>
         </div>
       </details>

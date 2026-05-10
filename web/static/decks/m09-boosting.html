@@ -88,10 +88,10 @@
       </header>
       <p class="q-text">You fit a gradient-boosting model and need to specify the number of trees $M$, the tree depth $d$, and the shrinkage $\nu$. Which approach for picking these values does the prof advocate?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Set them to fixed defaults from the textbook ($M=1000$, $d=5$, $\nu=0.1$) and skip tuning.</li>
-        <li><span class="opt-label">B</span> Pick the combination that minimises the training MSE on the full training set.</li>
+        <li><span class="opt-label">A</span> Set them to fixed defaults from the textbook ($M=1000$, $d=5$, $\nu=0.1$); the prof's slides explicitly recommend skipping tuning because boosting is robust to hyperparameter choices.</li>
+        <li><span class="opt-label">B</span> Pick the combination that minimises training MSE on the full training set, since boosting's regularization machinery already prevents the ensemble from chasing training noise.</li>
         <li><span class="opt-label">C</span> Use cross-validation (or early stopping on a held-out validation curve) to pick the combination that minimises out-of-sample error.</li>
-        <li><span class="opt-label">D</span> Use AIC or BIC to penalise the joint complexity of $M$, $d$, and $\nu$, then minimise the criterion.</li>
+        <li><span class="opt-label">D</span> Use AIC or BIC with the effective degrees of freedom of the boosted ensemble to penalise the joint complexity of $M$, $d$, and $\nu$, then minimise the criterion over a grid.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -112,9 +112,9 @@
       </header>
       <p class="q-text">For the squared-error loss $L(y, f) = \tfrac{1}{2}(y - f)^2$, the negative gradient $-\partial L / \partial f$ that gradient boosting fits each new tree to is:</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> $f - y$ (the prediction minus the response).</li>
+        <li><span class="opt-label">A</span> $f - y$ (prediction minus response).</li>
         <li><span class="opt-label">B</span> $(y - f)^2$ (the squared residual).</li>
-        <li><span class="opt-label">C</span> $-y \cdot f$ (the negative product).</li>
+        <li><span class="opt-label">C</span> $-y \cdot f$ (negative product).</li>
         <li><span class="opt-label">D</span> $y - f$ (the residual).</li>
       </ul>
       <details class="fasit-details">
@@ -152,7 +152,7 @@
           <label><input type="radio" name="q4-c" value="false"> False</label>
         </li>
         <li class="exam-q__tf-field">
-          <span class="tf-stmt">d) The empirical rule of thumb in boosting is $\nu \le 0.1$.</span>
+          <span class="tf-stmt">d) The empirical rule of thumb in boosting is $\nu \approx 1$, so each tree contributes its full prediction and the ensemble converges in few iterations.</span>
           <label><input type="radio" name="q4-d" value="true"> True</label>
           <label><input type="radio" name="q4-d" value="false"> False</label>
         </li>
@@ -164,7 +164,7 @@
             <li><strong>True</strong> — smaller per-tree contribution means each step is a smaller move toward the minimum, so more steps are needed. $M$ and $\nu$ are coupled.</li>
             <li><strong>False</strong> — boosting overfits if $M$ is too large because residuals eventually become noise. The "use enough" rule applies to bagging/RF, not boosting.</li>
             <li><strong>True</strong> — a tree of depth $d$ uses at most $d$ predictors on any path, so it captures up to $d$-way interactions. Stumps (depth 1) → at most one variable per term → additive model (cf. ISLP §8.4 Q2).</li>
-            <li><strong>True</strong> — common practice puts $\nu$ at $0.1, 0.05, 0.01,$ or $0.001$, never near $1$ (which would kill the "small step" property).</li>
+            <li><strong>False</strong> — the rule of thumb is $\nu \le 0.1$ (typically $0.1, 0.05, 0.01, 0.001$), never near $1$. Setting $\nu \approx 1$ would kill the "small step" property the algorithm relies on.</li>
           </ol>
           <p class="ref">Atoms: <a href="/concepts/weak-learner-and-learning-rate">weak-learner-and-learning-rate</a>, <a href="/concepts/gradient-boosting">gradient-boosting</a>. Lecture: <a href="/lectures/L20-boosting-2">L20-boosting-2</a>.</p>
         </div>
@@ -228,7 +228,7 @@
       <p class="q-text">Mark each statement about AdaBoost as true or false.</p>
       <ul class="exam-q__tf">
         <li class="exam-q__tf-field">
-          <span class="tf-stmt">a) AdaBoost codes labels as $y \in \{-1, +1\}$ and outputs $\operatorname{sign}\!\big(\sum_m \alpha_m G_m(x)\big)$ as the final classifier.</span>
+          <span class="tf-stmt">a) AdaBoost codes labels as $y \in \{0, 1\}$ and outputs $\sum_m \alpha_m G_m(x)$ directly (without a sign function) as the final classifier's class probability.</span>
           <label><input type="radio" name="q7-a" value="true"> True</label>
           <label><input type="radio" name="q7-a" value="false"> False</label>
         </li>
@@ -243,7 +243,7 @@
           <label><input type="radio" name="q7-c" value="false"> False</label>
         </li>
         <li class="exam-q__tf-field">
-          <span class="tf-stmt">d) AdaBoost's classifier weight $\alpha_m = \log\!\big((1 - \text{err}_m)/\text{err}_m\big)$ is positive when $\text{err}_m < 0.5$ and negative when $\text{err}_m > 0.5$.</span>
+          <span class="tf-stmt">d) AdaBoost's classifier weight $\alpha_m = \log\!\big((1 - \text{err}_m)/\text{err}_m\big)$ is positive when $\text{err}_m > 0.5$ and negative when $\text{err}_m < 0.5$.</span>
           <label><input type="radio" name="q7-d" value="true"> True</label>
           <label><input type="radio" name="q7-d" value="false"> False</label>
         </li>
@@ -252,10 +252,10 @@
         <summary>Show answer</summary>
         <div class="fasit-body">
           <ol>
-            <li><strong>True</strong> — the $\pm 1$ coding is essential for the exponential-loss formulation; the final prediction is the sign of the $\alpha$-weighted vote.</li>
+            <li><strong>False</strong> — AdaBoost uses the $\pm 1$ coding (essential for the exponential-loss formulation) and outputs the <em>sign</em> of the $\alpha$-weighted vote, not the raw sum and not a $\{0,1\}$ probability.</li>
             <li><strong>True</strong> — the equivalence was discovered five years after AdaBoost itself ("most things are very obvious after the fact"). Plug exponential loss into Algorithm 10.3 and AdaBoost falls out.</li>
             <li><strong>False</strong> — AdaBoost uses <em>stumps</em> ("essentially a bias term, very, very small trees"). Strong individual learners would over-explain each round and break the "weak learners that build on each other" logic.</li>
-            <li><strong>True</strong> — when $\text{err}_m > 0.5$ the classifier is worse than chance, so it gets a negative weight, effectively flipping its prediction in the final vote.</li>
+            <li><strong>False</strong> — the inequality is reversed. $\alpha_m > 0$ when $\text{err}_m < 0.5$ (better than chance, gets a positive vote); $\alpha_m < 0$ when $\text{err}_m > 0.5$ (worse than chance, vote is flipped).</li>
           </ol>
           <p class="ref">Atoms: <a href="/concepts/adaboost">adaboost</a>, <a href="/concepts/boosting-loss-functions">boosting-loss-functions</a>. Lecture: <a href="/lectures/L20-boosting-2">L20-boosting-2</a>.</p>
         </div>
@@ -271,9 +271,9 @@
       </header>
       <p class="q-text">On the Boston housing data with 13 predictors, you fit a linear regression (test MSE 21.7), a GAM with B-splines (test MSE 14.5), and a gradient-boosted tree model (test MSE 11.2). Which is the most defensible one-sentence interpretation?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> The boosted model wins because it has more parameters than linear regression, so it always fits the training data better.</li>
-        <li><span class="opt-label">B</span> The boosted model wins because it shrinks the regression coefficients toward zero, the same mechanism as ridge.</li>
-        <li><span class="opt-label">C</span> The differences are within Monte-Carlo noise; the test MSEs effectively rank all three methods equally.</li>
+        <li><span class="opt-label">A</span> The boosted model wins because it has strictly more effective parameters than linear regression and the GAM, and a model with more parameters mechanically fits any held-out test set better than a simpler one.</li>
+        <li><span class="opt-label">B</span> The boosted model wins because the shrinkage parameter $\nu$ behaves like the ridge penalty $\lambda$ on a hidden vector of regression coefficients, so the gain over linear regression is the same coefficient-shrinkage effect that drove the ridge improvements in module 6.</li>
+        <li><span class="opt-label">C</span> The gaps between the three test MSEs are within Monte-Carlo noise from the random train/test split; the three methods should be regarded as effectively tied on this dataset and the choice between them comes down to interpretability.</li>
         <li><span class="opt-label">D</span> The boosted model wins because there are non-linear interactions between predictors that linear regression cannot capture, while GAM captures non-linearities but not the interactions.</li>
       </ul>
       <details class="fasit-details">
@@ -296,10 +296,10 @@
       </header>
       <p class="q-text">A genomic dataset has $n = 1000$ individuals and $p = 10000$ predictors. Which of the following statements is correct?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Boosted regression trees cannot be fit in this setting; they require $p < n$.</li>
+        <li><span class="opt-label">A</span> Boosted regression trees cannot be fit in this setting; like OLS, the routine requires $p < n$.</li>
         <li><span class="opt-label">B</span> Boosted regression trees can be fit; they handle $p > n$ because each tree splits on at most a handful of predictors.</li>
-        <li><span class="opt-label">C</span> Boosted regression trees can be fit, but only after first reducing dimensionality via PCA.</li>
-        <li><span class="opt-label">D</span> Boosted regression trees can only be fit if you use stumps ($d = 1$).</li>
+        <li><span class="opt-label">C</span> Boosted regression trees can be fit, but only after first reducing dimensionality via PCA onto the top $k \ll n$ components.</li>
+        <li><span class="opt-label">D</span> Boosted regression trees can only be fit if you restrict the ensemble to stumps ($d = 1$); deeper trees would have too few observations per terminal node when $p > n$.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -361,7 +361,7 @@
           <label><input type="radio" name="q11-c" value="false"> False</label>
         </li>
         <li class="exam-q__tf-field">
-          <span class="tf-stmt">d) Binomial deviance is the same negative log-likelihood used in logistic regression, and its negative gradient at $f$ equals $y - p(x)$.</span>
+          <span class="tf-stmt">d) Binomial deviance is unrelated to the negative log-likelihood used in logistic regression; gradient boosting derives it from a fundamentally different probabilistic model.</span>
           <label><input type="radio" name="q11-d" value="true"> True</label>
           <label><input type="radio" name="q11-d" value="false"> False</label>
         </li>
@@ -373,7 +373,7 @@
             <li><strong>True</strong> — squaring a residual of magnitude 100 gives 10,000, which dominates the sum and bends the fit toward outliers. Absolute and Huber are linear in big residuals, so they downweight outlier influence.</li>
             <li><strong>False</strong> — multinomial deviance fits <em>$K$ trees per round</em>, one per class, each fit to its class-specific gradient $\mathbb{1}(y = k) - p_k(x)$. This is the most-flagged exam trap in this atom.</li>
             <li><strong>True</strong> — exactly Huber's design: quadratic on $|y-f| \le \delta$, linear beyond, smooth at the seam if $\delta$ is chosen well.</li>
-            <li><strong>True</strong> — same logistic / sigmoid story as in module 4. The "$y - p$" form is why the prof said "indicator minus probability ends up sounding very similar to residuals".</li>
+            <li><strong>False</strong> — binomial deviance <em>is</em> the same negative log-likelihood as logistic regression, and its negative gradient is $y - p(x)$ (indicator minus probability), which is the prof's "indicator minus probability ends up sounding very similar to residuals".</li>
           </ol>
           <p class="ref">Atoms: <a href="/concepts/boosting-loss-functions">boosting-loss-functions</a>, <a href="/concepts/gradient-boosting">gradient-boosting</a>, <a href="/concepts/logistic-regression">logistic-regression</a>.</p>
         </div>
@@ -389,16 +389,16 @@
       <p class="q-text">Stochastic gradient boosting modifies the standard algorithm in which way, and to what end?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> It replaces the deterministic gradient with a noisy mini-batch estimate, mirroring SGD in neural networks.</li>
-        <li><span class="opt-label">B</span> It bootstraps the training data with replacement before each tree, mirroring bagging.</li>
-        <li><span class="opt-label">C</span> It subsamples rows (and optionally columns) without replacement before each tree, encouraging diversity and reducing variance.</li>
+        <li><span class="opt-label">B</span> It subsamples rows (and optionally columns) without replacement before each tree, encouraging diversity and reducing variance.</li>
+        <li><span class="opt-label">C</span> It bootstraps the training data with replacement before each tree, mirroring bagging.</li>
         <li><span class="opt-label">D</span> It randomly drops a fraction of already-fit trees during prediction to reduce reliance on early trees.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: C</span>
+          <span class="fasit-correct">Correct answer: B</span>
           <p>Friedman 2002 stochastic GBM: at each iteration, draw a fraction (typically $\le 0.5$) of rows <em>without replacement</em>, and optionally a fraction of columns, then fit the next tree on this subsample. Each tree sees different data, the ensemble is more diverse, ensemble variance drops.</p>
-          <p>A describes neural-network mini-batch SGD — different "stochastic" mechanism. B claims bootstrap (with replacement); the prof flagged that this is exactly <em>not</em> what stochastic GBM does — it's without replacement. D describes the <em>dropout</em> trick from XGBoost, not stochastic subsampling.</p>
+          <p>A describes neural-network mini-batch SGD — different "stochastic" mechanism. C claims bootstrap (with replacement); the prof flagged that this is exactly <em>not</em> what stochastic GBM does — it's without replacement. D describes the <em>dropout</em> trick from XGBoost, not stochastic subsampling.</p>
           <p class="ref">Atoms: <a href="/concepts/stochastic-gradient-boosting">stochastic-gradient-boosting</a>, <a href="/concepts/regularization">regularization</a>.</p>
         </div>
       </details>
@@ -516,9 +516,9 @@
       </header>
       <p class="q-text">A boosted tree fit on Boston housing produces a variable-importance plot showing <code>rm</code> (rooms) and <code>lstat</code> (% lower-SES) at the top, well above <code>crim</code> and <code>nox</code>. What is the intended interpretation?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> <code>rm</code> and <code>lstat</code> have <em>causal</em> effects on the median house price; the others do not.</li>
-        <li><span class="opt-label">B</span> <code>rm</code> and <code>lstat</code> have the largest linear regression coefficients in the boosted model.</li>
-        <li><span class="opt-label">C</span> <code>crim</code> and <code>nox</code> are statistically insignificant at the 5% level.</li>
+        <li><span class="opt-label">A</span> <code>rm</code> and <code>lstat</code> have the largest causal effects on median house price after adjusting for the other predictors in the joint distribution.</li>
+        <li><span class="opt-label">B</span> <code>rm</code> and <code>lstat</code> are the predictors whose partial-dependence curves have the largest average slope, which is what the importance algorithm aggregates.</li>
+        <li><span class="opt-label">C</span> <code>crim</code> and <code>nox</code> failed an internal Wald-style test at each split and were therefore demoted at the 5% level.</li>
         <li><span class="opt-label">D</span> <code>rm</code> and <code>lstat</code> contribute the most to reducing impurity (or to OOB performance under permutation) across the ensemble's splits.</li>
       </ul>
       <details class="fasit-details">
@@ -565,17 +565,17 @@
       </header>
       <p class="q-text">Boosting with depth-one trees (stumps) leads to an additive model $f(X) = \sum_{j=1}^p f_j(X_j)$. Why?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Stumps cannot represent any non-linear function, so the ensemble is forced to be linear in $X$.</li>
-        <li><span class="opt-label">B</span> The shrinkage parameter $\nu$ projects each tree's contribution onto the additive subspace.</li>
+        <li><span class="opt-label">A</span> Stumps can only represent strictly linear functions of a single predictor at a time, so summing them mechanically produces a linear-in-$X$ model with no curvature in any $f_j$.</li>
+        <li><span class="opt-label">B</span> The shrinkage parameter $\nu$ projects each tree's contribution onto the additive subspace, removing any interaction component before the new tree is added to the ensemble.</li>
         <li><span class="opt-label">C</span> Each stump splits on exactly one variable, so its contribution is a function of one $X_j$ only; the sum of such terms is, by definition, additive.</li>
-        <li><span class="opt-label">D</span> Stumps have only one terminal node, which guarantees additivity by construction.</li>
+        <li><span class="opt-label">D</span> Stumps have exactly two terminal nodes, and any two-leaf tree is mathematically equivalent to a single additive term, so summing them keeps the ensemble in the additive class.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: C</span>
           <p>A depth-1 tree picks one split on one predictor and outputs two leaf values — that is, its contribution depends on a single $X_j$. Summing $M$ such trees gives $\sum_j f_j(X_j)$, where $f_j$ collects the contributions of all stumps split on $X_j$. (ISLP §8.4 Q2.)</p>
-          <p>A overstates: stumps are non-linear (step functions). The point isn't linearity, it's that no interaction terms appear. B is irrelevant — $\nu$ scales each tree but does not change which variables the tree uses. D mis-counts: a stump has <em>two</em> terminal nodes (one split = two regions), and the additivity comes from "one variable per term," not from leaf count.</p>
+          <p>A overstates: stumps are non-linear (step functions). The point isn't linearity, it's that no interaction terms appear. B is irrelevant — $\nu$ scales each tree but does not change which variables the tree uses. D gets the leaf count right (two regions per stump) but the conclusion wrong: additivity comes from "one variable per term," not from leaf count — a depth-2 tree also has a small leaf count yet introduces interactions.</p>
           <p class="ref">Atoms: <a href="/concepts/boosting">boosting</a>, <a href="/concepts/weak-learner-and-learning-rate">weak-learner-and-learning-rate</a>.</p>
         </div>
       </details>
@@ -589,9 +589,9 @@
       </header>
       <p class="q-text">Which of the following is <em>not</em> a regularization mechanism present in standard gradient-boosted machines (or their XGBoost extension)?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Shrinking each new tree's contribution by a factor $\nu \le 0.1$.</li>
-        <li><span class="opt-label">B</span> Choosing the number of trees $M$ via early stopping on a validation set.</li>
-        <li><span class="opt-label">C</span> Subsampling rows (and optionally columns) before each tree.</li>
+        <li><span class="opt-label">A</span> Shrinking each new tree's contribution by the learning rate $\nu \le 0.1$ to take many small gradient steps.</li>
+        <li><span class="opt-label">B</span> Choosing $M$ by early stopping at the minimum of a held-out validation curve rather than the training one.</li>
+        <li><span class="opt-label">C</span> Subsampling rows (without replacement) and optionally columns before each tree to diversify successive trees.</li>
         <li><span class="opt-label">D</span> Increasing each tree's depth so that early trees can capture the bulk of the signal in a few iterations.</li>
       </ul>
       <details class="fasit-details">
@@ -614,9 +614,9 @@
       <p class="q-text">XGBoost's penalty $\Omega(f) = \gamma |T| + \tfrac{1}{2} \lambda \|w\|^2$ (with $|T|$ the number of leaves and $w$ the leaf-value vector) is best described as:</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Cost-complexity pruning $+$ ridge regression, with both penalties applied to the tree's leaves.</li>
-        <li><span class="opt-label">B</span> Lasso applied to the regression coefficients of an underlying linear model.</li>
-        <li><span class="opt-label">C</span> A Bayesian prior on the tree structure with a Laplace likelihood.</li>
-        <li><span class="opt-label">D</span> Cross-entropy loss with an additional bias term.</li>
+        <li><span class="opt-label">B</span> Lasso applied to a hidden vector of linear coefficients learned alongside the tree ensemble.</li>
+        <li><span class="opt-label">C</span> A Bayesian prior on the tree structure with a Laplace likelihood on leaf values.</li>
+        <li><span class="opt-label">D</span> Cross-entropy classification loss plus an extra bias term absorbing the ensemble's constant offset.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -638,9 +638,9 @@
       <p class="q-text">In AdaBoost, weak classifier $G_3$ has weighted error $\text{err}_3 = 0.20$. What is its classifier weight $\alpha_3 = \log\!\big((1 - \text{err}_3)/\text{err}_3\big)$, and what does its sign mean?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> $\alpha_3 \approx \log 4 \approx 1.39$, positive — $G_3$ is better than chance and gets a positive vote in the final ensemble.</li>
-        <li><span class="opt-label">B</span> $\alpha_3 \approx \log(1/4) \approx -1.39$, negative — $G_3$'s prediction is flipped in the final ensemble.</li>
-        <li><span class="opt-label">C</span> $\alpha_3 \approx 0.20$, equal to the error rate — $G_3$'s vote is proportional to its error.</li>
-        <li><span class="opt-label">D</span> $\alpha_3 = 0.5 \cdot 0.20 = 0.10$, positive but small.</li>
+        <li><span class="opt-label">B</span> $\alpha_3 \approx \log(1/4) \approx -1.39$; the negative sign tells you AdaBoost has detected an over-confident weak learner and is flipping its predictions before adding them to the ensemble.</li>
+        <li><span class="opt-label">C</span> $\alpha_3 \approx 0.20$, equal to the weighted error itself; AdaBoost makes each classifier's voice in the final vote directly proportional to the error it just achieved.</li>
+        <li><span class="opt-label">D</span> $\alpha_3 = \tfrac12 \log(1 - 0.20) \approx 0.11$, positive but small because the standard formula uses a one-half log of $(1 - \text{err}_m)$ instead of a ratio.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -662,7 +662,7 @@
       <p class="q-text">Mark each statement as true or false.</p>
       <ul class="exam-q__tf">
         <li class="exam-q__tf-field">
-          <span class="tf-stmt">a) In bagging, the number of trees $B$ is mostly "use enough" — past a saturation point, more trees do not improve generalisation but also do not hurt.</span>
+          <span class="tf-stmt">a) In bagging, the number of trees $B$ must be tuned via cross-validation because adding too many trees overfits the bootstrap distribution and inflates OOB error past a critical $B^\star$.</span>
           <label><input type="radio" name="q22-a" value="true"> True</label>
           <label><input type="radio" name="q22-a" value="false"> False</label>
         </li>
@@ -677,7 +677,7 @@
           <label><input type="radio" name="q22-c" value="false"> False</label>
         </li>
         <li class="exam-q__tf-field">
-          <span class="tf-stmt">d) Random forests reduce variance via decorrelation across trees; boosting reduces bias via accumulation of many corrections.</span>
+          <span class="tf-stmt">d) Random forests reduce <em>bias</em> by averaging many decorrelated trees; boosting reduces <em>variance</em> by accumulating many sequential corrections.</span>
           <label><input type="radio" name="q22-d" value="true"> True</label>
           <label><input type="radio" name="q22-d" value="false"> False</label>
         </li>
@@ -686,10 +686,10 @@
         <summary>Show answer</summary>
         <div class="fasit-body">
           <ol>
-            <li><strong>True</strong> — extra trees in bagging just average more, with diminishing returns; OOB error settles down.</li>
+            <li><strong>False</strong> — bagging's $B$ is "use enough": extra trees average more with diminishing returns, but never inflate OOB error. There is no overfitting-in-$B$ for bagging.</li>
             <li><strong>False</strong> — boosting overfits if $M$ is too large because each new tree fits whatever residual is left, and after the signal is exhausted that's just noise.</li>
             <li><strong>True</strong> — the standard contrast: RF wants high-variance/low-bias deep trees to average; boosting wants high-bias/low-variance weak learners to sum.</li>
-            <li><strong>True</strong> — the canonical bias-variance angle of the two ensembling families. RF kills variance via $m < p$ at each split; boosting kills bias via sequential corrections.</li>
+            <li><strong>False</strong> — the bias-variance roles are inverted. RF reduces <em>variance</em> via decorrelated averaging (each tree is low-bias/high-variance); boosting reduces <em>bias</em> via sequential corrections (each tree is high-bias/low-variance).</li>
           </ol>
           <p class="ref">Atoms: <a href="/concepts/boosting">boosting</a>, <a href="/concepts/random-forest">random-forest</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>.</p>
         </div>
@@ -797,10 +797,10 @@
       </header>
       <p class="q-text">On a binary classification dataset (orange-juice purchase, $n_{\text{train}} = 800$, $\sim 60/40$ class split), you fit a boosted tree with `distribution = "bernoulli"`, `n.trees = 1000`, `shrinkage = 0.01`, `interaction.depth = 2`, `cv.folds = 10`. The CV-optimal number of trees is 280, giving a test misclassification error of 0.18 — slightly higher than logistic regression on the same data. The most defensible interpretation is:</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Boosting must be misconfigured; on any classification problem boosting beats logistic regression.</li>
+        <li><span class="opt-label">A</span> Boosting must be misconfigured; given a sufficiently large $M$ and a small $\nu$, boosting is guaranteed to dominate logistic regression on any binary classification problem because it is a universal function approximator.</li>
         <li><span class="opt-label">B</span> The boosting fit is fine, but the data may be well-described by a (near-)linear / additive logistic model, so the extra flexibility brings little benefit and possibly more variance.</li>
-        <li><span class="opt-label">C</span> The misclassification rate is meaningless under any class imbalance; you should report only AUC.</li>
-        <li><span class="opt-label">D</span> The prof would deduct for using `cv.folds`; OOB error is the only acceptable validation strategy for boosting.</li>
+        <li><span class="opt-label">C</span> The misclassification rate is meaningless under any class imbalance, so the comparison itself is invalid; only the AUC under the ROC curve should be reported and compared across methods.</li>
+        <li><span class="opt-label">D</span> The prof would deduct for using <code>cv.folds</code> on a boosted fit; OOB error is the only acceptable validation strategy for boosting and the resulting CV-optimal $M$ is therefore not a defensible early-stopping target.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -847,8 +847,8 @@ Suppose at iteration $b$, the new tree's prediction at observation $i$ is $\hat 
       </header>
       <p class="q-text">You compare two GBM runs on the same dataset, both with depth-3 trees and 10-fold CV: run A uses $\nu = 0.001$, run B uses $\nu = 0.1$. Holding everything else fixed, you'd expect:</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Run A reaches its CV minimum at a far smaller $M$ than run B.</li>
-        <li><span class="opt-label">B</span> Both runs reach their CV minimum at roughly the same $M$.</li>
+        <li><span class="opt-label">A</span> Run A's CV curve plateaus before ever reaching a minimum, because $\nu = 0.001$ is too small to make measurable progress within any practical number of trees.</li>
+        <li><span class="opt-label">B</span> Both runs reach their CV minimum at roughly the same $M$, since $\nu$ rescales each tree but does not change the iteration at which CV error stops decreasing.</li>
         <li><span class="opt-label">C</span> Run A reaches its CV minimum at a far larger $M$ than run B.</li>
         <li><span class="opt-label">D</span> Run A overfits at very small $M$ because its small $\nu$ amplifies each tree's contribution.</li>
       </ul>
@@ -857,7 +857,7 @@ Suppose at iteration $b$, the new tree's prediction at observation $i$ is $\hat 
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: C</span>
           <p>Smaller $\nu$ means each tree contributes less per step, so more steps are needed to traverse the same fit landscape. The optimal $M$ scales roughly as $1/\nu$ along the iso-fit curve.</p>
-          <p>A inverts the relationship. B ignores the $M$–$\nu$ coupling that the prof spent significant time on. D claims $\nu$ amplifies the trees, but $\nu$ is a multiplier in $(0,1]$ that <em>shrinks</em> them; small $\nu$ = small contribution per step, the opposite of overfit-friendly.</p>
+          <p>A overstates: a small $\nu$ does slow learning, but the CV curve still hits a minimum once enough trees are added — it just happens at a much larger $M$. B ignores the $M$–$\nu$ coupling that the prof spent significant time on. D claims $\nu$ amplifies the trees, but $\nu$ is a multiplier in $(0,1]$ that <em>shrinks</em> them; small $\nu$ = small contribution per step, the opposite of overfit-friendly.</p>
           <p class="ref">Atoms: <a href="/concepts/weak-learner-and-learning-rate">weak-learner-and-learning-rate</a>, <a href="/concepts/cross-validation">cross-validation</a>. Lecture: <a href="/lectures/L20-boosting-2">L20-boosting-2</a>.</p>
         </div>
       </details>
@@ -872,9 +872,9 @@ Suppose at iteration $b$, the new tree's prediction at observation $i$ is $\hat 
       <p class="q-text">A student replaces the depth-4 trees in a gradient-boosting fit with much deeper trees (depth 20) of comparable interpretation cost, keeping $\nu$ and $M$ as before. CV error rises sharply. The most accurate diagnosis:</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Each individual tree now over-explains the residual at its own step, leaving little signal for later trees and inviting variance, which breaks the additive-correction logic.</li>
-        <li><span class="opt-label">B</span> Deeper trees reduce bias, so CV error must have fallen — the student must have a coding error in the CV setup.</li>
-        <li><span class="opt-label">C</span> Depth-20 trees converge to a random forest, so the CV error is the random-forest error and is independent of $M$.</li>
-        <li><span class="opt-label">D</span> Deeper trees increase the irreducible error $\sigma^2$ of the data-generating process.</li>
+        <li><span class="opt-label">B</span> Deeper trees can only lower bias and never raise variance, so a rise in CV error is impossible under correct implementation; the student must have introduced a coding error somewhere in the CV split or the residual update.</li>
+        <li><span class="opt-label">C</span> Depth-20 trees on small bootstrap-like subsets effectively converge to an unweighted random forest, so the CV error is now the random-forest error and is mathematically independent of the boosting iteration count $M$.</li>
+        <li><span class="opt-label">D</span> Replacing depth-4 with depth-20 trees increases the irreducible noise $\sigma^2$ of the data-generating distribution, since deeper trees absorb noise into the residual at training time and inflate the test-time error floor.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>

@@ -147,9 +147,9 @@
       </header>
       <p class="q-text">For $k$-fold CV with equal-sized folds and squared-error loss in regression, which expression equals $\text{CV}_{(k)}$?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> $\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat y_i)^2$, where $\hat y_i$ is the full-data fitted value.</li>
-        <li><span class="opt-label">B</span> $\frac{1}{k}\sum_{j=1}^{k}(y_j-\hat y_j)^2$, evaluated only at the $k$ chosen "fold representatives."</li>
-        <li><span class="opt-label">C</span> $\frac{1}{k-1}\sum_{j=1}^{k}(\text{MSE}_j-\overline{\text{MSE}})^2$.</li>
+        <li><span class="opt-label">A</span> $\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat y_i)^2$ where $\hat y_i$ is the prediction from a single full-data fit averaged across folds.</li>
+        <li><span class="opt-label">B</span> $\frac{1}{k}\sum_{j=1}^{k}(y_j-\hat y_j)^2$, evaluated only at the $k$ "fold representatives" (one observation per fold).</li>
+        <li><span class="opt-label">C</span> $\frac{1}{k-1}\sum_{j=1}^{k}(\text{MSE}_j-\overline{\text{MSE}})^2$, the between-fold sample variance of the held-out MSEs.</li>
         <li><span class="opt-label">D</span> $\frac{1}{k}\sum_{j=1}^{k}\text{MSE}_j$, where $\text{MSE}_j = \frac{1}{n_j}\sum_{i\in C_j}(y_i-\hat y_i^{(-j)})^2$.</li>
       </ul>
       <details class="fasit-details">
@@ -173,9 +173,9 @@
       <p class="q-text">You want pseudocode for choosing $K$ in KNN regression by 10-fold CV. Which option correctly describes the procedure?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Randomly partition the training observations into 10 folds. For each candidate $K$ and each fold $j$: fit KNN-$K$ on the other 9 folds, predict on fold $j$, compute $\text{MSE}_j$. Average the 10 fold-MSEs to get $\text{CV}(K)$, then choose $K^*=\arg\min_K \text{CV}(K)$.</li>
-        <li><span class="opt-label">B</span> For each candidate $K$, fit KNN-$K$ on the full training data, then for each fold $j$ compute the residuals on fold $j$ from that single model. Sum the residuals across folds to get $\text{CV}(K)$.</li>
-        <li><span class="opt-label">C</span> Randomly partition the training observations into 10 folds. For each candidate $K$, fit KNN-$K$ ten times on different bootstrap samples of size $n$, then take the median predicted $K$ across the runs.</li>
-        <li><span class="opt-label">D</span> Hold out a single 10% validation chunk once. For each candidate $K$, fit KNN-$K$ on the remaining 90% and pick the $K$ whose validation MSE is smallest.</li>
+        <li><span class="opt-label">B</span> For each candidate $K$, fit KNN-$K$ on the full training data once and store the predictions; then for each fold $j$ compute the residuals on fold $j$ from that single full-data model and sum the squared residuals across folds to get $\text{CV}(K)$, then choose the $K$ that minimises the sum.</li>
+        <li><span class="opt-label">C</span> Randomly partition the training observations into 10 folds; for each candidate $K$, fit KNN-$K$ ten times on different bootstrap samples drawn with replacement at size $n$ from the union of the 10 folds, then take the median predicted $K$ across the runs as the cross-validated choice.</li>
+        <li><span class="opt-label">D</span> Hold out a single random 10% validation chunk once at the start; for each candidate $K$ fit KNN-$K$ on the remaining 90% and pick the $K$ whose validation MSE is smallest, treating this single split as a Monte-Carlo approximation to 10-fold CV.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -274,10 +274,10 @@
         Degree 6: CV = 1.55
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Degree 1, the simplest of all the candidates by default.</li>
+        <li><span class="opt-label">A</span> Degree 1, since the one-SE rule defaults to the simplest candidate model whenever the SE is non-negligible.</li>
         <li><span class="opt-label">B</span> Degree 2, the simplest model whose CV error is within $0.20$ of the minimum.</li>
-        <li><span class="opt-label">C</span> Degree 4, the polynomial with the lowest CV error.</li>
-        <li><span class="opt-label">D</span> Degree 5, since the CV curve is nearly flat between 4 and 5.</li>
+        <li><span class="opt-label">C</span> Degree 4, the polynomial with the lowest CV error among the six candidates.</li>
+        <li><span class="opt-label">D</span> Degree 5, since the CV curve is flat between degrees 4 and 5 and the one-SE rule prefers the more flexible neighbour.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -298,8 +298,8 @@
       </header>
       <p class="q-text">The slide deck flags the standard-error estimate underlying the one-SE rule as "strictly speaking, not quite valid." Why?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Sample standard deviations are biased estimators in finite samples.</li>
-        <li><span class="opt-label">B</span> The per-fold MSEs are not normally distributed.</li>
+        <li><span class="opt-label">A</span> Sample standard deviations are biased downward in finite samples, so the SE band is systematically too tight.</li>
+        <li><span class="opt-label">B</span> The per-fold MSEs are not normally distributed, so the implicit Gaussian SE band has the wrong tail probabilities.</li>
         <li><span class="opt-label">C</span> The held-out folds used to compute the SE are also used to pick the optimal hyperparameter, so the SE is not an independent estimate.</li>
         <li><span class="opt-label">D</span> The folds are sampled without replacement, which violates the i.i.d. requirement of the SE formula.</li>
       </ul>
@@ -322,10 +322,10 @@
       </header>
       <p class="q-text">In lecture the prof said: <em>"I almost always in almost everything I do, I use cross-validation of some sort … because assumptions are always wrong, right? They're just so wrong."</em> Which best summarises why he prefers CV to AIC, BIC, and Mallows' $C_p$?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> CV is provably unbiased for the test error, while AIC, BIC, and $C_p$ are biased estimators.</li>
+        <li><span class="opt-label">A</span> CV is provably unbiased for the test error at any sample size, whereas AIC, BIC, and $C_p$ are biased estimators of test error.</li>
         <li><span class="opt-label">B</span> AIC, BIC, and $C_p$ depend on distributional and model-specification assumptions that often fail in real data, while CV requires fewer such assumptions.</li>
-        <li><span class="opt-label">C</span> AIC, BIC, and $C_p$ apply only to logistic regression and trees, whereas CV is the only criterion that works for linear regression.</li>
-        <li><span class="opt-label">D</span> AIC, BIC, and $C_p$ are exact only in the high-dimensional regime $p &gt; n$, where CV is infeasible.</li>
+        <li><span class="opt-label">C</span> AIC, BIC, and $C_p$ apply only to logistic regression and tree-based methods, whereas CV is the only criterion that works for OLS regression.</li>
+        <li><span class="opt-label">D</span> AIC, BIC, and $C_p$ are exact only in the high-dimensional regime $p &gt; n$, where CV is computationally infeasible.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -346,9 +346,9 @@
       </header>
       <p class="q-text">Among the conceptual claims about AIC and BIC that are still in scope (formulas are not), which one is correct?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> AIC penalises model complexity more aggressively than BIC, so it tends to favour smaller models.</li>
-        <li><span class="opt-label">B</span> Both penalise complexity by exactly the same amount; the only difference is the leading constant.</li>
-        <li><span class="opt-label">C</span> Both penalise the test error directly, so neither uses the training error.</li>
+        <li><span class="opt-label">A</span> AIC and BIC are equivalent for $n \le 7$ and diverge only above that threshold, where AIC becomes the more aggressive penaliser.</li>
+        <li><span class="opt-label">B</span> Both penalise complexity by the same amount as a function of $p$; the only difference is the leading constant in front of the log-likelihood term.</li>
+        <li><span class="opt-label">C</span> Both criteria penalise the test error directly without ever using the training residuals, which is what distinguishes them from CV.</li>
         <li><span class="opt-label">D</span> BIC penalises model complexity more aggressively than AIC, so it tends to favour smaller models.</li>
       </ul>
       <details class="fasit-details">
@@ -356,7 +356,7 @@
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: D</span>
           <p>The standard one-line comparison: BIC's complexity penalty grows with $\log n$, AIC's does not. So as $n$ grows, BIC penalises additional parameters more harshly and selects smaller models.</p>
-          <p>A reverses the direction. B is wrong, the penalties differ in functional form, not just a leading constant. C inverts the construction: both criteria start from the <em>training</em> error and add a penalty to estimate test error.</p>
+          <p>A invents a sample-size threshold and inverts the direction; AIC's penalty is $2p$ regardless of $n$ and is always less aggressive than BIC's $\log(n) p$ for $n \ge 8$. B is wrong, the penalties differ in functional form (a $\log n$ factor on $p$), not just a leading constant. C inverts the construction: both criteria start from the <em>training</em> error and add a penalty to estimate test error.</p>
           <p class="ref">Atom: <a href="/concepts/aic-bic-conceptual">aic-bic-conceptual</a>.</p>
         </div>
       </details>
@@ -374,10 +374,10 @@
         (ii) run 10-fold CV on a logistic regression using only those 25 predictors.
         The reported CV misclassification error is ~0%. What does this 0% tell you?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> The pipeline is correct; the high-dimensional logistic fit has discovered a real signal that simpler methods miss.</li>
+        <li><span class="opt-label">A</span> The pipeline is correct; the high-dimensional logistic fit on the screened top-25 has discovered a sparse signal that simpler methods miss.</li>
         <li><span class="opt-label">B</span> The CV estimate is biased downward because the correlation filter used $y$ on the full data; held-out folds were already inside the selection step, so they aren't truly held out.</li>
-        <li><span class="opt-label">C</span> 10-fold CV is too few folds; LOOCV would have given a more honest estimate even with the same pipeline.</li>
-        <li><span class="opt-label">D</span> The error is truly 0 only because $p \gg n$; switching to ridge regression would fix it.</li>
+        <li><span class="opt-label">C</span> 10-fold CV is too few folds; LOOCV with the same outside-the-loop screening pipeline would give a more honest estimate of the test error.</li>
+        <li><span class="opt-label">D</span> The 0% error is real but an artefact of $p \gg n$ where logistic interpolates the labels; switching to ridge would fix the optimism.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -398,10 +398,10 @@
       </header>
       <p class="q-text">Continuing Q12: which pseudocode for "filter then classify" gives an honest CV estimate of generalisation error?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Compute correlations on all data, keep top $d$; then for $j=1,\dots,k$: train logistic on training folds, predict on $C_j$; average errors.</li>
+        <li><span class="opt-label">A</span> Compute correlations on all $n$ observations once and keep the top $d$; then for $j = 1,\dots,k$ train logistic on the training folds restricted to those $d$ columns, predict on $C_j$, and average held-out errors.</li>
         <li><span class="opt-label">B</span> For $j=1,\dots,k$: on training folds only, compute correlations and pick top $d$; train logistic on those $d$ in the training folds; predict on $C_j$ using the same $d$ predictors; average errors.</li>
-        <li><span class="opt-label">C</span> Compute correlations on all data, keep top $d$; train one logistic on all data; report training-set error.</li>
-        <li><span class="opt-label">D</span> Compute correlations on the held-out fold only; train logistic on training folds with those predictors; average errors.</li>
+        <li><span class="opt-label">C</span> Compute correlations on all $n$ observations and keep the top $d$; train one logistic regression on the full dataset and report training-set misclassification error as the generalisation estimate.</li>
+        <li><span class="opt-label">D</span> For $j = 1,\dots,k$ compute correlations on the held-out fold $C_j$ only, keep the top $d$ selected on $C_j$, train logistic on the remaining folds, and average errors.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -422,17 +422,17 @@
       </header>
       <p class="q-text">You apply LOOCV to a regression model on hourly weather measurements from a single sensor. Adjacent hours are strongly correlated. Compared to its behaviour on i.i.d. data, what happens to the LOOCV estimate?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> LOOCV becomes unbiased because each fold uses a maximally large training set.</li>
-        <li><span class="opt-label">B</span> LOOCV is unaffected as long as the model is well-specified; correlation only matters for the bootstrap.</li>
+        <li><span class="opt-label">A</span> LOOCV becomes effectively unbiased in this setting because each fold uses a maximally large training set of $n-1$ observations, and bias is the only property of CV that depends on the dependence structure between observations.</li>
+        <li><span class="opt-label">B</span> LOOCV is unaffected by temporal correlation as long as the regression model itself is well-specified; correlation between observations only matters for the bootstrap, which assumes i.i.d. draws.</li>
         <li><span class="opt-label">C</span> LOOCV underestimates the test error because the held-out point is essentially predicted by its near-neighbour, so per-fold errors are artificially small and CV picks an overly complex model.</li>
-        <li><span class="opt-label">D</span> LOOCV overestimates the test error because correlated observations inflate the residual variance.</li>
+        <li><span class="opt-label">D</span> LOOCV is unbiased for the conditional test error at observed time stamps but is too noisy to be useful, so the prof's recommendation is to fall back to a hold-out validation set with the final 20% of hours treated as the test set.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: C</span>
           <p>The prof's warning: "two points right next to each other, one in your training, one in your validation, it's the same damn thing." The held-out hour is well-predicted by its left and right neighbours that are still in training, so the fold error doesn't reflect generalisation to a genuinely new region of the predictor space. CV therefore picks the most complex model possible. The fix is to chunk by the dependency dimension, e.g. block by day or week, so adjacent folds are temporally separated.</p>
-          <p>A confuses "uses $n-1$ points" with independence; bias and dependence are unrelated dimensions of the problem. B is the canonical wrong intuition the prof flagged. D inverts the direction; the leakage makes errors smaller, not larger.</p>
+          <p>A confuses "uses $n-1$ points" with independence; bias and dependence are unrelated dimensions of the problem, and the bias-vs-dependence pairing here is incoherent. B is the canonical wrong intuition the prof flagged. D claims LOOCV is unbiased here and recommends a final-20% hold-out as a fix; both halves are wrong: LOOCV is biased downward by leakage (not unbiased), and a chronological hold-out without blocking the training side still suffers the same near-neighbour leakage at the seam.</p>
           <p class="ref">Atoms: <a href="/concepts/leave-one-out-cv">leave-one-out-cv</a>, <a href="/concepts/cross-validation">cross-validation</a>.</p>
         </div>
       </details>
@@ -503,9 +503,9 @@
       </header>
       <p class="q-text">Which procedure correctly estimates the bootstrap standard error of an OLS coefficient $\hat\beta_j$ when you do not want to rely on the closed-form $\sigma^2(X^\top X)^{-1}$ formula?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Refit OLS $B$ times on $B$ random subsets of size $n/2$ (without replacement); take the sample SD of the $B$ values of $\hat\beta_j$.</li>
-        <li><span class="opt-label">B</span> Permute the rows of $X$ (without replacement) $B$ times, refit, and use the SD of $\hat\beta_j$ across permutations.</li>
-        <li><span class="opt-label">C</span> Take a single bootstrap sample of size $n$ with replacement, refit, and report the residual standard error from that single fit.</li>
+        <li><span class="opt-label">A</span> Refit OLS $B$ times on $B$ random subsets of size $n/2$ drawn without replacement; take the sample SD of the $B$ values of $\hat\beta_j$ as the bootstrap SE estimate.</li>
+        <li><span class="opt-label">B</span> Permute the rows of $X$ relative to $y$ (without replacement) $B$ times, refit OLS, and use the sample SD of $\hat\beta_j$ across the permutations as the bootstrap SE.</li>
+        <li><span class="opt-label">C</span> Take a single bootstrap sample of size $n$ from $(X,y)$ with replacement, refit OLS, and report the residual standard error of that single fit as the bootstrap SE.</li>
         <li><span class="opt-label">D</span> For $b = 1,\dots,B$: draw $n$ rows from $(X,y)$ with replacement; refit OLS; store $\hat\beta_j^{*b}$. Bootstrap SE is the sample SD of $\{\hat\beta_j^{*1},\dots,\hat\beta_j^{*B}\}$.</li>
       </ul>
       <details class="fasit-details">
@@ -530,7 +530,7 @@
         <li><span class="opt-label">A</span> $[0.20, 0.42]$</li>
         <li><span class="opt-label">B</span> $[0.18, 0.45]$</li>
         <li><span class="opt-label">C</span> $[0.18, 0.42]$</li>
-        <li><span class="opt-label">D</span> $[0.30 - 1.96\,s,\ 0.30 + 1.96\,s]$ for some bootstrap SD $s$.</li>
+        <li><span class="opt-label">D</span> $[0.30 \pm 1.96\,s]$.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -552,9 +552,9 @@
       </header>
       <p class="q-text">You have fit a logistic regression of $\texttt{chd}$ on $\texttt{sbp}$ and $\texttt{sex}$, and want a 95% CI for the predicted probability $\hat P(\texttt{chd}=1\mid \texttt{sbp}=140, \texttt{sex}=\text{male})$. Why is the bootstrap a natural tool here?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Predicted probabilities are normally distributed under the logistic model, so the bootstrap is required to convert them to log-odds.</li>
-        <li><span class="opt-label">B</span> The bootstrap removes overfitting; a 95% CI is exactly the model's training error band.</li>
-        <li><span class="opt-label">C</span> Bootstrap CIs always coincide with theoretical Wald CIs, so it is just a faster alternative.</li>
+        <li><span class="opt-label">A</span> Predicted probabilities under the logistic model are normally distributed in finite samples, and the bootstrap is required as an intermediate step to convert them to the log-odds scale where Wald-style CIs are valid before transforming back.</li>
+        <li><span class="opt-label">B</span> The bootstrap removes overfitting from the fitted model by resampling, so a 95% bootstrap CI for $\hat P$ is exactly the model's training-set error band, recentred at the held-out prediction at $(\texttt{sbp}=140, \texttt{sex}=\text{male})$.</li>
+        <li><span class="opt-label">C</span> Bootstrap percentile CIs always coincide with theoretical Wald CIs at any sample size whenever the underlying GLM has been correctly specified, so the bootstrap here is just a computationally cheaper alternative to the standard delta-method CI.</li>
         <li><span class="opt-label">D</span> The closed-form $\sigma^2(X^\top X)^{-1}$ does not give an SE for nonlinear functions of the coefficients like a predicted probability; the bootstrap estimates the SE/CI of $\hat P$ directly without a closed form.</li>
       </ul>
       <details class="fasit-details">
@@ -631,17 +631,17 @@
       </header>
       <p class="q-text">Which statement most accurately distinguishes bagging from boosting?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Bagging fits trees sequentially on residuals; boosting fits trees in parallel on bootstrap samples.</li>
-        <li><span class="opt-label">B</span> Bagging and boosting are the same algorithm; the names are interchangeable.</li>
+        <li><span class="opt-label">A</span> Bagging and boosting both fit trees in parallel on bootstrap samples; the only difference is that bagging takes a simple average and boosting takes a weighted average learned from residuals.</li>
+        <li><span class="opt-label">B</span> Bagging and boosting are equivalent algorithms in expectation; the names refer to two implementations of the same ensemble idea over the same bootstrap draws.</li>
         <li><span class="opt-label">C</span> Bagging fits trees in parallel on independent bootstrap samples and averages or votes; boosting fits trees sequentially, with each new tree correcting the previous fit.</li>
-        <li><span class="opt-label">D</span> Bagging is a single-tree algorithm; boosting is the multi-tree version.</li>
+        <li><span class="opt-label">D</span> Bagging is a single-tree algorithm using a bootstrap sample to pick splits; boosting is the multi-tree extension that fits one tree per residual round.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: C</span>
           <p>Bagging = parallel + bootstrap + average; the goal is variance reduction. Boosting = sequential + residual-fitting + weighted ensemble; the goal is bias reduction. Different mechanisms, different tuning behaviour ($B$ doesn't overfit in bagging but does in boosting).</p>
-          <p>A reverses the two procedures. B confuses them despite their distinct mechanics. D invents a single-tree/multi-tree distinction that is unrelated to the bagging/boosting split (both fit many trees).</p>
+          <p>A is wrong on the parallelism of boosting: boosting cannot be fit in parallel because each tree depends on the residuals of the ensemble so far, and its weighting scheme is not a learned weight on bootstrap predictions but a sequential gradient-descent step on the loss. B asserts that bagging and boosting are equivalent in expectation, which they are not: one targets variance reduction at fixed bias, the other targets bias reduction at fixed (or even higher) variance. D invents a single-tree/multi-tree distinction that does not exist (both fit many trees).</p>
           <p class="ref">Atoms: <a href="/concepts/bagging">bagging</a>, <a href="/concepts/boosting">boosting</a>.</p>
         </div>
       </details>
@@ -655,17 +655,17 @@
       </header>
       <p class="q-text">You're choosing the size of a regression model on a non-Gaussian dataset with mild collinearity. AIC suggests one model size, 10-fold CV suggests another. What does the prof's framing recommend?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Use whichever criterion gives the smaller model — both AIC and CV are internally consistent so either is fine.</li>
-        <li><span class="opt-label">B</span> Trust the 10-fold CV choice; AIC depends on distributional assumptions that this dataset likely violates, while CV makes fewer assumptions.</li>
-        <li><span class="opt-label">C</span> Trust the AIC choice; CV is too noisy with $k=10$ and AIC is mathematically optimal.</li>
-        <li><span class="opt-label">D</span> Use both and average the chosen sizes; this gives a Bayesian compromise.</li>
+        <li><span class="opt-label">A</span> Use whichever criterion gives the smaller model: both AIC and CV are internally consistent estimators, so the more parsimonious choice is the safest default.</li>
+        <li><span class="opt-label">B</span> Refit OLS with collinearity-robust standard errors and pick the model whose coefficients are jointly significant; this replaces both criteria with hypothesis testing.</li>
+        <li><span class="opt-label">C</span> Trust the AIC choice: 10-fold CV is too noisy at $k = 10$, while AIC is mathematically optimal as a finite-sample estimator for any GLM.</li>
+        <li><span class="opt-label">D</span> Trust the 10-fold CV choice; AIC depends on distributional assumptions that this dataset likely violates, while CV makes fewer assumptions.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>The prof's running default: CV is robust to assumption violations, AIC/BIC/$C_p$ aren't. With non-Gaussian data, AIC's basis collapses; CV still does the right job because it actually evaluates predictions on held-out folds.</p>
-          <p>A treats two non-equivalent criteria as interchangeable. C fabricates a property of AIC ("mathematically optimal") that holds only under exact assumptions, which the scenario violates. D invents a Bayesian compromise that doesn't exist in this setting and that the prof did not endorse.</p>
+          <p>A treats two non-equivalent criteria as interchangeable and invents a "pick the smaller one" rule the prof never endorsed. B replaces both selection criteria with significance testing, which is a different problem entirely (significance answers "is $\beta_j \ne 0$", not "what model size minimises test error"). C fabricates a property of AIC ("mathematically optimal") that holds only under exact assumptions, which the scenario violates.</p>
           <p class="ref">Atoms: <a href="/concepts/cross-validation">cross-validation</a>, <a href="/concepts/aic-bic-conceptual">aic-bic-conceptual</a>.</p>
         </div>
       </details>
@@ -681,9 +681,9 @@
       <p class="q-text">A 10-fold CV-vs-$\log\lambda$ plot for a lasso regression has its minimum at $\log\lambda^* \approx -3$ with CV-MSE = 50.8. The unregularised OLS baseline (which corresponds to $\lambda \to 0$, i.e. far left of the plot) has test MSE = 50.78. Following the prof's interpretation in the L27 walkthrough, what do you conclude?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Lasso slightly underperforms the unregularised model on this dataset, suggesting that the bias added by regularisation isn't offset by a meaningful variance reduction; keep all parameters.</li>
-        <li><span class="opt-label">B</span> Lasso with the chosen $\lambda^*$ clearly beats OLS, so the regularised model should be reported.</li>
-        <li><span class="opt-label">C</span> The 0.02 MSE gap is so small it must be a numerical bug; rerun with a different random seed.</li>
-        <li><span class="opt-label">D</span> CV is unreliable here because lasso introduces sparsity; report the OLS solution and ignore the lasso curve entirely.</li>
+        <li><span class="opt-label">B</span> Lasso with the chosen $\lambda^*$ clearly beats OLS because the CV-MSE at the minimum is lower than the OLS test MSE; report the lasso model with zeroed coefficients dropped.</li>
+        <li><span class="opt-label">C</span> The $0.02$ MSE gap is so small it must reflect a numerical bug in the CV routine or the lasso solver; rerun with a different seed and trust only if the gap reverses sign.</li>
+        <li><span class="opt-label">D</span> CV is unreliable here because lasso's sparsity breaks the $k$-fold variance assumption; report the OLS solution and ignore the lasso curve until a sparsity-corrected SE is available.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -705,9 +705,9 @@
       <p class="q-text">Why is the validation-set approach <em>not</em> the same procedure as 2-fold cross-validation, even though both split the data in roughly two?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> 2-fold CV fits the model twice (swapping train and validation roles) and averages the two fold-MSEs; the validation-set approach fits once and uses only one of those roles.</li>
-        <li><span class="opt-label">B</span> 2-fold CV uses bootstrap resampling whereas the validation-set approach partitions without replacement.</li>
-        <li><span class="opt-label">C</span> 2-fold CV is mathematically equivalent to LOOCV; the validation-set approach is not.</li>
-        <li><span class="opt-label">D</span> 2-fold CV fits the model once on the full data and twice on each half; the validation-set approach skips the full-data fit.</li>
+        <li><span class="opt-label">B</span> 2-fold CV uses bootstrap resampling with replacement to construct the two folds, whereas the validation-set approach partitions once without replacement and never resamples.</li>
+        <li><span class="opt-label">C</span> 2-fold CV is mathematically equivalent to LOOCV in the limit of large $n$; the validation-set approach is biased and not equivalent to either.</li>
+        <li><span class="opt-label">D</span> 2-fold CV first fits the model on the full data and then refits twice on each half for residual corrections; the validation-set approach skips the full-data fit.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -753,9 +753,9 @@
       <p class="q-text">You have $n=1000$ observations and want both to <em>select</em> a hyperparameter and to <em>report</em> an honest test error. Which pipeline is consistent with the prof's framing?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Hold out 200 as a test set once; run 10-fold CV on the remaining 800 to pick the hyperparameter; refit on all 800 with the chosen value; report MSE on the held-out 200.</li>
-        <li><span class="opt-label">B</span> Run 10-fold CV on all 1000 observations once; pick the hyperparameter at the CV minimum; report that same CV error as the test error.</li>
-        <li><span class="opt-label">C</span> Run 10-fold CV on all 1000; if the test MSE looks bad, retune the hyperparameter on the same 10-fold CV and report the better of the two.</li>
-        <li><span class="opt-label">D</span> Hold out 200 as a test set; tune the hyperparameter directly on the 200-point test set; refit and report.</li>
+        <li><span class="opt-label">B</span> Run 10-fold CV on all 1000 observations once; pick the hyperparameter at the CV minimum and report that same CV error as the final test error, since CV is itself unbiased.</li>
+        <li><span class="opt-label">C</span> Run 10-fold CV on all 1000 observations; if the test MSE looks bad, retune the hyperparameter on the same 10-fold split and report whichever configuration gives the better MSE.</li>
+        <li><span class="opt-label">D</span> Hold out 200 as a test set; tune the hyperparameter by minimising the MSE on those 200 test observations across a grid; refit on all 1000 and report.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>

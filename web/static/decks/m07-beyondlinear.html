@@ -277,7 +277,7 @@
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> 3 parameters; the fit is piecewise linear and continuous at every cutpoint.</li>
         <li><span class="opt-label">B</span> 4 parameters; the fit is piecewise constant and may jump at every cutpoint.</li>
-        <li><span class="opt-label">C</span> 4 parameters; the fit is piecewise constant and is forced to be continuous at every cutpoint.</li>
+        <li><span class="opt-label">C</span> 3 parameters; the fit is piecewise constant with one indicator per cutpoint and no separate intercept column.</li>
         <li><span class="opt-label">D</span> 6 parameters; one slope and one intercept inside each of the three bins.</li>
       </ul>
       <details class="fasit-details">
@@ -285,7 +285,7 @@
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: B</span>
           <p>$K$ cutpoints give $K+1$ bins; $K$ indicator dummies plus the intercept = $K+1$ parameters. Here $K=3$, so 4 parameters. The fit is one constant per bin and is <em>not</em> connected — "piecewise constant, but it's not connected, it can jump."</p>
-          <p>A confuses step functions with linear splines (no slopes inside bins, no continuity). C wrongly imposes continuity — the defining feature of step functions is exactly that they jump. D is a piecewise-linear regression with separate slopes per bin (different model entirely; would have 6 parameters, not 4).</p>
+          <p>A confuses step functions with linear splines (no slopes inside bins, no continuity). C miscounts: with $K$ cutpoints you need $K$ indicators <em>plus</em> the intercept column, so 4 parameters, not 3 (omitting the intercept absorbs one bin into the global mean and breaks the basis-on-top-of-intercept framing). D is a piecewise-linear regression with separate slopes per bin (different model entirely; would have 6 parameters, not 4).</p>
           <p class="ref">Atoms: <a href="/concepts/step-functions">step-functions</a>, <a href="/concepts/basis-functions">basis-functions</a>.</p>
         </div>
       </details>
@@ -397,7 +397,7 @@
       </p>
       <ul class="exam-q__tf">
         <li class="exam-q__tf-field">
-          <span class="tf-stmt">a) As $\lambda \to \infty$, $\hat g_2$ has the smaller training RSS because it allows higher-order polynomial behaviour (cubic) to fit the data unpenalised.</span>
+          <span class="tf-stmt">a) As $\lambda \to \infty$, $\hat g_1$ has the smaller training RSS because penalising only the third derivative leaves a strictly larger unpenalised polynomial family than penalising the fourth.</span>
           <label><input type="radio" name="q11-a" value="true"> True</label>
           <label><input type="radio" name="q11-a" value="false"> False</label>
         </li>
@@ -416,7 +416,7 @@
         <summary>Show answer</summary>
         <div class="fasit-body">
           <ol>
-            <li><strong>True</strong> — $\hat g_2$ penalises only the fourth derivative, so cubics (and lower) escape the penalty entirely. Its $\lambda \to \infty$ family is "all cubics," strictly larger than $\hat g_1$'s "all quadratics," giving smaller training RSS.</li>
+            <li><strong>False</strong> — direction reversed. $\hat g_1$ penalises the third derivative, so its unpenalised family at $\lambda \to \infty$ is "all quadratics" (degree $\le 2$). $\hat g_2$ penalises the fourth derivative, so its unpenalised family is "all cubics" (degree $\le 3$) — strictly larger, hence $\hat g_2$ achieves the smaller training RSS, not $\hat g_1$.</li>
             <li><strong>True</strong> — at $\lambda = 0$ the penalty vanishes and the minimiser can interpolate every data point exactly, sending training RSS to 0 for both.</li>
             <li><strong>True</strong> — forcing $g^{(m)} \equiv 0$ leaves polynomials of degree $&lt; m$. So $g^{(3)} \equiv 0 \Rightarrow$ degree $\le 2$ (quadratic family); $g^{(4)} \equiv 0 \Rightarrow$ degree $\le 3$ (cubic family).</li>
           </ol>
@@ -438,7 +438,7 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> <code>span = 0.1</code>: low bias, high variance; <code>span = 0.9</code>: high bias, low variance.</li>
-        <li><span class="opt-label">B</span> <code>span = 0.1</code>: high bias, low variance; <code>span = 0.9</code>: low bias, high variance.</li>
+        <li><span class="opt-label">B</span> <code>span = 0.1</code>: low bias, low variance; <code>span = 0.9</code>: high bias, low variance — local weighting eliminates the variance penalty for narrow spans.</li>
         <li><span class="opt-label">C</span> <code>span = 0.1</code>: low bias, low variance; <code>span = 0.9</code>: high bias, high variance.</li>
         <li><span class="opt-label">D</span> Both choices give roughly identical bias and variance because LOESS averages over local kernels.</li>
       </ul>
@@ -447,7 +447,7 @@
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: A</span>
           <p>Span is the fraction of points entering each local fit. Narrow span (0.1) → only the closest few points → wiggly, low-bias / high-variance ("smoothed KNN with small $K$"). Wide span (0.9) → almost all points contribute to every local fit → near-linear, high-bias / low-variance.</p>
-          <p>B inverts the direction (it is the <em>same</em> direction as $K$ in KNN, the opposite of $\lambda$ in smoothing splines — easy to flip). C invents the unicorn "low-bias and low-variance simultaneously" — that's what we wish for, never what flexibility knobs deliver. D ignores the span knob entirely.</p>
+          <p>B mixes one half right (wide span really does have low variance) with the unicorn "low-bias and low-variance simultaneously" for narrow span — flexibility knobs trade bias against variance, they do not eliminate one for free. C also invents the unicorn at the narrow-span end and inverts the wide-span variance direction. D ignores the span knob entirely.</p>
           <p class="ref">Atoms: <a href="/concepts/local-regression">local-regression</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>.</p>
         </div>
       </details>
@@ -706,7 +706,7 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> The natural spline is forced linear past the boundary knots, reducing tail variance at the cost of two parameters.</li>
-        <li><span class="opt-label">B</span> The natural spline is forced to interpolate every training observation, driving the training residual sum of squares to zero.</li>
+        <li><span class="opt-label">B</span> The natural spline gains two extra parameters relative to a plain cubic spline because it places additional knots at the boundaries.</li>
         <li><span class="opt-label">C</span> The natural spline switches the interior basis from cubic to quadratic, roughly halving the total parameter count.</li>
         <li><span class="opt-label">D</span> The natural spline imposes continuity of all derivatives at every interior knot, including the third derivative.</li>
       </ul>
@@ -715,7 +715,7 @@
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: A</span>
           <p>Natural splines add two boundary constraints (second derivative zero at the boundary knots), forcing linear extrapolation past the outer knots. That's two fewer effective parameters than a plain cubic spline with the same interior knots, and is exactly the behaviour that fixes the "wild boundary tails" of plain cubics.</p>
-          <p>B describes a smoothing spline at $\lambda = 0$, not a natural spline. C invents a quadratic basis — natural splines are still cubic in the interior. D would make the spline a <em>global cubic polynomial</em>, eliminating the piecewise structure entirely.</p>
+          <p>B inverts the parameter direction: the boundary knots are already implicit in the plain cubic spline (they bound the data range), and the natural-spline constraint <em>removes</em> two parameters there rather than adding them. C invents a quadratic basis — natural splines are still cubic in the interior. D would make the spline a <em>global cubic polynomial</em>, eliminating the piecewise structure entirely.</p>
           <p class="ref">Atoms: <a href="/concepts/regression-splines">regression-splines</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>.</p>
         </div>
       </details>
@@ -764,16 +764,16 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> 1</li>
-        <li><span class="opt-label">B</span> 2</li>
+        <li><span class="opt-label">B</span> 4</li>
         <li><span class="opt-label">C</span> 3</li>
-        <li><span class="opt-label">D</span> 4</li>
+        <li><span class="opt-label">D</span> 2</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
-          <span class="fasit-correct">Correct answer: B</span>
+          <span class="fasit-correct">Correct answer: D</span>
           <p>The textbook natural-cubic-spline basis is $b_1(x) = x$ plus $b_{k+2}(x) = d_k(x) - d_K(x)$ for $k = 0, \ldots, K-1$. With one interior knot ($K = 1$) you get $b_1(x) = x$ and one $d_0(x) - d_1(x)$ column — two columns total beyond the intercept. Equivalently: natural cubic spline has $K + 1 = 2$ columns excluding the intercept.</p>
-          <p>A drops the linear column $b_1(x) = x$. C is the count if you forget that the natural-spline boundary constraints kill two parameters. D is the plain cubic spline answer ($K + 3$), which doesn't apply here.</p>
+          <p>A drops the linear column $b_1(x) = x$. C is the count if you forget that the natural-spline boundary constraints kill two parameters. B is the plain cubic spline answer ($K + 3$), which doesn't apply here.</p>
           <p class="ref">Atoms: <a href="/concepts/regression-splines">regression-splines</a>, <a href="/concepts/basis-functions">basis-functions</a>.</p>
         </div>
       </details>

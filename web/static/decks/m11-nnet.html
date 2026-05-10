@@ -65,8 +65,8 @@
         on every non-input unit. Which expression equals the total parameter count?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> $pM + MC$</li>
-        <li><span class="opt-label">B</span> $(p+1)(M+1)C$</li>
+        <li><span class="opt-label">A</span> $pM + MC + p + C$</li>
+        <li><span class="opt-label">B</span> $(p+1)(M+1)(C+1)$</li>
         <li><span class="opt-label">C</span> $(p+1)M + (M+1)C$</li>
         <li><span class="opt-label">D</span> $p(M+1) + M(C+1)$</li>
       </ul>
@@ -75,7 +75,7 @@
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: C</span>
           <p>Each hidden unit has $p$ input weights plus one bias, so input→hidden contributes $(p+1)M$. Each output unit has $M$ weights from hidden plus one bias, so hidden→output contributes $(M+1)C$. The prof's headline formula.</p>
-          <p>A drops both biases — the canonical "forgot the bias term" mistake the prof flagged. B multiplies the two layer counts as if they composed, conflating "how many connections in series" with "how many parameters total". D puts the bias on the sending side instead of the receiving side; the +1 lives on whichever layer is actually receiving the bias unit.</p>
+          <p>A starts from the bias-less weight count and adds $p + C$ instead of the correct $M + C$ — the canonical "added the wrong receiving-side count" slip the prof flagged. B multiplies the three layer counts as if they composed, conflating "how many connections in series" with "how many parameters total"; the formula triple-counts every layer. D puts the bias on the sending side instead of the receiving side; the $+1$ lives on whichever layer is actually receiving the bias unit, never on the sender.</p>
           <p class="ref">Atoms: <a href="/concepts/nn-parameter-count">nn-parameter-count</a>, <a href="/concepts/feedforward-network">feedforward-network</a>. Lecture: <a href="/lectures/L23-nnet-1">L23-nnet-1</a>.</p>
         </div>
       </details>
@@ -147,20 +147,20 @@
       </header>
       <p class="q-text">
         A single hidden ReLU neuron receives inputs $x_1 = -1,\ x_2 = 2,\ x_3 = 0$ with weights
-        $w_1 = 0.5,\ w_2 = 0,\ w_3 = 1$ and bias $b = 0$. What is the neuron's output?
+        $w_1 = 2,\ w_2 = 0,\ w_3 = 1$ and bias $b = 0$. What is the neuron's output?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> $-0.5$</li>
-        <li><span class="opt-label">B</span> $1.5$</li>
-        <li><span class="opt-label">C</span> $0.5$</li>
+        <li><span class="opt-label">A</span> $-2$</li>
+        <li><span class="opt-label">B</span> $2$</li>
+        <li><span class="opt-label">C</span> $1$</li>
         <li><span class="opt-label">D</span> $0$</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: D</span>
-          <p>Pre-activation $z = w_1 x_1 + w_2 x_2 + w_3 x_3 + b = (-1)(0.5) + (2)(0) + (0)(1) + 0 = -0.5$. ReLU clamps negatives to zero: $\max(0, -0.5) = 0$.</p>
-          <p>A reports the raw pre-activation, forgetting to apply ReLU. B uses the absolute value of the pre-activation, ignoring that ReLU is one-sided. C flips a sign on $x_1$ (treats it as $+1$). The canonical trap is forgetting that ReLU outputs exactly zero whenever the pre-activation is negative.</p>
+          <p>Pre-activation $z = w_1 x_1 + w_2 x_2 + w_3 x_3 + b = (-1)(2) + (2)(0) + (0)(1) + 0 = -2$. ReLU clamps negatives to zero: $\max(0, -2) = 0$.</p>
+          <p>A reports the raw pre-activation, forgetting to apply ReLU. B uses the absolute value of the pre-activation, ignoring that ReLU is one-sided. C flips a sign on $x_1$ (treats it as $+1$, then clamps a hypothetical positive). The canonical trap is forgetting that ReLU outputs exactly zero whenever the pre-activation is negative.</p>
           <p class="ref">Atoms: <a href="/concepts/activation-functions">activation-functions</a>, <a href="/concepts/feedforward-network">feedforward-network</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a>.</p>
         </div>
       </details>
@@ -328,7 +328,7 @@
         universal-approximation property (Borel-measurable functions, arbitrary $\varepsilon$)?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Linear output, identity hidden activation, and sufficient hidden width.</li>
+        <li><span class="opt-label">A</span> A skip connection from the input layer to the output, an identity hidden activation, and arbitrarily large width.</li>
         <li><span class="opt-label">B</span> Linear output, a squashing (nonlinear) hidden activation, sufficient width.</li>
         <li><span class="opt-label">C</span> Recurrent connections from the output back to the input layer of the network.</li>
         <li><span class="opt-label">D</span> Sigmoid output, sigmoid hidden activation, with exactly two hidden layers stacked.</li>
@@ -338,7 +338,7 @@
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: B</span>
           <p>The theorem requires (i) a linear output layer, (ii) at least one hidden layer with a "squashing" / nonlinear activation, and (iii) enough hidden units. Depth is not required — one wide hidden layer suffices.</p>
-          <p>A swaps the squashing requirement for an identity activation; the network then collapses to linear regression and cannot represent nonlinear functions. C invokes recurrence, which is unrelated to UAT (recurrent networks add a different capability). D over-specifies with sigmoid output and a fixed depth — the theorem is silent on output activation choice and does not require a particular depth.</p>
+          <p>A combines a skip connection (which UAT does not require and is out of scope here) with an identity hidden activation, so the network collapses to a linear function regardless of width — no squashing means no universal approximation. C invokes recurrence, which is unrelated to UAT (recurrent networks add a different capability). D over-specifies with sigmoid output and a fixed depth — the theorem is silent on output activation choice and does not require a particular depth.</p>
           <p class="ref">Atoms: <a href="/concepts/universal-approximation">universal-approximation</a>, <a href="/concepts/activation-functions">activation-functions</a>. Lecture: <a href="/lectures/L23-nnet-1">L23-nnet-1</a>.</p>
         </div>
       </details>
@@ -468,9 +468,9 @@
         of the following best describes what backpropagation does?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> It updates the parameters in the direction of the negative gradient.</li>
-        <li><span class="opt-label">B</span> It computes the loss on a held-out validation set to detect overfitting.</li>
-        <li><span class="opt-label">C</span> It is a specialised optimiser that replaces gradient descent in modern deep learning.</li>
+        <li><span class="opt-label">A</span> It performs the parameter update by stepping in the direction of the negative gradient and shrinking the step size with a learning-rate schedule.</li>
+        <li><span class="opt-label">B</span> It computes the loss on a held-out validation set after each epoch to detect overfitting and decide when to stop training.</li>
+        <li><span class="opt-label">C</span> It is a specialised second-order optimiser that replaces stochastic gradient descent and is the default in modern deep-learning libraries.</li>
         <li><span class="opt-label">D</span> It applies the chain rule efficiently by reusing intermediate values stored during the forward pass.</li>
       </ul>
       <details class="fasit-details">
@@ -532,9 +532,9 @@
         Which of the following is the strongest single argument that the model can still generalise well?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Universal approximation guarantees that the model fits any function exactly.</li>
-        <li><span class="opt-label">B</span> The bias-variance trade-off says that more parameters always reduce test error.</li>
-        <li><span class="opt-label">C</span> The number of parameters is irrelevant; only the choice of activation function matters for generalisation.</li>
+        <li><span class="opt-label">A</span> The universal-approximation theorem guarantees that, with enough hidden units, the trained network attains low test error on any Borel-measurable target.</li>
+        <li><span class="opt-label">B</span> The bias-variance trade-off implies that adding more parameters monotonically reduces test error, since extra flexibility always lowers bias more than it raises variance.</li>
+        <li><span class="opt-label">C</span> Parameter count is irrelevant for generalisation; only the choice of activation function (ReLU vs sigmoid vs tanh) controls how well a trained NN extrapolates to unseen data.</li>
         <li><span class="opt-label">D</span> Mini-batch SGD with regularisation (L1/L2, dropout, early stopping, augmentation) implicitly selects a low-norm interpolator that generalises.</li>
       </ul>
       <details class="fasit-details">
@@ -609,10 +609,10 @@
         regularisation via tree pruning. Which of the following lists is the analogous menu for neural networks?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Bagging, random forests, boosting, and classification trees.</li>
-        <li><span class="opt-label">B</span> Forward selection, backward selection, AIC, and BIC.</li>
+        <li><span class="opt-label">A</span> Bagging, random forests, gradient boosting, and post-hoc cost-complexity pruning of classification trees.</li>
+        <li><span class="opt-label">B</span> Forward stepwise, backward stepwise, best-subset selection, AIC, BIC, and adjusted-$R^2$ for choosing the predictor set.</li>
         <li><span class="opt-label">C</span> Data augmentation, label smoothing, dropout, and early stopping (plus L1/L2 weight decay).</li>
-        <li><span class="opt-label">D</span> One-hot encoding, batch normalisation, and Adam optimiser tuning.</li>
+        <li><span class="opt-label">D</span> One-hot encoding of categorical inputs, batch normalisation between layers, and tuning of advanced optimisers like Adam or RMSProp.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -637,10 +637,10 @@
         What preprocessing step is essential before fitting, and why?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> One-hot encode all predictors so the network treats them as categorical.</li>
+        <li><span class="opt-label">A</span> One-hot encode every numerical predictor as if it were categorical, so the network learns a separate weight per observed value of each variable.</li>
         <li><span class="opt-label">B</span> Standardise each predictor (subtract its training-set mean, divide by its training-set sd) so no single variable dominates the gradient by scale.</li>
-        <li><span class="opt-label">C</span> Apply principal-component analysis to reduce the input dimension to 5 components.</li>
-        <li><span class="opt-label">D</span> Convert the continuous response to one-hot vectors of housing-price bins.</li>
+        <li><span class="opt-label">C</span> Apply principal-component analysis to the 13 predictors and feed the network only the top 5 components, discarding the remaining variance to control flexibility.</li>
+        <li><span class="opt-label">D</span> Convert the continuous response into one-hot indicator vectors of fixed-width housing-price bins and fit the network as a multi-class classifier instead.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -804,9 +804,9 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Maximising $\ell(\theta)$ in $\theta$ is equivalent to minimising $\sum_i (y_i - f_\theta(x_i))^2$, the least-squares objective.</li>
-        <li><span class="opt-label">B</span> The MLE of $\theta$ depends on $\sigma^2$ but not on the residuals.</li>
-        <li><span class="opt-label">C</span> Maximising $\ell(\theta)$ in $\theta$ is equivalent to maximising the residual sum of squares.</li>
-        <li><span class="opt-label">D</span> Without further assumptions, MLE and least squares give different estimates of $\theta$.</li>
+        <li><span class="opt-label">B</span> The MLE of $\theta$ depends on the noise variance $\sigma^2$ through the multiplicative factor in front of the sum, so changing $\sigma^2$ shifts the argmin.</li>
+        <li><span class="opt-label">C</span> Maximising $\ell(\theta)$ in $\theta$ is equivalent to maximising the residual sum of squares $\sum_i (y_i - f_\theta(x_i))^2$.</li>
+        <li><span class="opt-label">D</span> Without further distributional assumptions on $\varepsilon_i$, MLE and ordinary least squares give different estimates of $\theta$ even under Gaussian noise.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -874,9 +874,9 @@
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Past the interpolation point, the model has infinitely many zero-training-loss fits and SGD picks the minimum-norm one, which keeps variance low even at extreme flexibility.</li>
-        <li><span class="opt-label">B</span> Past the interpolation point, bias goes to zero and variance also goes to zero, so the trade-off disappears.</li>
-        <li><span class="opt-label">C</span> The decomposition only holds for linear regression and breaks down for any nonlinear model.</li>
-        <li><span class="opt-label">D</span> Double descent is observed only for ridge regression and never for neural networks.</li>
+        <li><span class="opt-label">B</span> Past the interpolation point both the bias and the variance of the estimator vanish to zero simultaneously, so the bias-variance trade-off disappears entirely in the over-parameterised regime.</li>
+        <li><span class="opt-label">C</span> The bias-variance decomposition is a theorem about ordinary least squares only, so it breaks down for any nonlinear model and need not apply to neural networks at all.</li>
+        <li><span class="opt-label">D</span> The double-descent curve is observed only for ridge regression with vanishing penalty and has never been documented for neural networks trained with stochastic gradient descent.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -900,10 +900,10 @@
         network for a small tabular dataset. The prof's preferred selection strategy in this course is:
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Pick the values that minimise training error.</li>
-        <li><span class="opt-label">B</span> Use AIC / BIC computed on the training set to penalise complexity automatically.</li>
+        <li><span class="opt-label">A</span> Pick whichever combination of dropout rate, weight-decay strength, and width minimises the training-set loss after enough epochs to drive that loss to zero.</li>
+        <li><span class="opt-label">B</span> Use AIC or BIC computed on the training set to penalise complexity automatically, leveraging the fact that they are derived from the same Gaussian likelihood as the loss.</li>
         <li><span class="opt-label">C</span> Tune the hyperparameters using $k$-fold cross-validation (or a held-out validation set), comparing CV/validation error across candidate values.</li>
-        <li><span class="opt-label">D</span> Use the minimum-norm interpolator, which removes the need for hyperparameter selection altogether.</li>
+        <li><span class="opt-label">D</span> Rely on SGD's implicit minimum-norm-interpolator selection in the over-parameterised regime, which removes the need for any explicit hyperparameter tuning whatsoever.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
@@ -967,21 +967,21 @@
       </header>
       <p class="q-text">
         A hidden-layer ReLU neuron has 4 inputs and one bias. Inputs are
-        $x = (1,\ -2,\ 3,\ 0)$, weights $w = (0.5,\ 0.5,\ -1,\ 2)$, bias $b = 1$.
+        $x = (1,\ -2,\ 3,\ 0)$, weights $w = (1,\ 1,\ -2,\ 2)$, bias $b = 1$.
         What is the neuron's output?
       </p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> $0$</li>
-        <li><span class="opt-label">B</span> $-2.5$</li>
-        <li><span class="opt-label">C</span> $0.5$</li>
-        <li><span class="opt-label">D</span> $2.5$</li>
+        <li><span class="opt-label">B</span> $-6$</li>
+        <li><span class="opt-label">C</span> $6$</li>
+        <li><span class="opt-label">D</span> $4$</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: A</span>
-          <p>Pre-activation: $(0.5)(1) + (0.5)(-2) + (-1)(3) + (2)(0) + 1 = 0.5 - 1 - 3 + 0 + 1 = -2.5$. ReLU clamps negatives to zero: $\max(0, -2.5) = 0$.</p>
-          <p>B reports the raw pre-activation, forgetting to apply ReLU. C and D are sign- or arithmetic-slip distractors (e.g. $-2.5 + 3$ or $-2.5 - (-3)$ as if a sign were flipped). The trap is exactly the canonical "forgot to apply $\max(0,\cdot)$" or sign error in the $w_3 x_3$ term.</p>
+          <p>Pre-activation: $(1)(1) + (1)(-2) + (-2)(3) + (2)(0) + 1 = 1 - 2 - 6 + 0 + 1 = -6$. ReLU clamps negatives to zero: $\max(0, -6) = 0$.</p>
+          <p>B reports the raw pre-activation, forgetting to apply ReLU. C reports the absolute value of the pre-activation, treating ReLU as $|z|$. D is the sign-slip distractor: flipping the sign on the $w_3 x_3 = -6$ term gives $+6$, then applying bias $+1$ minus the ReLU step yields $4$ if you also drop the $-2$ contribution. The canonical trap is exactly the "forgot to apply $\max(0,\cdot)$" or sign error in the $w_3 x_3$ term.</p>
           <p class="ref">Atoms: <a href="/concepts/activation-functions">activation-functions</a>, <a href="/concepts/feedforward-network">feedforward-network</a>.</p>
         </div>
       </details>

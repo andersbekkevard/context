@@ -69,7 +69,7 @@
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Inference, because the team relies on the model to make decisions about the future.</li>
         <li><span class="opt-label">B</span> Inference, because deep neural networks have many parameters whose meaning could be interpreted post hoc.</li>
-        <li><span class="opt-label">C</span> Unsupervised, because no human-labelled outcome is provided.</li>
+        <li><span class="opt-label">C</span> Inference, because next-day forecasts are downstream <em>decisions</em>, and reasoning under uncertainty about future outcomes is the textbook definition of statistical inference.</li>
         <li><span class="opt-label">D</span> Prediction, because they care about $\hat Y$ being accurate but not about the form of $f$.</li>
       </ul>
       <details class="fasit-details">
@@ -77,7 +77,7 @@
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: D</span>
           <p>The defining tell is "nobody can describe what the network has learned, and they are content with that as long as the forecast is accurate." That is the prof's canonical prediction setup: <em>"you don't really care if the model is right. That's secondary. Being right is not as important as being able to predict well… with knowing your uncertainty."</em></p>
-          <p>A confuses "make decisions" with "infer structure" — quants make decisions on a black-box forecast every day. B inverts the rule: parameter count is irrelevant to the prediction-vs-inference axis; what matters is whether the analyst cares about the form of $f$. C conflates "no interpretation" with "no response variable" — there is a response (next-day price) and known training labels, so the task is supervised.</p>
+          <p>A confuses "make decisions" with "infer structure" — quants make decisions on a black-box forecast every day. B inverts the rule: parameter count is irrelevant to the prediction-vs-inference axis; what matters is whether the analyst cares about the form of $f$. C abuses the everyday word "inference" — in this course "inference" specifically means caring about the form of $f$ (which knobs matter, by how much), not "reasoning about the future." Forecasting tomorrow's price under uncertainty is the canonical <em>prediction</em> task, regardless of how downstream decisions feel.</p>
           <p class="ref">Atoms: <a href="/concepts/prediction-vs-inference">prediction-vs-inference</a>, <a href="/concepts/supervised-vs-unsupervised">supervised-vs-unsupervised</a>. Lecture: <a href="/lectures/L01-intro">L01-intro</a>.</p>
         </div>
       </details>
@@ -181,14 +181,14 @@
         <li><span class="opt-label">A</span> The statistician's angle on machine learning — same algorithms, but emphasising uncertainty, bias-variance, and misspecification.</li>
         <li><span class="opt-label">B</span> A strictly larger field that contains both classical statistics and machine learning as proper subsets, by definition of "learning."</li>
         <li><span class="opt-label">C</span> A subfield of classical statistics that differs by using likelihood-based inference, whereas classical stats relies only on least squares.</li>
-        <li><span class="opt-label">D</span> The engineering-focused subfield of machine learning concerned with deploying production models at scale.</li>
+        <li><span class="opt-label">D</span> A rebranding of classical statistics under a more fashionable name — same hypothesis tests and confidence intervals, with no real change in tools or perspective beyond the label.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: A</span>
           <p>Verbatim: <em>"Statistical learning was a way for statisticians to get in on machine learning… same models as ML but with the statistician's care about uncertainty, bias-variance, distributional assumptions."</em> Plus: classical stats states the model first; statistical learning has the data come first and operates in the misspecified-model regime.</p>
-          <p>B inflates the field — the prof treats stat learning, ML, and classical stats as overlapping with different emphasis, not as nested sets. C miscasts the contrast — both classical stats and statistical learning use likelihoods and least squares; the real split is "model-first vs data-first" / "well-specified vs misspecified." D inverts the orientation: statistical learning is the <em>theory-focused</em> angle on ML algorithms, not the engineering / deployment side.</p>
+          <p>B inflates the field — the prof treats stat learning, ML, and classical stats as overlapping with different emphasis, not as nested sets. C miscasts the contrast — both classical stats and statistical learning use likelihoods and least squares; the real split is "model-first vs data-first" / "well-specified vs misspecified." D collapses the distinction the prof works hard to draw: statistical learning is not just classical stats with a new sticker — it operates in the misspecified-model / data-first regime and inherits algorithms (trees, boosting, neural nets) that classical stats never owned.</p>
           <p class="ref">Atoms: <a href="/concepts/statistical-learning">statistical-learning</a>. Lectures: <a href="/lectures/L01-intro">L01-intro</a>, <a href="/lectures/L02-statlearn-1">L02-statlearn-1</a>.</p>
         </div>
       </details>
@@ -474,15 +474,15 @@
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> It is a feature-selection rule of thumb: keep predictors with low variance and drop those with high bias on training residuals.</li>
         <li><span class="opt-label">B</span> It is the statistician's distinctive lens on flexible ML models — a way to reason about why high flexibility fits training data well but generalises poorly without restraint.</li>
-        <li><span class="opt-label">C</span> It is a result confined to linear regression that breaks down once non-linear methods such as trees or neural networks enter the picture.</li>
-        <li><span class="opt-label">D</span> It is mainly a statement about computational cost: variance grows with model size, so smaller models are always preferable when training time matters.</li>
+        <li><span class="opt-label">C</span> It is a normative rule that says one should always pick the model that minimises bias, since variance can later be controlled by collecting more data.</li>
+        <li><span class="opt-label">D</span> It is essentially a restatement of the central limit theorem applied to estimators, and therefore mainly a result about asymptotic distributions of $\hat{\beta}$ rather than test-set behaviour.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: B</span>
           <p>The prof's framing in L01–L03: bias-variance is the running theme of the course because it is the lens through which statisticians look at flexible ML models. "Statistical learning was a way for statisticians to get in on machine learning" — bias-variance is one of the main perspectives they brought, and the prof flagged it as guaranteed exam material starting day one.</p>
-          <p>A invents a feature-selection rule that does not exist; bias-variance is a property of <em>predictions</em>, not individual predictors. C is the opposite of the truth: bias-variance is exactly what makes flexible models tractable to reason about — it applies to every method in the course (regression, ridge/lasso, KNN, trees, RF, boosting, splines, neural nets). D conflates two unrelated things: variance in the bias-variance sense is sampling variance of $\hat f$, not computational cost. Compute is not why we care about bias-variance.</p>
+          <p>A invents a feature-selection rule that does not exist; bias-variance is a property of <em>predictions</em>, not individual predictors. C states a one-sided rule the prof explicitly rejects — chasing zero bias is exactly what produces overfitting; the whole point of the trade-off is that you cannot just push bias down and clean up variance later. D miscategorises the result: bias-variance is a decomposition of expected test error at a fixed point, not an asymptotic statement about $\hat\beta$ distributions; it speaks directly about test-set behaviour, which is why the prof flags it as the running theme.</p>
           <p class="ref">Atoms: <a href="/concepts/statistical-learning">statistical-learning</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>. Lectures: <a href="/lectures/L01-intro">L01-intro</a>, <a href="/lectures/L03-statlearn-2">L03-statlearn-2</a>.</p>
         </div>
       </details>
@@ -508,14 +508,14 @@
         <li><span class="opt-label">A</span> inference</li>
         <li><span class="opt-label">B</span> unsupervised learning</li>
         <li><span class="opt-label">C</span> prediction</li>
-        <li><span class="opt-label">D</span> bias-variance trade-off</li>
+        <li><span class="opt-label">D</span> regression</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: C</span>
           <p>The trap is the prof's classic Q1 hook: the answer is buried in subtle wording, not the obvious word at the top of the paragraph. The phrase "we do not care about the actual model parameters" is the canonical signature of <strong>prediction</strong> — black-box forecasting where only $\hat Y$ matters.</p>
-          <p>A inverts the definition: inference is precisely "we care which parameters matter and how to interpret them," which the passage explicitly contrasts with the latter case. B is wrong on the first word of the passage — the setup says "in supervised learning," and unsupervised learning has no response to relate variables to anyway. D names a concept (bias-variance) rather than a goal of supervised learning, and "trade-off" is not a fill-in for the slot the passage is asking about.</p>
+          <p>A inverts the definition: inference is precisely "we care which parameters matter and how to interpret them," which the passage explicitly contrasts with the latter case. B is wrong on the first word of the passage — the setup says "in supervised learning," and unsupervised learning has no response to relate variables to anyway. D confuses an outcome <em>type</em> (continuous-Y problem) with a <em>purpose</em>: regression and classification are model classes, while the passage is asking which of the two purposes of supervised learning is being described — interpretation or forecasting.</p>
           <p class="ref">Atoms: <a href="/concepts/prediction-vs-inference">prediction-vs-inference</a>, <a href="/concepts/supervised-vs-unsupervised">supervised-vs-unsupervised</a>. Lecture: <a href="/lectures/L27-summary">L27-summary</a> (Q1 walkthrough).</p>
         </div>
       </details>

@@ -269,14 +269,14 @@
         <li><span class="opt-label">A</span> The first PC will load almost entirely on <code>Assault</code>, because its raw variance dwarfs the others.</li>
         <li><span class="opt-label">B</span> The first PC will load most heavily on <code>UrbanPop</code>, because urbanization is qualitatively the strongest signal in the data.</li>
         <li><span class="opt-label">C</span> The result will be the same as with standardization, since PCA is invariant to linear rescaling of the columns.</li>
-        <li><span class="opt-label">D</span> PCA will return an error, because the column variances differ by more than two orders of magnitude.</li>
+        <li><span class="opt-label">D</span> The first PC will load roughly equally on all four variables, since PCA implicitly standardizes its inputs before computing loadings.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: A</span>
           <p>PCA chases total variance, and unscaled <code>Assault</code> has variance ≈ 6945, which is ~35× larger than the next biggest column. The first PC's loading on <code>Assault</code> approaches 1 and the substantive "overall criminality" axis is lost. Standardize, and PC1 picks up the meaningful all-three-crime axis instead.</p>
-          <p>B confuses qualitative interpretability with the numerical objective; PCA does not know what variables "mean." C contradicts the prof's slide bullet "PCA is not scale invariant" — this is the canonical scope trap. D invents a numerical-stability constraint that does not exist.</p>
+          <p>B confuses qualitative interpretability with the numerical objective; PCA does not know what variables "mean." C contradicts the prof's slide bullet "PCA is not scale invariant" — this is the canonical scope trap. D states a common but false belief: PCA does <em>not</em> standardize for you. You either pass the covariance matrix (raw, scale-sensitive) or the correlation matrix (standardized); the choice is yours.</p>
           <p class="ref">Atoms: <a href="/concepts/principal-component-analysis">principal-component-analysis</a>, <a href="/concepts/standardization">standardization</a>. Lecture: <a href="/lectures/L21-unsupervised-1">L21-unsupervised-1</a>.</p>
         </div>
       </details>
@@ -292,17 +292,17 @@
         A PCA on $p = 8$ standardized variables yields a scree plot in which all eight bars are roughly equal in height. What is the most defensible conclusion?
       </p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> The data has very strong low-dimensional structure; keeping only PC1 is sufficient.</li>
+        <li><span class="opt-label">A</span> The first two PCs together explain about 90% of the variance, so a 2-D summary is appropriate.</li>
         <li><span class="opt-label">B</span> The variables are perfectly collinear, and the original data lies on a 1-D line.</li>
         <li><span class="opt-label">C</span> PCA has revealed no real low-dimensional structure; dimensionality reduction will not help here.</li>
-        <li><span class="opt-label">D</span> The standardization step must have been skipped, and the analysis should be re-run.</li>
+        <li><span class="opt-label">D</span> The standardization step inflated the small eigenvalues; rescaling each column by its kurtosis would expose the true low-dim structure.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: C</span>
           <p>A flat scree plot means each PC explains roughly $1/p$ of the variance — i.e., the variables were already nearly orthogonal. The prof: "if the variables were already orthogonal then adding more PCs is just the same as adding another variable." There is no low-dim structure to exploit.</p>
-          <p>A inverts the reading: a flat scree means weak — not strong — low-dim structure. B describes the opposite extreme (one PC explaining ≈ 100%); perfect collinearity gives a steep, not flat, scree. D blames standardization, but standardization makes <em>flat</em> scree plots more likely (column variances all 1) — the diagnostic for forgetting to standardize is one PC dominating, not the reverse.</p>
+          <p>A miscounts: each of eight equal bars carries $\approx 12.5\%$, so PC1+PC2 cover only $\approx 25\%$ — not 90%. B describes the opposite extreme (one PC explaining ≈ 100%); perfect collinearity gives a steep, not flat, scree. D invents a "rescale by kurtosis" fix that is not part of PCA — the input was already standardized, and standardization is exactly why each PC is equal-share.</p>
           <p class="ref">Atoms: <a href="/concepts/explained-variance-and-scree-plot">explained-variance-and-scree-plot</a>. Lecture: <a href="/lectures/L15-modelsel-4">L15-modelsel-4</a>.</p>
         </div>
       </details>
@@ -423,14 +423,14 @@
         <li><span class="opt-label">A</span> Observations 9 and 7, since they are adjacent on the x-axis.</li>
         <li><span class="opt-label">B</span> Observations 9 and 2, since their fusion height is lower.</li>
         <li><span class="opt-label">C</span> The dendrogram does not contain enough information to compare these two pairs.</li>
-        <li><span class="opt-label">D</span> Both pairs are equally similar, since both belong to the same dendrogram.</li>
+        <li><span class="opt-label">D</span> Observation 9's similarity to 7 versus to 2 depends on the linkage rule used to draw the dendrogram, so neither pair is unambiguously closer.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: B</span>
           <p>Only the <strong>fusion height</strong> (vertical axis) carries information. The prof: "Don't assume that 9 and 2 are somehow closer together for some reason. Don't interpret this [horizontal layout] as being distances between things." There are $2^{n-1}$ valid horizontal orderings of the same dendrogram (children can be swapped at every fusion); horizontal proximity is arbitrary.</p>
-          <p>A is the canonical dendrogram-reading trap. C is overly cautious — fusion height does encode similarity, you just have to read the right axis. D ignores the structure entirely.</p>
+          <p>A is the canonical dendrogram-reading trap. C is overly cautious — fusion height does encode similarity, you just have to read the right axis. D drags in a real concern (linkage choice does shift fusion heights) but irrelevantly: once a single dendrogram is drawn, that linkage is already fixed, and pair similarities are read directly off the y-axis.</p>
           <p class="ref">Atoms: <a href="/concepts/hierarchical-clustering">hierarchical-clustering</a>. Lecture: <a href="/lectures/L22-unsupervised-2">L22-unsupervised-2</a>.</p>
         </div>
       </details>
@@ -572,14 +572,14 @@
         <li><span class="opt-label">A</span> Hierarchical clustering produces a dendrogram from which any $K$ can be read by cutting at different heights, while K-means returns one partition for one fixed $K$.</li>
         <li><span class="opt-label">B</span> Hierarchical clustering is supervised because it uses the response $Y$ to weight pairwise distances, while K-means is unsupervised and ignores $Y$.</li>
         <li><span class="opt-label">C</span> Hierarchical clustering is guaranteed to find the global optimum of a well-defined objective, while K-means is only guaranteed to find a local optimum.</li>
-        <li><span class="opt-label">D</span> Hierarchical clustering does not need any distance between observations to run, while K-means cannot proceed without Euclidean distance.</li>
+        <li><span class="opt-label">D</span> Hierarchical clustering scales linearly in $n$ and is preferred for very large datasets, while K-means requires recomputing all pairwise distances at every iteration.</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: A</span>
           <p>Hierarchical clustering produces a tree (the dendrogram) you can cut at any height — one fit, all $K$'s available simultaneously. K-means must be re-run for each $K$, and partitions across $K$ are not nested.</p>
-          <p>B is wrong on both counts — both methods are unsupervised. C invents a non-existent guarantee; hierarchical merges are deterministic but the result depends on the linkage and dissimilarity choices, neither method "globally optimizes" anything in a useful sense. D inverts reality: hierarchical clustering is built around a distance/dissimilarity matrix, and K-means' Euclidean is swappable in principle (though the centroid step assumes Euclidean for its closed-form mean update).</p>
+          <p>B is wrong on both counts — both methods are unsupervised. C invents a non-existent guarantee; hierarchical merges are deterministic but the result depends on the linkage and dissimilarity choices, neither method "globally optimizes" anything in a useful sense. D inverts the cost story: hierarchical agglomerative clustering builds and updates a full $n\times n$ dissimilarity matrix (at least $O(n^2)$ memory), while K-means costs only $O(nKp)$ per iteration and is the cheaper option for large $n$.</p>
           <p class="ref">Atoms: <a href="/concepts/hierarchical-clustering">hierarchical-clustering</a>, <a href="/concepts/k-means-clustering">k-means-clustering</a>.</p>
         </div>
       </details>
@@ -598,14 +598,14 @@
         <li><span class="opt-label">A</span> Single linkage</li>
         <li><span class="opt-label">B</span> Centroid linkage</li>
         <li><span class="opt-label">C</span> Complete linkage</li>
-        <li><span class="opt-label">D</span> Linkage choice does not affect chaining</li>
+        <li><span class="opt-label">D</span> Single linkage with correlation distance — chaining is a Euclidean-only artifact</li>
       </ul>
       <details class="fasit-details">
         <summary>Show answer</summary>
         <div class="fasit-body">
           <span class="fasit-correct">Correct answer: C</span>
           <p>Single linkage's $\min$ rule is what produces chaining: a single near-neighbor pulls a whole cluster forward one step at a time. Complete linkage uses $\max$, so a candidate merge has to be close to <em>every</em> point in the existing cluster, producing balanced compact clusters. (Average is also fine; it isn't offered here.)</p>
-          <p>A is the linkage that <em>causes</em> chaining — the opposite of what was asked. B (centroid) can produce dendrogram inversions and is generally not preferred; the prof name-checks it but doesn't recommend it. D contradicts the prof: "Average and complete tend to yield more balanced clusters."</p>
+          <p>A is the linkage that <em>causes</em> chaining — the opposite of what was asked. B (centroid) can produce dendrogram inversions and is generally not preferred; the prof name-checks it but doesn't recommend it. D mislocates the cause of chaining: it comes from single linkage's $\min$ rule (one near-neighbor pulls the cluster forward), not from the choice of metric. Switching Euclidean for correlation does not fix it; switching $\min$ for $\max$ does.</p>
           <p class="ref">Atoms: <a href="/concepts/hierarchical-clustering">hierarchical-clustering</a>. Lecture: <a href="/lectures/L22-unsupervised-2">L22-unsupervised-2</a>.</p>
         </div>
       </details>
