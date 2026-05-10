@@ -14,6 +14,7 @@ Index of the **ISLP** chapter notes included in this site. Chapters 9 (SVM), 11 
 - <a href="/book/06-modelsel" rel="noopener">Chapter 6: Linear Model Selection and Regularization</a>
 - <a href="/book/07-beyondlinear" rel="noopener">Chapter 7: Moving Beyond Linearity</a>
 - <a href="/book/08-trees" rel="noopener">Chapter 8: Tree-Based Methods</a>
+- <a href="/book/08b-boosting" rel="noopener">Boosting and Additive Trees</a> — this is ESL.
 - <a href="/book/10-deeplearning" rel="noopener">Chapter 10: Deep Learning</a>
 - <a href="/book/12-unsupervised" rel="noopener">Chapter 12: Unsupervised Learning</a>
 
