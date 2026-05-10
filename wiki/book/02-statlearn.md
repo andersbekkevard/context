@@ -12,7 +12,9 @@ In this setting, the advertising budgets are *input variables* while `sales` is 
 
 More generally, suppose that we observe a quantitative response $Y$ and $p$ different predictors, $X_1, X_2, \ldots, X_p$. We assume that there is some relationship between $Y$ and $X = (X_1, X_2, \ldots, X_p)$, which can be written in the very general form
 
-$$Y = f(X) + \epsilon. \tag{2.1}$$
+$$
+Y = f(X) + \epsilon. \tag{2.1}
+$$
 
 > **Figure 2.1.** *The* `Advertising` *data set. The plot displays* `sales`*, in thousands of units, as a function of* `TV`*,* `radio`*, and* `newspaper` *budgets, in thousands of dollars, for 200 different markets. In each plot we show the simple least squares fit of* `sales` *to that variable, as described in Chapter 3. In other words, each blue line represents a simple model that can be used to predict* `sales` *using* `TV`*,* `radio`*, and* `newspaper`*, respectively.*
 
@@ -36,7 +38,9 @@ There are two main reasons that we may wish to estimate $f$: *prediction* and *i
 
 In many situations, a set of inputs $X$ are readily available, but the output $Y$ cannot be easily obtained. In this setting, since the error term averages to zero, we can predict $Y$ using
 
-$$\hat{Y} = \hat{f}(X), \tag{2.2}$$
+$$
+\hat{Y} = \hat{f}(X), \tag{2.2}
+$$
 
 where $\hat{f}$ represents our estimate for $f$, and $\hat{Y}$ represents the resulting prediction for $Y$. In this setting, $\hat{f}$ is often treated as a *black box*, in the sense that one is not typically concerned with the exact form of $\hat{f}$, provided that it yields accurate predictions for $Y$.
 
@@ -50,12 +54,15 @@ Why is the irreducible error larger than zero? The quantity $\epsilon$ may conta
 
 Consider a given estimate $\hat{f}$ and a set of predictors $X$, which yields the prediction $\hat{Y} = \hat{f}(X)$. Assume for a moment that both $\hat{f}$ and $X$ are fixed, so that the only variability comes from $\epsilon$. Then, it is easy to show that
 
-$$\begin{align}
+$$
+\begin{aligned}
 \mathrm{E}(Y - \hat{Y})^2
 &= \mathrm{E}\bigl[f(X) + \epsilon - \hat{f}(X)\bigr]^2 \\[4pt]
 &= \underbrace{\bigl[f(X) - \hat{f}(X)\bigr]^2}_{\text{Reducible}}
- + \underbrace{\mathrm{Var}(\epsilon)}_{\text{Irreducible}},
-\end{align} \tag{2.3}$$
+ + \underbrace{\mathrm{Var}(\epsilon)}_{\text{Irreducible}}.
+\end{aligned}
+\tag{2.3}
+$$
 
 where $\mathrm{E}(Y - \hat{Y})^2$ represents the average, or *expected value*, of the squared difference between the predicted and actual value of $Y$, and $\mathrm{Var}(\epsilon)$ represents the *variance* associated with the error term $\epsilon$.
 
@@ -93,7 +100,9 @@ Depending on whether our ultimate goal is prediction, inference, or a combinatio
 
 Throughout this book, we explore many linear and non-linear approaches for estimating $f$. However, these methods generally share certain characteristics. We provide an overview of these shared characteristics in this section. We will always assume that we have observed a set of $n$ different data points. For example in Figure 2.2 we observed $n = 30$ data points. These observations are called the *training data* because we will use these observations to train, or teach, our method how to estimate $f$. Let $x_{ij}$ represent the value of the $j$th predictor, or input, for observation $i$, where $i = 1, 2, \ldots, n$ and $j = 1, 2, \ldots, p$. Correspondingly, let $y_i$ represent the response variable for the $i$th observation. Then our training data consist of
 
-$$\{(x_1, y_1), (x_2, y_2), \ldots, (x_n, y_n)\}$$
+$$
+\{(x_1, y_1), (x_2, y_2), \ldots, (x_n, y_n)\}
+$$
 
 where $x_i = (x_{i1}, x_{i2}, \ldots, x_{ip})^T$.
 
@@ -105,7 +114,9 @@ Parametric methods involve a two-step model-based approach.
 
 1. **First**, we make an assumption about the functional form, or shape, of $f$. For example, one very simple assumption is that $f$ is linear in $X$:
 
-$$f(X) = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p. \tag{2.4}$$
+$$
+f(X) = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p. \tag{2.4}
+$$
 
    This is a *linear model*, which will be discussed extensively in Chapter 3. Once we have assumed that $f$ is linear, the problem of estimating $f$ is greatly simplified. Instead of having to estimate an entirely arbitrary $p$-dimensional function $f(X)$, one only needs to estimate the $p + 1$ coefficients $\beta_0, \beta_1, \ldots, \beta_p$.
 
@@ -113,7 +124,9 @@ $$f(X) = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p. \tag{2.4}$$
 
 2. **After** a model has been selected, we need a procedure that uses the training data to *fit* or *train* the model. In the case of the linear model (2.4), we need to estimate the parameters $\beta_0, \beta_1, \ldots, \beta_p$. That is, we want to find values of these parameters such that
 
-$$Y \approx \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p.$$
+$$
+Y \approx \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p.
+$$
 
    The most common approach to fitting the model (2.4) is referred to as *(ordinary) least squares*, which we discuss in Chapter 3. However, least squares is one of many possible ways to fit the linear model. In Chapter 6, we discuss other approaches for estimating the parameters in (2.4).
 
@@ -121,7 +134,9 @@ The model-based approach just described is referred to as *parametric*; it reduc
 
 Figure 2.4 shows an example of the parametric approach applied to the `Income` data from Figure 2.3. We have fit a linear model of the form
 
-$$\texttt{income} \approx \beta_0 + \beta_1 \times \texttt{education} + \beta_2 \times \texttt{seniority}.$$
+$$
+\texttt{income} \approx \beta_0 + \beta_1 \times \texttt{education} + \beta_2 \times \texttt{seniority}.
+$$
 
 > **Figure 2.5.** *A smooth thin-plate spline fit to the* `Income` *data from Figure 2.3 is shown in yellow; the observations are displayed in red. Splines are discussed in Chapter 7.*
 
@@ -187,7 +202,9 @@ In this section, we discuss some of the most important concepts that arise in se
 
 In order to evaluate the performance of a statistical learning method on a given data set, we need some way to measure how well its predictions actually match the observed data. That is, we need to quantify the extent to which the predicted response value for a given observation is close to the true response value for that observation. In the regression setting, the most commonly-used measure is the *mean squared error* (MSE), given by
 
-$$\text{MSE} = \frac{1}{n} \sum_{i=1}^{n} \bigl(y_i - \hat{f}(x_i)\bigr)^2, \tag{2.5}$$
+$$
+\text{MSE} = \frac{1}{n} \sum_{i=1}^{n} \bigl(y_i - \hat{f}(x_i)\bigr)^2, \tag{2.5}
+$$
 
 where $\hat{f}(x_i)$ is the prediction that $\hat{f}$ gives for the $i$th observation. The MSE will be small if the predicted responses are very close to the true responses, and will be large if for some of the observations, the predicted and true responses differ substantially.
 
@@ -195,7 +212,9 @@ The MSE in (2.5) is computed using the training data that was used to fit the mo
 
 To state it more mathematically, suppose that we fit our statistical learning method on our training observations $\{(x_1, y_1), (x_2, y_2), \ldots, (x_n, y_n)\}$, and we obtain the estimate $\hat{f}$. We can then compute $\hat{f}(x_1), \hat{f}(x_2), \ldots, \hat{f}(x_n)$. If these are approximately equal to $y_1, y_2, \ldots, y_n$, then the training MSE given by (2.5) is small. However, we are really not interested in whether $\hat{f}(x_i) \approx y_i$; instead, we want to know whether $\hat{f}(x_0)$ is approximately equal to $y_0$, where $(x_0, y_0)$ is a *previously unseen test observation not used to train the statistical learning method*. We want to choose the method that gives the lowest *test MSE*, as opposed to the lowest training MSE. In other words, if we had a large number of test observations, we could compute
 
-$$\mathrm{Ave}\bigl(y_0 - \hat{f}(x_0)\bigr)^2, \tag{2.6}$$
+$$
+\mathrm{Ave}\bigl(y_0 - \hat{f}(x_0)\bigr)^2, \tag{2.6}
+$$
 
 the average squared prediction error for these test observations $(x_0, y_0)$. We'd like to select the model for which this quantity is as small as possible.
 
@@ -225,7 +244,9 @@ The U-shape observed in the test MSE curves (Figures 2.9–2.11) turns out to be
 
 Though the mathematical proof is beyond the scope of this book, it is possible to show that the expected test MSE, for a given value $x_0$, can always be decomposed into the sum of three fundamental quantities: the *variance* of $\hat{f}(x_0)$, the squared *bias* of $\hat{f}(x_0)$ and the variance of the error terms $\epsilon$. That is,
 
-$$E\!\left(y_0 - \hat{f}(x_0)\right)^2 = \mathrm{Var}\!\left(\hat{f}(x_0)\right) + \left[\mathrm{Bias}\!\left(\hat{f}(x_0)\right)\right]^2 + \mathrm{Var}(\epsilon). \tag{2.7}$$
+$$
+E\!\left(y_0 - \hat{f}(x_0)\right)^2 = \mathrm{Var}\!\left(\hat{f}(x_0)\right) + \left[\mathrm{Bias}\!\left(\hat{f}(x_0)\right)\right]^2 + \mathrm{Var}(\epsilon). \tag{2.7}
+$$
 
 Here the notation $E\!\left(y_0 - \hat{f}(x_0)\right)^2$ defines the *expected test MSE* at $x_0$, and refers to the average test MSE that we would obtain if we repeatedly estimated $f$ using a large number of training sets, and tested each at $x_0$. The overall expected test MSE can be computed by averaging $E\!\left(y_0 - \hat{f}(x_0)\right)^2$ over all possible values of $x_0$ in the test set.
 
@@ -246,17 +267,22 @@ The three plots in Figure 2.12 illustrate Equation 2.7 for the examples in Figur
 The relationship between bias, variance, and test set MSE given in Equation 2.7 and displayed in Figure 2.12 is referred to as the *bias-variance trade-off*. Good test set performance of a statistical learning method requires low variance as well as low squared bias. This is referred to as a trade-off because it is easy to obtain a method with extremely low bias but high variance (for instance, by drawing a curve that passes through every single training observation) or a method with very low variance but high bias (by fitting a horizontal line to the data). The challenge lies in finding a method for which both the variance and the squared bias are low. This trade-off is one of the most important recurring themes in this book.
 
 In a real-life situation in which $f$ is unobserved, it is generally not possible to explicitly compute the test MSE, bias, or variance for a statistical learning method. Nevertheless, one should always keep the bias-variance trade-off in mind. In this book we explore methods that are extremely flexible and hence can essentially eliminate bias. However, this does not guarantee that they will outperform a much simpler method such as linear regression. To take an extreme example, suppose that the true $f$ is linear. In this situation linear regression will have no bias, making it very hard for a more flexible method to compete. In contrast, if the true $f$ is highly non-linear and we have an ample number of training observations, then we may do better using a highly flexible approach, as in Figure 2.11. In Chapter 5 we discuss cross-validation, which is a way to estimate the test MSE using the training data.
+
 ### 2.2.3 The Classification Setting
 
 Thus far, our discussion of model accuracy has been focused on the regression setting. But many of the concepts that we have encountered, such as the bias-variance trade-off, transfer over to the classification setting with only some modifications due to the fact that $y_i$ is no longer quantitative. Suppose that we seek to estimate $f$ on the basis of training observations $\{(x_1, y_1), \ldots, (x_n, y_n)\}$, where now $y_1, \ldots, y_n$ are qualitative. The most common approach for quantifying the accuracy of our estimate $\hat{f}$ is the **training error rate**, the proportion of mistakes that are made if we apply our estimate $\hat{f}$ to the training observations:
 
-$$\frac{1}{n} \sum_{i=1}^{n} I(y_i \neq \hat{y}_i). \tag{2.8}$$
+$$
+\frac{1}{n} \sum_{i=1}^{n} I(y_i \neq \hat{y}_i). \tag{2.8}
+$$
 
 Here $\hat{y}_i$ is the predicted class label for the $i$th observation using $\hat{f}$. And $I(y_i \neq \hat{y}_i)$ is an **indicator variable** that equals 1 if $y_i \neq \hat{y}_i$ and zero if $y_i = \hat{y}_i$. If $I(y_i \neq \hat{y}_i) = 0$ then the $i$th observation was classified correctly by our classification method; otherwise it was misclassified. Hence Equation 2.8 computes the fraction of incorrect classifications.
 
 Equation 2.8 is referred to as the **training error** rate because it is computed based on the data that was used to train our classifier. As in the regression setting, we are most interested in the error rates that result from applying our classifier to test observations that were not used in training. The **test error** rate associated with a set of test observations of the form $(x_0, y_0)$ is given by
 
-$$\text{Ave}\!\left(I(y_0 \neq \hat{y}_0)\right), \tag{2.9}$$
+$$
+\text{Ave}\!\left(I(y_0 \neq \hat{y}_0)\right), \tag{2.9}
+$$
 
 where $\hat{y}_0$ is the predicted class label that results from applying the classifier to the test observation with predictor $x_0$. A good classifier is one for which the test error (2.9) is smallest.
 
@@ -264,7 +290,9 @@ where $\hat{y}_0$ is the predicted class label that results from applying the cl
 
 It is possible to show (though the proof is outside of the scope of this book) that the test error rate given in (2.9) is minimized, on average, by a very simple classifier that *assigns each observation to the most likely class, given its predictor values*. In other words, we should simply assign a test observation with predictor vector $x_0$ to the class $j$ for which
 
-$$\Pr(Y = j \mid X = x_0) \tag{2.10}$$
+$$
+\Pr(Y = j \mid X = x_0) \tag{2.10}
+$$
 
 is largest. Note that (2.10) is a **conditional probability**: it is the probability that $Y = j$, given the observed predictor vector $x_0$. This very simple classifier is called the **Bayes classifier**. In a two-class problem where there are only two possible response values, say *class 1* or *class 2*, the Bayes classifier corresponds to predicting class one if $\Pr(Y = 1 \mid X = x_0) > 0.5$, and class two otherwise.
 
@@ -274,7 +302,9 @@ Figure 2.13 provides an example using a simulated data set in a two-dimensional 
 
 The Bayes classifier produces the lowest possible test error rate, called the **Bayes error rate**. Since the Bayes classifier will always choose the class for which (2.10) is largest, the error rate will be $1 - \max_j \Pr(Y = j \mid X = x_0)$ at $X = x_0$. In general, the overall Bayes error rate is given by
 
-$$1 - E\!\left(\max_j \Pr(Y = j \mid X)\right), \tag{2.11}$$
+$$
+1 - E\!\left(\max_j \Pr(Y = j \mid X)\right), \tag{2.11}
+$$
 
 where the expectation averages the probability over all possible values of $X$. For our simulated data, the Bayes error rate is 0.133. It is greater than zero, because the classes overlap in the true population, which implies that $\max_j \Pr(Y = j \mid X = x_0) < 1$ for some values of $x_0$. The Bayes error rate is analogous to the irreducible error, discussed earlier.
 
@@ -282,7 +312,9 @@ where the expectation averages the probability over all possible values of $X$. 
 
 In theory we would always like to predict qualitative responses using the Bayes classifier. But for real data, we do not know the conditional distribution of $Y$ given $X$, and so computing the Bayes classifier is impossible. Therefore, the Bayes classifier serves as an unattainable gold standard against which to compare other methods. Many approaches attempt to estimate the conditional distribution of $Y$ given $X$, and then classify a given observation to the class with highest estimated probability. One such method is the **$K$-nearest neighbors** (KNN) classifier. Given a positive integer $K$ and a test observation $x_0$, the KNN classifier first identifies the $K$ points in the training data that are closest to $x_0$, represented by $\mathcal{N}_0$. It then estimates the conditional probability for class $j$ as the fraction of points in $\mathcal{N}_0$ whose response values equal $j$:
 
-$$\Pr(Y = j \mid X = x_0) = \frac{1}{K} \sum_{i \in \mathcal{N}_0} I(y_i = j). \tag{2.12}$$
+$$
+\Pr(Y = j \mid X = x_0) = \frac{1}{K} \sum_{i \in \mathcal{N}_0} I(y_i = j). \tag{2.12}
+$$
 
 Finally, KNN classifies the test observation $x_0$ to the class with the largest probability from (2.12).
 
@@ -1158,6 +1190,7 @@ For more details on indexing in `numpy`, readers are referred to the `numpy` tut
 [^2]: Like lists, tuples represent a sequence of objects. Why do we need more than one way to create a sequence? There are a few differences between tuples and lists, but perhaps the most important is that elements of a tuple cannot be modified, whereas elements of a list can be.
 
 [^3]: Python also uses *positional* arguments. Positional arguments do not need to use a keyword. To see an example, type in `np.sum?`. We see that `a` is a positional argument, i.e. this function assumes that the first unnamed argument that it receives is the array to be summed. By contrast, `axis` and `dtype` are keyword arguments: the position in which these arguments are entered into `np.sum()` does not matter.
+
 ### 2.3.7 Loading Data
 
 Data sets often contain different types of data, and may have names associated with the rows or columns. For these reasons, they typically are best accommodated using a *data frame*. We can think of a data frame as a sequence of arrays of identical length; these are the columns. Entries in the different arrays can be combined to form a row. The `pandas` library can be used to create and work with data frame objects.

@@ -28,7 +28,7 @@ Figure 8.1 shows a regression tree fit to this data. It consists of a series of 
 
 > **Figure 8.2.** The three-region partition for the `Hitters` data set from the regression tree illustrated in Figure 8.1.
 
-The predicted salaries for these three groups are $\$1{,}000 \times e^{5.107} = \$165{,}174$, $\$1{,}000 \times e^{5.999} = \$402{,}834$, and $\$1{,}000 \times e^{6.740} = \$845{,}346$ respectively.
+The predicted salaries for these three groups are \$1,000 × $e^{5.107}$ = \$165,174, \$1,000 × $e^{5.999}$ = \$402,834, and \$1,000 × $e^{6.740}$ = \$845,346 respectively.
 
 In keeping with the *tree* analogy, the regions $R_1$, $R_2$, and $R_3$ are known as *terminal nodes* or *leaves* of the tree. As is the case for Figure 8.1, decision trees are typically drawn *upside down*, in the sense that the leaves are at the bottom of the tree. The points along the tree where the predictor space is split are referred to as *internal nodes*. In Figure 8.1, the two internal nodes are indicated by the text `Years<4.5` and `Hits<117.5`. We refer to the segments of the trees that connect the nodes as *branches*.
 

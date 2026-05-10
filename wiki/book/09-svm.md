@@ -22,23 +22,23 @@ In a $p$-dimensional space, a *hyperplane* is a flat affine subspace of dimensio
 
 The mathematical definition of a hyperplane is quite simple. In two dimensions, a hyperplane is defined by the equation
 
-$$\beta_0 + \beta_1 X_1 + \beta_2 X_2 = 0 \tag{9.1}$$
+$$\beta_0 + \beta_1 X_1 + \beta_2 X_2 = 0 \quad (9.1)$$
 
 for parameters $\beta_0$, $\beta_1$, and $\beta_2$. When we say that (9.1) "defines" the hyperplane, we mean that any $X = (X_1, X_2)^T$ for which (9.1) holds is a point on the hyperplane. Note that (9.1) is simply the equation of a line, since indeed in two dimensions a hyperplane is a line.
 
 Equation 9.1 can be easily extended to the $p$-dimensional setting:
 
-$$\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_p X_p = 0 \tag{9.2}$$
+$$\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_p X_p = 0 \quad (9.2)$$
 
 defines a $p$-dimensional hyperplane, again in the sense that if a point $X = (X_1, X_2, \dots, X_p)^T$ in $p$-dimensional space (i.e. a vector of length $p$) satisfies (9.2), then $X$ lies on the hyperplane.
 
 Now, suppose that $X$ does not satisfy (9.2); rather,
 
-$$\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_p X_p > 0. \tag{9.3}$$
+$$\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_p X_p > 0. \quad (9.3)$$
 
 Then this tells us that $X$ lies to one side of the hyperplane. On the other hand, if
 
-$$\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_p X_p < 0, \tag{9.4}$$
+$$\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_p X_p < 0, \quad (9.4)$$
 
 then $X$ lies on the other side of the hyperplane. So we can think of the hyperplane as dividing $p$-dimensional space into two halves. One can easily determine on which side of the hyperplane a point lies by simply calculating the sign of the left-hand side of (9.2). A hyperplane in two-dimensional space is shown in Figure 9.1.
 
@@ -48,21 +48,21 @@ then $X$ lies on the other side of the hyperplane. So we can think of the hyperp
 
 Now suppose that we have an $n \times p$ data matrix $\mathbf{X}$ that consists of $n$ training observations in $p$-dimensional space,
 
-$$x_1 = \begin{pmatrix} x_{11} \\ \vdots \\ x_{1p} \end{pmatrix}, \dots, x_n = \begin{pmatrix} x_{n1} \\ \vdots \\ x_{np} \end{pmatrix}, \tag{9.5}$$
+$$x_1 = \begin{pmatrix} x_{11} \\ \vdots \\ x_{1p} \end{pmatrix}, \dots, x_n = \begin{pmatrix} x_{n1} \\ \vdots \\ x_{np} \end{pmatrix}, \quad (9.5)$$
 
 and that these observations fall into two classes—that is, $y_1, \dots, y_n \in \{-1, 1\}$ where $-1$ represents one class and $1$ the other class. We also have a test observation, a $p$-vector of observed features $x^* = (x_1^* \ \dots \ x_p^*)^T$. Our goal is to develop a classifier based on the training data that will correctly classify the test observation using its feature measurements. We have seen a number of approaches for this task, such as linear discriminant analysis and logistic regression in Chapter 4, and classification trees, bagging, and boosting in Chapter 8. We will now see a new approach that is based upon the concept of a *separating hyperplane*.
 
 Suppose that it is possible to construct a hyperplane that separates the training observations perfectly according to their class labels. Examples of three such separating hyperplanes are shown in the left-hand panel of Figure 9.2. We can label the observations from the blue class as $y_i = 1$ and those from the purple class as $y_i = -1$. Then a separating hyperplane has the property that
 
-$$\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \dots + \beta_p x_{ip} > 0 \text{ if } y_i = 1, \tag{9.6}$$
+$$\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \dots + \beta_p x_{ip} > 0 \text{ if } y_i = 1, \quad (9.6)$$
 
 and
 
-$$\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \dots + \beta_p x_{ip} < 0 \text{ if } y_i = -1. \tag{9.7}$$
+$$\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \dots + \beta_p x_{ip} < 0 \text{ if } y_i = -1. \quad (9.7)$$
 
 Equivalently, a separating hyperplane has the property that
 
-$$y_i(\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \dots + \beta_p x_{ip}) > 0 \tag{9.8}$$
+$$y_i(\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \dots + \beta_p x_{ip}) > 0 \quad (9.8)$$
 
 for all $i = 1, \dots, n$.
 
@@ -88,11 +88,11 @@ Examining Figure 9.3, we see that three training observations are equidistant fr
 
 We now consider the task of constructing the maximal margin hyperplane based on a set of $n$ training observations $x_1, \dots, x_n \in \mathbb{R}^p$ and associated class labels $y_1, \dots, y_n \in \{-1, 1\}$. Briefly, the maximal margin hyperplane is the solution to the optimization problem
 
-$$\underset{\beta_0, \beta_1, \dots, \beta_p, M}{\text{maximize}} \ M \tag{9.9}$$
+$$\underset{\beta_0, \beta_1, \dots, \beta_p, M}{\text{maximize}} \ M \quad (9.9)$$
 
-$$\text{subject to } \sum_{j=1}^{p} \beta_j^2 = 1, \tag{9.10}$$
+$$\text{subject to } \sum_{j=1}^{p} \beta_j^2 = 1, \quad (9.10)$$
 
-$$y_i(\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \dots + \beta_p x_{ip}) \geq M \quad \forall \ i = 1, \dots, n. \tag{9.11}$$
+$$y_i(\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \dots + \beta_p x_{ip}) \geq M \quad \forall \ i = 1, \dots, n. \quad (9.11)$$
 
 This optimization problem (9.9)–(9.11) is actually simpler than it looks. First of all, the constraint in (9.11) that
 
@@ -135,13 +135,13 @@ An observation can be not only on the wrong side of the margin, but also on the 
 
 The support vector classifier classifies a test observation depending on which side of a hyperplane it lies. The hyperplane is chosen to correctly separate most of the training observations into the two classes, but may misclassify a few observations. It is the solution to the optimization problem
 
-$$\underset{\beta_0, \beta_1, \dots, \beta_p, \epsilon_1, \dots, \epsilon_n, M}{\text{maximize}} \ M \tag{9.12}$$
+$$\underset{\beta_0, \beta_1, \dots, \beta_p, \epsilon_1, \dots, \epsilon_n, M}{\text{maximize}} \ M \quad (9.12)$$
 
-$$\text{subject to } \sum_{j=1}^{p} \beta_j^2 = 1, \tag{9.13}$$
+$$\text{subject to } \sum_{j=1}^{p} \beta_j^2 = 1, \quad (9.13)$$
 
-$$y_i(\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \dots + \beta_p x_{ip}) \geq M(1 - \epsilon_i), \tag{9.14}$$
+$$y_i(\beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \dots + \beta_p x_{ip}) \geq M(1 - \epsilon_i), \quad (9.14)$$
 
-$$\epsilon_i \geq 0, \quad \sum_{i=1}^{n} \epsilon_i \leq C, \tag{9.15}$$
+$$\epsilon_i \geq 0, \quad \sum_{i=1}^{n} \epsilon_i \leq C, \quad (9.15)$$
 
 where $C$ is a nonnegative tuning parameter. As in (9.11), $M$ is the width of the margin; we seek to make this quantity as large as possible. In (9.14), $\epsilon_1, \dots, \epsilon_n$ are *slack variables* that allow individual observations to be on the wrong side of the margin or the hyperplane; we will explain them in greater detail momentarily. Once we have solved (9.12)–(9.15), we classify a test observation $x^*$ as before, by simply determining on which side of the hyperplane it lies. That is, we classify the test observation based on the sign of $f(x^*) = \beta_0 + \beta_1 x_1^* + \dots + \beta_p x_p^*$.
 
@@ -181,7 +181,7 @@ $$X_1, X_1^2, X_2, X_2^2, \dots, X_p, X_p^2.$$
 
 Then (9.12)–(9.15) would become
 
-$$\underset{\beta_0, \beta_{11}, \beta_{12}, \dots, \beta_{p1}, \beta_{p2}, \epsilon_1, \dots, \epsilon_n, M}{\text{maximize}} \ M \tag{9.16}$$
+$$\underset{\beta_0, \beta_{11}, \beta_{12}, \dots, \beta_{p1}, \beta_{p2}, \epsilon_1, \dots, \epsilon_n, M}{\text{maximize}} \ M \quad (9.16)$$
 
 $$\text{subject to } y_i\left(\beta_0 + \sum_{j=1}^{p} \beta_{j1} x_{ij} + \sum_{j=1}^{p} \beta_{j2} x_{ij}^2\right) \geq M(1 - \epsilon_i),$$
 
@@ -195,13 +195,13 @@ The *support vector machine* (SVM) is an extension of the support vector classif
 
 We have not discussed exactly how the support vector classifier is computed because the details become somewhat technical. However, it turns out that the solution to the support vector classifier problem (9.12)–(9.15) involves only the *inner products* of the observations (as opposed to the observations themselves). The inner product of two $r$-vectors $a$ and $b$ is defined as $\langle a, b \rangle = \sum_{i=1}^{r} a_i b_i$. Thus the inner product of two observations $x_i, x_{i'}$ is given by
 
-$$\langle x_i, x_{i'} \rangle = \sum_{j=1}^{p} x_{ij} x_{i'j}. \tag{9.17}$$
+$$\langle x_i, x_{i'} \rangle = \sum_{j=1}^{p} x_{ij} x_{i'j}. \quad (9.17)$$
 
 It can be shown that
 
 - The linear support vector classifier can be represented as
 
-$$f(x) = \beta_0 + \sum_{i=1}^{n} \alpha_i \langle x, x_i \rangle, \tag{9.18}$$
+$$f(x) = \beta_0 + \sum_{i=1}^{n} \alpha_i \langle x, x_i \rangle, \quad (9.18)$$
 
 where there are $n$ parameters $\alpha_i$, $i = 1, \dots, n$, one per training observation.
 
@@ -209,7 +209,7 @@ where there are $n$ parameters $\alpha_i$, $i = 1, \dots, n$, one per training o
 
 Notice that in (9.18), in order to evaluate the function $f(x)$, we need to compute the inner product between the new point $x$ and each of the training points $x_i$. However, it turns out that $\alpha_i$ is nonzero only for the support vectors in the solution—that is, if a training observation is not a support vector, then its $\alpha_i$ equals zero. So if $\mathcal{S}$ is the collection of indices of these support points, we can rewrite any solution function of the form (9.18) as
 
-$$f(x) = \beta_0 + \sum_{i \in \mathcal{S}} \alpha_i \langle x, x_i \rangle, \tag{9.19}$$
+$$f(x) = \beta_0 + \sum_{i \in \mathcal{S}} \alpha_i \langle x, x_i \rangle, \quad (9.19)$$
 
 which typically involves far fewer terms than in (9.18).[^2]
 
@@ -219,19 +219,19 @@ To summarize, in representing the linear classifier $f(x)$, and in computing its
 
 Now suppose that every time the inner product (9.17) appears in the representation (9.18), or in a calculation of the solution for the support vector classifier, we replace it with a *generalization* of the inner product of the form
 
-$$K(x_i, x_{i'}), \tag{9.20}$$
+$$K(x_i, x_{i'}), \quad (9.20)$$
 
 where $K$ is some function that we will refer to as a *kernel*. A kernel is a function that quantifies the similarity of two observations. For instance, we could simply take
 
-$$K(x_i, x_{i'}) = \sum_{j=1}^{p} x_{ij} x_{i'j}, \tag{9.21}$$
+$$K(x_i, x_{i'}) = \sum_{j=1}^{p} x_{ij} x_{i'j}, \quad (9.21)$$
 
 which would just give us back the support vector classifier. Equation 9.21 is known as a *linear* kernel because the support vector classifier is linear in the features; the linear kernel essentially quantifies the similarity of a pair of observations using Pearson (standard) correlation. But one could instead choose another form for (9.20). For instance, one could replace every instance of $\sum_{j=1}^{p} x_{ij} x_{i'j}$ with the quantity
 
-$$K(x_i, x_{i'}) = \left(1 + \sum_{j=1}^{p} x_{ij} x_{i'j}\right)^d. \tag{9.22}$$
+$$K(x_i, x_{i'}) = \left(1 + \sum_{j=1}^{p} x_{ij} x_{i'j}\right)^d. \quad (9.22)$$
 
 This is known as a *polynomial kernel* of degree $d$, where $d$ is a positive integer. Using such a kernel with $d > 1$, instead of the standard linear kernel (9.21), in the support vector classifier algorithm leads to a much more flexible decision boundary. It essentially amounts to fitting a support vector classifier in a higher-dimensional space involving polynomials of degree $d$, rather than in the original feature space. When the support vector classifier is combined with a non-linear kernel such as (9.22), the resulting classifier is known as a support vector machine. Note that in this case the (non-linear) function has the form
 
-$$f(x) = \beta_0 + \sum_{i \in \mathcal{S}} \alpha_i K(x, x_i). \tag{9.23}$$
+$$f(x) = \beta_0 + \sum_{i \in \mathcal{S}} \alpha_i K(x, x_i). \quad (9.23)$$
 
 The left-hand panel of Figure 9.9 shows an example of an SVM with a polynomial kernel applied to the non-linear data from Figure 9.8. The fit is a substantial improvement over the linear support vector classifier. When $d = 1$, then the SVM reduces to the support vector classifier seen earlier in this chapter.
 
@@ -239,7 +239,7 @@ The left-hand panel of Figure 9.9 shows an example of an SVM with a polynomial k
 
 The polynomial kernel shown in (9.22) is one example of a possible non-linear kernel, but alternatives abound. Another popular choice is the *radial kernel*, which takes the form
 
-$$K(x_i, x_{i'}) = \exp\left(-\gamma \sum_{j=1}^{p} (x_{ij} - x_{i'j})^2\right). \tag{9.24}$$
+$$K(x_i, x_{i'}) = \exp\left(-\gamma \sum_{j=1}^{p} (x_{ij} - x_{i'j})^2\right). \quad (9.24)$$
 
 In (9.24), $\gamma$ is a positive constant. The right-hand panel of Figure 9.9 shows an example of an SVM with a radial kernel on this non-linear data; it also does a good job in separating the two classes.
 
@@ -277,13 +277,13 @@ When SVMs were first introduced in the mid-1990s, they made quite a splash in th
 
 However, since that time, deep connections between SVMs and other more classical statistical methods have emerged. It turns out that one can rewrite the criterion (9.12)–(9.15) for fitting the support vector classifier $f(X) = \beta_0 + \beta_1 X_1 + \dots + \beta_p X_p$ as
 
-$$\underset{\beta_0, \beta_1, \dots, \beta_p}{\text{minimize}} \left\{ \sum_{i=1}^{n} \max[0, 1 - y_i f(x_i)] + \lambda \sum_{j=1}^{p} \beta_j^2 \right\}, \tag{9.25}$$
+$$\underset{\beta_0, \beta_1, \dots, \beta_p}{\text{minimize}} \left\{ \sum_{i=1}^{n} \max[0, 1 - y_i f(x_i)] + \lambda \sum_{j=1}^{p} \beta_j^2 \right\}, \quad (9.25)$$
 
 where $\lambda$ is a nonnegative tuning parameter. When $\lambda$ is large then $\beta_1, \dots, \beta_p$ are small, more violations to the margin are tolerated, and a low-variance but high-bias classifier will result. When $\lambda$ is small then few violations to the margin will occur; this amounts to a high-variance but low-bias classifier. Thus, a small value of $\lambda$ in (9.25) amounts to a small value of $C$ in (9.15). Note that the $\lambda \sum_{j=1}^{p} \beta_j^2$ term in (9.25) is the ridge penalty term from Section 6.2.1, and plays a similar role in controlling the bias-variance trade-off for the support vector classifier.
 
 Now (9.25) takes the "Loss + Penalty" form that we have seen repeatedly throughout this book:
 
-$$\underset{\beta_0, \beta_1, \dots, \beta_p}{\text{minimize}} \left\{ L(\mathbf{X}, \mathbf{y}, \beta) + \lambda P(\beta) \right\}. \tag{9.26}$$
+$$\underset{\beta_0, \beta_1, \dots, \beta_p}{\text{minimize}} \left\{ L(\mathbf{X}, \mathbf{y}, \beta) + \lambda P(\beta) \right\}. \quad (9.26)$$
 
 In (9.26), $L(\mathbf{X}, \mathbf{y}, \beta)$ is some loss function quantifying the extent to which the model, parametrized by $\beta$, fits the data $(\mathbf{X}, \mathbf{y})$, and $P(\beta)$ is a penalty function on the parameter vector $\beta$ whose effect is controlled by a nonnegative tuning parameter $\lambda$. For instance, ridge regression and the lasso both take this form with
 
