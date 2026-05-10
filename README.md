@@ -8,9 +8,9 @@ Personal exam-prep system for **TMA4268 *Statistisk læring*** (NTNU, final exam
 |---|---|
 | `CLAUDE.md` | Orientation for Claude — read first |
 | `docs/` | System docs: scope rules, agent prompts, page templates, manifests |
-| `wiki/` | Generated content: lectures (compressed), concepts (atoms), MOCs (routers) |
+| `wiki/` | Generated content: lectures (compressed), concepts (atoms), MOCs (routers); `wiki/book/` is silver (PDF→MD ISLP chapters) |
 | `web/` | Quartz config + practice-deck layer (`web/static/decks/`) |
-| `transcripts/`, `modules/`, `exercises/`, `exams/`, `book/` | Bronze: immutable course sources |
+| `transcripts/`, `modules/`, `exercises/`, `exams/` | Bronze: immutable course sources |
 | `pdfs/` | Original course PDFs served by the rendered site |
 | `notes/` | Private notes — **off-limits to all agents** |
 | `archive/` | Deprecated material |
@@ -21,4 +21,4 @@ Personal exam-prep system for **TMA4268 *Statistisk læring*** (NTNU, final exam
 - **Scope questions:** [docs/scope.md](docs/scope.md) is canonical.
 - **Browsing content:** open `wiki/` in Obsidian, or visit the rendered Quartz site for the public view.
 
-The wiki is LLM-generated and freely regenerated; bronze is never modified.
+The wiki is LLM-generated and freely regenerated; silver (`wiki/book/`) and bronze are never modified.

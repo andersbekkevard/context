@@ -1,3 +1,7 @@
+---
+title: "9 Support Vector Machines"
+---
+
 # 9 Support Vector Machines
 
 In this chapter, we discuss the *support vector machine* (SVM), an approach for classification that was developed in the computer science community in the 1990s and that has grown in popularity since then. SVMs have been shown to perform well in a variety of settings, and are often considered one of the best "out of the box" classifiers.

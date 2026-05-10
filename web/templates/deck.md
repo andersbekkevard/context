@@ -205,7 +205,7 @@ Four cases. Only the first three render a flag.
 
 | Case | Flag rendered | When to use |
 |---|---|---|
-| ISLP Conceptual end-of-chapter exercise, in-scope, MC-ifies cleanly | `ISLP §6 Q3` | Lift verbatim from `book/<NN>-<slug>.md` → `## X.<Y> Exercises` → `### Conceptual` only. Skip `### Applied` entirely. **Soft cap ~5 ISLP-direct per deck.** |
+| ISLP Conceptual end-of-chapter exercise, in-scope, MC-ifies cleanly | `ISLP §6 Q3` | Lift verbatim from `wiki/book/<chapter-NN>-<chapter-slug>.md` → `## X.<Y> Exercises` → `### Conceptual` only (chapter number = the MOC's `isl-ch:` — most modules match, but m09 → `08-trees.md`, m10 → `12-unsupervised.md`, m11 → `10-deeplearning.md`). Skip `### Applied` entirely. **Soft cap ~5 ISLP-direct per deck.** |
 | TMA4268 past exam, in-scope after translation per `docs/scope.md` | `Exam 2024 P3` | Translate per the past-exam translation table in `docs/scope.md`; preserve the conceptual core, change numbers. |
 | Compulsory or recommended exercise verbatim lift | `CE1 P4` or `Ex5.3` | Verbatim or near-verbatim only. Number-changed mirrors of an exercise count as synthesised — *no flag*. |
 | Synthesised from atoms + lectures + exercise patterns | (no flag) | Default. Most of the deck. |
@@ -367,7 +367,7 @@ In priority order (matches `docs/scope.md`'s source hierarchy for *what's in sco
 4. `exams/TMA4268_*_Exam.Rmd`: past exams. Cross-check against `docs/scope.md`'s translation rules. **Don't replicate verbatim**, change numbers, change scenarios, vary the trap angle.
 5. `wiki/mocs/m<NN>-<slug>.md`: its `## Out of scope` section tells you what NOT to write about.
 
-You do NOT touch `notes/` (off-limits), `book/` (deep treatment, not the prof's scope), or `archive/` (dead).
+You do NOT read `notes/` (off-limits) or `archive/` (dead). You DO read `wiki/book/` for the bounded Phase-A ISLP-conceptual lifts (§3.5 row 1), but do **not** use it for scope decisions (`docs/scope.md` is canonical) and do **not** modify it (silver, immutable).
 
 ---
 

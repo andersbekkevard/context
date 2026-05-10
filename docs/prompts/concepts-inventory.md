@@ -20,7 +20,7 @@ Every decision you make about whether something becomes an atom flows from this 
 
 ## Your inputs
 
-Read all of these. **Do not read `notes/`: it is off-limits per `../overview` and `CLAUDE.md`. Do not read `book/`: ISLP is for the fan-out stage, not for inventory. Do not read `exams/`: past exams are not on the table for this exam.**
+Read all of these. **Do not read `notes/`: it is off-limits per `../overview` and `CLAUDE.md`. Do not read `wiki/book/`: ISLP is for the fan-out stage, not for inventory. Do not read `exams/`: past exams are not on the table for this exam.**
 
 - All 27 lecture pages: `wiki/lectures/L01-*.md` through `L27-*.md`
 - All 12 slide decks: `modules/*/` (one or more `.md` files per module)

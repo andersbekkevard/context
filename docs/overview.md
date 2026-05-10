@@ -26,17 +26,23 @@ Strengthened by his own emphasis: **"especially the exercises."**
 | `modules/` | Slides, the **structure** of the curriculum |
 | `exercises/` | Recommended + compulsory exercises, the **form** of exam-style problems |
 | `exams/` | Past papers (2023, 2024, 2025), the **historical question patterns** |
-| `book/` | ISLP as markdown, one file per chapter (slugs match module slugs). Content reference; available at the exam. Used for citation and look-up, not memorization. |
+| `wiki/book/` | ISLP as markdown, one file per chapter. Filenames are numbered by **ISLP chapter** (e.g. `12-unsupervised.md` is ISLP ch.12), which matches the module number for most modules but diverges for m09 (uses ch.8), m10 (uses ch.12), m11 (uses ch.10). The MOC's `isl-ch:` field carries the mapping. Content reference; available at the exam. Used for citation and look-up, not memorization. |
 
 Each source has a distinct role. We mine each for what only it gives.
 
 ## Layers
 
-### Bronze: immutable
+### Bronze: immutable raw
 
-The raw sources above, plus `archive/` (old materials) and `exam_analysis.md` (prior synthesis of exam logistics + scope from a previous transcript pass, useful as scaffolding, not canonical; superseded for scope by `docs/scope.md`).
+`transcripts/`, `modules/`, `exercises/`, `exams/`, plus `archive/` (old materials) and `exam_analysis.md` (prior synthesis of exam logistics + scope from a previous transcript pass, useful as scaffolding, not canonical; superseded for scope by `docs/scope.md`).
 
 Nothing modifies bronze.
+
+### Silver: immutable processed
+
+`wiki/book/` is ISLP parsed from PDF to markdown, finalized once with `title:` frontmatter so Quartz renders it cleanly. Lives under `wiki/` so the build pipeline picks it up like any other wiki page, but treated as authoritative reference — not LLM-curated, not edited.
+
+Nothing modifies silver.
 
 ### Off-limits: `notes/`
 
@@ -44,7 +50,7 @@ The `notes/` folder contains Anders's own private notes. **Claude does not read,
 
 ### Wiki: LLM-generated
 
-`wiki/` holds three kinds of file, each described in its own doc:
+`wiki/` (excluding `wiki/book/`) holds three kinds of file, each described in its own doc:
 
 - **Lectures** ([[lectures]]): one compressed transcript per lecture. Filler stripped, all signal preserved.
 - **Concepts** ([[concepts]]): one self-contained expert briefing per named idea.
@@ -66,7 +72,7 @@ The user edits wiki freely. Agents regenerate as instructed.
 
 ## How the human uses this
 
-Obsidian as the interface. Open `wiki/README.md`, navigate via MOCs and the graph view. Build the A5 cheat-sheet by reading concepts.
+Obsidian as the interface. Open `wiki/index.md`, navigate via MOCs and the graph view. Build the A5 cheat-sheet by reading concepts.
 
 ## Typical user journey
 

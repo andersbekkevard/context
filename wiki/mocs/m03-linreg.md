@@ -52,4 +52,4 @@ The course's quantitative bedrock: two lectures (Jan 20, Jan 26) on simple → m
 - **Spectral / eigen-decomposition theory of XᵀX** - deferred to Linear Statistical Models - [[L04-statlearn-3]]
 
 ## ISLP pointer
-Chapter 3: Linear Regression. Deep treatment of in-scope concepts (closed-form β̂, sampling distribution, CI/PI, F-test, interactions, polynomial, diagnostics) is in `book/03-linreg.md`. Atoms carry section-level `isl-ref:` pointers.
+Chapter 3: Linear Regression. Deep treatment of in-scope concepts (closed-form β̂, sampling distribution, CI/PI, F-test, interactions, polynomial, diagnostics) is in `wiki/book/03-linreg.md`. Atoms carry section-level `isl-ref:` pointers.

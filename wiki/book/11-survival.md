@@ -1,3 +1,7 @@
+---
+title: "11 Survival Analysis and Censored Data"
+---
+
 # 11 Survival Analysis and Censored Data
 
 In this chapter, we will consider the topics of *survival analysis* and *censored data*. These arise in the analysis of a unique kind of outcome variable: the *time until an event occurs*.

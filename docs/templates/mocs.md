@@ -55,7 +55,7 @@ tags:
 - **<Topic>** — <reason> — [[L<NN>-<slug>]]
 
 ## ISLP pointer
-Chapter <N>: <title>. The deep treatment of in-scope concepts in this module is in `book/<NN>-<slug>.md`. Specific atoms carry section-level `isl-ref:` pointers.
+Chapter <N>: <title>. The deep treatment of in-scope concepts in this module is in `wiki/book/<chapter-NN>-<chapter-slug>.md` (look up the chapter by this MOC's `isl-ch:` — m09/m10/m11 do **not** match their module slug; e.g. module 10 → `wiki/book/12-unsupervised.md`). Specific atoms carry section-level `isl-ref:` pointers.
 ```
 
 The `## Practice` link points at the per-module MCQ deck served by the `web/` layer. The file may not exist yet, that's fine; the link is a forward declaration. When the deck is generated (see `web/prompts/deck-generation.md`), the link resolves automatically. Module 12 has no atoms and no deck, omit the section there.
@@ -126,5 +126,5 @@ The prof's "central trick of statistical learning" module. Heavy ridge / lasso /
 - **Elastic Net detailed tuning** — concept noted, no worked example
 
 ## ISLP pointer
-Chapter 6: Linear Model Selection and Regularization. Atoms carry section-level `isl-ref:` pointers; for full algebra of any in-scope concept, route Anders to `book/06-modelsel.md`.
+Chapter 6: Linear Model Selection and Regularization. Atoms carry section-level `isl-ref:` pointers; for full algebra of any in-scope concept, route Anders to `wiki/book/06-modelsel.md`.
 ```

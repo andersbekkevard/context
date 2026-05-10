@@ -35,6 +35,8 @@ pnpm run build                # writes static site to public/
 
 Both pass `-d ../wiki` so Quartz reads markdown source from outside this folder. The `content/` folder inside `web/` is unused; safe to ignore.
 
+The ISLP chapters at `../wiki/book/*.md` are silver content (PDF→MD, finalized once with `title:` frontmatter, then immutable per project CLAUDE.md). They render through Quartz like any other wiki page — no separate emitter, no sync script.
+
 ## Folder map
 
 ```
@@ -106,6 +108,7 @@ rg -l 'databaser' .                  # should return only README files / quartz.
 
 - **`pnpm run dev` errors with "directory not found"** → check that `../wiki/` exists relative to `web/` (i.e. `wiki/` is a sibling of `web/` at the project root).
 - **Quartz includes `notes/`** → it shouldn't (we point at `../wiki/` only, and `notes/` is a sibling, not a child). Check `quartz.config.ts` `ignorePatterns` if it ever does.
+- **`/book/<chapter>` links 404** → check that the chapter file exists at `../wiki/book/<chapter>.md` and that the build picked it up (`pnpm run build` should report 151+ input files). If the file is there but the URL still 404s, confirm Vercel's `cleanUrls: true` is set in `vercel.json`.
 - **Math doesn't render in a deck** → decks are static HTML, not Quartz-rendered, so they don't inherit Quartz's KaTeX. Each deck must include the three KaTeX `<link>` + `<script defer>` tags in its `<head>` (copy from `_example.html`). For wiki pages (atoms, lectures, MOCs), KaTeX is auto-loaded by `Plugin.Latex({ renderEngine: "katex" })` in `quartz.config.ts`.
 - **Deck FAB doesn't appear** → check the deck HTML loads `<script src="exam.js"></script>` at the end of `<body>`, and that the file path resolves (relative to the deck HTML's location).
 - **Question-locks-but-explanation-doesn't-open** → the `.fasit-correct` text must read literally `Correct answer: <LETTER>`. Anything else fails the regex in `exam.js`.

@@ -27,7 +27,7 @@ The atom is **not a textbook recreation.** It captures:
 - **What's in scope** (from slides + lectures + exercises, the prof's curriculum)
 - **The prof-specific framing** (definitions he uses, traps he flagged, his emphasis, his insights)
 
-The book (`book/`) holds the **deep treatment** of any in-scope idea. The atom carries an `isl-ref:` pointer so Claude can tell Anders "for the full derivation, see ISLP §6.2.1." Atoms intentionally don't recreate textbook content, as Claude already knows it from training, and the book is on the exam table for lookup.
+The book (`wiki/book/`) holds the **deep treatment** of any in-scope idea. The atom carries an `isl-ref:` pointer so Claude can tell Anders "for the full derivation, see ISLP §6.2.1." Atoms intentionally don't recreate textbook content, as Claude already knows it from training, and the book is on the exam table for lookup.
 
 ## Standard contents
 

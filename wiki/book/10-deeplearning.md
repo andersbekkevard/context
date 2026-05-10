@@ -1,3 +1,7 @@
+---
+title: "10 Deep Learning"
+---
+
 # 10 Deep Learning
 
 This chapter covers the important topic of *deep learning*. At the time of writing (2020), deep learning is a very active area of research in the machine learning and artificial intelligence communities. The cornerstone of deep learning is the *neural network*.

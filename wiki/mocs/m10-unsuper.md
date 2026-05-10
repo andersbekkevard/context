@@ -48,4 +48,4 @@ Two lectures (Apr 13, Apr 14) on the "no $Y$" half of the course: PCA as the can
 - **History questions** (who invented PCA, year of X) - "I'm not going to ask you a history question" - [[L22-unsupervised-2]] / [[L27-summary]]
 
 ## ISLP pointer
-Chapter 12: Unsupervised Learning. Deep treatment of in-scope concepts (PCA in §12.2, K-means in §12.4.1, hierarchical in §12.4.2, distance choice in §12.4.2 with Figure 12.15) is in `book/10-unsuper.md`. Atoms carry section-level `isl-ref:` pointers.
+Chapter 12: Unsupervised Learning. Deep treatment of in-scope concepts (PCA in §12.2, K-means in §12.4.1, hierarchical in §12.4.2, distance choice in §12.4.2 with Figure 12.15) is in `wiki/book/12-unsupervised.md`. Atoms carry section-level `isl-ref:` pointers.

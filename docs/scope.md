@@ -25,7 +25,7 @@ In order of weight:
 1. **Exercises** (`exercises/Exercise2/` through `exercises/Exercise11/` plus `compulsory-exercise-1.md` and `compulsory-exercise-2.md`): *highest* signal. If a concept is drilled here, it is exam-bait. Compulsory exercises especially: the prof picked these as required, you've solved them, they are the closest analog to what an exam problem looks like.
 2. **Lectures** (`wiki/lectures/`): what the prof actually said. If he treated a concept as a topic, it's in scope. If he flagged it as exam-relevant, it's load-bearing. His take on ideas, and the concepts he is most interested in or has strong opinions on, are highly relevant.
 3. **Slides** (`modules/`): the deck content. Anything on the slides that he kept (didn't skip in lecture) is in scope, even if he didn't dwell on it.
-4. **ISLP** (`book/`): does **not** determine scope. Material that is *only* in the book and never reached lecture, slides, or exercises is OUT.
+4. **ISLP** (`wiki/book/`): does **not** determine scope. Material that is *only* in the book and never reached lecture, slides, or exercises is OUT.
 
 ### For fleshing out IN-SCOPE ideas
 

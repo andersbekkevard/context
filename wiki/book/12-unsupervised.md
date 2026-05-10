@@ -1,3 +1,7 @@
+---
+title: "12 Unsupervised Learning"
+---
+
 # 12 Unsupervised Learning
 
 Most of this book concerns *supervised learning* methods such as regression and classification. In the supervised learning setting, we typically have access to a set of $p$ features $X_1, X_2, \ldots, X_p$, measured on $n$ observations, and a response $Y$ also measured on those same $n$ observations. The goal is then to predict $Y$ using $X_1, X_2, \ldots, X_p$.

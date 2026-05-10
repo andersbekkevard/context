@@ -23,7 +23,7 @@ You receive **one module slug** (e.g. `06-modelsel`) and produce one deck HTML f
 - `web/templates/deck.md`: the canonical structural + quality spec. Your output must satisfy every checklist item in §10 of that template.
 - `web/static/decks/_example.html`: the structural smoke-test reference. Treat as the ground-truth HTML shape for the four question patterns.
 
-You do NOT touch `notes/` (off-limits per project CLAUDE.md), `book/` (deep treatment but not the prof's scope), or `archive/` (dead). You do NOT modify atoms, lectures, MOCs, or the manifest.
+You do NOT read `notes/` (off-limits per project CLAUDE.md) or `archive/` (dead). You DO read `wiki/book/` for the bounded ISLP-conceptual lifts in Phase A, but do **not** use it to make scope decisions (slides + lectures + exercises set scope per `docs/scope.md`) and do **not** modify it (silver, immutable). You do NOT modify atoms, lectures, MOCs, or the manifest.
 
 ## What to produce
 
@@ -58,7 +58,7 @@ Run these in order. Phases A–C source from existing materials with provenance 
 
 ### Phase A — ISLP conceptual sweep (soft cap ~5 lifts)
 
-Open `book/<NN>-<slug>.md` → `## X.<Y> Exercises` → `### Conceptual` only. **Skip `### Applied` (R coding) entirely.**
+Open `wiki/book/<chapter-NN>-<chapter-slug>.md` → `## X.<Y> Exercises` → `### Conceptual` only. **Skip `### Applied` (R coding) entirely.** The ISLP chapter number is the MOC's `isl-ch:` — most modules match (e.g. m06 → `06-modelsel.md`), but m09 → `08-trees.md`, m10 → `12-unsupervised.md`, m11 → `10-deeplearning.md`.
 
 For each conceptual problem:
 

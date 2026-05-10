@@ -1,3 +1,7 @@
+---
+title: "13 Multiple Testing"
+---
+
 # 13 Multiple Testing
 
 Thus far, this textbook has mostly focused on *estimation* and its close cousin, *prediction*. In this chapter, we instead focus on hypothesis testing, which is key to conducting *inference*. We remind the reader that inference was briefly discussed in Chapter 2.

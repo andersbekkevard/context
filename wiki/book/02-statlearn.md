@@ -1,3 +1,7 @@
+---
+title: "2 Statistical Learning"
+---
+
 # 2 Statistical Learning
 
 ## 2.1 What Is Statistical Learning?

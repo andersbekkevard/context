@@ -43,4 +43,4 @@ The prof's first algorithmic (vs data-modelling) module: CART recursive binary s
 - **R/Python package syntax** (`tree()`, `randomForest()`, `cv.tree()`, `prune.misclass`, `importance()`) - "no language-specific coding" - [[L27-summary]]
 
 ## ISLP pointer
-Chapter 8: Tree-Based Methods. Deep treatment of every in-scope concept lives in `book/08-trees.md`; specific atoms carry section-level `isl-ref:` pointers. Note ISLP ch. 8 also covers boosting, which is module 09's territory, not this MOC's.
+Chapter 8: Tree-Based Methods. Deep treatment of every in-scope concept lives in `wiki/book/08-trees.md`; specific atoms carry section-level `isl-ref:` pointers. Note ISLP ch. 8 also covers boosting, which is module 09's territory, not this MOC's.

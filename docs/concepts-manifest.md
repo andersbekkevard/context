@@ -2,7 +2,7 @@
 
 Deterministic list of concept atoms for the TMA4268 wiki. Source of truth for the concepts fan-out pass, every downstream atom-writing agent reads its module slice from here. Slugs, ownership, and cross-cutting flags are fixed at this layer; do not invent new atoms or rename slugs in the fan-out pass.
 
-Built by reading all 27 lecture pages, the 12 slide decks, the 10 recommended-exercise sheets (Exercise2 through Exercise11), the two compulsory exercises, `exam_analysis.md` (cross-check, not canonical), and `docs/lectures-manifest.md`. The `notes/` folder, `book/`, and `exams/` were not read (off-limits or out of scope at this stage per the brief).
+Built by reading all 27 lecture pages, the 12 slide decks, the 10 recommended-exercise sheets (Exercise2 through Exercise11), the two compulsory exercises, `exam_analysis.md` (cross-check, not canonical), and `docs/lectures-manifest.md`. The `notes/` folder, `wiki/book/`, and `exams/` were not read (off-limits or out of scope at this stage per the brief).
 
 Operating principle: **the prof's scope rule**, slides + lectures + exercises = in scope; book-only = out. Exercise coverage carries the highest exam-relevance weight ("especially the exercises"). When in doubt about granularity, the agent leaned toward **fewer, broader atoms**, with sub-concepts (e.g. studentized residuals, hat matrix's role in leverage, single-vs-complete linkage choice) living as sections inside a parent atom rather than as standalone files.
 

@@ -17,18 +17,19 @@ Constraints we held to:
 - The site is **fully static**. No server, no API. Anyone with the URL gets the same experience locally or on Vercel.
 - `web/` is **deletable in one move**: `trash web/` removes the entire web layer; nothing outside it depends on it.
 
-## Three pipelines, one output
+## Pipelines, one output
 
 | Pipeline | Source | Tool | Output |
 |---|---|---|---|
-| Wiki rendering | `wiki/**/*.md` | Quartz `ContentPage` + transformers | `web/public/<path>.html` |
+| Wiki rendering | `wiki/**/*.md` (includes `wiki/book/*.md`, the silver ISLP chapters) | Quartz `ContentPage` + transformers | `web/public/<path>.html` |
 | Deck passthrough | `web/static/decks/*.html` | Custom `WebStatic` emitter | `web/public/decks/*.html` |
 | Course PDF passthrough | `pdfs/*.pdf` (repo root) | Custom `CoursePdfs` emitter | `web/public/pdfs/*.pdf` |
 
-All three run inside the same `pnpm run build` invocation and write into the same `public/` folder. Quartz emits HTML from markdown; `WebStatic` copies hand-authored deck HTML through unchanged; `CoursePdfs` copies the curated, standardized-filename slide-deck and exercise PDFs into the build output.
+All run inside the same `pnpm run build` invocation and write into the same `public/` folder. Quartz emits HTML from markdown (atoms, lectures, MOCs, and the `wiki/book/` ISLP chapters all flow through the same pipeline, with KaTeX, search, graph); `WebStatic` copies hand-authored deck HTML through unchanged; `CoursePdfs` copies the curated, standardized-filename slide-deck and exercise PDFs into the build output.
 
 This is intentional separation:
 - The wiki uses markdown so Anders can edit it in Obsidian.
+- ISLP chapters live at `wiki/book/` (silver tier — PDF→MD, finalized once with `title:` frontmatter, then immutable). They share the wiki render pipeline so they get full Quartz treatment for free.
 - Decks use HTML directly because they need precise control over per-question structure markdown can't express, and Claude generates them via the brief at [[../web/prompts/deck-generation]] following [[../web/templates/deck]].
 - PDFs live outside `wiki/` (so LLMs don't try to read binary content as context) and outside `web/` (so the deletable web layer rule still holds), as a sibling `pdfs/` folder. They're original course materials with standardized filenames; the emitter pulls them in.
 
@@ -62,7 +63,9 @@ Quartz's default content directory is `content/` inside the project root. We ove
 quartz build -d ../wiki
 ```
 
-baked into both `dev` and `build` scripts in `package.json`. The wiki stays at the repo root, sibling to `web/`. Quartz scans `../wiki/` only, so `notes/`, `book/`, `exercises/`, `transcripts/`, `archive/`, `modules/`, `databaser/` are never seen — they're outside the content tree.
+baked into both `dev` and `build` scripts in `package.json`. The wiki stays at the repo root, sibling to `web/`. Quartz scans `../wiki/` only, so `notes/`, `exercises/`, `transcripts/`, `archive/`, `modules/`, `databaser/` are never seen — they're outside the content tree.
+
+The ISLP chapters at `wiki/book/*.md` are silver content (PDF→MD, finalized once with `title:` frontmatter, then immutable per CLAUDE.md). They live inside `wiki/` so Quartz renders them through the same pipeline as atoms/lectures/MOCs — no extra emitter, no sync script, no special case. URLs slug to `/book/<chapter>` (Quartz strips the input dir).
 
 `ignorePatterns` in `quartz.config.ts` adds `notes/**` and `databaser/**` as belt-and-suspenders in case the content path ever changes.
 
@@ -149,7 +152,7 @@ Vercel clones the repo, `cd`s to `web/`, runs install + build. Quartz reads from
 Things to remember:
 
 - **`baseUrl` in `quartz.config.ts`** is currently `"localhost:8080"`. After the first successful deploy, change it to the actual domain (e.g. `tma4268.vercel.app`). It only affects sitemap.xml and canonical URL tags, not navigation.
-- **Repo visibility ≠ site visibility.** The Vercel-served URL is publicly accessible; the source repo is whatever GitHub says (private by default). Don't conflate. The deployed site contains only `web/public/` content (rendered wiki pages + decks). Bronze (`book/`, `exams/`, `transcripts/`, etc.) is in the source repo but never on the live site.
+- **Repo visibility ≠ site visibility.** The Vercel-served URL is publicly accessible; the source repo is whatever GitHub says (private by default). Don't conflate. The deployed site contains only `web/public/` content (rendered wiki pages, the silver ISLP chapters, and decks). Bronze (`exams/`, `transcripts/`, `archive/`, `modules/`, `exercises/`) is in the source repo but never on the live site.
 - **Auto-deploy on push.** Each push to `main` triggers a Vercel rebuild. Preview deploys for branches/PRs come for free.
 
 ## Patterns we settled on
@@ -212,7 +215,7 @@ Things that surprised us during the build, recorded so we don't relearn:
 - **No multi-correct MC.** `exam.js` doesn't support it. Use multi-statement T/F (`.exam-q__tf-field`) for "select all that apply"-style questions.
 - **No numeric input.** MCQ-over-candidate-values handles this.
 - **No flashcards.** Considered during design; ruled out in favour of one mechanic (the exam-page format).
-- **No render of `book/`, `exercises/`, `exams/`, `transcripts/`, `archive/`, `modules/`, `notes/`.** All outside `wiki/`, none on the deployed site. Source repo is the only place they exist; keep it private. Exception: course PDFs are deliberately surfaced through `pdfs/` (sibling folder, copied by `CoursePdfs` emitter) — those *are* on the live site.
+- **No render of `exercises/`, `exams/`, `transcripts/`, `archive/`, `modules/`, `notes/`.** All outside `wiki/`, none on the deployed site. Source repo is the only place they exist; keep it private. Exceptions deliberately surfaced: course PDFs at `pdfs/` (sibling folder, copied by `CoursePdfs` emitter) and the silver ISLP chapters at `wiki/book/` (rendered by Quartz like any other wiki page) — those *are* on the live site.
 
 ## The `pdfs/` folder
 

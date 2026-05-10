@@ -1,3 +1,7 @@
+---
+title: "6 Linear Model Selection and Regularization"
+---
+
 # 6 Linear Model Selection and Regularization
 
 In the regression setting, the standard linear model

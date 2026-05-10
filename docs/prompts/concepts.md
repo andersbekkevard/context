@@ -16,7 +16,7 @@ You receive a slice of `docs/concepts-manifest.md` listing the atoms you are res
 For each atom in your slice, read:
 - The relevant `wiki/lectures/L<NN>-<slug>.md` files (for Specials, this spans modules)
 - The slide deck(s) under `modules/<...>/`
-- The relevant book chapter(s) under `book/<NN>-<slug>.md`, use to fill `isl-ref:` and to flesh out the deep treatment Claude can point Anders at
+- The relevant book chapter(s) at `wiki/book/<chapter-NN>-<chapter-slug>.md` (chapter number = the owning MOC's `isl-ch:` — most match the module number but m09 → ch.8, m10 → ch.12, m11 → ch.10). Use to fill `isl-ref:` and to flesh out the deep treatment Claude can point Anders at.
 - The relevant exercise files under `exercises/Exercise<N>/` and (for problems that touch this concept) the compulsory exercises `exercises/compulsory-exercise-1.md` and `exercises/compulsory-exercise-2.md`
 - Past exams `exams/TMA4268_2023_Exam.Rmd`, `..._2024_Exam.Rmd`, `..._2025_Exam.Rmd`, for exam-pattern hints (with translation rules per `docs/scope.md`)
 - `docs/scope.md`: **canonical** authority for what's in scope, what's out, and the source hierarchy. Load this first.
