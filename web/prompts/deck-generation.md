@@ -141,6 +141,35 @@ Run [[../templates/deck]] §10 checklist line by line. Specifically:
 
 Report results in your final summary, including a count of questions per source-flag variant.
 
+> [!important] Mandatory: run BOTH audit scripts before declaring the deck done
+> After writing or editing the deck, you **must** run both of these and both must exit 0:
+>
+> ```
+> python web/scripts/audit_deck_lengths.py   web/static/decks/m<NN>-<your-slug>.html
+> python web/scripts/audit_deck_positions.py web/static/decks/m<NN>-<your-slug>.html
+> ```
+>
+> Length parity and position rotation are *independent* form-only leaks; they need separate checks.
+>
+> **`audit_deck_lengths.py`** — mechanical check for §5's length-parity rule. Prints:
+>   - the rank distribution of the correct option's length (1 = shortest of the four, 4 = longest), with a χ² test against uniform — the canonical "is correct biased toward LONGEST?" leak;
+>   - the mean character length of correct options vs distractors;
+>   - per-question outliers where the correct option is ≥30% longer or ≤30% shorter than its mean distractor.
+>
+> **`audit_deck_positions.py`** — mechanical check for §5's position-rotation rule. Prints:
+>   - frequency of A / B / C / D as the correct letter, with a χ² goodness-of-fit test against uniform;
+>   - a ±5pp approximate-equality check against the 25% target per letter (and a "+N / −N" hint of how many to swap);
+>   - longest consecutive same-letter run vs the expected longest run for $n$ iid uniform draws (catches the "five C's in a row" cluster bias);
+>   - the full sequence of correct letters in question order, for eyeballing.
+>
+> Both scripts exit non-zero on **FAIL**. Do not declare the deck done until both exit 0. Paste each script's final verdict block into your end-of-run summary.
+>
+> If either flags issues, fix them and re-run:
+>   - Length issues: shorten the correct option, or pump up distractors with substantive misconception content (never filler — see §4.5).
+>   - Position issues: pick a few questions in the over-represented letter and re-letter them so the correct option moves to an under-represented slot, preserving the option content.
+>
+> Form-only leaks are hard to spot consistently by eye across 25–30 questions; these gates exist for that reason.
+
 ## Option-quality rules: the gold
 
 The single most important section. Read [[../templates/deck]] §5 in full *and* [[../templates/deck]] §4.5 (misconception-first distractor generation, the upstream discipline). Summary:
