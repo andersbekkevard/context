@@ -1,6 +1,6 @@
 ---
 moc: 01-intro
-title: Introduction
+title: "M01: Introduction"
 lectures: [L01]
 isl-ch: 1
 slides:

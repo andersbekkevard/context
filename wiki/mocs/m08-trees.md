@@ -1,6 +1,6 @@
 ---
 moc: 08-trees
-title: Tree-Based Methods
+title: "M08: Tree-Based Methods"
 lectures: [L17, L18, L19]
 isl-ch: 8
 slides:

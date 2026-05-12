@@ -2,7 +2,7 @@
 lecture: 27
 date: 2026-04-28
 module: 12-final
-title: Summary and Exam Review
+title: "L27: Summary and Exam Review"
 slides: modules/12Final/12Final.md
 topics:
   - exam-logistics

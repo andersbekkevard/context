@@ -2,7 +2,7 @@
 lecture: 19
 date: 2026-03-17
 module: 09-boosting
-title: Boosting and Additive Trees 1 (Trees wrap-up)
+title: "L19: Boosting and Additive Trees 1 (Trees wrap-up)"
 slides: modules/9TreeBoosting/9TreeBoosting.md
 topics:
   - bagging

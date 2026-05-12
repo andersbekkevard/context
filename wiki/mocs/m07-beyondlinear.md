@@ -1,6 +1,6 @@
 ---
 moc: 07-beyondlinear
-title: Moving Beyond Linearity
+title: "M07: Moving Beyond Linearity"
 lectures: [L16, L17]
 isl-ch: 7
 slides:

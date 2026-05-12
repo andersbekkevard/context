@@ -2,7 +2,7 @@
 lecture: 16
 date: 2026-03-09
 module: 07-beyondlinear
-title: Moving Beyond Linearity 1
+title: "L16: Moving Beyond Linearity 1"
 slides: modules/7BeyondLinear/7BeyondLinear.md
 topics:
   - basis-functions

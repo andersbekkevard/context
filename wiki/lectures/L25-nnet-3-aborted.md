@@ -2,7 +2,7 @@
 lecture: 25
 date: 2026-04-27
 module: 11-nnet
-title: Neural Networks 3 (aborted recording)
+title: "L25: Neural Networks 3 (aborted recording)"
 slides:
 topics: []
 tags:

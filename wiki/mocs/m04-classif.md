@@ -1,6 +1,6 @@
 ---
 moc: 04-classif
-title: Classification
+title: "M04: Classification"
 lectures: [L07, L08, L09]
 isl-ch: 4
 slides:

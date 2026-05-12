@@ -2,7 +2,7 @@
 lecture: 20
 date: 2026-04-07
 module: 09-boosting
-title: Boosting and Additive Trees 2
+title: "L20: Boosting and Additive Trees 2"
 slides: modules/9TreeBoosting/9TreeBoosting.md
 topics:
   - boosting

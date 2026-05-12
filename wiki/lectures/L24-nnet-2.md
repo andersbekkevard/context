@@ -2,7 +2,7 @@
 lecture: 24
 date: 2026-04-21
 module: 11-nnet
-title: Neural Networks 2 (CNNs)
+title: "L24: Neural Networks 2 (CNNs)"
 slides: modules/11NNet/11Nnet.md
 topics:
   - gradient-descent-and-sgd

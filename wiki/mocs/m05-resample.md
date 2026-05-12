@@ -1,6 +1,6 @@
 ---
 moc: 05-resample
-title: Resampling
+title: "M05: Resampling"
 lectures: [L10, L11]
 isl-ch: 5
 slides:

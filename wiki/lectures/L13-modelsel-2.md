@@ -2,7 +2,7 @@
 lecture: 13
 date: 2026-02-24
 module: 06-modelsel
-title: Model Selection and Regularization 2 (Ridge)
+title: "L13: Model Selection and Regularization 2 (Ridge)"
 slides: modules/6ModelSel/selection_regularization_presentation_lecture1.md
 topics:
   - bias-variance-tradeoff

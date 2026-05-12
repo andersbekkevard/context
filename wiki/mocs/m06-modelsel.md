@@ -1,6 +1,6 @@
 ---
 moc: 06-modelsel
-title: Model Selection and Regularization
+title: "M06: Model Selection and Regularization"
 lectures: [L12, L13, L14, L15]
 isl-ch: 6
 slides:

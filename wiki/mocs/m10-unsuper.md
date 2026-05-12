@@ -1,6 +1,6 @@
 ---
 moc: 10-unsuper
-title: Unsupervised Learning
+title: "M10: Unsupervised Learning"
 lectures: [L21, L22]
 isl-ch: 12
 slides:

@@ -2,7 +2,7 @@
 lecture: 15
 date: 2026-03-03
 module: 06-modelsel
-title: Model Selection and Regularization 4 (PCR wrap)
+title: "L15: Model Selection and Regularization 4 (PCR wrap)"
 slides: modules/6ModelSel/selection_regularization_presentation_lecture2.md
 topics:
   - principal-component-analysis

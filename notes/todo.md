@@ -1,12 +1,29 @@
-Give a structured way of communicating the page number
+# todo
 
-Remove stub
+### Exercises
+- [x]  2 Statistical Learning
+- [ ]  3 Linear Regression
+- [ ]  4 Classification
+- [ ]  5 Resampling Methods
+- [ ]  6 Linear Model Selection and Regularization
+- [ ]  7 Moving Beyond Linearity
+- [ ]  8 Tree-Based Methods
+- [ ]  9 Support Vector Machines
+- [ ]  10 Deep Learning
+- [ ]  11 Survival Analysis and Censored Data
 
-Today all are same format. And dont outline clearly, like islp would. Improve each wiki site to be tailor made and actually explain the concept, and remove redundancy from saying the same thing over again.
+- [ ]  Compulsory 1
+- [ ]  Eldre compulsory
 
-
-When we make the exercises: Make it programatically lint it for "incorrect/non uniform length of correct answers"
-
-Leverage html, either inline or standalone statics. https://x.com/trq212/status/2052809885763747935
-
-Cookies for "completed quizes", and store result, and "retry quiz button"
+### Book: Read + socratic + exercises
+- [x]  Kap 1 Introduction
+- [x]  Kap 2 Statistical Learning
+- [ ]  Kap 3 Linear Regression
+- [ ]  Kap 4 Classification
+- [ ]  Kap 5 Resampling Methods
+- [ ]  Kap 6 Linear Model Selection and Regularization
+- [ ]  Kap 7 Moving Beyond Linearity
+- [ ]  Kap 8 Tree-Based Methods
+- [ ]  Kap 9 Support Vector Machines
+- [ ]  Kap 10 Deep Learning
+- [ ]  Kap 11 Survival Analysis and Censored Data

@@ -2,7 +2,7 @@
 lecture: 18
 date: 2026-03-16
 module: 08-trees
-title: Tree-based Methods 2
+title: "L18: Tree-based Methods 2"
 slides: modules/8Trees/8Trees.md
 topics:
   - regression-tree

@@ -1,6 +1,6 @@
 ---
 moc: 11-nnet
-title: Neural Networks
+title: "M11: Neural Networks"
 lectures: [L23, L24, L26]
 isl-ch: 10
 slides:

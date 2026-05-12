@@ -2,7 +2,7 @@
 lecture: 6
 date: 2026-01-26
 module: 03-linreg
-title: Linear Regression 2
+title: "L06: Linear Regression 2"
 slides: modules/3LinReg/3LinReg.md
 topics:
   - r-squared

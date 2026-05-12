@@ -1,6 +1,6 @@
 ---
 moc: 02-statlearn
-title: Statistical Learning
+title: "M02: Statistical Learning"
 lectures: [L02, L03, L04]
 isl-ch: 2
 slides:

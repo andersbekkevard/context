@@ -2,7 +2,7 @@
 lecture: 4
 date: 2026-01-19
 module: 02-statlearn
-title: Statistical Learning 3
+title: "L04: Statistical Learning 3"
 slides: modules/2StatLearn/2StatLearn.2.md
 topics:
   - bias-variance-tradeoff

@@ -2,7 +2,7 @@
 lecture: 26
 date: 2026-04-27
 module: 11-nnet
-title: Neural Networks 3 (RNNs and Double Descent)
+title: "L26: Neural Networks 3 (RNNs and Double Descent)"
 slides: modules/11NNet/11Nnet.md
 topics:
   - recurrent-neural-network

@@ -2,7 +2,7 @@
 lecture: 22
 date: 2026-04-14
 module: 10-unsuper
-title: Unsupervised Learning 2 (Clustering)
+title: "L22: Unsupervised Learning 2 (Clustering)"
 slides: modules/10Unsuper/10Unsuper.md
 topics:
   - clustering

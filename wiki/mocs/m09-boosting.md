@@ -1,6 +1,6 @@
 ---
 moc: 09-boosting
-title: Boosting and Additive Trees
+title: "M09: Boosting and Additive Trees"
 lectures: [L19, L20, L21]
 isl-ch: 8
 slides:

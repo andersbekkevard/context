@@ -2,7 +2,7 @@
 lecture: 3
 date: 2026-01-13
 module: 02-statlearn
-title: Statistical Learning 2
+title: "L03: Statistical Learning 2"
 slides: modules/2StatLearn/2StatLearn.1.md
 topics:
   - supervised-vs-unsupervised

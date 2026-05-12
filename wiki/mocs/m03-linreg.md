@@ -1,6 +1,6 @@
 ---
 moc: 03-linreg
-title: Linear Regression
+title: "M03: Linear Regression"
 lectures: [L05, L06]
 isl-ch: 3
 slides:

@@ -2,7 +2,7 @@
 lecture: 8
 date: 2026-02-02
 module: 04-classif
-title: Classification 2 (LinReg wrap-up + LDA)
+title: "L08: Classification 2 (LinReg wrap-up + LDA)"
 slides: modules/4Classif/4Classif.md
 topics:
   - residual-diagnostics

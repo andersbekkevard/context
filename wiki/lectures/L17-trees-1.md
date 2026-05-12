@@ -2,7 +2,7 @@
 lecture: 17
 date: 2026-03-10
 module: 08-trees
-title: Tree-based Methods 1 (BeyondLinear wrap-up)
+title: "L17: Tree-based Methods 1 (BeyondLinear wrap-up)"
 slides: modules/8Trees/8Trees.md
 topics:
   - generalized-additive-models

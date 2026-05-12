@@ -2,7 +2,7 @@
 lecture: 9
 date: 2026-02-03
 module: 04-classif
-title: Classification 3
+title: "L09: Classification 3"
 slides: modules/4Classif/4Classif.md
 topics:
   - linear-discriminant-analysis

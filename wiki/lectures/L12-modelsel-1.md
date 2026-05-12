@@ -2,7 +2,7 @@
 lecture: 12
 date: 2026-02-23
 module: 06-modelsel
-title: Model Selection and Regularization 1
+title: "L12: Model Selection and Regularization 1"
 slides: modules/6ModelSel/selection_regularization_presentation_lecture1.md
 topics:
   - regularization

@@ -2,7 +2,7 @@
 lecture: 7
 date: 2026-01-27
 module: 04-classif
-title: Classification 1
+title: "L07: Classification 1"
 slides: modules/4Classif/4Classif.md
 topics:
   - classification-setup

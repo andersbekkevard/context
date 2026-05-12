@@ -2,7 +2,7 @@
 lecture: 14
 date: 2026-03-02
 module: 06-modelsel
-title: Model Selection and Regularization 3 (PCR/PCA)
+title: "L14: Model Selection and Regularization 3 (PCR/PCA)"
 slides: modules/6ModelSel/selection_regularization_presentation_lecture2.md
 topics:
   - regularization

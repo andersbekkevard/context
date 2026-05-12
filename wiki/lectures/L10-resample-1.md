@@ -2,7 +2,7 @@
 lecture: 10
 date: 2026-02-09
 module: 05-resample
-title: Resampling 1
+title: "L10: Resampling 1"
 slides: modules/5Resample/5Resample.md
 topics:
   - sensitivity-specificity

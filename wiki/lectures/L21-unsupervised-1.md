@@ -2,7 +2,7 @@
 lecture: 21
 date: 2026-04-13
 module: 10-unsuper
-title: Unsupervised Learning 1 (PCA)
+title: "L21: Unsupervised Learning 1 (PCA)"
 slides: modules/10Unsuper/10Unsuper.md
 topics:
   - xgboost

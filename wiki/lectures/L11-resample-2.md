@@ -2,7 +2,7 @@
 lecture: 11
 date: 2026-02-10
 module: 05-resample
-title: Resampling 2
+title: "L11: Resampling 2"
 slides: modules/5Resample/5Resample.md
 topics:
   - cross-validation

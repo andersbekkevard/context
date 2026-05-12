@@ -2,7 +2,7 @@
 lecture: 1
 date: 2026-01-05
 module: 01-intro
-title: Introduction
+title: "L01: Introduction"
 slides: modules/1Intro/1Intro.md
 topics:
   - statistical-learning

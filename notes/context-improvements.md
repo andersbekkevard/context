@@ -1,0 +1,12 @@
+Give a structured way of communicating the page number
+
+Remove stub
+
+Today all are same format. And dont outline clearly, like islp would. Improve each wiki site to be tailor made and actually explain the concept, and remove redundancy from saying the same thing over again.
+
+
+When we make the exercises: Make it programatically lint it for "incorrect/non uniform length of correct answers"
+
+Leverage html, either inline or standalone statics. https://x.com/trq212/status/2052809885763747935
+
+Cookies for "completed quizes", and store result, and "retry quiz button"

@@ -2,7 +2,7 @@
 lecture: 2
 date: 2026-01-12
 module: 02-statlearn
-title: Statistical Learning 1
+title: "L02: Statistical Learning 1"
 slides: modules/2StatLearn/2StatLearn.1.md
 topics:
   - statistical-learning

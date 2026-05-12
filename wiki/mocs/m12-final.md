@@ -1,6 +1,6 @@
 ---
 moc: 12-final
-title: Summary and Exam Review
+title: "M12: Summary and Exam Review"
 lectures: [L27]
 isl-ch: null
 slides:

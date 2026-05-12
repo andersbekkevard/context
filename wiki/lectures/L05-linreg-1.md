@@ -2,7 +2,7 @@
 lecture: 5
 date: 2026-01-20
 module: 03-linreg
-title: Linear Regression 1
+title: "L05: Linear Regression 1"
 slides: modules/3LinReg/3LinReg.md
 topics:
   - linear-regression

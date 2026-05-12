@@ -2,7 +2,7 @@
 lecture: 23
 date: 2026-04-20
 module: 11-nnet
-title: Neural Networks 1 (Feedforward)
+title: "L23: Neural Networks 1 (Feedforward)"
 slides: modules/11NNet/11Nnet.md
 topics:
   - feedforward-network
