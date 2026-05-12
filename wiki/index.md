@@ -14,6 +14,7 @@ Pick where to start:
 - **[[modules|Modules]]** — twelve module pages with lectures, concepts, slides, and scope flags
 - **[[decks|Practice decks]]** — per-module multiple-choice drills, ~25 questions each
 - **[[exercises|Exercises]]** — recommended and compulsory exercises with official solution proposals
+- **[[exams|Past exams]]** — TMA4268 finals from 2023–2025, with official solutions inline
 - **[[islp|ISLP chapters]]** — chapter-by-chapter links to the ISLP notes included in this site
 
 Every named idea has its own concept page; every lecture is a compressed transcript. Use the **search bar (left)** or the **graph view (right)** to jump straight in.

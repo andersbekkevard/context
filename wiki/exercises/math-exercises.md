@@ -94,7 +94,7 @@ $$
 b. Show that the maximum likelihood estimator is equal to the least square estimator for the multiple linear regression model.
 
 ### M3.4 — OLS ≡ MLE under Gaussian errors (worked-out version)
-**Source:** [TMA4268_2024_Exam.Rmd:140-152](../../exams/TMA4268_2024_Exam.Rmd) (Problem 3 b)
+**Source:** [Exam 2024](/pdfs/exam-2024.pdf) (Problem 3 b)
 
 **b) (4P)**
 
@@ -175,7 +175,7 @@ $$P(Y = 0 | \mathbf{X} = \boldsymbol{x}) = P(Y = 1 | \mathbf{X} = \boldsymbol{x}
 - (1P) We use the rule to classify an observation with covariates $\boldsymbol{x}$ to class 1 if $\hat{P}(Y = 1 | \boldsymbol{x}) > 0.5$. Write down the formula for the class boundary. Hint: formulate it as $ax_1 + bx_2 + c = 0$ and solve for $x_2$. Use R for the calculations.
 
 ### M4.5 — Bayes decision boundary (mixture-Gaussian classes)
-**Source:** [TMA4268_2023_Exam.Rmd:77-115](../../exams/TMA4268_2023_Exam.Rmd) (Problem 2, second "a" (5P))
+**Source:** [Exam 2023](/pdfs/exam-2023.pdf) (Problem 2, second "a" (5P))
 
 **a) (5P)**
 
@@ -246,7 +246,7 @@ d. Write a short `R` code chunk to check your result. (Hint: An example on how t
 Explain with words and an algorithm how you would proceed to use bootstrapping to estimate the standard deviation and the $95\%$ confidence interval of one of the regression parameters in multiple linear regression. Comment on which assumptions you make for your regression model.
 
 ### M5.4 — k-fold CV vs LOOCV (write-up + trade-off)
-**Source:** [TMA4268_2024_Exam.Rmd:125-132](../../exams/TMA4268_2024_Exam.Rmd) (Problem 3 a)
+**Source:** [Exam 2024](/pdfs/exam-2024.pdf) (Problem 3 a)
 
 **Problem 3 (theory, 8P)**
 
@@ -276,7 +276,7 @@ d_k(x_i) = \frac{(x_i-c_k)^3_+-(x_i-c_{K+1})^3_+}{c_{K+1}-c_k}.
 $$
 
 ### M7.2 — Cubic spline DF count
-**Source:** [TMA4268_2024_Exam.Rmd:98-104](../../exams/TMA4268_2024_Exam.Rmd) (Problem 2 c)
+**Source:** [Exam 2024](/pdfs/exam-2024.pdf) (Problem 2 c)
 
 **c) (1P) Numeric answer**
 
@@ -319,7 +319,7 @@ $$
 at each step.
 
 ### M10.2 — PCA: PVE, loadings, retain how many components
-**Source:** [TMA4268_2025_Exam.Rmd:165-202](../../exams/TMA4268_2025_Exam.Rmd) (Problem 2 f)
+**Source:** [Exam 2025](/pdfs/exam-2025.pdf) (Problem 2 f)
 
 **f) (3P)**
 You perform PCA on a dataset with 5 **standardized** variables: $X_1,X_2,X_3,X_4,X_5$.
@@ -359,7 +359,7 @@ $$
    6. What is the total variance in the original data?
 
 ### M10.3 — Hierarchical clustering dendrogram by hand (complete linkage)
-**Source:** [TMA4268_2025_Exam.Rmd:235-254](../../exams/TMA4268_2025_Exam.Rmd) (Problem 3 b)
+**Source:** [Exam 2025](/pdfs/exam-2025.pdf) (Problem 3 b)
 
 **b) (2P)**
 We have four observations for which we know the distance matrix in Euclidean space:
@@ -406,7 +406,7 @@ $$ \hat{y}_1({\bf x})=(1+\exp(-\beta_{01}-\sum_{m=1}^5 \beta_{m1}\max(\gamma_{0m
 How many parameters are estimated in this network?
 
 ### M11.4 — NN parameter count (3 → 4 → 1) + ReLU evaluation
-**Source:** [TMA4268_2025_Exam.Rmd:107-135](../../exams/TMA4268_2025_Exam.Rmd) (Problem 2 c)
+**Source:** [Exam 2025](/pdfs/exam-2025.pdf) (Problem 2 c)
 
 **c) (2P)**
 
