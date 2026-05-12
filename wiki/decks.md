@@ -1,5 +1,5 @@
 ---
-title: Practice decks
+title: Practice Decks
 ---
 
 Per-module multiple-choice drills, ~25 questions each. Click an option to lock your answer; correct turns green, wrong turns red, and the explanation opens automatically. The score panel at the bottom-left tracks your running points.

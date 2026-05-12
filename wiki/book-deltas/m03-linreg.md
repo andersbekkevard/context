@@ -1,9 +1,11 @@
 ---
+title: "M03: Linear Regression — Book delta"
 module: 03-linreg
 isl-ch: 3
+lectures: [L05, L06]
 ---
 
-# Module 03 — Book delta
+# Module 03: Linear Regression — Book delta
 
 Module 03 is the **heaviest-delta module** of the course. ISLP ch. 3 covers simple-LR algebra in detail (eq. 3.4), the SE / CI / t-test machinery for the simple case (eq. 3.7–3.10), the $F$-statistic formula (eq. 3.23–3.24), $R^2$ (eq. 3.17) and adjusted $R^2$ (in passing), categorical encoding, interactions, polynomial regression, the "potential problems" list, and the simple-LR leverage formula (eq. 3.37). But the **matrix-form theory** that Benjamin built in L06 is largely absent: the book explicitly says of multiple regression "the coefficient estimates have somewhat complicated forms that are most easily represented using matrix algebra. For this reason, we do not provide them here" (§3.2.1). Everything downstream of that statement — the closed-form derivation, the hat matrix and its properties, the multivariate-normal sampling distribution of $\hat{\boldsymbol\beta}$, the residual covariance $\sigma^2(\mathbf{I} - \mathbf{H})$, the MLE-equals-LS proof, the matrix-form $\mathrm{SE}(\hat\beta_j)$ via $(\mathbf{X}^\top\mathbf{X})^{-1}$, the matrix CI / PI formulas — is delta and is reproduced here in full.
 

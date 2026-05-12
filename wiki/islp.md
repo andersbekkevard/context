@@ -1,5 +1,5 @@
 ---
-title: ISLP chapters
+title: ISLP Chapters
 ---
 
 Index of the **ISLP** chapter notes included in this site. Chapters 9 (SVM), 11 (Survival), and 13 (Multiple Testing) are listed for completeness but were **not covered in this course** — the prof explicitly excluded them from the exam.

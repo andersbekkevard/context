@@ -1,9 +1,11 @@
 ---
+title: "M01: Introduction — Book delta"
 module: 01-intro
 isl-ch: 1
+lectures: [L01]
 ---
 
-# Module 01 — Book delta
+# Module 01: Introduction — Book delta
 
 Module 01 is the framing module. ISLP chapter 1 is itself the framing chapter (Wage / Smarket / NCI60 motivation, notation conventions, brief history). The overlap is large and the delta is small: the prof's organizing vocabulary lives in ISLP §2.1, **not §1**, so a handful of named decompositions and dichotomies he introduces in L01 are absent from the mapped chapter. This file reproduces them in full so they're recoverable at the exam table without flipping ahead to ch. 2.
 

@@ -1,9 +1,11 @@
 ---
+title: "M09: Boosting and Additive Trees — Book delta"
 module: 09-boosting
 isl-ch: 8
+lectures: [L19, L20, L21]
 ---
 
-# Module 09 — Book delta (ISLP §8.2.3 calibration)
+# Module 09: Boosting and Additive Trees — Book delta
 
 Module 09 maps to **ISLP §8.2.3 Boosting** in `wiki/book/08-trees.md`. That section is **deliberately thin**: ISLP gives only the *regression-trees with squared-error residuals* recipe (Algorithm 8.2), three tuning parameters ($B$, $\lambda$, $d$), a gene-expression worked example, and the explicit disclaimer that *"boosting classification trees proceeds in a similar but slightly more complex way, and the details are omitted here."* Everything boosting-specific the prof teaches **beyond** that 2-page treatment is delta and reproduced here.
 

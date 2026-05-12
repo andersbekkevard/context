@@ -1,9 +1,11 @@
 ---
+title: "M11: Neural Networks — Book delta"
 module: 11-nnet
 isl-ch: 10
+lectures: [L23, L24, L26]
 ---
 
-# Module 11 — Book delta
+# Module 11: Neural Networks — Book delta
 
 Module 11 is Benjamin's "deep learning is just nested GLMs" module, spread over three lectures ([[L23-nnet-1|L23]] [[feedforward-network|feedforward]] + [[backpropagation|backprop]], [[L24-nnet-2|L24]] [[convolutional-neural-network|CNNs]] + [[nn-regularization|regularization]] menu, [[L26-nnet-3|L26]] [[recurrent-neural-network|RNNs]] + [[double-descent|double descent]]). ISLP chapter 10 covers most of the same ground at a *high* level, but Benjamin's blackboard derivations are markedly more explicit on:
 

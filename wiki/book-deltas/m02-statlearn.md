@@ -1,9 +1,11 @@
 ---
+title: "M02: Statistical Learning — Book delta"
 module: 02-statlearn
 isl-ch: 2
+lectures: [L02, L03, L04]
 ---
 
-# Module 02 — Book delta
+# Module 02: Statistical Learning — Book delta
 
 ISLP chapter 2 sets up vocabulary (supervised vs unsupervised, regression vs classification, prediction vs inference, parametric vs nonparametric), states the reducible/irreducible split (eq. 2.3), states the bias-variance decomposition (eq. 2.7), and introduces the Bayes classifier and KNN. What the chapter *does not* contain — and what Benjamin built on the board across L02–L04 — is the **derivation** of the bias-variance decomposition, the **full random-vector / multivariate-normal machinery** that the rest of the course rides on, and the **over-parameterized / double-descent digression** with the minimum-norm interpolator. ISLP states the bias-variance result as a fact: *"Though the mathematical proof is beyond the scope of this book, it is possible to show that …"* (§2.2.2, eq. 2.7). The prof's derivation is the lookup-able piece this file reproduces.
 

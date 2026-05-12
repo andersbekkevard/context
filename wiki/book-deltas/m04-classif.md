@@ -1,9 +1,11 @@
 ---
+title: "M04: Classification — Book delta"
 module: 04-classif
 isl-ch: 4
+lectures: [L07, L08, L09]
 ---
 
-# Module 04 — Book delta
+# Module 04: Classification — Book delta
 
 ISLP §4.3–§4.5 is a remarkably complete treatment of [[logistic-regression|logistic regression]], [[linear-discriminant-analysis|LDA]], [[quadratic-discriminant-analysis|QDA]], [[naive-bayes|naive Bayes]], and [[roc-auc|ROC/AUC]]: the model assumptions, the [[discriminant-score-and-decision-boundary|discriminant-score]] formulas (eqs. 4.18, 4.24, 4.28), and the [[bias-variance-tradeoff|bias-variance]] argument for choosing among them are all in the book. The deltas in this module are not large doctrinal pieces — they are concrete formulas and worked artifacts that the prof (or the slide deck he taught from) wrote down explicitly, and that ISLP either omits, sketches but never closes, or hides inside a verbal aside.
 

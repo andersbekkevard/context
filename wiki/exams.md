@@ -1,5 +1,5 @@
 ---
-title: Past exams
+title: Past Exams
 ---
 
 The three most recent TMA4268 final exams, with official solutions inline. Useful for format calibration, recurring topics, and as a source of practice problems.

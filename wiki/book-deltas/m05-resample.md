@@ -1,4 +1,11 @@
-# Module 5 Book-Delta: Resampling
+---
+title: "M05: Resampling — Book delta"
+module: 05-resample
+isl-ch: 5
+lectures: [L10, L11]
+---
+
+# Module 05: Resampling — Book delta
 
 Exam-time lookup reference for concrete artifacts that the prof taught in module 5 but that **are not cleanly findable in ISLP Chapter 5**. Each item is fully reproduced; cite back as `[L10]`, `[L11]`, `[concept: ...]`, `[slides]`.
 

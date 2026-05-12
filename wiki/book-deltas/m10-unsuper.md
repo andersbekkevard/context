@@ -1,11 +1,11 @@
 ---
-title: "Module 10 (Unsupervised Learning) — Book Deltas"
+title: "M10: Unsupervised Learning — Book delta"
 module: 10-unsuper
 isl-ch: 12
-lectures: [L21, L22, L27]
+lectures: [L21, L22]
 ---
 
-# Module 10 — Book Deltas ([[principal-component-analysis|PCA]], [[k-means-clustering|K-means]], [[hierarchical-clustering|Hierarchical Clustering]])
+# Module 10: Unsupervised Learning — Book delta
 
 This file reproduces the concrete artifacts (formulas, derivations, templates, definitions) that the prof taught for module 10 and that are **not** clean lookup-able statements in `wiki/book/12-unsupervised.md`. The book has Eq 12.17 (k-means objective), Eq 12.18 (pairwise-to-centroid identity), Eq 12.10 (PVE in score-sum form), Table 12.3 (linkage definitions), Algorithms 12.2 and 12.3, the $2^{n-1}$ ordering fact, and the qualitative Euclidean-vs-correlation discussion (Fig 12.15). Everything in this delta file is something the prof said, derived, or computed that is *additional* to that.
 

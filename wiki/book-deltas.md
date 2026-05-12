@@ -1,5 +1,5 @@
 ---
-title: Book deltas
+title: Book Deltas
 ---
 
 One file per module reproducing in full every concrete, lookup-able artifact (formula, derivation, theorem, named object, computation) that the prof taught but that is **absent from the mapped ISLP chapter**. Designed as an exam-time "book extension": ISLP is open-book, so what's *not* in ISLP is what needs its own lookup reference.

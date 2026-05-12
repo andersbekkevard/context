@@ -1,9 +1,11 @@
 ---
+title: "M08: Tree-Based Methods — Book delta"
 module: 08-trees
 isl-ch: 8
+lectures: [L17, L18, L19]
 ---
 
-# Module 08 — Book delta
+# Module 08: Tree-Based Methods — Book delta
 
 ISLP ch.8 (the trees / [[bagging]] / RF portion of `wiki/book/08-trees.md`) is the deep-treatment reference for module 8. Anders can flip to it for: the [[regression-tree|regression-tree]] split criterion (8.1)–(8.3), Algorithm 8.1 (build-out-then-prune-via-CV), the [[cost-complexity-pruning|cost-complexity]] penalty $C_\alpha(T) = Q(T) + \alpha|T|$ (8.4), the three classification impurities (8.5)–(8.7), the bagged-predictor formula $\hat f_{\text{bag}}$, the verbal OOB description ("on average each bagged tree uses around two-thirds of the observations"), the impurity-based [[variable-importance|variable-importance]] plot, and the [[random-forest|random-forest]] decorrelation trick with $m \approx \sqrt p$.
 

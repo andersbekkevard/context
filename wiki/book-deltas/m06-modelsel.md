@@ -1,9 +1,11 @@
 ---
+title: "M06: Model Selection and Regularization — Book delta"
 module: 06-modelsel
 isl-ch: 6
+lectures: [L12, L13, L14, L15]
 ---
 
-# Module 06 — Book delta
+# Module 06: Model Selection and Regularization — Book delta
 
 ISLP chapter 6 covers the same skeleton the prof teaches ([[subset-selection|best subset / forward / backward]], [[ridge-regression|ridge]], [[lasso]], [[principal-component-regression|PCR]], [[partial-least-squares|PLS]], [[high-dimensional-regression|high-dim]]), but a handful of **concrete, lookup-able artifacts** that Benjamin used at the board or that he made central to his framing are **absent from chapter 6**. The book's ridge derivation is verbal — it does not give the matrix closed form $(X^\top X + \lambda I)^{-1} X^\top y$; the [[principal-component-analysis|PCA]]-as-eigendecomposition machinery ISLP defers to ch. 12; and the per-PC ridge-shrinkage factor $\lambda_j^2/(\lambda_j^2+\lambda)$ that the prof read off the slide is footnoted to ESL §3.5 rather than reproduced. This file collects everything in that gap, plus the prof's matrix-form / closed-form / variance machinery that the book leaves implicit.
 

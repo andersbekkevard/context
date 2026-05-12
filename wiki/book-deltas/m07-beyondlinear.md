@@ -1,9 +1,11 @@
 ---
+title: "M07: Moving Beyond Linearity — Book delta"
 module: 07-beyondlinear
 isl-ch: 7
+lectures: [L16, L17]
 ---
 
-# Module 07 — Book delta
+# Module 07: Moving Beyond Linearity — Book delta
 
 ISLP ch. 7 covers the conceptual sweep of module 7 well ([[basis-functions|basis-functions framing]], piecewise polynomials, [[regression-splines|regression splines]], [[smoothing-splines|smoothing splines]], [[local-regression|LOESS]], [[generalized-additive-models|GAMs]]). The deltas are mostly **explicit formulas and design-matrix templates** that the prof wrote on the board / on the slides but ISLP either skips, hides in a footnote, or states only in the abstract form. The Exercise-7.3 and Exercise-7.4 hand-construction artifacts are the load-bearing ones: ISLP does not give the natural-spline basis formula in usable form, and does not write out an additive-model design matrix block-by-block.
 
