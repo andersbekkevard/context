@@ -11,7 +11,7 @@ Verbatim quotes only. Source links go to the line range in the bronze file.
 ## Module 2 — Statistical learning (bias-variance, foundations)
 
 ### M2.1 — Correlation from a covariance matrix
-**Source:** [RecEx2](Exercise2/RecEx2.md) (Problem 3 g)
+**Source:** [RecEx2](/exercises/Exercise2/RecEx2) (Problem 3 g)
 
 The correlation of two variables $X$ and $Y$ are defined as
 $$
@@ -20,7 +20,7 @@ $$
 The correlation matrix and covariance matrix can be easily found in `R` with the `cor()` and `cov()` functions, respectively. Use only the covariance matrix (as shown below) to find the correlation between `mpg` and `displacement`, `mpg` and `horsepower`, and `mpg` and `weight`. Do your results coincide with the correlation matrix you find using `cor(Auto[, quant])`?
 
 ### M2.2 — Bias-variance decomposition (simulation form)
-**Source:** [RecEx2](Exercise2/RecEx2.md) (Problem 5 c)
+**Source:** [RecEx2](/exercises/Exercise2/RecEx2) (Problem 5 c)
 
 **c) Bias and variance - we use the truth!**
 
@@ -64,7 +64,7 @@ Explain with words how we can interpret the three terms.
 ## Module 3 — Linear regression
 
 ### M3.1 — Distribution of the OLS estimator
-**Source:** [RecEx3](Exercise3/RecEx3.md) (Problem 2 a)
+**Source:** [RecEx3](/exercises/Exercise3/RecEx3) (Problem 2 a)
 
 **a)**
 A core finding for the least-squares estimator $\hat{\boldsymbol\beta}$ of linear regression models is
@@ -77,13 +77,13 @@ with $\hat{\boldsymbol\beta}\sim N_{p}(\boldsymbol\beta,\sigma^2({\bf X}^T{\bf X
 * In particular, how can we calculate the variance of $\hat{\beta}_j$?
 
 ### M3.2 — Connection between CI for β, CI for x₀ᵀβ, and PI for Y
-**Source:** [RecEx3](Exercise3/RecEx3.md) (Problem 2 d)
+**Source:** [RecEx3](/exercises/Exercise3/RecEx3) (Problem 2 d)
 
 **d)**
 Construct a 95% CI for ${\boldsymbol x}_0^T \beta$. Explain the connections between a CI for $\beta_j$, a CI for ${\boldsymbol x}_0^T \beta$ and a PI for $Y$ at ${\boldsymbol x}_0$.
 
 ### M3.3 — Derive β̂_OLS, then show MLE = OLS
-**Source:** [RecEx6](Exercise6/RecEx6.md) (Problem 1)
+**Source:** [RecEx6](/exercises/Exercise6/RecEx6) (Problem 1)
 
 **1**
 
@@ -115,14 +115,14 @@ ii) (2P) Show that, if you assume a Gaussian distribution for the error term, th
 ## Module 4 — Classification
 
 ### M4.1 — LDA assumptions and classification rule
-**Source:** [RecEx4](Exercise4/RecEx4.md) (Problem 2 b)
+**Source:** [RecEx4](/exercises/Exercise4/RecEx4) (Problem 2 b)
 
 **b)**
 
 Explain the assumptions made to use linear discriminant analysis to classify a new observation to be a genuine or a fake bank note. Write down the classification rule for a new observation (make any assumptions you need to make).
 
 ### M4.2 — LDA vs QDA
-**Source:** [RecEx4](Exercise4/RecEx4.md) (Problem 2 d)
+**Source:** [RecEx4](/exercises/Exercise4/RecEx4) (Problem 2 d)
 
 **d)**
 
@@ -208,7 +208,7 @@ Given that $\pi_0=\pi_1=0.5$, and the knowledge about the class-specific distrib
 ## Module 5 — Resampling
 
 ### M5.1 — k-fold CV algorithmic specification
-**Source:** [RecEx5](Exercise5/RecEx5.md) (Problem 1)
+**Source:** [RecEx5](/exercises/Exercise5/RecEx5) (Problem 1)
 
 **Problem 1**
 
@@ -225,7 +225,7 @@ d) Relate $k$-fold cross-validation to an example from classification. Ideas are
 Hint: the words "loss function," "fold," "training," and "validation" are central.
 
 ### M5.2 — Bootstrap inclusion probability → 1 − 1/e
-**Source:** [RecEx5](Exercise5/RecEx5.md) (Problem 4)
+**Source:** [RecEx5](/exercises/Exercise5/RecEx5) (Problem 4)
 
 **Problem 4**
 
@@ -239,7 +239,7 @@ c. When $n$ is large $(1-\frac{1}{n})^n \approx \frac{1}{e}$. Use this to give a
 d. Write a short `R` code chunk to check your result. (Hint: An example on how to this is on page 198 in our ISLR book.) You may also study the result in c. How good is the approximation as a function of $n$?
 
 ### M5.3 — Bootstrap SE and 95% CI procedure
-**Source:** [RecEx5](Exercise5/RecEx5.md) (Problem 5)
+**Source:** [RecEx5](/exercises/Exercise5/RecEx5) (Problem 5)
 
 **Problem 5**
 
@@ -261,7 +261,7 @@ We learned about $k$-fold cross-validation (CV) as a way of doing model selectio
 ## Module 7 — Beyond linearity (splines / GAMs)
 
 ### M7.1 — Natural cubic spline design matrix from basis
-**Source:** [RecEx7](Exercise7/RecEx7.md) (Problem 3)
+**Source:** [RecEx7](/exercises/Exercise7/RecEx7) (Problem 3)
 
 **Problem 3**
 
@@ -287,7 +287,7 @@ A covariate is included in a regression model as a natural cubic spline with thr
 ## Module 8 — Trees
 
 ### M8.1 — Recursive binary splitting + cost-complexity pruning algorithm
-**Source:** [RecEx8](Exercise8/RecEx8.md) (Problem 1 a–e)
+**Source:** [RecEx8](/exercises/Exercise8/RecEx8) (Problem 1 a–e)
 
 **Problem 1 -- Theoretical**
 
@@ -306,7 +306,7 @@ e) Bagging and Random Forests typically improve the prediction accuracy of a sin
 ## Module 10 — Unsupervised
 
 ### M10.1 — Prove k-means objective is monotone decreasing
-**Source:** [RecEx10](Exercise10/RecEx10.md) (Problem 2)
+**Source:** [RecEx10](/exercises/Exercise10/RecEx10) (Problem 2)
 
 **Problem 2**
 
@@ -380,14 +380,14 @@ Based on this dissimilarity matrix, sketch the dendogram that results from hiera
 ## Module 11 — Neural networks
 
 ### M11.1 — Write the feed-forward NN equation from an architecture diagram
-**Source:** [RecEx11](Exercise11/RecEx11.md) (Problem 1 a)
+**Source:** [RecEx11](/exercises/Exercise11/RecEx11) (Problem 1 a)
 
 **a)**
 
 Write down the equation that describes and input is related to output in this network, using general activation functions $\phi_o$, $\phi_h$ and $\phi_{h^\star}$ and bias nodes in all layers. What would you call such a network?
 
 ### M11.2 — Identify architecture & count parameters (ReLU, one hidden layer)
-**Source:** [RecEx11](Exercise11/RecEx11.md) (Problem 2 a)
+**Source:** [RecEx11](/exercises/Exercise11/RecEx11) (Problem 2 a)
 
 **a)**
 
@@ -396,7 +396,7 @@ $$ \hat{y}_1({\bf x})=\beta_{01}+\sum_{m=1}^5 \beta_{m1}\cdot \max(\alpha_{0m}+\
 How many parameters are estimated in this network?
 
 ### M11.3 — Identify architecture & count parameters (deep, ReLU+sigmoid)
-**Source:** [RecEx11](Exercise11/RecEx11.md) (Problem 2 b)
+**Source:** [RecEx11](/exercises/Exercise11/RecEx11) (Problem 2 b)
 
 **b)**
 Which network architecture and activation functions does this formula give?
