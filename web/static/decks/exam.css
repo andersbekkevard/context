@@ -381,6 +381,163 @@ code {
   color: var(--wrong-fg);
 }
 
+/* --- Cloze (fill-in-the-blank paragraph) --- */
+
+.exam-q__cloze {
+  margin: 0 0 1.1rem;
+}
+
+.exam-q__cloze p {
+  margin: 0 0 0.9rem;
+  line-height: 1.75;
+  color: var(--dark);
+}
+
+.cloze-blank {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  display: inline-block;
+  vertical-align: baseline;
+  font: inherit;
+  font-size: 0.9em;
+  line-height: 1.1;
+  height: 1.5em;
+  color: var(--secondary);
+  background-color: var(--highlight);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' fill='none' stroke='%23284b63' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 7px center;
+  border: 1px solid var(--secondary);
+  border-radius: 4px;
+  padding: 0 20px 0 7px;
+  margin: 0 1px;
+  cursor: pointer;
+  max-width: 100%;
+  transition: background-color 120ms, border-color 120ms;
+}
+
+.cloze-blank:hover {
+  background-color: var(--card);
+}
+
+.cloze-blank:focus-visible {
+  outline: 2px solid var(--secondary);
+  outline-offset: 2px;
+}
+
+:root[saved-theme="dark"] .cloze-blank {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' fill='none' stroke='%237b97aa' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+}
+
+.cloze-blank.is-filled {
+  color: var(--dark);
+}
+
+.cloze-blank:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
+.cloze-blank.is-correct {
+  background-color: var(--correct-bg);
+  border-color: var(--correct-border);
+  color: var(--correct-fg);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='10' viewBox='0 0 12 10'><path d='M1 5l3.5 3.5L11 1.5' fill='none' stroke='%23047857' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-position: right 7px center;
+}
+
+:root[saved-theme="dark"] .cloze-blank.is-correct {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='10' viewBox='0 0 12 10'><path d='M1 5l3.5 3.5L11 1.5' fill='none' stroke='%2334d399' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+}
+
+.cloze-blank.is-wrong {
+  background-color: var(--wrong-bg);
+  border-color: var(--wrong-border);
+  color: var(--wrong-fg);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path d='M1 1l8 8M9 1l-8 8' fill='none' stroke='%23b91c1c' stroke-width='1.7' stroke-linecap='round'/></svg>");
+  background-position: right 7px center;
+}
+
+:root[saved-theme="dark"] .cloze-blank.is-wrong {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path d='M1 1l8 8M9 1l-8 8' fill='none' stroke='%23f87171' stroke-width='1.7' stroke-linecap='round'/></svg>");
+}
+
+.cloze-correction {
+  display: inline-block;
+  vertical-align: baseline;
+  height: 1.5em;
+  line-height: 1.5em;
+  margin: 0 1px 0 4px;
+  padding: 0 8px;
+  border-radius: 4px;
+  background: var(--correct-bg);
+  color: var(--correct-fg);
+  border: 1px solid var(--correct-border);
+  font-size: 0.9em;
+  font-weight: 600;
+  white-space: normal;
+  text-decoration: none;
+}
+
+.cloze-correction::before {
+  content: "→ ";
+  opacity: 0.7;
+  font-weight: 400;
+}
+
+.cloze-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.cloze-check {
+  font-family: var(--bodyFont);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--secondary);
+  border: 1px solid var(--secondary);
+  border-radius: 6px;
+  padding: 0.55rem 1.1rem;
+  cursor: pointer;
+  transition: filter 120ms, transform 120ms;
+}
+
+.cloze-check:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.cloze-check:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.cloze-check:focus-visible {
+  outline: 2px solid var(--secondary);
+  outline-offset: 2px;
+}
+
+.cloze-check:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.cloze-progress {
+  font-size: 0.88rem;
+  color: var(--darkgray);
+  font-family: var(--bodyFont);
+}
+
+.cloze-progress.is-complete {
+  color: var(--correct-fg);
+  font-weight: 600;
+}
+
 /* --- Explanation block --- */
 
 .fasit-details {

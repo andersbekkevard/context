@@ -5,3 +5,8 @@ Har boka. Burde ha liste over:
 - Which models allow for p>n
 
 - **Viktig**, boosting boosting boosting. Ikke i ISLP. Og teknisk. Og funker som faen. Må være på formelark.
+- Regneregler for vektorderivasjon. d/db(bTXb) og d/db(aTb). Nødvendige for OLS-utledning.
+
+
+Whats up med:
+https://www.deeplearningbook.org/?

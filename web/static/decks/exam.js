@@ -46,6 +46,7 @@
   function setupQuestion(article) {
     setupMultiChoice(article);
     setupTrueFalse(article);
+    setupCloze(article);
   }
 
   function parsePoints(el) {
@@ -325,6 +326,81 @@
       markAnswered();
       if (fasit && !fasit.open) fasit.open = true;
     }
+  }
+
+  /* --- Cloze (fill-in-the-blank paragraph) ---
+     Each <select.cloze-blank data-correct="..."> is one blank. The block is
+     graded only when the .cloze-check button is clicked, so distractors
+     elsewhere in the paragraph can disambiguate the answer (matches the
+     prof's "you might only understand which answer is correct after you
+     continued reading" framing on the past-exam Problem 1). */
+
+  function setupCloze(article) {
+    const cloze = article.querySelector('.exam-q__cloze');
+    if (!cloze) return;
+
+    const blanks = Array.from(cloze.querySelectorAll('.cloze-blank'));
+    if (!blanks.length) return;
+
+    const checkBtn = cloze.querySelector('.cloze-check');
+    if (!checkBtn) return;
+
+    const progressEl = cloze.querySelector('.cloze-progress');
+    const fasit = article.querySelector('.fasit-details');
+    const summary = fasit ? fasit.querySelector('summary') : null;
+    if (summary) summary.style.display = 'none';
+
+    const totalPoints = parseFloat(article.dataset.examPoints) || 0;
+    const pointsPerBlank = blanks.length > 0 ? totalPoints / blanks.length : 0;
+
+    const updateProgress = () => {
+      if (!progressEl) return;
+      const filled = blanks.filter((b) => b.value).length;
+      progressEl.textContent = `${filled} / ${blanks.length} filled`;
+      progressEl.classList.toggle('is-complete', filled === blanks.length);
+    };
+
+    blanks.forEach((blank) => {
+      blank.addEventListener('change', () => {
+        if (blank.value) blank.classList.add('is-filled');
+        else blank.classList.remove('is-filled');
+        updateProgress();
+      });
+    });
+
+    updateProgress();
+
+    checkBtn.addEventListener('click', () => {
+      if (cloze.classList.contains('is-answered')) return;
+      cloze.classList.add('is-answered');
+
+      let earned = 0;
+      blanks.forEach((blank) => {
+        const correct = (blank.dataset.correct || '').trim();
+        const chosen = (blank.value || '').trim();
+        const isCorrect = chosen !== '' && chosen === correct;
+
+        blank.disabled = true;
+        blank.classList.add(isCorrect ? 'is-correct' : 'is-wrong');
+
+        if (!isCorrect) {
+          const correction = document.createElement('span');
+          correction.className = 'cloze-correction';
+          correction.textContent = correct;
+          blank.insertAdjacentElement('afterend', correction);
+        }
+
+        if (isCorrect) earned += pointsPerBlank;
+      });
+
+      checkBtn.disabled = true;
+      checkBtn.textContent = 'Answer locked';
+
+      addEarned(earned);
+      markAnswered();
+
+      if (fasit && !fasit.open) fasit.open = true;
+    });
   }
 
   if (document.readyState === 'loading') {

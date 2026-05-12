@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paragraph cloze example: TMA4268</title>
+  <link rel="icon" type="image/png" href="/static/icon.png">
+
+  <!-- Sync theme with Quartz wiki (reads the same localStorage key, falls back to OS) -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var theme = saved || (prefersDark ? "dark" : "light");
+        document.documentElement.setAttribute("saved-theme", theme);
+      } catch (e) {
+        document.documentElement.setAttribute("saved-theme", "light");
+      }
+    })();
+  </script>
+
+  <!-- Match Quartz typography (Schibsted Grotesk / Source Sans Pro / IBM Plex Mono) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+
+  <link rel="stylesheet" href="exam.css">
+
+  <!-- KaTeX for inline math -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$',  right: '$',  display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });"></script>
+</head>
+<body>
+  <main class="exam-shell">
+    <header class="exam-head">
+      <a href="/" class="back-link">← Back to wiki</a>
+      <h1>Paragraph cloze: format demo</h1>
+      <p class="meta">2 questions · 9 points · ~5 min · format demo</p>
+      <p class="meta">
+        Two question shapes side by side: a single-correct MCQ (Question 1) and a fill-in-the-blank
+        paragraph (Question 2) — the recurring "Problem 1" style from the 2023–2025 exams. Pick a
+        word for every blank; nothing is graded until you press <strong>Check answer</strong>.
+        Score tracker bottom-left.
+      </p>
+    </header>
+
+    <!-- ─────── Pattern: single-correct MC (existing mechanic, included for visual reference) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 1</span>
+        <span class="exam-q__points">4 points</span>
+      </header>
+      <p class="q-text">
+        In supervised statistical learning, which goal is most associated with caring about the
+        actual values of the model parameters rather than the model's accuracy on new data?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Prediction</li>
+        <li><span class="opt-label">B</span> Inference</li>
+        <li><span class="opt-label">C</span> Variance reduction</li>
+        <li><span class="opt-label">D</span> Unsupervised learning</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p>Inference is the goal where we care about <em>how</em> the inputs relate to the
+             output: which variables matter, with what sign, with what magnitude. Prediction
+             (A) only cares whether $\hat f(x)$ is close to $y$ on new data — the parameters
+             are means to an end and need not be interpretable.</p>
+          <p>C is a property of estimators, not a goal. D is a different paradigm entirely
+             (no response variable to predict or explain).</p>
+          <p class="ref">Atoms: <a href="/concepts/prediction-vs-inference">prediction-vs-inference</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ─────── Pattern: fill-in-the-blank cloze paragraph (new mechanic) ─────── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 2</span>
+        <span class="exam-q__points">5 points</span>
+        <span class="exam-q__src">Exam 2024 P1</span>
+      </header>
+      <p class="q-text">
+        Read the whole text and fill in the blanks such that the whole text makes sense
+        (you might only understand which answer is correct after you continued reading).
+        Each blank is worth $5/10 = 0.5$ points. Use the <strong>Check answer</strong> button
+        when you're done.
+      </p>
+
+      <div class="exam-q__cloze">
+        <p>
+          We have mainly discussed supervised statistical learning methods, broadly divided
+          into regression and classification problems, and were thereby distinguishing between
+          models used for prediction versus inference.
+        </p>
+
+        <p>
+          If the main goal is inference, we usually prefer
+          <select class="cloze-blank" data-correct="parametric" aria-label="blank 1">
+            <option value="">— pick —</option>
+            <option value="parametric">parametric</option>
+            <option value="non-parametric">non-parametric</option>
+            <option value="unsupervised">unsupervised</option>
+            <option value="more advanced">more advanced</option>
+            <option value="more flexible">more flexible</option>
+          </select>
+          methods, because the goal is then to
+          <select class="cloze-blank" data-correct="understand" aria-label="blank 2">
+            <option value="">— pick —</option>
+            <option value="understand">understand</option>
+            <option value="predict">predict</option>
+            <option value="minimise the sum of bias and variance">minimise the sum of bias and variance</option>
+            <option value="minimise prediction error">minimise prediction error</option>
+          </select>.
+          If the goal is pure prediction, we can use any method that performs well, whereas
+          <select class="cloze-blank" data-correct="non-parametric" aria-label="blank 3">
+            <option value="">— pick —</option>
+            <option value="non-parametric">non-parametric</option>
+            <option value="regression">regression</option>
+            <option value="classification">classification</option>
+            <option value="clustering">clustering</option>
+            <option value="supervised">supervised</option>
+          </select>
+          methods are very flexible and thus more complex and
+          <select class="cloze-blank" data-correct="less interpretable" aria-label="blank 4">
+            <option value="">— pick —</option>
+            <option value="less interpretable">less interpretable</option>
+            <option value="better interpretable">better interpretable</option>
+            <option value="more appealing">more appealing</option>
+            <option value="better suited for inference">better suited for inference</option>
+          </select>
+          than, for example, linear models.
+        </p>
+
+        <p>
+          One important concept in the course was the bias–variance trade-off. In that context
+          we discussed variable selection and methods based on shrinkage. Lasso and ridge regression
+          are two shrinkage methods we learned about. Lasso is an alternative to AIC-based model
+          selection in linear models and should be preferred since it avoids
+          <select class="cloze-blank" data-correct="model selection bias" aria-label="blank 5">
+            <option value="">— pick —</option>
+            <option value="model selection bias">model selection bias</option>
+            <option value="underestimated parameter estimates">underestimated parameter estimates</option>
+            <option value="large prediction error">large prediction error</option>
+            <option value="irreducible error">irreducible error</option>
+            <option value="over-fitting">over-fitting</option>
+          </select>.
+        </p>
+
+        <p>
+          In the context of trees, shrinkage-type regularisation is performed via
+          <select class="cloze-blank" data-correct="tree pruning" aria-label="blank 6">
+            <option value="">— pick —</option>
+            <option value="tree pruning">tree pruning</option>
+            <option value="bagging">bagging</option>
+            <option value="random forests">random forests</option>
+            <option value="boosting">boosting</option>
+            <option value="classification trees">classification trees</option>
+            <option value="regression trees">regression trees</option>
+          </select>,
+          whereas neural networks do this via
+          <select class="cloze-blank" data-correct="weight penalisation" aria-label="blank 7">
+            <option value="">— pick —</option>
+            <option value="weight penalisation">weight penalisation</option>
+            <option value="data augmentation">data augmentation</option>
+            <option value="label smoothing">label smoothing</option>
+            <option value="dropout">dropout</option>
+            <option value="early stopping">early stopping</option>
+          </select>.
+          More generally, any type of regularisation has as a main goal to
+          <select class="cloze-blank" data-correct="reduce test error" aria-label="blank 8">
+            <option value="">— pick —</option>
+            <option value="reduce test error">reduce test error</option>
+            <option value="reduce training error">reduce training error</option>
+            <option value="reduce bias">reduce bias</option>
+            <option value="increase the flexibility of the model">increase the flexibility of the model</option>
+            <option value="shrink parameters">shrink parameters</option>
+          </select>
+          by avoiding that the model over-fits the data.
+        </p>
+
+        <p>
+          In unsupervised learning the goal is to discover interesting aspects about the data
+          when the
+          <select class="cloze-blank" data-correct="response variable" aria-label="blank 9">
+            <option value="">— pick —</option>
+            <option value="response variable">response variable</option>
+            <option value="covariate">covariate</option>
+            <option value="loss function">loss function</option>
+            <option value="parametric model">parametric model</option>
+            <option value="reducible error">reducible error</option>
+            <option value="bias-variance trade-off">bias-variance trade-off</option>
+          </select>
+          is not present. We have considered two types of methods: principal component analysis
+          and clustering. Both methods have a strong focus on finding
+          <select class="cloze-blank" data-correct="groups" aria-label="blank 10">
+            <option value="">— pick —</option>
+            <option value="groups">groups</option>
+            <option value="good predictions">good predictions</option>
+            <option value="bias">bias</option>
+            <option value="variance">variance</option>
+          </select>
+          in the data, and on visualisation.
+        </p>
+
+        <div class="cloze-actions">
+          <button type="button" class="cloze-check">Check answer</button>
+          <span class="cloze-progress">0 / 10 filled</span>
+        </div>
+      </div>
+
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>parametric</strong> — inference needs a model whose coefficients we can
+                interpret; non-parametric methods don't expose interpretable parameters.</li>
+            <li><strong>understand</strong> — inference is about understanding the relationship,
+                not about minimising any loss; "predict" / "minimise prediction error" describe
+                the prediction goal instead.</li>
+            <li><strong>non-parametric</strong> — these are the flexible/complex models that
+                pay for flexibility with reduced interpretability. "Regression" and "classification"
+                are problem types, not flexibility classes.</li>
+            <li><strong>less interpretable</strong> — direct consequence of higher complexity.</li>
+            <li><strong>model selection bias</strong> — Lasso embeds selection in the same fit
+                as estimation, so the resulting coefficients aren't the post-selection biased
+                estimates you get from running OLS on a subset chosen by AIC. (The prof's
+                explicit framing in lecture.)</li>
+            <li><strong>tree pruning</strong> — the cost-complexity penalty $\alpha |T|$ is the
+                tree analogue of the $\lambda$-shrinkage penalty. Bagging/RF/boosting are
+                <em>ensemble</em> methods, not shrinkage, and are common distractors.</li>
+            <li><strong>weight penalisation</strong> — the L1/L2 penalty on weights is the
+                direct shrinkage analogue. Dropout and early stopping <em>also</em> fight
+                over-fitting but are not shrinkage; this is a deliberate trap.</li>
+            <li><strong>reduce test error</strong> — the whole point of regularisation is to
+                trade a little training-set fit for better generalisation. "Reduce training
+                error" is the opposite. "Shrink parameters" is the <em>mechanism</em>, not
+                the goal.</li>
+            <li><strong>response variable</strong> — defining feature of unsupervised learning:
+                no $Y$ to predict or explain.</li>
+            <li><strong>groups</strong> — both PCA (directions of variation) and clustering
+                (cluster assignments) surface group structure in the data.</li>
+          </ol>
+          <p>Each blank is scored independently for $5/10 = 0.5$ points.</p>
+          <p class="ref">Atoms:
+            <a href="/concepts/parametric-vs-nonparametric">parametric-vs-nonparametric</a>,
+            <a href="/concepts/prediction-vs-inference">prediction-vs-inference</a>,
+            <a href="/concepts/regularization">regularization</a>,
+            <a href="/concepts/lasso">lasso</a>,
+            <a href="/concepts/tree-pruning">tree-pruning</a>,
+            <a href="/concepts/unsupervised-learning">unsupervised-learning</a>.
+          </p>
+        </div>
+      </details>
+    </article>
+  </main>
+
+  <script src="exam.js"></script>
+</body>
+</html>
