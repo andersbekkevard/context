@@ -192,16 +192,20 @@ resid_plot(results5, 'mpg ~ displacement + weight^2 + year + origin')
 
 ## a)
 
-\begin{align}
-E(\hat{\boldsymbol\beta})&=E((X^T X)^{-1}X^T Y)=(X^TX)^{-1}X^T E(Y) =(X^TX)^{-1}X^T E(X \boldsymbol\beta +\varepsilon) \\
-&=(X^TX)^{-1}X^T (X \boldsymbol\beta +0)=(X^TX)^{-1}(X^T X) \boldsymbol\beta = I \boldsymbol\beta = \boldsymbol\beta
-\end{align}
+$$
+\begin{aligned}
+E(\hat{\boldsymbol\beta}) &= E((X^T X)^{-1}X^T Y) = (X^TX)^{-1}X^T E(Y) = (X^TX)^{-1}X^T E(X \boldsymbol\beta + \varepsilon) \\
+&= (X^TX)^{-1}X^T (X \boldsymbol\beta + 0) = (X^TX)^{-1}(X^T X) \boldsymbol\beta = I \boldsymbol\beta = \boldsymbol\beta
+\end{aligned}
+$$
 
-\begin{align}
-Cov(\hat{\boldsymbol\beta})&=Cov((X^T X)^{-1}X^T Y)=(X^TX)^{-1}X^T Cov(Y)((X^TX)^{-1}X^T)^T \\
-&=(X^TX)^{-1}X^T \sigma^2  I ((X^TX)^{-1}X^T)^T\\
-&=\sigma^2 (X^TX)^{-1} \\
-\end{align}
+$$
+\begin{aligned}
+\mathrm{Cov}(\hat{\boldsymbol\beta}) &= \mathrm{Cov}((X^T X)^{-1}X^T Y) = (X^TX)^{-1}X^T \, \mathrm{Cov}(Y) \, ((X^TX)^{-1}X^T)^T \\
+&= (X^TX)^{-1}X^T \sigma^2 I ((X^TX)^{-1}X^T)^T \\
+&= \sigma^2 (X^TX)^{-1}
+\end{aligned}
+$$
 
 We need to assume that $Y$ is multivariate normal. As $\hat{\boldsymbol\beta}$ is a linear transformation of a multivariate normal vector $Y$, $\hat{\boldsymbol\beta}$ is also multivariate normal.
 
