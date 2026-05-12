@@ -1,0 +1,49 @@
+.copy-markdown {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.7rem;
+  margin: 0.5rem 0 0.75rem 0;
+  font-size: 0.85rem;
+  font-family: var(--bodyFont);
+  line-height: 1;
+  color: var(--darkgray);
+  background: var(--lightgray);
+  border: 1px solid var(--gray);
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+
+  &:hover {
+    color: var(--secondary);
+    border-color: var(--secondary);
+  }
+
+  & .copy-icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  & .copy-icon-check,
+  & .copy-label-success {
+    display: none;
+  }
+
+  &[data-copied="true"] {
+    color: var(--secondary);
+    border-color: var(--secondary);
+
+    & .copy-icon-copy,
+    & .copy-label-default {
+      display: none;
+    }
+
+    & .copy-icon-check,
+    & .copy-label-success {
+      display: inline;
+    }
+  }
+}
