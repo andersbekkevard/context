@@ -4,6 +4,7 @@ Har boka. Burde ha liste over:
 - Df for "moving beyond linearity", evt finne ut hvor det står i boken.
 - Df generelt
 - Which models allow for p>n
+- Utledning Corr^2 = R2 for enkel linreg
 
 - **Viktig**, boosting boosting boosting. Ikke i ISLP. Og teknisk. Og funker som faen. Må være på formelark.
 - Regneregler for vektorderivasjon. d/db(bTXb) og d/db(aTb). Nødvendige for OLS-utledning.

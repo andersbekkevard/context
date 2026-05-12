@@ -2,7 +2,7 @@
 
 ### Exercises
 - [x]  2 Statistical Learning
-- [ ]  3 Linear Regression
+- [x]  3 Linear Regression
 - [ ]  4 Classification
 - [ ]  5 Resampling Methods
 - [ ]  6 Linear Model Selection and Regularization
@@ -18,7 +18,7 @@
 ### Book: Read + socratic + exercises
 - [x]  Kap 1 Introduction
 - [x]  Kap 2 Statistical Learning
-- [ ]  Kap 3 Linear Regression
+- [x]  Kap 3 Linear Regression
 - [ ]  Kap 4 Classification
 - [ ]  Kap 5 Resampling Methods
 - [ ]  Kap 6 Linear Model Selection and Regularization
