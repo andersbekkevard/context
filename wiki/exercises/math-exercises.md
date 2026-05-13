@@ -184,11 +184,12 @@ In this problem, we consider a simulated data set with two classes (labelled 0 a
 * Prior class probabilities: $\pi_0 = P(Y=0) = 0.5$ and $\pi_1= P(Y = 1) = 0.5$.
 * Class-specific probabilities
 
-\begin{align*}
-P(\bm{x}|y=0) = f_0(\bm{x})=
-0.5 \cdot \frac{1}{2\pi |\Sigma|} \cdot \exp\left( -\frac{1}{2} (\bm{x}-\bm{\mu}_{01})^\top \Sigma^{-1} (\bm{x}- \bm{\mu}_{01})\right) + \\
- 0.5 \cdot \frac{1}{2\pi |\Sigma|} \cdot \exp\left(- \frac{1}{2} (\bm{x}-\bm{\mu}_{02})^\top \Sigma^{-1} (\bm{x}- \bm{\mu}_{02})\right)
-\end{align*}
+$$
+\begin{aligned}
+P(\bm{x}|y=0) = f_0(\bm{x}) =\ & 0.5 \cdot \frac{1}{2\pi |\Sigma|} \cdot \exp\left( -\frac{1}{2} (\bm{x}-\bm{\mu}_{01})^\top \Sigma^{-1} (\bm{x}- \bm{\mu}_{01})\right) \\
+& + 0.5 \cdot \frac{1}{2\pi |\Sigma|} \cdot \exp\left(- \frac{1}{2} (\bm{x}-\bm{\mu}_{02})^\top \Sigma^{-1} (\bm{x}- \bm{\mu}_{02})\right)
+\end{aligned}
+$$
 
 $$
 P(\bm{x}|y=1) = f_1(\bm{x})=
