@@ -26,3 +26,9 @@ Decks open in a new tab.
 - <a href="/decks/m11-nnet.html" target="_blank" rel="noopener">11: Neural networks</a>
 
 Module 12 (exam review) has no deck — its content is woven into the other modules.
+
+## Compulsory exercise reviews
+
+Verbatim multiple- and single-choice questions from the past compulsory exercises, with figures embedded. R-coding parts are excluded — these decks drill only the conceptual MC/SC items.
+
+- <a href="/decks/ce3.html" target="_blank" rel="noopener">CE3: Compulsory Exercise 3 (V2020) — MC/SC review</a>

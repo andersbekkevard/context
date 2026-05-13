@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compulsory Exercise 3 — MC review · TMA4268</title>
+  <link rel="icon" type="image/png" href="/static/icon.png">
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var theme = saved || (prefersDark ? "dark" : "light");
+        document.documentElement.setAttribute("saved-theme", theme);
+      } catch (e) {
+        document.documentElement.setAttribute("saved-theme", "light");
+      }
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+
+  <link rel="stylesheet" href="exam.css">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$',  right: '$',  display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });"></script>
+
+  <style>
+    .exam-q__fig { margin: 1rem 0; text-align: center; }
+    .exam-q__fig img { max-width: 100%; height: auto; border: 1px solid var(--lightgray, #ddd); border-radius: 4px; }
+    .exam-q__fig figcaption { font-size: 0.85em; color: var(--darkgray, #666); margin-top: 0.4rem; font-style: italic; }
+    .exam-q pre {
+      background: var(--light, #f5f5f5);
+      border: 1px solid var(--lightgray, #ddd);
+      border-radius: 4px;
+      padding: 0.6rem 0.9rem;
+      font-family: var(--codeFont, "IBM Plex Mono", monospace);
+      font-size: 0.85em;
+      overflow-x: auto;
+      line-height: 1.35;
+    }
+  </style>
+</head>
+<body>
+  <main class="exam-shell">
+    <header class="exam-head">
+      <a href="/" class="back-link">← Back to wiki</a>
+      <h1>Compulsory Exercise 3 — MC / SC review</h1>
+      <p class="meta">11 questions · 19 points · ~25 min · CE3 (V2020)</p>
+      <p class="meta">
+        Multiple- and single-choice questions lifted verbatim from Compulsory Exercise 3 (TMA4268, V2020).
+        R-coding parts are excluded. Click an option to lock; explanations open automatically.
+        Score tracker bottom-left. Solutions adapted from the official solution PDF.
+      </p>
+    </header>
+
+    <!-- ───── Q1 — CE3 P2b: Covid logistic regression, T/F ───── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 1</span>
+        <span class="exam-q__points">2 points</span>
+        <span class="exam-q__src">CE3 P2b</span>
+      </header>
+      <p class="q-text">
+        Answer the following multiple choice questions by using the Covid-19 data to model the probability of <code>deceased</code> as a function of <code>sex</code>, <code>age</code> and <code>country</code> (with France as reference level; no interactions). The fitted <code>glm()</code> output is shown below.
+      </p>
+      <pre>##                   Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)      -7.633051   0.897063  -8.509  &lt; 2e-16 ***
+## sexmale           1.137246   0.343706   3.309 0.000937 ***
+## age               0.068012   0.009846   6.907 4.94e-12 ***
+## countryindonesia -0.754259   0.815127  -0.925 0.354796
+## countryjapan     -2.434101   0.667826  -3.645 0.000268 ***
+## countryKorea     -1.366797   0.374837  -3.646 0.000266 ***</pre>
+      <p class="q-text">Which of the following statements are true, which false?</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(i) Country is not a relevant variable in the model.</span>
+          <label><input type="radio" name="q1-i" value="true"> True</label>
+          <label><input type="radio" name="q1-i" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(ii) The slope for indonesia has a large $p$-value, which shows that we should remove the Indonesian population from the model, as they do not fit the model as well as the Japanese population.</span>
+          <label><input type="radio" name="q1-ii" value="true"> True</label>
+          <label><input type="radio" name="q1-ii" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(iii) Increasing the age by 10 years, $x^*_{age} = x_{age} + 10$, and holding all other covariates constant, the odds ratio to die increases by a factor of 1.97.</span>
+          <label><input type="radio" name="q1-iii" value="true"> True</label>
+          <label><input type="radio" name="q1-iii" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(iv) The probability to die is approximately 3.12 larger for males than for females.</span>
+          <label><input type="radio" name="q1-iv" value="true"> True</label>
+          <label><input type="radio" name="q1-iv" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <p><strong>Solution: FALSE — FALSE — FALSE — FALSE.</strong></p>
+          <ol>
+            <li><strong>False</strong> — an analysis of deviance test on the full model gives $p \approx 0.0002$ for <code>country</code>, so country <em>is</em> a relevant variable. A non-significant single dummy (Indonesia vs France) doesn't mean the whole factor is irrelevant.</li>
+            <li><strong>False</strong> — a large $p$-value for one dummy level only means we have no evidence that that level differs from the reference; it is not a justification to drop a subpopulation from a model. You don't remove observations because their group is "not different from reference".</li>
+            <li><strong>False</strong> — the calculation $\exp(10 \cdot \hat\beta_{age}) = \exp(10 \cdot 0.068) \approx 1.97$ is correct, but this is the multiplicative change in <em>the odds</em>, not in the odds ratio.</li>
+            <li><strong>False</strong> — $\exp(\hat\beta_{sex}) = \exp(1.137) \approx 3.12$ is the <em>odds ratio</em> (males vs females), not the probability ratio.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/logistic-regression">logistic-regression</a>, <a href="/concepts/odds-and-odds-ratio">odds-and-odds-ratio</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───── Q2 — CE3 P2f: tree + LDA, T/F ───── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 2</span>
+        <span class="exam-q__points">2 points</span>
+        <span class="exam-q__src">CE3 P2f</span>
+      </header>
+      <p class="q-text">Which of the following statements are true, which false?</p>
+      <p class="q-text"><em>Consider the classification tree below to answer:</em></p>
+      <figure class="exam-q__fig">
+        <img src="figs/tree.png" alt="Classification tree on age, country, sex predicting deceased.">
+      </figure>
+      <p class="q-text"><em>Consider the LDA code and output below:</em></p>
+      <pre>library(MASS)
+table(predict = predict(lda(deceased ~ age + sex + country, data = d.corona))$class,
+    true = d.corona$deceased)
+
+##        true
+## predict     0    1
+##       0  1926   31
+##       1    39   14</pre>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(i) The probability of dying (<code>deceased = 1</code>) is about 0.46 for a French person with age above 91.</span>
+          <label><input type="radio" name="q2-i" value="true"> True</label>
+          <label><input type="radio" name="q2-i" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(ii) Age seems to be a more important predictor for mortality than sex.</span>
+          <label><input type="radio" name="q2-ii" value="true"> True</label>
+          <label><input type="radio" name="q2-ii" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(iii) The "null rate" for misclassification is 2.24%, because this is the proportion of deaths among all cases in the dataset. No classifier should have a higher misclassification rate.</span>
+          <label><input type="radio" name="q2-iii" value="true"> True</label>
+          <label><input type="radio" name="q2-iii" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(iv) LDA is not a very useful method for this dataset, among other reasons because it does not estimate probabilities, but also because the misclassification error is too high.</span>
+          <label><input type="radio" name="q2-iv" value="true"> True</label>
+          <label><input type="radio" name="q2-iv" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <p><strong>Solution: TRUE — TRUE — TRUE — FALSE.</strong></p>
+          <p><em>Note from the official solution: statements (iii) and (iv) were later found to be ambiguous, so both True and False were graded as correct. Below is the most defensible reading.</em></p>
+          <ol>
+            <li><strong>True</strong> — follow the tree: <code>age &lt; 79.5</code> is False (age &gt; 91), then <code>country: indonesia,japan,Korea</code> is False (French), then <code>age &lt; 91</code> is False. The terminal leaf reads 0.461500 ≈ 0.46.</li>
+            <li><strong>True</strong> — <code>age</code> appears at the root and again deep in the tree, while <code>sex</code> appears only once (and as a tie-breaker in a single subtree). The classifier leans heavily on age.</li>
+            <li><strong>True</strong> (most-defensible reading) — the null classifier "always predict 0 (alive)" misclassifies exactly the 45/2010 ≈ 2.24% who actually died. A useful classifier should beat this; LDA here gets $(39+31)/2010 \approx 3.48\%$, which is worse than the null. Officially graded ambiguous.</li>
+            <li><strong>False</strong> — LDA <em>does</em> estimate (posterior) probabilities via Bayes' rule; that part of the statement is wrong. The misclassification claim is defensible (3.48% &gt; 2.24% null), but the reason about probabilities is incorrect. Officially graded ambiguous.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/classification-tree">classification-tree</a>, <a href="/concepts/lda">lda</a>, <a href="/concepts/confusion-matrix">confusion-matrix</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───── Q3 — CE3 P4b: Inference methods ───── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 3</span>
+        <span class="exam-q__points">2 points</span>
+        <span class="exam-q__src">CE3 P4b</span>
+      </header>
+      <p class="q-text">Inference vs prediction: Which of the following methods are suitable when the aim of your analysis is inference?</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(i) Lasso and ridge regression</span>
+          <label><input type="radio" name="q3-i" value="true"> True</label>
+          <label><input type="radio" name="q3-i" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(ii) Multiple linear regression with interaction terms</span>
+          <label><input type="radio" name="q3-ii" value="true"> True</label>
+          <label><input type="radio" name="q3-ii" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(iii) Logistic regression</span>
+          <label><input type="radio" name="q3-iii" value="true"> True</label>
+          <label><input type="radio" name="q3-iii" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(iv) Support Vector Machines</span>
+          <label><input type="radio" name="q3-iv" value="true"> True</label>
+          <label><input type="radio" name="q3-iv" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <p><strong>Solution: TRUE — TRUE — TRUE — FALSE.</strong></p>
+          <ol>
+            <li><strong>True</strong> — lasso and ridge yield interpretable coefficients on the original predictors; lasso additionally selects variables. Both are routinely used for inference, though SE/$p$-values require post-selection care.</li>
+            <li><strong>True</strong> — coefficients of an MLR (including interaction terms) have direct interpretations and standard inferential tooling ($t$-tests, CIs, $F$-tests).</li>
+            <li><strong>True</strong> — coefficients are log-odds with interpretable signs/magnitudes and standard Wald-type inference.</li>
+            <li><strong>False</strong> — SVM is a black-box geometric classifier; it does not produce interpretable parameters and is not used for inference about effects.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/inference-vs-prediction">inference-vs-prediction</a>, <a href="/concepts/lasso">lasso</a>, <a href="/concepts/ridge-regression">ridge-regression</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───── Q4 — CE3 P4c: Bootstrap SE ───── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 4</span>
+        <span class="exam-q__points">2 points</span>
+        <span class="exam-q__src">CE3 P4c</span>
+      </header>
+      <p class="q-text">
+        We again look at the Covid-19 dataset from Problem 2 to study some properties of the bootstrap method. Below we estimated the standard errors of the regression coefficients in the logistic regression model with <code>sex</code>, <code>age</code> and <code>country</code> as predictors using 1000 bootstrap iterations (column <code>std.error</code>). These standard errors can be compared to those that we obtain by fitting a single logistic regression model using the <code>glm()</code> function. Look at the R output below and compare the standard errors that we obtain from these two approaches (note that the <code>t1*</code> to <code>t6*</code> variables are sorted in the same way as for the <code>glm()</code> output).
+      </p>
+      <pre>library(boot)
+boot.fn &lt;- function(data, index) {
+    return(coefficients(glm(deceased ~ sex + age + country, family = "binomial",
+        data = data, subset = index)))
+}
+boot(d.corona, boot.fn, 1000)
+
+##
+## ORDINARY NONPARAMETRIC BOOTSTRAP
+##
+## Call:
+## boot(data = d.corona, statistic = boot.fn, R = 1000)
+##
+## Bootstrap Statistics :
+##        original       bias    std. error
+## t1* -7.63305130 -0.1529721699 0.783528214
+## t2*  1.13724644  0.0387847701 0.376067951
+## t3*  0.06801169  0.0009371457 0.008496607
+## t4* -0.75425940 -1.8680017229 5.127173438
+## t5* -2.43410057 -0.6257843968 2.979530357
+## t6* -1.36679680  0.0126076844 0.381765945
+
+# Logistic regression
+r.glm &lt;- glm(deceased ~ sex + age + country, d.corona, family = "binomial")
+summary(r.glm)$coef
+
+##                     Estimate Std. Error   z value     Pr(&gt;|z|)
+## (Intercept)      -7.63305130 0.897063042 -8.5089352 1.755379e-17
+## sexmale           1.13724644 0.343705727  3.3087794 9.370363e-04
+## age               0.06801169 0.009846377  6.9072806 4.940322e-12
+## countryindonesia -0.75425940 0.815127165 -0.9253273 3.547957e-01
+## countryjapan     -2.43410057 0.667826265 -3.6448111 2.675883e-04
+## countryKorea     -1.36679680 0.374836917 -3.6463772 2.659635e-04</pre>
+      <p class="q-text">Which of the following statements are true?</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(i) There are large differences between the estimated standard errors, which indicates a problem with the bootstrap.</span>
+          <label><input type="radio" name="q4-i" value="true"> True</label>
+          <label><input type="radio" name="q4-i" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(ii) The differences between the estimated standard errors indicate a problem with the assumptions taken about the distribution of the estimated parameters in logistic regression.</span>
+          <label><input type="radio" name="q4-ii" value="true"> True</label>
+          <label><input type="radio" name="q4-ii" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(iii) The <code>glm</code> function leads to too small $p$-values for the differences between countries, in particular for the differences between Indonesia and France and between Japan and France.</span>
+          <label><input type="radio" name="q4-iii" value="true"> True</label>
+          <label><input type="radio" name="q4-iii" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(iv) The bootstrap relies on random sampling the same data without replacement.</span>
+          <label><input type="radio" name="q4-iv" value="true"> True</label>
+          <label><input type="radio" name="q4-iv" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <p><strong>Solution: FALSE — TRUE — TRUE — FALSE.</strong></p>
+          <ol>
+            <li><strong>False</strong> — bootstrap and glm SEs <em>can</em> differ; the bootstrap is treated as the more honest estimator (fewer parametric assumptions). A large gap is a signal about the parametric assumptions, not a problem with the bootstrap itself.</li>
+            <li><strong>True</strong> — the glm SEs come from the asymptotic Wald approximation under specific distributional assumptions; when bootstrap SEs differ markedly (especially for <code>countryindonesia</code> and <code>countryjapan</code>, where bootstrap SE is many times larger), the Wald assumptions are suspect for those coefficients (small subgroup sizes, separation, etc.).</li>
+            <li><strong>True</strong> — since the glm SEs for the Indonesia and Japan dummies are far smaller than the bootstrap SEs, the Wald $z = \hat\beta / \widehat{\text{SE}}$ is inflated and the resulting $p$-values are too small.</li>
+            <li><strong>False</strong> — the bootstrap samples <em>with</em> replacement. "Without replacement" of the full $n$ would just return the original dataset.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/bootstrap">bootstrap</a>, <a href="/concepts/logistic-regression">logistic-regression</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───── Q5 — CE3 P5a: Regularization techniques ───── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 5</span>
+        <span class="exam-q__points">2 points</span>
+        <span class="exam-q__src">CE3 P5a</span>
+      </header>
+      <p class="q-text">Which of the following are techniques for regularization?</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(i) Lasso</span>
+          <label><input type="radio" name="q5-i" value="true"> True</label>
+          <label><input type="radio" name="q5-i" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(ii) Ridge regression</span>
+          <label><input type="radio" name="q5-ii" value="true"> True</label>
+          <label><input type="radio" name="q5-ii" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(iii) Forward and backward selection</span>
+          <label><input type="radio" name="q5-iii" value="true"> True</label>
+          <label><input type="radio" name="q5-iii" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(iv) Stochastic gradient descent</span>
+          <label><input type="radio" name="q5-iv" value="true"> True</label>
+          <label><input type="radio" name="q5-iv" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <p><strong>Solution: TRUE — TRUE — FALSE — TRUE.</strong></p>
+          <ol>
+            <li><strong>True</strong> — lasso adds an $\ell_1$ penalty $\lambda\sum |\beta_j|$ that shrinks and can zero out coefficients.</li>
+            <li><strong>True</strong> — ridge adds an $\ell_2$ penalty $\lambda\sum \beta_j^2$, shrinking coefficients toward zero.</li>
+            <li><strong>False</strong> — forward/backward selection is a <em>subset selection</em> (variable-selection) technique, not a continuous shrinkage / regularization method.</li>
+            <li><strong>True</strong> — SGD has an implicit regularization effect (especially with early stopping); in the neural-network context it is counted among regularization techniques the course covers.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/regularization">regularization</a>, <a href="/concepts/lasso">lasso</a>, <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/subset-selection">subset-selection</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───── Q6 — CE3 P5b: PCR / PLS ───── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 6</span>
+        <span class="exam-q__points">2 points</span>
+        <span class="exam-q__src">CE3 P5b</span>
+      </header>
+      <p class="q-text">Which of the following statements about principal component regression (PCR) and partial least squares (PLS) are correct?</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(i) PCR involves the first principal components that are most correlated with the response.</span>
+          <label><input type="radio" name="q6-i" value="true"> True</label>
+          <label><input type="radio" name="q6-i" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(ii) PLS involves the first principal components that are most correlated with the response.</span>
+          <label><input type="radio" name="q6-ii" value="true"> True</label>
+          <label><input type="radio" name="q6-ii" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(iii) The idea in PLS is that we choose the principal components that explain most variation among all covariates.</span>
+          <label><input type="radio" name="q6-iii" value="true"> True</label>
+          <label><input type="radio" name="q6-iii" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(iv) The idea in PCR is that we choose the principal components that explain most variation among all covariates.</span>
+          <label><input type="radio" name="q6-iv" value="true"> True</label>
+          <label><input type="radio" name="q6-iv" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <p><strong>Solution: FALSE — TRUE — FALSE — TRUE.</strong></p>
+          <ol>
+            <li><strong>False</strong> — PCR is unsupervised: it picks components by variance in $X$, ignoring the response.</li>
+            <li><strong>True</strong> — PLS is the supervised version: components are chosen for high correlation with $y$.</li>
+            <li><strong>False</strong> — that description belongs to PCR, not PLS.</li>
+            <li><strong>True</strong> — PCR's components maximise variance among the covariates.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/pcr">pcr</a>, <a href="/concepts/pls">pls</a>, <a href="/concepts/pca">pca</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───── Q7 — CE3 P5c: Ridge regression, increasing lambda ───── -->
+    <article class="exam-q" data-exam-points="1">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 7</span>
+        <span class="exam-q__points">1 point</span>
+        <span class="exam-q__src">CE3 P5c</span>
+      </header>
+      <p class="q-text">
+        In ridge regression, we estimate the regression coefficients in a linear regression model by minimizing
+        $$\sum_{i=1}^{n}\left(y_i - \beta_0 - \sum_{j=1}^{p}\beta_j x_{ij}\right)^2 + \lambda\sum_{j=1}^{p}\beta_j^2.$$
+        What happens when we increase $\lambda$ from 0? Choose the single correct statement:
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> The training RSS will steadily decrease.</li>
+        <li><span class="opt-label">B</span> The test RSS will steadily decrease.</li>
+        <li><span class="opt-label">C</span> The test RSS will steadily increase.</li>
+        <li><span class="opt-label">D</span> The bias will steadily increase.</li>
+        <li><span class="opt-label">E</span> The variance of the estimator will steadily increase.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: D</span>
+          <p><strong>D</strong> — at $\lambda = 0$ ridge is OLS (unbiased). As $\lambda$ grows the coefficients are shrunk toward zero, so bias grows monotonically; in the limit $\lambda \to \infty$ all $\hat\beta_j \to 0$ and bias is maximal.</p>
+          <p>A — training RSS <em>increases</em> with $\lambda$ (we're moving away from the OLS minimum of training RSS).</p>
+          <p>B and C — test RSS is U-shaped in $\lambda$: it typically decreases first, hits a minimum, then increases. Neither "steadily decrease" nor "steadily increase" is correct.</p>
+          <p>E — variance moves the opposite way: shrinkage <em>reduces</em> variance as $\lambda$ grows. That's exactly the bias–variance trade-off ridge exploits.</p>
+          <p class="ref">Atoms: <a href="/concepts/ridge-regression">ridge-regression</a>, <a href="/concepts/bias-variance-tradeoff">bias-variance-tradeoff</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───── Q8 — CE3 P5d: Curse of dimensionality ───── -->
+    <article class="exam-q" data-exam-points="1">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 8</span>
+        <span class="exam-q__points">1 point</span>
+        <span class="exam-q__src">CE3 P5d</span>
+      </header>
+      <p class="q-text">Which statement about the <em>curse of dimensionality</em> is correct?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> It means that we have a bias-variance tradeoff in $K$-nearest neighbor regression, where large $K$ leads to more bias but less variance for the predictor function.</li>
+        <li><span class="opt-label">B</span> It means that the performance of the $K$-nearest neighbor classifier gets worse when the number of predictor variables $p$ is large.</li>
+        <li><span class="opt-label">C</span> It means that the $K$-means clustering algorithm performs bad if the datapoints lie in a high-dimensional space.</li>
+        <li><span class="opt-label">D</span> It means that support vector machines with radial kernel function should be avoided, because radial kernels correspond to infinite-dimensional polynomial boundaries.</li>
+        <li><span class="opt-label">E</span> It means that we should never measure too many covariates when we want to do classification.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: B</span>
+          <p><strong>B</strong> — in high dimensions, "nearest" neighbours are no longer near in any meaningful sense (points become roughly equidistant). KNN, which depends on local structure, degrades as $p$ grows.</p>
+          <p>A describes the bias–variance trade-off of KNN itself, not the curse of dimensionality.</p>
+          <p>C — the curse is a general high-dimensional phenomenon; it is not a property of $K$-means specifically.</p>
+          <p>D — wrong characterisation of radial kernels; radial-kernel SVMs are not generally avoided in high dimensions, and the reasoning given is not the curse.</p>
+          <p>E — a normative oversimplification: many covariates can be fine if local structure isn't required (linear models, trees with regularisation, etc.).</p>
+          <p class="ref">Atoms: <a href="/concepts/curse-of-dimensionality">curse-of-dimensionality</a>, <a href="/concepts/knn">knn</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───── Q9 — CE3 P5e: KNN proportion in 10 dimensions ───── -->
+    <article class="exam-q" data-exam-points="1">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 9</span>
+        <span class="exam-q__points">1 point</span>
+        <span class="exam-q__src">CE3 P5e</span>
+      </header>
+      <p class="q-text">
+        Now assume you have 10 covariates, $X_1$ to $X_{10}$, each of them uniformly distributed in the interval $[0, 1]$. To predict a new test observation $(X_1^{(0)}, \dots, X_{10}^{(0)})$ in a $K$-nearest neighbor (KNN) clustering approach, we use all observations within 20% of the range closest to each of the covariates (that is, in each dimension). Which proportion of available (training) observations can you expect to use for prediction?
+      </p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> $1.02 \cdot 10^{-7}$</li>
+        <li><span class="opt-label">B</span> $2.0 \cdot 10^{-3}$</li>
+        <li><span class="opt-label">C</span> $0.20$</li>
+        <li><span class="opt-label">D</span> $0.04$</li>
+        <li><span class="opt-label">E</span> $10^{-10}$</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Correct answer: A</span>
+          <p><strong>A</strong> — each covariate contributes an independent factor of $0.2$, so the hypercube fraction is $0.2^{10} = 1.024 \cdot 10^{-7}$. This is the canonical illustration of the curse of dimensionality.</p>
+          <p>B — $0.2^4 \approx 1.6\cdot 10^{-3}$; forgets six of the ten dimensions.</p>
+          <p>C — the per-dimension fraction (0.20). Ignores the product across dimensions entirely.</p>
+          <p>D — $0.2^2 = 0.04$; treats only two dimensions.</p>
+          <p>E — $0.1^{10}$; wrong base (uses 10% rather than 20%).</p>
+          <p class="ref">Atoms: <a href="/concepts/curse-of-dimensionality">curse-of-dimensionality</a>, <a href="/concepts/knn">knn</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───── Q10 — CE3 P5f: ROC curves ───── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 10</span>
+        <span class="exam-q__points">2 points</span>
+        <span class="exam-q__src">CE3 P5f</span>
+      </header>
+      <p class="q-text">
+        This example is taken from a real clinical study by Ikeda, Matsunaga, Irabu, et al. <em>Using vital signs to diagnose impaired consciousness: cross sectional observational study. BMJ 2002;325:800.</em> Researchers investigated the use of vital signs as a screening test to identify brain lesions in patients with impaired consciousness. The setting was an emergency department in Japan. The study included 529 consecutive patients that arrived with consciousness. Patients were followed until discharge. The vital signs of systolic and diastolic blood pressure and pulse rate were recorded on arrival. The aim of this study was to find a quick test for assessing whether the newly arrived patient suffered from a brain lesion. While vital signs can be measured immediately, the actual diagnosis of a brain lesion can only be determined on the basis of brain imaging and neurological examination at a later stage, thus the quick measurements of blood pressure and heart rate are important to make a quick assessment. In total, 312 patients (59%) were diagnosed with a brain lesion.
+      </p>
+      <p class="q-text">
+        The performance of each vital sign (systolic blood pressure, diastolic blood pressure and heart rate) was separately evaluated as a screening test to quickly diagnose brain lesions. To assess the quality of each of these vital signs, different thresholds were taken successively to discriminate between "negative" and "positive" screening test result. For each vital sign and each threshold the sensitivity and specificity were derived and used to plot a receiver operating characteristic (ROC) curve for the vital sign (Figure 1):
+      </p>
+      <figure class="exam-q__fig">
+        <img src="figs/roc.png" alt="ROC curves for systolic blood pressure, diastolic blood pressure, and pulse rate.">
+        <figcaption>Figure 1: Figure for problem 5f); taken from <em>P. Sedgwick, BMJ 2011;343</em>.</figcaption>
+      </figure>
+      <p class="q-text">Which of the following statements are true?</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(i) The value of 1-specificity represents the proportion of patients without a diagnosed brain lesion identified as positive on screening.</span>
+          <label><input type="radio" name="q10-i" value="true"> True</label>
+          <label><input type="radio" name="q10-i" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(ii) When we use different cut-offs, sensitivity increases at the cost of lower specificity, and vice versa.</span>
+          <label><input type="radio" name="q10-ii" value="true"> True</label>
+          <label><input type="radio" name="q10-ii" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(iii) A perfect diagnostic test has an AUC of 0.5.</span>
+          <label><input type="radio" name="q10-iii" value="true"> True</label>
+          <label><input type="radio" name="q10-iii" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(iv) The vital sign that is most suitable to distinguish between patients with and without brain lesion is systolic blood pressure.</span>
+          <label><input type="radio" name="q10-iv" value="true"> True</label>
+          <label><input type="radio" name="q10-iv" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <p><strong>Solution: TRUE — TRUE — FALSE — TRUE.</strong></p>
+          <ol>
+            <li><strong>True</strong> — specificity = $P(\text{neg test} \mid \text{no lesion})$, so $1 - \text{specificity}$ is the false-positive rate, i.e. the proportion of patients without a lesion that the test calls positive.</li>
+            <li><strong>True</strong> — moving the threshold along the ROC curve trades sensitivity for specificity. That trade-off is exactly what the curve traces out.</li>
+            <li><strong>False</strong> — a perfect test has AUC = 1 (the curve hugs the top-left corner). AUC = 0.5 corresponds to a useless test (the diagonal).</li>
+            <li><strong>True</strong> — the systolic-blood-pressure curve sits highest and farthest from the diagonal in the figure, so it has the largest AUC and is the best discriminator.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/roc-curve">roc-curve</a>, <a href="/concepts/sensitivity-specificity">sensitivity-specificity</a>, <a href="/concepts/auc">auc</a>.</p>
+        </div>
+      </details>
+    </article>
+
+    <!-- ───── Q11 — CE3 P5g: Decathlon biplot ───── -->
+    <article class="exam-q">
+      <header class="exam-q__head">
+        <span class="exam-q__num">Question 11</span>
+        <span class="exam-q__points">2 points</span>
+        <span class="exam-q__src">CE3 P5g</span>
+      </header>
+      <p class="q-text">
+        We study the <code>decathlon2</code> dataset from the <code>factoextra</code> package in R, where Athletes' performance during a sporting meeting was recorded. We look at 23 athletes and the results from the 10 disciplines in two competitions. Some rows of the dataset are displayed here:
+      </p>
+      <pre>decathlon2.active[c(1, 3, 4), ]
+
+##          100m long_jump shot_put high_jump  400m 110.hurdle discus
+## SEBRLE  11.04      7.58    14.83      2.07 49.81      14.69  43.75
+## BERNARD 11.02      7.23    14.25      1.92 48.93      14.99  40.87
+## YURKOV  11.34      7.09    15.19      2.10 50.42      15.31  46.26
+##         pole_vault javeline 1500m
+## SEBRLE        5.02    63.19 291.7
+## BERNARD       5.32    62.77 280.1
+## YURKOV        4.72    63.44 276.4</pre>
+      <p class="q-text">From a principal component analysis we obtain the biplot given in Figure 2.</p>
+      <figure class="exam-q__fig">
+        <img src="figs/biplot.png" alt="PCA biplot of the decathlon2 dataset.">
+        <figcaption>Figure 2: Figure for question 5g).</figcaption>
+      </figure>
+      <p class="q-text">Which of the following statements are true, which false?</p>
+      <ul class="exam-q__tf">
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(i) The athlete named CLAY seems to be one of the fastest 1500m runners.</span>
+          <label><input type="radio" name="q11-i" value="true"> True</label>
+          <label><input type="radio" name="q11-i" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(ii) Athletes that are good in 100m tend to be also good in long jump.</span>
+          <label><input type="radio" name="q11-ii" value="true"> True</label>
+          <label><input type="radio" name="q11-ii" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(iii) The first principal component has the highest loadings for 100m and long jump.</span>
+          <label><input type="radio" name="q11-iii" value="true"> True</label>
+          <label><input type="radio" name="q11-iii" value="false"> False</label>
+        </li>
+        <li class="exam-q__tf-field">
+          <span class="tf-stmt">(iv) 110m hurdle has a very small loading for PC2.</span>
+          <label><input type="radio" name="q11-iv" value="true"> True</label>
+          <label><input type="radio" name="q11-iv" value="false"> False</label>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Show answer</summary>
+        <div class="fasit-body">
+          <p><strong>Solution: FALSE — TRUE — TRUE — TRUE.</strong></p>
+          <ol>
+            <li><strong>False</strong> — CLAY sits at a negative PC2 value, and 1500m's PC2 loading is also negative. Two negatives align, so CLAY's projected 1500m time is large — i.e. CLAY runs <em>slow</em>, not fast.</li>
+            <li><strong>True</strong> — 100m and long_jump arrows lie along the same PC1 axis (in opposite directions, because low 100m times go with high long-jump distances). Athletes scoring high on this axis tend to excel at both.</li>
+            <li><strong>True</strong> — in absolute value, the PC1 loadings for 100m and long_jump are the largest in the biplot.</li>
+            <li><strong>True</strong> — the 110.hurdle arrow is almost parallel to PC1, so its PC2 component is close to zero.</li>
+          </ol>
+          <p class="ref">Atoms: <a href="/concepts/pca">pca</a>, <a href="/concepts/biplot">biplot</a>, <a href="/concepts/principal-components">principal-components</a>.</p>
+        </div>
+      </details>
+    </article>
+
+  </main>
+  <script src="exam.js"></script>
+</body>
+</html>
