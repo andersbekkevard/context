@@ -152,7 +152,7 @@ LOOCV is **terrible** under temporal/spatial correlation because the held-out po
 
 > "If you preselect predictors using $y$ (e.g., correlation filter), step 1 is part of training and **must** be inside the CV loop. Doing it outside can give misclassification ≈ 0 on pure noise." - [[L11-resample-2]]
 
-ISL §5.1.4 example: $p=5000$ noise predictors, $n=50$ random labels. Filter to top-25 correlated with $y$ (uses labels!), then do CV on logistic-regression-of-25. CV says ≈0% misclassification because the filter has already "peeked." The right way: redo the filter inside each training fold, on training data only.
+The classic example (ESL §7.10.2 "The Wrong and Right Way to Do Cross-validation"; **not in ISLP** — the prof reproduces it as [[wiki/exercises/Exercise5/RecEx5|RecEx5 Problem 3]]): $p=5000$ noise predictors, $n=50$ random labels. Filter to top-$d$ correlated with $y$ (uses labels!), then do CV on logistic-regression-of-$d$. CV says ≈0% misclassification because the filter has already "peeked." The right way: redo the filter inside each training fold, on training data only.
 
 ### Why the [[one-standard-error-rule]] is preferred
 
