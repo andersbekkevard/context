@@ -16,11 +16,13 @@ Your output is **query-time synthesis**: explanations, primers, comparisons, qui
 
 ## The wiki at a glance
 
-`wiki/` holds three kinds of file:
+`wiki/` holds these page kinds:
 
 - **Lectures**: `wiki/lectures/L<NN>-<slug>.md`. Compressed transcripts, one per class session. The prof's voice and emphasis preserved verbatim where it matters; filler stripped. Load when you need what the prof actually said about something. See [[docs/lectures]].
 - **Concepts**: `wiki/concepts/<slug>.md`. Self-contained briefings on one named idea, written for a knowledgeable peer: this prof's definition, framing, formulas, emphasis, pitfalls, exercise-instance pointers, and a citation to ISLP for the full treatment. Granularity = **question-sized, named-idea cap** (one atom = one named idea Anders would naturally ask Claude about as a single question). Cross-cutting concepts (bias-variance, regularization, CV, standardization) live as **one global atom**, owned by the first-introducing module, with bidirectional wikilinks across modules. Atom depth scales with the prof's actual treatment in lectures, where heavy treatment produces a richly developed atom and a passing mention produces a stub. Load when answering "what is X" or "how does this prof teach X." See [[docs/concepts]].
 - **MOCs**: `wiki/mocs/m<NN>-<slug>.md`. Pure routers, concept lists + links to the lectures and exercises in a module. Load when you don't yet know which atom to read. See [[docs/mocs]].
+- **Book deltas**: `wiki/book-deltas/m<NN>-<slug>.md`. Per-module reproduction of every concrete in-scope artifact (formula, derivation, theorem, named object, computation) that the prof taught but that is **absent from the mapped ISLP chapter**. Designed as an exam-time "book extension" — ISLP is open-book, so what's not in ISLP is what needs its own lookup reference. Load when you need the prof's version of something and ISLP doesn't cover it. Index at [[wiki/book-deltas]].
+- **Exercises**: `wiki/exercises/Exercise<N>/` holds Python adaptations of the original R recommended exercises (statsmodels / scikit-learn / ISLP / PyTorch + Lightning). `wiki/exercises/math-exercises.md` and `math-exercises-islp.md` are aggregated scans of every "mathy derivation" problem across rec/compulsory/past exams (course) and ISLP chapter exercises. The prof flagged at least one derivation question on the 2026 exam — these are the source of practice. Index at [[wiki/exercises]].
 
 ## The scope rule
 
@@ -38,7 +40,8 @@ Strengthened by the prof's own emphasis: **"especially the exercises."**
 3. [[exam_analysis]]: useful synthesis (tier rankings, direction-of-effect traps, dataset templates, procedural templates, opinionated takes). NOT canonical for scope; load for the synthesis content only.
 4. [[wiki/modules]]: module index.
 5. Relevant MOC → relevant atom(s) → relevant lecture(s). Drop into bronze (`transcripts/`, `modules/`, `exercises/`) only to verify a quote.
-6. `qmd` on the "exam" collection as secondary search when you can't pinpoint the right wiki file by name.
+6. For an **in-class lookup** of a formula/derivation/theorem the prof emphasized, check the module's [[wiki/book-deltas]] page first — it captures what ISLP doesn't.
+7. `qmd` on the "exam" collection as secondary search when you can't pinpoint the right wiki file by name.
 
 ## Typical journey
 
@@ -80,3 +83,10 @@ The full system is documented in `docs/`:
 - [[docs/concepts-manifest]]: deterministic atom-to-module mapping (produced by inventory pass)
 - [[web/README]]: practice layer: Quartz renders the wiki, hand-authored per-module MCQ decks at `web/static/decks/`. See [[web/templates/deck]] + [[web/prompts/deck-generation]] for the deck spec and agent brief.
 - [[docs/web]]: architecture, Vercel deployment, patterns, and lessons learnt for the web layer. Load when answering "how does the deploy work" / "why does the deck do X" / "what's safe to change in `web/`".
+
+Wiki-level index pages (load when you need to enumerate what exists):
+
+- [[wiki/index]]: top-level landing (Quartz home).
+- [[wiki/modules]], [[wiki/mocs]], [[wiki/lectures]], [[wiki/concepts]]: per-kind indices.
+- [[wiki/book-deltas]], [[wiki/book]], [[wiki/islp]]: book-side indices (deltas, parsed ISLP, in/out-of-scope ISLP chapter list).
+- [[wiki/exercises]], [[wiki/exams]], [[wiki/decks]]: practice-material indices.
