@@ -79,11 +79,13 @@ If the Bayes decision boundary is highly non-linear, then the optimal $K$ would 
 ## a) 
 
 Assuming the observations $x_G$ and $x_F$ are independent observations from normal distribution with the same covariance matrix $\boldsymbol \Sigma = \boldsymbol \Sigma_G = \boldsymbol \Sigma_F$, and all observations are independent of each other, we can find the estimated pooled covariance matrix as
-$$\begin{aligned}
+$$
+\begin{aligned}
 \hat{\boldsymbol \Sigma} &= \frac{(n_G - 1)\hat{\boldsymbol \Sigma}_G + (n_F - 1)\hat{\boldsymbol \Sigma}_F}{n_G + n_F - 2} \\
-&= \left[     \begin{array}{cc} 0.13710 & 0.00855 \\ 0.00855 & 0.25550 
+&= \left[     \begin{array}{cc} 0.13710 & 0.00855 \\ 0.00855 & 0.25550
 \end{array} \right]
-\end{aligned}$$
+\end{aligned}
+$$
 
 ## b)
 
