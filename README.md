@@ -1,6 +1,6 @@
 # TMA4268 Statistical Learning: exam-prep context bank
 
-Personal exam-prep system for **TMA4268 *Statistisk læring*** (NTNU, final exam 2026-05-18). The repo holds the raw course corpus alongside an LLM-generated wiki; together they form a context layer an LLM tutor can query, and a Quartz-rendered site friends can browse. Available at (https://statistical.dog).
+Personal exam-prep system for **TMA4268 *Statistisk læring*** (NTNU, final exam 2026-05-18). The repo holds the raw course corpus alongside an LLM-generated wiki; together they form a context layer an LLM tutor can query, and a Quartz-rendered site friends can browse. Available at https://statistical.dog.
 
 Inspired by Andrej Karpathy's [LLM wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f).
 
