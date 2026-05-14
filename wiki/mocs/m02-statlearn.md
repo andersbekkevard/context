@@ -18,6 +18,10 @@ tags:
 
 The vocabulary-and-decomposition module: Y = f(X) + ε, supervised vs unsupervised, prediction vs inference, parametric vs nonparametric, the train/test MSE U-shape, and the bias-variance decomposition the prof flags as exam-bait. Three lectures (Jan 12, 13, 19) covering ISL ch. 2, plus the random-vector / covariance / multivariate-normal plumbing that the rest of the course (modules 3 + 4) rides on. Load-bearing for everything downstream: bias-variance recurs in nearly every later module, and the multivariate-normal feeds OLS sampling theory and LDA/QDA.
 
+## Slides
+- [[../../modules/2StatLearn/2StatLearn.1|2StatLearn.1]]
+- [[../../modules/2StatLearn/2StatLearn.2|2StatLearn.2]]
+
 ## Lectures
 - [[L02-statlearn-1]]: vocabulary (quantitative/qualitative, supervised/unsupervised, regression/classification, prediction/inference), Breiman's "Two Cultures"; first flag of the bias-variance exam question
 - [[L03-statlearn-2]]: Y = f(X) + ε; reducible vs irreducible split; parametric vs nonparametric; polynomial-degree U-shape; full board derivation of the bias-variance decomposition

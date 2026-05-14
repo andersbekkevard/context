@@ -16,6 +16,9 @@ tags:
 
 The third tree-ensemble flavor: grow many small trees **sequentially**, each one a small correction to the previous fit. The prof's load-bearing framing is "weak learners + a loss + an additive way to combine them"; the [[boosting]] / [[gradient-boosting]] pseudocode is explicitly **not** on the test, but the conceptual menu (AdaBoost, gradient boosting, $\nu$, stochastic GBM, XGBoost extras, PDPs) is.
 
+## Slides
+- [[../../modules/9TreeBoosting/9TreeBoosting|9TreeBoosting]]
+
 ## Lectures
 - [[L19-boosting-1]]: wraps trees (bagging / OOB / RF / variable importance), then opens boosting with AdaBoost and the sequential / weak-learner intuition (Mar 17)
 - [[L20-boosting-2]]: gradient boosting as steepest descent in function space, the loss menu, $\nu$, stochastic GBM, XGBoost extras (Apr 7)

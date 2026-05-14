@@ -17,6 +17,9 @@ tags:
 
 The course's quantitative bedrock: two lectures (Jan 20, Jan 26) on simple → multiple OLS, the Gaussian-error machinery that gives β̂ a sampling distribution, and the diagnostic / interpretation toolkit. Load-bearing for the exam: the LS↔MLE derivation (the prof's flagged "mathy" question), interaction-coefficient interpretation, and residual-diagnostic reading. CE1 problem 2 is the canonical drill.
 
+## Slides
+- [[../../modules/3LinReg/3LinReg|3LinReg]]
+
 ## Lectures
 - [[L05-linreg-1]]: simple linear regression, least squares + MLE equivalence, Gaussian-error assumptions, sampling distribution of β̂, CI / t-test / R², categorical encoding intro
 - [[L06-linreg-2]]: multiple regression in matrix form (design matrix, normal equations, hat matrix), collinearity, F-test (concept only), CI vs PI, interactions, polynomial regression, residual diagnostics

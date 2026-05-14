@@ -15,6 +15,9 @@ tags:
 
 Course framing module: what statistical learning is, the two organizing axes (supervised/unsupervised, prediction/inference), and the three umbrella problem types (regression, classification, unsupervised). One lecture (Jan 5), no recommended exercises tied to this module, no compulsory-exercise problems. Load-bearing for the exam: the **Q1-style fill-in-the-blank** that uses this module's vocabulary to tag a real-world scenario, flagged by the prof in [[L27-summary]].
 
+## Slides
+- [[../../modules/1Intro/1Intro|1Intro]]
+
 ## Lectures
 - [[L01-intro]]: course mechanics, the prof's framing of statistical learning vs ML / classical stats / data science, three worked-example problem types (Framingham regression, Fisher iris LDA, rat-gene-expression hierarchical clustering)
 
