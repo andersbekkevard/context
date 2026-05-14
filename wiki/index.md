@@ -18,6 +18,7 @@ Pick where to start:
 - **[[mock-exams|Mock Exams]]** — calibrated mock papers + solution proposals for the 2026 final
 - **[[islp|ISLP Chapters]]** — chapter-by-chapter links to the ISLP notes included in this site
 - **[[book-deltas|Book Deltas]]** — per-module reproductions of curriculum material absent from ISLP, designed as an exam-time "book extension"
+- **[[professor-quotes|Professor Quotes]]** — greatest-hits compilation of the prof's funniest and most memorable lecture asides
 
 Every named idea has its own concept page; every lecture is a compressed transcript. Use the **search bar (left)** or the **graph view (right)** to jump straight in.
 
