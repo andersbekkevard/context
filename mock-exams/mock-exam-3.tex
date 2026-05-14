@@ -290,19 +290,22 @@ The same predictors are now fed (after standardization) into a ridge regression,
 
 \begin{center}
 \begin{tikzpicture}[scale=0.85]
-  \draw[->] (0,0) -- (8,0) node[right] {$\log\lambda$};
-  \draw[->] (0,0) -- (0,4) node[above] {CV-MSE};
+  \draw[->] (0,0) -- (8.3,0) node[right] {$\log\lambda$};
+  \draw[->] (0,0) -- (0,6.3) node[above] {CV-MSE};
 
-  \draw[smooth, thick, blue] plot[domain=0.4:7.6] (\x, {3.6 + 0.04*(\x-1.2)*(\x-1.2)*(\x-1.2) + 0.18*(\x-1.2)*(\x-1.2) - 0.5*(\x-1.2)});
-  \draw[dashed] (1.2,0) -- (1.2, 3.4) node[above] {\small $\hat\lambda_{\min}$};
-  \draw[dashed] (3.0,0) -- (3.0, 3.5) node[above] {\small $\hat\lambda_{1\mathrm{SE}}$};
+  \draw[smooth, thick, blue] plot[domain=0.4:7.6] (\x, {2.5 + 0.03*(\x-1.2)*(\x-1.2) + 0.002*(\x-1.2)*(\x-1.2)*(\x-1.2)});
+
+  \draw[dashed] (1.2,0) -- (1.2,5.6);
+  \node[above] at (1.2,5.6) {\small $\hat\lambda_{\min}$};
+  \draw[dashed] (3.0,0) -- (3.0,5.6);
+  \node[above] at (3.0,5.6) {\small $\hat\lambda_{1\mathrm{SE}}$};
 
   \foreach \x in {0,2,4,6}
     \draw (\x, 0.06) -- (\x, -0.06) node[below] {\x};
-  \foreach \y in {0,1,2,3,4}
+  \foreach \y in {0,1,2,3,4,5,6}
     \draw (-0.06, \y) -- (0.06, \y) node[left,xshift=-0.1cm] {\y};
 
-  \node at (4, 4.5) {\small CV curve};
+  \node[blue] at (6.3,4.6) {\small CV curve};
 \end{tikzpicture}
 \end{center}
 
@@ -439,7 +442,7 @@ A schematic ROC curve for the logistic regression of part (a), together with the
   \draw[->] (0,0) -- (1.1,0) node[right] {\small FPR};
   \draw[->] (0,0) -- (0,1.1) node[above] {\small TPR};
   \draw[dotted] (0,0) -- (1,1);
-  \draw[smooth, thick, red] plot[domain=0:1] (\x, {1-(1-\x)*(1-\x)*0.85 - 0.05*(1-\x)*\x});
+  \draw[smooth, thick, red] plot[domain=0:1] (\x, {1-(1-\x)*(1-\x)*(1-\x)*(1-\x)*(1-\x)});
   \node at (1,1) [right=2pt] {\scriptsize $(1,1)$};
   \draw (0,1) -- (-0.02,1) node[left] {\scriptsize 1};
   \draw (1,0) -- (1,-0.02) node[below] {\scriptsize 1};

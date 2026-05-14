@@ -266,19 +266,22 @@ The same $7$ standardized main-effect predictors are now fed into ridge regressi
 
 \begin{center}
 \begin{tikzpicture}[scale=0.85]
-  \draw[->] (0,0) -- (8,0) node[right] {$\log\lambda$};
-  \draw[->] (0,0) -- (0,5) node[above] {CV-MSE};
+  \draw[->] (0,0) -- (8.3,0) node[right] {$\log\lambda$};
+  \draw[->] (0,0) -- (0,6.3) node[above] {CV-MSE};
 
-  \draw[smooth, thick, blue] plot[domain=0.3:7.7] (\x, {3.2 + 0.30*(\x-2.0)*(\x-2.0) - 0.10*(\x-2.0)});
-  \draw[dashed] (2.0,0) -- (2.0, 3.0) node[above] {\small $\hat\lambda_{\min}$};
-  \draw[dashed] (3.6,0) -- (3.6, 3.5) node[above] {\small $\hat\lambda_{1SE}$};
+  \draw[smooth, thick, blue] plot[domain=0.3:7.7] (\x, {2.5 + 0.035*(\x-2.0)*(\x-2.0) + 0.0025*(\x-2.0)*(\x-2.0)*(\x-2.0)});
+
+  \draw[dashed] (2.0,0) -- (2.0,5.6);
+  \node[above] at (2.0,5.6) {\small $\hat\lambda_{\min}$};
+  \draw[dashed] (3.6,0) -- (3.6,5.6);
+  \node[above] at (3.6,5.6) {\small $\hat\lambda_{1\mathrm{SE}}$};
 
   \foreach \x in {0,2,4,6}
     \draw (\x, 0.06) -- (\x, -0.06) node[below] {\x};
-  \foreach \y in {0,1,2,3,4,5}
+  \foreach \y in {0,1,2,3,4,5,6}
     \draw (-0.06, \y) -- (0.06, \y) node[left,xshift=-0.1cm] {\y};
 
-  \node at (4, 5.2) {\small CV curve};
+  \node[blue] at (6.3,4.6) {\small CV curve};
 \end{tikzpicture}
 \end{center}
 
@@ -405,9 +408,9 @@ A clinician complains: ``We are missing too many true cases of CHD.'' To explore
   \draw[->] (0,0) -- (1.1,0) node[right] {\small FPR};
   \draw[->] (0,0) -- (0,1.1) node[above] {\small TPR};
   \draw[dotted] (0,0) -- (1,1);
-  \draw[smooth, thick, red] plot[domain=0:1] (\x, {1-(1-\x)*(1-\x)*0.85 - 0.07*(1-\x)*\x});
-  \draw[fill=black] (0.13, 0.375) circle (0.015) node[right] {\scriptsize $\hat p = 0.5$};
-  \draw[fill=black] (0.36, 0.66) circle (0.015) node[right] {\scriptsize $\hat p = 0.3$};
+  \draw[smooth, thick, red] plot[domain=0:1] (\x, {1-(1-\x)*(1-\x)*(1-\x)*(1-\x)});
+  \draw[fill=black] (0.13, 0.428) circle (0.015) node[right] {\scriptsize $\hat p = 0.5$};
+  \draw[fill=black] (0.36, 0.832) circle (0.015) node[right] {\scriptsize $\hat p = 0.3$};
   \node at (1,1) [right=2pt] {\scriptsize $(1,1)$};
   \draw (0,1) -- (-0.02,1) node[left] {\scriptsize 1};
   \draw (1,0) -- (1,-0.02) node[below] {\scriptsize 1};
