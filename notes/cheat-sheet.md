@@ -9,6 +9,7 @@ Har boka. Burde ha liste over:
 - **Viktig**, boosting boosting boosting. Ikke i ISLP. Og teknisk. Og funker som faen. Må være på formelark.
 - Regneregler for vektorderivasjon. d/db(bTXb) og d/db(aTb). Nødvendige for OLS-utledning.
 - Regneregler for E[], Var[], Cov[] etc for matriser, som grunnleggende byggeblokker
+- Scalar: Kan transponere
 
 
 Whats up med:

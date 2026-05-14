@@ -3,7 +3,7 @@
 ### Exercises
 - [x]  2 Statistical Learning
 - [x]  3 Linear Regression
-- [ ]  4 Classification
+- [x]  4 Classification *Burde gjøre kode. Var ustødig på denne.
 - [ ]  5 Resampling Methods
 - [ ]  6 Linear Model Selection and Regularization
 - [ ]  7 Moving Beyond Linearity
@@ -19,7 +19,7 @@
 - [x]  Kap 1 Introduction
 - [x]  Kap 2 Statistical Learning
 - [x]  Kap 3 Linear Regression
-- [ ]  Kap 4 Classification
+- [x]  Kap 4 Classification
 - [ ]  Kap 5 Resampling Methods
 - [ ]  Kap 6 Linear Model Selection and Regularization
 - [ ]  Kap 7 Moving Beyond Linearity
