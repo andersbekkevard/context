@@ -15,6 +15,7 @@ Pick where to start:
 - **[[decks|Practice Decks]]** — per-module multiple-choice drills, ~25 questions each
 - **[[exercises|Exercises]]** — recommended and compulsory exercises with official solution proposals
 - **[[exams|Past Exams]]** — TMA4268 finals from 2023–2025, with official solutions inline
+- **[[mock-exams|Mock Exams]]** — calibrated mock papers + solution proposals for the 2026 final
 - **[[islp|ISLP Chapters]]** — chapter-by-chapter links to the ISLP notes included in this site
 - **[[book-deltas|Book Deltas]]** — per-module reproductions of curriculum material absent from ISLP, designed as an exam-time "book extension"
 
