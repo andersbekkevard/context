@@ -5,12 +5,17 @@ Har boka. Burde ha liste over:
 - Df generelt
 - Which models allow for p>n
 - Utledning Corr^2 = R2 for enkel linreg
+- Utledning av (12.18)
 
 - **Viktig**, boosting boosting boosting. Ikke i ISLP. Og teknisk. Og funker som faen. Må være på formelark.
 - Regneregler for vektorderivasjon. d/db(bTXb) og d/db(aTb). Nødvendige for OLS-utledning.
 - Regneregler for E[], Var[], Cov[] etc for matriser, som grunnleggende byggeblokker
 - Scalar: Kan transponere
 - Når må man dele på std, og når må man trekke fra mu? PCA, Ridge/Lasso
+- Formel for å finne cov-matrise på X:
+    - Center (-1xmeanT)
+    - (Her ville man standardisert for PCA)
+    - 1/(n-1) X_cT X_c
 
 
 Whats up med:
