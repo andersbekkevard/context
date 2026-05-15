@@ -10,6 +10,7 @@ Har boka. Burde ha liste over:
 - Regneregler for vektorderivasjon. d/db(bTXb) og d/db(aTb). Nødvendige for OLS-utledning.
 - Regneregler for E[], Var[], Cov[] etc for matriser, som grunnleggende byggeblokker
 - Scalar: Kan transponere
+- Når må man dele på std, og når må man trekke fra mu? PCA, Ridge/Lasso
 
 
 Whats up med:

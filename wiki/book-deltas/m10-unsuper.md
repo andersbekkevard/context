@@ -202,7 +202,7 @@ The book's Table 12.3 gives definitions in prose. Formally, with $A$ and $B$ two
 |----------|-----------------------------------------------------------------|
 | Complete | $\displaystyle\max_{i \in A,\, j \in B} d(x_i, x_j)$            |
 | Single   | $\displaystyle\min_{i \in A,\, j \in B} d(x_i, x_j)$            |
-| Average  | $\displaystyle\frac{1}{|A|\,|B|} \sum_{i \in A}\sum_{j \in B} d(x_i, x_j)$ |
+| Average  | $\displaystyle\frac{1}{\lvert A\rvert\,\lvert B\rvert} \sum_{i \in A}\sum_{j \in B} d(x_i, x_j)$ |
 | Centroid | $d(\bar{x}_A,\, \bar{x}_B)$                                     |
 
 The prof also name-checks median linkage (in scope only as "exists"). Ward linkage is **out of scope** per `docs/scope.md`. The average-linkage definition is the **unweighted** mean (each pair contributes equally); not the weighted variant some packages use.

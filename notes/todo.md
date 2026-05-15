@@ -4,7 +4,7 @@
 - [x]  2 Statistical Learning
 - [x]  3 Linear Regression
 - [x]  4 Classification *Burde gjøre kode. Var ustødig på denne.
-- [ ]  5 Resampling Methods
+- [x]  5 Resampling Methods
 - [ ]  6 Linear Model Selection and Regularization
 - [ ]  7 Moving Beyond Linearity
 - [ ]  8 Tree-Based Methods
@@ -20,7 +20,7 @@
 - [x]  Kap 2 Statistical Learning
 - [x]  Kap 3 Linear Regression
 - [x]  Kap 4 Classification
-- [ ]  Kap 5 Resampling Methods
+- [x]  Kap 5 Resampling Methods
 - [ ]  Kap 6 Linear Model Selection and Regularization
 - [ ]  Kap 7 Moving Beyond Linearity
 - [ ]  Kap 8 Tree-Based Methods

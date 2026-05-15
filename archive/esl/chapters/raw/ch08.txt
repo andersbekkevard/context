@@ -1,0 +1,1828 @@
+8
+Model Inference and Averaging
+
+
+
+
+8.1 Introduction
+For most of this book, the fitting (learning) of models has been achieved by
+minimizing a sum of squares for regression, or by minimizing cross-entropy
+for classification. In fact, both of these minimizations are instances of the
+maximum likelihood approach to fitting.
+   In this chapter we provide a general exposition of the maximum likeli-
+hood approach, as well as the Bayesian method for inference. The boot-
+strap, introduced in Chapter 7, is discussed in this context, and its relation
+to maximum likelihood and Bayes is described. Finally, we present some
+related techniques for model averaging and improvement, including com-
+mittee methods, bagging, stacking and bumping.
+
+
+
+
+8.2 The Bootstrap and Maximum Likelihood
+    Methods
+8.2.1 A Smoothing Example
+The bootstrap method provides a direct computational way of assessing
+uncertainty, by sampling from the training data. Here we illustrate the
+bootstrap in a simple one-dimensional smoothing problem, and show its
+connection to maximum likelihood.
+262        8. Model Inference and Averaging
+
+      5                                                                •                             1.0
+
+      4
+                                                                                                     0.8
+                 •
+                                      •                          • • •• •
+
+
+                                                                                    B-spline Basis
+      3
+                                                                   • •
+                                                                 •                                   0.6
+      2                    •
+y
+                                                             •              •
+                       •                                                    •
+      1           • •• •                                 •                                           0.4
+                     •
+                     • •
+                      •• •                          •
+            ••• ••       ••                          •
+      0      •                       •             ••                                                0.2
+                                                  •
+                                     •• •         •
+      -1                                 ••
+                                              •                                                      0.0
+
+           0.0       0.5       1.0     1.5        2.0            2.5        3.0                            0.0   0.5   1.0   1.5   2.0   2.5   3.0
+
+                                          x                                                                                  x
+
+FIGURE 8.1. (Left panel): Data for smoothing example. (Right panel:) Set of
+seven B-spline basis functions. The broken vertical lines indicate the placement
+of the three knots.
+
+   Denote the training data by Z = {z1 , z2 , . . . , zN }, with zi = (xi , yi ),
+i = 1, 2, . . . , N . Here xi is a one-dimensional input, and yi the outcome,
+either continuous or categorical. As an example, consider the N = 50 data
+points shown in the left panel of Figure 8.1.
+   Suppose we decide to fit a cubic spline to the data, with three knots
+placed at the quartiles of the X values. This is a seven-dimensional lin-
+ear space of functions, and can be represented, for example, by a linear
+expansion of B-spline basis functions (see Section 5.9.2):
+                                                                                  7
+                                                                                  X
+                                                   µ(x)                =                    βj hj (x).                                     (8.1)
+                                                                                  j=1
+
+Here the hj (x), j = 1, 2, . . . , 7 are the seven functions shown in the right
+panel of Figure 8.1. We can think of µ(x) as representing the conditional
+mean E(Y |X = x).
+  Let H be the N × 7 matrix with ijth element hj (xi ). The usual estimate
+of β, obtained by minimizing the squared error over the training set, is
+given by
+
+                         β̂ = (HT H)−1 HT y.                          (8.2)
+                               P7
+The corresponding fit µ̂(x) = j=1 β̂j hj (x) is shown in the top left panel
+of Figure 8.2.
+   The estimated covariance matrix of β̂ is
+                                              d β̂) = (HT H)−1 σ̂ 2 ,
+                                              Var(                                                                                         (8.3)
+                                                           PN
+where we have estimated the noise variance by σ̂ 2 = i=1 (yi − µ̂(xi ))2 /N .
+Letting h(x)T = (h1 (x), h2 (x), . . . , h7 (x)), the standard error of a predic-
+                          8.2 The Bootstrap and Maximum Likelihood Methods                                                                                  263
+
+
+
+
+     5                                                                •              5                                                                •
+     4                                                                               4
+                •                                                                               •
+     3                               •                          • • •• •             3                               •                          • • •• •
+                                                                  • •                                                                             • •
+                          •                                     •                                         •                                     •
+     2                                                                               2
+ y
+                                                            •              •     y
+                                                                                                                                            •              •
+                       •                                                   •                           •                                                   •
+     1           • •• •                                 •                            1           • •• •                                 •
+                    •
+                    ••• ••                         •                                                •
+                                                                                                    ••• ••                         •
+           ••• ••        ••                         •                                      ••• ••        ••                         •
+     0      •                       •             ••                                 0      •                       •             ••
+                                                 •                                                                               •
+                                    •• •         •                                                                  •• •         •
+     -1                                 ••                                           -1                                 ••
+                                             •                                                                               •
+          0.0       0.5       1.0     1.5        2.0            2.5        3.0            0.0       0.5       1.0     1.5        2.0            2.5        3.0
+
+                                         x                                                                               x
+
+     5                                                                •              5                                                                •
+     4                                                                               4
+                •                                                                               •
+     3                               •                          • • •• •             3                               •                          • • •• •
+                                                                  • •                                                                             • •
+                          •                                     •                                         •                                     •
+     2                                                                               2
+ y
+                                                            •              •     y
+                                                                                                                                            •              •
+                       •                                                   •                           •                                                   •
+     1           • •• •                                 •                            1           • •• •                                 •
+                    ••••• •                        •                                                ••••• •                        •
+           ••• ••        ••                         •                                      ••• ••        ••                         •
+     0      •                       •             ••                                 0      •                       •             ••
+                                                 •                                                                               •
+                                    •• •         •                                                                  •• •         •
+     -1                                 ••                                           -1                                 ••
+                                             •                                                                               •
+          0.0       0.5       1.0     1.5        2.0            2.5        3.0            0.0       0.5       1.0     1.5        2.0            2.5        3.0
+
+                                         x                                                                               x
+
+FIGURE 8.2. (Top left:) B-spline smooth of data. (Top right:) B-spline smooth
+plus and minus 1.96× standard error bands. (Bottom left:) Ten bootstrap repli-
+cates of the B-spline smooth. (Bottom right:) B-spline smooth with 95% standard
+error bands computed from the bootstrap distribution.
+264     8. Model Inference and Averaging
+
+tion µ̂(x) = h(x)T β̂ is
+                                                             1
+                   se[µ̂(x)] = [h(x)T (HT H)−1 h(x)] 2 σ̂.
+                   b                                                          (8.4)
+
+   In the top right panel of Figure 8.2 we have plotted µ̂(x) ± 1.96 · b
+                                                                      se[µ̂(x)].
+Since 1.96 is the 97.5% point of the standard normal distribution, these
+represent approximate 100 − 2 × 2.5% = 95% pointwise confidence bands
+for µ(x).
+   Here is how we could apply the bootstrap in this example. We draw B
+datasets each of size N = 50 with replacement from our training data, the
+sampling unit being the pair zi = (xi , yi ). To each bootstrap dataset Z∗
+we fit a cubic spline µ̂∗ (x); the fits from ten such samples are shown in the
+bottom left panel of Figure 8.2. Using B = 200 bootstrap samples, we can
+form a 95% pointwise confidence band from the percentiles at each x: we
+find the 2.5% × 200 = fifth largest and smallest values at each x. These are
+plotted in the bottom right panel of Figure 8.2. The bands look similar to
+those in the top right, being a little wider at the endpoints.
+   There is actually a close connection between the least squares estimates
+(8.2) and (8.3), the bootstrap, and maximum likelihood. Suppose we further
+assume that the model errors are Gaussian,
+
+                           Y   =     µ(X) + ε; ε ∼ N (0, σ 2 ),
+                                     X7
+                      µ(x)     =        βj hj (x).                            (8.5)
+                                     j=1
+
+
+  The bootstrap method described above, in which we sample with re-
+placement from the training data, is called the nonparametric bootstrap.
+This really means that the method is “model-free,” since it uses the raw
+data, not a specific parametric model, to generate new datasets. Consider
+a variation of the bootstrap, called the parametric bootstrap, in which we
+simulate new responses by adding Gaussian noise to the predicted values:
+
+           yi∗ = µ̂(xi ) + ε∗i ;   ε∗i ∼ N (0, σ̂ 2 ); i = 1, 2, . . . , N.   (8.6)
+
+This process is repeated B times, where B = 200 say. The resulting boot-
+strap datasets have the form (x1 , y1∗ ), . . . , (xN , yN
+                                                         ∗
+                                                           ) and we recompute the
+B-spline smooth on each. The confidence bands from this method will ex-
+actly equal the least squares bands in the top right panel, as the number of
+bootstrap samples goes to infinity. A function estimated from a bootstrap
+sample y∗ is given by µ̂∗ (x) = h(x)T (HT H)−1 HT y∗ , and has distribution
+
+                µ̂∗ (x) ∼ N (µ̂(x), h(x)T (HT H)−1 h(x)σ̂ 2 ).                (8.7)
+
+Notice that the mean of this distribution is the least squares estimate, and
+the standard deviation is the same as the approximate formula (8.4).
+                  8.2 The Bootstrap and Maximum Likelihood Methods            265
+
+8.2.2 Maximum Likelihood Inference
+It turns out that the parametric bootstrap agrees with least squares in the
+previous example because the model (8.5) has additive Gaussian errors. In
+general, the parametric bootstrap agrees not with least squares but with
+maximum likelihood, which we now review.
+   We begin by specifying a probability density or probability mass function
+for our observations
+
+                                zi ∼ gθ (z).                                (8.8)
+
+In this expression θ represents one or more unknown parameters that gov-
+ern the distribution of Z. This is called a parametric model for Z. As an
+example, if Z has a normal distribution with mean µ and variance σ 2 , then
+
+                                θ = (µ, σ 2 ),                              (8.9)
+
+and
+                                    1      1      2  2
+                       gθ (z) = √       e− 2 (z−µ) /σ .                    (8.10)
+                                    2πσ
+Maximum likelihood is based on the likelihood function, given by
+                                         N
+                                         Y
+                           L(θ; Z) =           gθ (zi ),                   (8.11)
+                                         i=1
+
+the probability of the observed data under the model gθ . The likelihood is
+defined only up to a positive multiplier, which we have taken to be one.
+We think of L(θ; Z) as a function of θ, with our data Z fixed.
+  Denote the logarithm of L(θ; Z) by
+                                          N
+                                          X
+                          ℓ(θ; Z)    =            ℓ(θ; zi )
+                                          i=1
+                                          N
+                                          X
+                                     =            log gθ (zi ),            (8.12)
+                                          i=1
+
+which we will sometimes abbreviate as ℓ(θ). This expression is called the
+log-likelihood, and each value ℓ(θ; zi ) = log gθ (zi ) is called a log-likelihood
+component. The method of maximum likelihood chooses the value θ = θ̂
+to maximize ℓ(θ; Z).
+   The likelihood function can be used to assess the precision of θ̂. We need
+a few more definitions. The score function is defined by
+                                        N
+                                        X
+                           ℓ̇(θ; Z) =         ℓ̇(θ; zi ),                  (8.13)
+                                        i=1
+266     8. Model Inference and Averaging
+
+where ℓ̇(θ; zi ) = ∂ℓ(θ; zi )/∂θ. Assuming that the likelihood takes its maxi-
+mum in the interior of the parameter space, ℓ̇(θ̂; Z) = 0. The information
+matrix is
+                                    N
+                                    X ∂ 2 ℓ(θ; zi )
+                        I(θ) = −                      .                (8.14)
+                                    i=1
+                                           ∂θ∂θT
+
+When I(θ) is evaluated at θ = θ̂, it is often called the observed information.
+The Fisher information (or expected information) is
+
+                             i(θ) = Eθ [I(θ)].                         (8.15)
+
+Finally, let θ0 denote the true value of θ.
+   A standard result says that the sampling distribution of the maximum
+likelihood estimator has a limiting normal distribution
+
+                             θ̂ → N (θ0 , i(θ0 )−1 ),                  (8.16)
+
+as N → ∞. Here we are independently sampling from gθ0 (z). This suggests
+that the sampling distribution of θ̂ may be approximated by
+
+                     N (θ̂, i(θ̂)−1 ) or N (θ̂, I(θ̂)−1 ),             (8.17)
+
+where θ̂ represents the maximum likelihood estimate from the observed
+data.
+   The corresponding estimates for the standard errors of θ̂j are obtained
+from
+                   q                     q
+                     i(θ̂)−1
+                          jj    and        I(θ̂)−1
+                                                jj .                (8.18)
+
+   Confidence points for θj can be constructed from either approximation
+in (8.17). Such a confidence point has the form
+                          q                               q
+           θ̂j − z (1−α) · i(θ̂)−1
+                                jj  or     θ̂j − z (1−α) · I(θ̂)−1
+                                                                jj ,
+
+
+respectively, where z (1−α) is the 1 − α percentile of the standard normal
+distribution. More accurate confidence intervals can be derived from the
+likelihood function, by using the chi-squared approximation
+
+                          2[ℓ(θ̂) − ℓ(θ0 )] ∼ χ2p ,                    (8.19)
+
+where p is the number of components in θ. The resulting 1 − 2α confi-
+                                                                      (1−2α)
+dence interval is the set of all θ0 such that 2[ℓ(θ̂) − ℓ(θ0 )] ≤ χ2p        ,
+         (1−2α)
+where χ2p        is the 1 − 2α percentile of the chi-squared distribution with
+p degrees of freedom.
+                                                   8.3 Bayesian Methods     267
+
+  Let’s return to our smoothing example to see what maximum likelihood
+yields. The parameters are θ = (β, σ 2 ). The log-likelihood is
+                                        N
+                      N              1 X
+           ℓ(θ) = −     log σ 2 2π − 2     (yi − h(xi )T β)2 .            (8.20)
+                      2             2σ i=1
+
+The maximum likelihood estimate is obtained by setting ∂ℓ/∂β = 0 and
+∂ℓ/∂σ 2 = 0, giving
+
+                            β̂ = (HT H)−1 HT y,
+                                  1 X                                     (8.21)
+                          σ̂ 2 =      (yi − µ̂(xi ))2 ,
+                                 N
+which are the same as the usual estimates given in (8.2) and below (8.3).
+  The information matrix for θ = (β, σ 2 ) is block-diagonal, and the block
+corresponding to β is
+                           I(β) = (HT H)/σ 2 ,                            (8.22)
+so that the estimated variance (HT H)−1 σ̂ 2 agrees with the least squares
+estimate (8.3).
+
+
+8.2.3 Bootstrap versus Maximum Likelihood
+In essence the bootstrap is a computer implementation of nonparametric or
+parametric maximum likelihood. The advantage of the bootstrap over the
+maximum likelihood formula is that it allows us to compute maximum like-
+lihood estimates of standard errors and other quantities in settings where
+no formulas are available.
+   In our example, suppose that we adaptively choose by cross-validation
+the number and position of the knots that define the B-splines, rather
+than fix them in advance. Denote by λ the collection of knots and their
+positions. Then the standard errors and confidence bands should account
+for the adaptive choice of λ, but there is no way to do this analytically.
+With the bootstrap, we compute the B-spline smooth with an adaptive
+choice of knots for each bootstrap sample. The percentiles of the resulting
+curves capture the variability from both the noise in the targets as well as
+that from λ̂. In this particular example the confidence bands (not shown)
+don’t look much different than the fixed λ bands. But in other problems,
+where more adaptation is used, this can be an important effect to capture.
+
+
+8.3 Bayesian Methods
+In the Bayesian approach to inference, we specify a sampling model Pr(Z|θ)
+(density or probability mass function) for our data given the parameters,
+268     8. Model Inference and Averaging
+
+and a prior distribution for the parameters Pr(θ) reflecting our knowledge
+about θ before we see the data. We then compute the posterior distribution
+
+                                     Pr(Z|θ) · Pr(θ)
+                    Pr(θ|Z) = R                        ,                 (8.23)
+                                     Pr(Z|θ) · Pr(θ)dθ
+
+which represents our updated knowledge about θ after we see the data. To
+understand this posterior distribution, one might draw samples from it or
+summarize by computing its mean or mode. The Bayesian approach differs
+from the standard (“frequentist”) method for inference in its use of a prior
+distribution to express the uncertainty present before seeing the data, and
+to allow the uncertainty remaining after seeing the data to be expressed in
+the form of a posterior distribution.
+   The posterior distribution also provides the basis for predicting the values
+of a future observation z new , via the predictive distribution:
+
+                                 Z
+                Pr(z new |Z) =       Pr(z new |θ) · Pr(θ|Z)dθ.           (8.24)
+
+
+  In contrast, the maximum likelihood approach would use Pr(z new |θ̂),
+the data density evaluated at the maximum likelihood estimate, to predict
+future data. Unlike the predictive distribution (8.24), this does not account
+for the uncertainty in estimating θ.
+  Let’s walk through the Bayesian approach in our smoothing example.
+We start with the parametric model given by equation (8.5), and assume
+for the moment that σ 2 is known. We assume that the observed feature
+values x1 , x2 , . . . , xN are fixed, so that the randomness in the data comes
+solely from y varying around its mean µ(x).
+  The second ingredient we need is a prior distribution. Distributions on
+functions are fairly complex entities: one approach is to use a Gaussian
+process prior in which we specify the prior covariance between any two
+function values µ(x) and µ(x′ ) (Wahba, 1990; Neal, 1996).
+  Here we take a simpler route: by considering a finite B-spline basis for
+µ(x), we can instead provide a prior for the coefficients β, and this implicitly
+defines a prior for µ(x). We choose a Gaussian prior centered at zero
+
+                              β ∼ N (0, τ Σ)                             (8.25)
+
+with the choices of the prior correlation matrix Σ and variance τ to be
+discussed below. The implicit process prior for µ(x) is hence Gaussian,
+with covariance kernel
+
+                       K(x, x′ )     =   cov[µ(x), µ(x′ )]
+                                     =   τ · h(x)T Σh(x′ ).              (8.26)
+                                                 8.3 Bayesian Methods      269
+
+
+              3
+
+
+              2
+
+
+              1
+
+       µ(x)   0
+
+
+              -1
+
+
+              -2
+
+
+              -3
+
+                   0.0   0.5    1.0     1.5     2.0     2.5     3.0
+                                        x
+
+FIGURE 8.3. Smoothing example: Ten draws from the Gaussian prior distri-
+bution for the function µ(x).
+
+The posterior distribution for β is also Gaussian, with mean and covariance
+                                                −1
+                                          σ 2 −1
+                    E(β|Z) = HT H +          Σ       HT y,
+                                          τ
+                                                −1                 (8.27)
+                                   T      σ 2 −1       2
+                  cov(β|Z) = H H +           Σ       σ ,
+                                          τ
+with the corresponding posterior values for µ(x),
+                                                 −1
+                                           σ 2 −1
+             E(µ(x)|Z) = h(x)T HT H +         Σ       HT y,
+                                           τ
+                                                 −1                   (8.28)
+                                           σ 2 −1
+                   ′
+      cov[µ(x), µ(x )|Z] = h(x) T    T
+                                    H H+      Σ       h(x′ )σ 2 .
+                                           τ
+   How do we choose the prior correlation matrix Σ? In some settings the
+prior can be chosen from subject matter knowledge about the parameters.
+Here we are willing to say the function µ(x) should be smooth, and have
+guaranteed this by expressing µ in a smooth low-dimensional basis of B-
+splines. Hence we can take the prior correlation matrix to be the identity
+Σ = I. When the number of basis functions is large, this might not be suf-
+ficient, and additional smoothness can be enforced by imposing restrictions
+on Σ; this is exactly the case with smoothing splines (Section 5.8.1).
+   Figure 8.3 shows ten draws from the corresponding prior for µ(x). To
+generate posterior values of the function µ(x), we generate values β ′ from its
+                                                                 P7
+posterior (8.27), giving corresponding posterior value µ′ (x) = 1 βj′ hj (x).
+Ten such posterior curves are shown in Figure 8.4. Two different values
+were used for the prior variance τ , 1 and 1000. Notice how similar the
+right panel looks to the bootstrap distribution in the bottom left panel
+270          8. Model Inference and Averaging
+
+                                      τ =1                                                                          τ = 1000
+       5                                                                •                 5                                                                •
+       4                                                                                  4
+                  •                                                                                  •
+       3                               •                          • • •• •                3                               •                          • • •• •
+                                                                    • •                                                                                • •
+µ(x)   2
+                            •                                     •
+                                                                             •
+                                                                                   µ(x)   2
+                                                                                                               •                                     •
+                                                                                                                                                                •
+                         •                                    •              •                              •                                    •              •
+       1           • •• •                                 •                               1           • •• •                                 •
+                      •
+                      ••• ••                         •                                                   •
+                                                                                                         ••• ••                         •
+             ••• ••        ••                         •                                         ••• ••        ••                         •
+       0      •                       •             ••                                    0      •                       •             ••
+                                                   •                                                                                  •
+                                      •• •         •                                                                     •• •         •
+       -1                                 ••                                              -1                                 ••
+                                               •                                                                                  •
+            0.0       0.5       1.0     1.5        2.0            2.5        3.0               0.0       0.5       1.0     1.5        2.0            2.5        3.0
+
+                                           x                                                                                  x
+
+FIGURE 8.4. Smoothing example: Ten draws from the posterior distribution
+for the function µ(x), for two different values of the prior variance τ . The purple
+curves are the posterior means.
+
+of Figure 8.2 on page 263. This similarity is no accident. As τ → ∞, the
+posterior distribution (8.27) and the bootstrap distribution (8.7) coincide.
+On the other hand, for τ = 1, the posterior curves µ(x) in the left panel
+of Figure 8.4 are smoother than the bootstrap curves, because we have
+imposed more prior weight on smoothness.
+   The distribution (8.25) with τ → ∞ is called a noninformative prior for
+θ. In Gaussian models, maximum likelihood and parametric bootstrap anal-
+yses tend to agree with Bayesian analyses that use a noninformative prior
+for the free parameters. These tend to agree, because with a constant prior,
+the posterior distribution is proportional to the likelihood. This correspon-
+dence also extends to the nonparametric case, where the nonparametric
+bootstrap approximates a noninformative Bayes analysis; Section 8.4 has
+the details.
+   We have, however, done some things that are not proper from a Bayesian
+point of view. We have used a noninformative (constant) prior for σ 2 and
+replaced it with the maximum likelihood estimate σ̂ 2 in the posterior. A
+more standard Bayesian analysis would also put a prior on σ (typically
+g(σ) ∝ 1/σ), calculate a joint posterior for µ(x) and σ, and then integrate
+out σ, rather than just extract the maximum of the posterior distribution
+(“MAP” estimate).
+         8.4 Relationship Between the Bootstrap and Bayesian Inference                 271
+
+8.4 Relationship Between the Bootstrap and
+    Bayesian Inference
+Consider first a very simple example, in which we observe a single obser-
+vation z from a normal distribution
+
+                                   z ∼ N (θ, 1).                                   (8.29)
+
+To carry out a Bayesian analysis for θ, we need to specify a prior. The
+most convenient and common choice would be θ ∼ N (0, τ ) giving posterior
+distribution
+                                            
+                                z        1
+                   θ|z ∼ N          ,          .                   (8.30)
+                             1 + 1/τ 1 + 1/τ
+
+Now the larger we take τ , the more concentrated the posterior becomes
+around the maximum likelihood estimate θ̂ = z. In the limit as τ → ∞ we
+obtain a noninformative (constant) prior, and the posterior distribution is
+
+                                  θ|z ∼ N (z, 1).                                  (8.31)
+
+This is the same as a parametric bootstrap distribution in which we gen-
+erate bootstrap values z ∗ from the maximum likelihood estimate of the
+sampling density N (z, 1).
+  There are three ingredients that make this correspondence work:
+
+   1. The choice of noninformative prior for θ.
+
+   2. The dependence of the log-likelihood ℓ(θ; Z) on the data Z only
+      through the maximum likelihood estimate θ̂. Hence we can write the
+      log-likelihood as ℓ(θ; θ̂).
+
+   3. The symmetry of the log-likelihood in θ and θ̂, that is, ℓ(θ; θ̂) =
+      ℓ(θ̂; θ) + constant.
+
+   Properties (2) and (3) essentially only hold for the Gaussian distribu-
+tion. However, they also hold approximately for the multinomial distribu-
+tion, leading to a correspondence between the nonparametric bootstrap
+and Bayes inference, which we outline next.
+   Assume that we have a discrete sample space with L categories. Let wj be
+the probability that a sample point falls in category j, and ŵj the observed
+proportion in category j. Let w = (w1 , w2 , . . . , wL ), ŵ = (ŵ1 , ŵ2 , . . . , ŵL ).
+Denote our estimator by S(ŵ); take as a prior distribution for w a sym-
+metric Dirichlet distribution with parameter a:
+
+                                  w ∼ DiL (a1),                                    (8.32)
+272     8. Model Inference and Averaging
+                                                                    QL     a−1
+that is, the prior probability mass function is proportional to       ℓ=1 wℓ   .
+Then the posterior density of w is
+
+                           w ∼ DiL (a1 + N ŵ),                           (8.33)
+
+where N is the sample size. Letting a → 0 to obtain a noninformative prior
+gives
+
+                             w ∼ DiL (N ŵ).                              (8.34)
+
+   Now the bootstrap distribution, obtained by sampling with replacement
+from the data, can be expressed as sampling the category proportions from
+a multinomial distribution. Specifically,
+
+                           N ŵ∗ ∼ Mult(N, ŵ),                           (8.35)
+
+where Mult(N, ŵ) denotes a multinomial distribution, having probability
+                     N
+                                 Q N ŵℓ∗
+mass function N ŵ∗ ,...,N ŵ ∗    ŵℓ . This distribution is similar to the pos-
+                   1         L
+terior distribution above, having the same support, same mean, and nearly
+the same covariance matrix. Hence the bootstrap distribution of S(ŵ∗ ) will
+closely approximate the posterior distribution of S(w).
+   In this sense, the bootstrap distribution represents an (approximate)
+nonparametric, noninformative posterior distribution for our parameter.
+But this bootstrap distribution is obtained painlessly—without having to
+formally specify a prior and without having to sample from the posterior
+distribution. Hence we might think of the bootstrap distribution as a “poor
+man’s” Bayes posterior. By perturbing the data, the bootstrap approxi-
+mates the Bayesian effect of perturbing the parameters, and is typically
+much simpler to carry out.
+
+
+8.5 The EM Algorithm
+The EM algorithm is a popular tool for simplifying difficult maximum
+likelihood problems. We first describe it in the context of a simple mixture
+model.
+
+
+8.5.1 Two-Component Mixture Model
+In this section we describe a simple mixture model for density estimation,
+and the associated EM algorithm for carrying out maximum likelihood
+estimation. This has a natural connection to Gibbs sampling methods for
+Bayesian inference. Mixture models are discussed and demonstrated in sev-
+eral other parts of the book, in particular Sections 6.8, 12.7 and 13.2.3.
+  The left panel of Figure 8.5 shows a histogram of the 20 fictitious data
+points in Table 8.1.
+                                                                    8.5 The EM Algorithm                    273
+
+1.0                                                           1.0    • •• • •• ••
+
+0.8                                                           0.8                   •
+
+0.6                                                           0.6
+
+                                                    density
+0.4                                                           0.4
+
+
+0.2                                                           0.2
+                                                                                            •
+0.0                                                           0.0                               • •• • • •• •
+          0      2          4           6                              0        2                4          6
+
+                      y                                                                 y
+
+
+FIGURE 8.5. Mixture example. (Left panel:) Histogram of data. (Right panel:)
+Maximum likelihood fit of Gaussian densities (solid red) and responsibility (dotted
+green) of the left component density for observation y, as a function of y.
+
+TABLE 8.1. Twenty fictitious data points used in the two-component mixture
+example in Figure 8.5.
+
+       -0.39   0.12       0.94       1.67    1.76        2.44       3.72   4.28         4.92         5.53
+        0.06   0.48       1.01       1.68    1.80        3.25       4.12   4.60         5.28         6.22
+
+
+  We would like to model the density of the data points, and due to the
+apparent bi-modality, a Gaussian distribution would not be appropriate.
+There seems to be two separate underlying regimes, so instead we model
+Y as a mixture of two normal distributions:
+                                Y1     ∼    N (µ1 , σ12 ),
+                                Y2     ∼    N (µ2 , σ22 ),                                             (8.36)
+                                Y      =    (1 − ∆) · Y1 + ∆ · Y2 ,
+where ∆ ∈ {0, 1} with Pr(∆ = 1) = π. This generative representation is
+explicit: generate a ∆ ∈ {0, 1} with probability π, and then depending on
+the outcome, deliver either Y1 or Y2 . Let φθ (x) denote the normal density
+with parameters θ = (µ, σ 2 ). Then the density of Y is
+                          gY (y) = (1 − π)φθ1 (y) + πφθ2 (y).                                          (8.37)
+Now suppose we wish to fit this model to the data in Figure 8.5 by maxi-
+mum likelihood. The parameters are
+                      θ = (π, θ1 , θ2 ) = (π, µ1 , σ12 , µ2 , σ22 ).                                   (8.38)
+      The log-likelihood based on the N training cases is
+                                 N
+                                 X
+                ℓ(θ; Z) =              log[(1 − π)φθ1 (yi ) + πφθ2 (yi )].                             (8.39)
+                                 i=1
+274     8. Model Inference and Averaging
+
+  Direct maximization of ℓ(θ; Z) is quite difficult numerically, because of
+the sum of terms inside the logarithm. There is, however, a simpler ap-
+proach. We consider unobserved latent variables ∆i taking values 0 or 1 as
+in (8.36): if ∆i = 1 then Yi comes from model 2, otherwise it comes from
+model 1. Suppose we knew the values of the ∆i ’s. Then the log-likelihood
+would be
+                           N
+                           X
+        ℓ0 (θ; Z, ∆)   =         [(1 − ∆i ) log φθ1 (yi ) + ∆i log φθ2 (yi )]
+                           i=1
+                                 N
+                                 X
+                             +          [(1 − ∆i ) log(1 − π) + ∆i log π] ,     (8.40)
+                                  i=1
+
+and the maximum likelihood estimates of µ1 and σ12 would be the sample
+mean and variance for those data with ∆i = 0, and similarly those for µ2
+and σ22 would be the sample mean and variance of the data with ∆i = 1.
+The estimate of π would be the proportion of ∆i = 1.
+   Since the values of the ∆i ’s are actually unknown, we proceed in an
+iterative fashion, substituting for each ∆i in (8.40) its expected value
+                γi (θ) = E(∆i |θ, Z) = Pr(∆i = 1|θ, Z),                         (8.41)
+also called the responsibility of model 2 for observation i. We use a proce-
+dure called the EM algorithm, given in Algorithm 8.1 for the special case of
+Gaussian mixtures. In the expectation step, we do a soft assignment of each
+observation to each model: the current estimates of the parameters are used
+to assign responsibilities according to the relative density of the training
+points under each model. In the maximization step, these responsibilities
+are used in weighted maximum-likelihood fits to update the estimates of
+the parameters.
+   A good way to construct initial guesses for µ̂1 and µ̂2 is simply to choose
+two of the yi at random. Both σ̂12 and σ̂22 can be set equal to the overall
+                  PN
+sample variance i=1 (yi − ȳ)2 /N . The mixing proportion π̂ can be started
+at the value 0.5.
+   Note that the actual maximizer of the likelihood occurs when we put a
+spike of infinite height at any one data point, that is, µ̂1 = yi for some
+i and σ̂12 = 0. This gives infinite likelihood, but is not a useful solution.
+Hence we are actually looking for a good local maximum of the likelihood,
+one for which σ̂12 , σ̂22 > 0. To further complicate matters, there can be
+more than one local maximum having σ̂12 , σ̂22 > 0. In our example, we
+ran the EM algorithm with a number of different initial guesses for the
+parameters, all having σ̂k2 > 0.5, and chose the run that gave us the highest
+maximized likelihood. Figure 8.6 shows the progressP  of the EM algorithm in
+maximizing the log-likelihood. Table 8.2 shows π̂ = i γ̂i /N , the maximum
+likelihood estimate of the proportion of observations in class 2, at selected
+iterations of the EM procedure.
+                                                           8.5 The EM Algorithm             275
+
+Algorithm 8.1 EM Algorithm for Two-component Gaussian Mixture.
+  1. Take initial guesses for the parameters µ̂1 , σ̂12 , µ̂2 , σ̂22 , π̂ (see text).
+
+  2. Expectation Step: compute the responsibilities
+
+                                  π̂φθ̂2 (yi )
+               γ̂i =                                       , i = 1, 2, . . . , N.       (8.42)
+                       (1 − π̂)φθ̂1 (yi ) + π̂φθ̂2 (yi )
+
+  3. Maximization Step: compute the weighted means and variances:
+                 PN                                        PN                       2
+                      (1 − γ̂i )yi                      i=1 (1 − γ̂i )(yi − µ̂1 )
+           µ̂1 = Pi=1
+                    N
+                                    ,            σ̂12 =    PN                           ,
+                    i=1 (1 − γ̂i )                            i=1 (1 − γ̂i )
+                      PN                               PN
+                             γ̂i yi                         γ̂i (yi − µ̂2 )2
+                µ̂2 = Pi=1N
+                                    ,            σ̂22 = i=1PN                ,
+                          i=1 γ̂i                             i=1 γ̂i
+                                                 PN
+      and the mixing probability π̂ =             i=1 γ̂i /N .
+
+  4. Iterate steps 2 and 3 until convergence.
+
+
+
+  TABLE 8.2. Selected iterations of the EM algorithm for mixture example.
+                                   Iteration          π̂
+                                       1          0.485
+                                       5          0.493
+                                       10         0.523
+                                       15         0.544
+                                       20         0.546
+
+
+
+  The final maximum likelihood estimates are
+
+                       µ̂1 = 4.62,                        σ̂12 = 0.87,
+                       µ̂2 = 1.06,                        σ̂22 = 0.77,
+                                       π̂ = 0.546.
+
+The right panel of Figure 8.5 shows the estimated Gaussian mixture density
+from this procedure (solid red curve), along with the responsibilities (dotted
+green curve). Note that mixtures are also useful for supervised learning; in
+Section 6.7 we show how the Gaussian mixture model leads to a version of
+radial basis functions.
+276      8. Model Inference and Averaging
+
+                                       -39                                           o    o     o   o   o   o    o   o   o   o   o
+                                                                                o
+
+
+
+
+        Observed Data Log-likelihood
+                                                                            o
+                                       -40
+                                                                        o
+                                       -41                          o
+                                                                o
+                                                       o   o
+                                       -42         o
+
+                                       -43
+
+                                       -44
+                                             o
+                                                                5                    10                     15                   20
+                                                                                    Iteration
+
+
+FIGURE 8.6. EM algorithm: observed data log-likelihood as a function of the
+iteration number.
+
+8.5.2 The EM Algorithm in General
+The above procedure is an example of the EM (or Baum–Welch) algorithm
+for maximizing likelihoods in certain classes of problems. These problems
+are ones for which maximization of the likelihood is difficult, but made
+easier by enlarging the sample with latent (unobserved) data. This is called
+data augmentation. Here the latent data are the model memberships ∆i .
+In other problems, the latent data are actual data that should have been
+observed but are missing.
+   Algorithm 8.2 gives the general formulation of the EM algorithm. Our
+observed data is Z, having log-likelihood ℓ(θ; Z) depending on parameters
+θ. The latent or missing data is Zm , so that the complete data is T =
+(Z, Zm ) with log-likelihood ℓ0 (θ; T), ℓ0 based on the complete density. In
+the mixture problem (Z, Zm ) = (y, ∆), and ℓ0 (θ; T) is given in (8.40).
+   In our mixture example, E(ℓ0 (θ′ ; T)|Z, θ̂(j) ) is simply (8.40) with the ∆i
+replaced by the responsibilities γ̂i (θ̂), and the maximizers in step 3 are just
+weighted means and variances.
+   We now give an explanation of why the EM algorithm works in general.
+   Since
+                                            Pr(Zm , Z|θ′ )
+                        Pr(Zm |Z, θ′ ) =                   ,               (8.44)
+                                              Pr(Z|θ′ )
+we can write
+                                         Pr(T|θ′ )
+                        Pr(Z|θ′ ) =                  .                     (8.45)
+                                      Pr(Zm |Z, θ′ )
+In terms of log-likelihoods, we have ℓ(θ′ ; Z) = ℓ0 (θ′ ; T)−ℓ1 (θ′ ; Zm |Z), where
+ℓ1 is based on the conditional density Pr(Zm |Z, θ′ ). Taking conditional
+expectations with respect to the distribution of T|Z governed by parameter
+θ gives
+                                       ℓ(θ′ ; Z)       =       E[ℓ0 (θ′ ; T)|Z, θ] − E[ℓ1 (θ′ ; Zm |Z)|Z, θ]
+                                                       8.5 The EM Algorithm       277
+
+Algorithm 8.2 The EM Algorithm.
+   1. Start with initial guesses for the parameters θ̂(0) .
+
+   2. Expectation Step: at the jth step, compute
+
+                         Q(θ′ , θ̂(j) ) = E(ℓ0 (θ′ ; T)|Z, θ̂(j) )             (8.43)
+
+      as a function of the dummy argument θ′ .
+
+   3. Maximization Step: determine the new estimate θ̂(j+1) as the maxi-
+      mizer of Q(θ′ , θ̂(j) ) over θ′ .
+
+   4. Iterate steps 2 and 3 until convergence.
+
+
+                        ≡    Q(θ′ , θ) − R(θ′ , θ).                            (8.46)
+
+In the M step, the EM algorithm maximizes Q(θ′ , θ) over θ′ , rather than
+the actual objective function ℓ(θ′ ; Z). Why does it succeed in maximizing
+ℓ(θ′ ; Z)? Note that R(θ∗ , θ) is the expectation of a log-likelihood of a density
+(indexed by θ∗ ), with respect to the same density indexed by θ, and hence
+(by Jensen’s inequality) is maximized as a function of θ∗ , when θ∗ = θ (see
+Exercise 8.1). So if θ′ maximizes Q(θ′ , θ), we see that
+
+      ℓ(θ′ ; Z) − ℓ(θ; Z)   =     [Q(θ′ , θ) − Q(θ, θ)] − [R(θ′ , θ) − R(θ, θ)]
+                            ≥     0.                                            (8.47)
+
+Hence the EM iteration never decreases the log-likelihood.
+  This argument also makes it clear that a full maximization in the M
+step is not necessary: we need only to find a value θ̂(j+1) so that Q(θ′ , θ̂(j) )
+increases as a function of the first argument, that is, Q(θ̂(j+1) , θ̂(j) ) >
+Q(θ̂(j) , θ̂(j) ). Such procedures are called GEM (generalized EM) algorithms.
+The EM algorithm can also be viewed as a minorization procedure: see
+Exercise 8.7.
+
+
+8.5.3 EM as a Maximization–Maximization Procedure
+Here is a different view of the EM procedure, as a joint maximization
+algorithm. Consider the function
+
+               F (θ′ , P̃ ) = EP̃ [ℓ0 (θ′ ; T)] − EP̃ [log P̃ (Zm )].          (8.48)
+
+Here P̃ (Zm ) is any distribution over the latent data Zm . In the mixture
+example, P̃ (Zm ) comprises the set of probabilities γi = Pr(∆i = 1|θ, Z).
+Note that F evaluated at P̃ (Zm ) = Pr(Zm |Z, θ′ ), is the log-likelihood of
+278           8. Model Inference and Averaging
+
+                           4
+
+
+
+
+                           3
+
+                                                                                     0.3   0.1
+
+
+
+
+        Model Parameters
+                                                                         0.7   0.5
+                                                                   0.9
+
+                                                       E       M
+                           2
+
+
+
+                                                  M
+
+                                   E
+                           1
+
+
+
+
+                           0
+
+
+                               1           2               3                         4           5
+                                                Latent Data Parameters
+
+FIGURE 8.7. Maximization–maximization view of the EM algorithm. Shown
+are the contours of the (augmented) observed data log-likelihood F (θ′ , P̃ ). The
+E step is equivalent to maximizing the log-likelihood over the parameters of the
+latent data distribution. The M step maximizes it over the parameters of the
+log-likelihood. The red curve corresponds to the observed data log-likelihood, a
+profile obtained by maximizing F (θ′ , P̃ ) for each value of θ′ .
+
+the observed data, from (8.46)1 . The function F expands the domain of
+the log-likelihood, to facilitate its maximization.
+  The EM algorithm can be viewed as a joint maximization method for F
+over θ′ and P̃ (Zm ), by fixing one argument and maximizing over the other.
+The maximizer over P̃ (Zm ) for fixed θ′ can be shown to be
+
+                                       P̃ (Zm ) = Pr(Zm |Z, θ′ )                                     (8.49)
+
+(Exercise 8.2). This is the distribution computed by the E step, for example,
+(8.42) in the mixture example. In the M step, we maximize F (θ′ , P̃ ) over θ′
+with P̃ fixed: this is the same as maximizing the first term EP̃ [ℓ0 (θ′ ; T)|Z, θ]
+since the second term does not involve θ′ .
+    Finally, since F (θ′ , P̃ ) and the observed data log-likelihood agree when
+P̃ (Zm ) = Pr(Zm |Z, θ′ ), maximization of the former accomplishes maxi-
+mization of the latter. Figure 8.7 shows a schematic view of this process.
+This view of the EM algorithm leads to alternative maximization proce-
+
+  1 (8.46) holds for all θ, including θ = θ ′ .
+                                8.6 MCMC for Sampling from the Posterior               279
+
+Algorithm 8.3 Gibbs Sampler.
+                                         (0)
+   1. Take some initial values Uk , k = 1, 2, . . . , K.
+
+   2. Repeat for t = 1, 2, . . . , . :
+                                               (t)
+        For k = 1, 2, . . . , K generate Uk from
+                 (t)    (t)        (t)   (t−1)         (t−1)
+            Pr(Uk |U1 , . . . , Uk−1 , Uk+1 , . . . , UK ).
+                                                                     (t)   (t)         (t)
+   3. Continue step 2 until the joint distribution of (U1 , U2 , . . . , UK )
+      does not change.
+
+
+
+dures. For example, one does not need to maximize with respect to all of
+the latent data parameters at once, but could instead maximize over one
+of them at a time, alternating with the M step.
+
+
+
+8.6 MCMC for Sampling from the Posterior
+Having defined a Bayesian model, one would like to draw samples from
+the resulting posterior distribution, in order to make inferences about the
+parameters. Except for simple models, this is often a difficult computa-
+tional problem. In this section we discuss the Markov chain Monte Carlo
+(MCMC) approach to posterior sampling. We will see that Gibbs sampling,
+an MCMC procedure, is closely related to the EM algorithm: the main dif-
+ference is that it samples from the conditional distributions rather than
+maximizing over them.
+   Consider first the following abstract problem. We have random variables
+U1 , U2 , . . . , UK and we wish to draw a sample from their joint distribution.
+Suppose this is difficult to do, but it is easy to simulate from the conditional
+distributions Pr(Uj |U1 , U2 , . . . , Uj−1 , Uj+1 , . . . , UK ), j = 1, 2, . . . , K. The
+Gibbs sampling procedure alternatively simulates from each of these distri-
+butions and when the process stabilizes, provides a sample from the desired
+joint distribution. The procedure is defined in Algorithm 8.3.
+   Under regularity conditions it can be shown that this procedure even-
+tually stabilizes, and the resulting random variables are indeed a sample
+from the joint distribution of U1 , U2 , . . . , UK . This occurs despite the fact
+                         (t)  (t)         (t)
+that the samples (U1 , U2 , . . . , UK ) are clearly not independent for dif-
+ferent t. More formally, Gibbs sampling produces a Markov chain whose
+stationary distribution is the true joint distribution, and hence the term
+“Markov chain Monte Carlo.” It is not surprising that the true joint dis-
+tribution is stationary under this process, as the successive steps leave the
+marginal distributions of the Uk ’s unchanged.
+280     8. Model Inference and Averaging
+
+   Note that we don’t need to know the explicit form of the conditional
+densities, but just need to be able to sample from them. After the procedure
+reaches stationarity, the marginal density of any subset of the variables
+can be approximated by a density estimate applied to the sample values.
+However if the explicit form of the conditional density Pr(Uk , |Uℓ , ℓ 6= k)
+is available, a better estimate of say the marginal density of Uk can be
+obtained from (Exercise 8.3):
+
+                                    XM
+            c U (u) =        1                (t)
+            Pr k
+                                        Pr(u|Uℓ , ℓ 6= k).              (8.50)
+                        (M − m + 1) t=m
+
+Here we have averaged over the last M − m + 1 members of the sequence,
+to allow for an initial “burn-in” period before stationarity is reached.
+   Now getting back to Bayesian inference, our goal is to draw a sample from
+the joint posterior of the parameters given the data Z. Gibbs sampling will
+be helpful if it is easy to sample from the conditional distribution of each
+parameter given the other parameters and Z. An example—the Gaussian
+mixture problem—is detailed next.
+   There is a close connection between Gibbs sampling from a posterior and
+the EM algorithm in exponential family models. The key is to consider the
+latent data Zm from the EM procedure to be another parameter for the
+Gibbs sampler. To make this explicit for the Gaussian mixture problem,
+we take our parameters to be (θ, Zm ). For simplicity we fix the variances
+σ12 , σ22 and mixing proportion π at their maximum likelihood values so that
+the only unknown parameters in θ are the means µ1 and µ2 . The Gibbs
+sampler for the mixture problem is given in Algorithm 8.4. We see that
+steps 2(a) and 2(b) are the same as the E and M steps of the EM pro-
+cedure, except that we sample rather than maximize. In step 2(a), rather
+than compute the maximum likelihood responsibilities γi = E(∆i |θ, Z),
+the Gibbs sampling procedure simulates the latent data ∆i from the distri-
+butions Pr(∆i |θ, Z). In step 2(b), rather than compute the maximizers of
+the posterior Pr(µ1 , µ2 , ∆|Z) we simulate from the conditional distribution
+Pr(µ1 , µ2 |∆, Z).
+   Figure 8.8 shows 200 iterations of Gibbs sampling, with the mean param-
+eters µ1 (lower) and µ2P   (upper) shown in the left panel, and the proportion
+of class 2 observations i ∆i /N on the right. Horizontal broken lines  P have
+been drawn at the maximum likelihood estimate values µ̂1 , µ̂2 and i γ̂i /N
+in each case. The values seem to stabilize quite quickly, and are distributed
+evenly around the maximum likelihood values.
+   The above mixture model was simplified, in order to make the clear
+connection between Gibbs sampling and the EM algorithm. More realisti-
+cally, one would put a prior distribution on the variances σ12 , σ22 and mixing
+proportion π, and include separate Gibbs sampling steps in which we sam-
+ple from their posterior distributions, conditional on the other parameters.
+One can also incorporate proper (informative) priors for the mean param-
+                                               8.6 MCMC for Sampling from the Posterior                                           281
+
+
+
+
+Algorithm 8.4 Gibbs sampling for mixtures.
+                                                                  (0)                       (0)
+                  1. Take some initial values θ(0) = (µ1 , µ2 ).
+
+                  2. Repeat for t = 1, 2, . . . , .
+                                                                                      (t)                               (t)
+                       (a) For i = 1, 2, . . . , N generate ∆i                              ∈ {0, 1} with Pr(∆i                = 1) =
+                           γ̂i (θ(t) ), from equation (8.42).
+                       (b) Set
+                                                                PN                                    (t)
+                                                                 i=1 (1 − ∆i ) · yi
+                                                    µ̂1   =      PN            (t)
+                                                                                    ,
+                                                                   i=1 (1 − ∆i )
+                                                                PN      (t)
+                                                                 i=1 ∆i · yi
+                                                    µ̂2   =      PN        (t)
+                                                                               ,
+                                                                   i=1 ∆i
+
+                                               (t)                                                (t)
+                             and generate µ1 ∼ N (µ̂1 , σ̂12 ) and µ2 ∼ N (µ̂2 , σ̂22 ).
+                                                                                                                  (t)   (t)
+                  3. Continue step 2 until the joint distribution of (∆(t) , µ1 , µ2 ) doesn’t
+                     change
+
+
+
+
+                   8
+                                                                                        0.7
+                   6
+
+
+
+
+Mean Parameters                                                   Mixing Proportion
+                                                                                        0.6
+                   4
+                                                                                        0.5
+                   2
+                                                                                        0.4
+                   0
+                                                                                        0.3
+
+
+                         0       50    100     150        200                                     0         50    100     150     200
+                                  Gibbs Iteration                                                            Gibbs Iteration
+
+FIGURE 8.8. Mixture example. (Left panel:) 200 values of the two mean param-
+eters from Gibbs sampling; horizontal lines are drawn at the maximum likelihood
+estimates µ̂1 , µ̂2 . (Right panel:) Proportion of values with ∆iP
+                                                                 = 1, for each of the
+200 Gibbs sampling iterations; a horizontal line is drawn at i γ̂i /N .
+282       8. Model Inference and Averaging
+
+eters. These priors must not be improper as this will lead to a degenerate
+posterior, with all the mixing weight on one component.
+   Gibbs sampling is just one of a number of recently developed procedures
+for sampling from posterior distributions. It uses conditional sampling of
+each parameter given the rest, and is useful when the structure of the prob-
+lem makes this sampling easy to carry out. Other methods do not require
+such structure, for example the Metropolis–Hastings algorithm. These and
+other computational Bayesian methods have been applied to sophisticated
+learning algorithms such as Gaussian process models and neural networks.
+Details may be found in the references given in the Bibliographic Notes at
+the end of this chapter.
+
+
+
+8.7 Bagging
+Earlier we introduced the bootstrap as a way of assessing the accuracy of a
+parameter estimate or a prediction. Here we show how to use the bootstrap
+to improve the estimate or prediction itself. In Section 8.4 we investigated
+the relationship between the bootstrap and Bayes approaches, and found
+that the bootstrap mean is approximately a posterior average. Bagging
+further exploits this connection.
+   Consider first the regression problem. Suppose we fit a model to our
+training data Z = {(x1 , y1 ), (x2 , y2 ), . . . , (xN , yN )}, obtaining the predic-
+tion fˆ(x) at input x. Bootstrap aggregation or bagging averages this predic-
+tion over a collection of bootstrap samples, thereby reducing its variance.
+For each bootstrap sample Z∗b , b = 1, 2, . . . , B, we fit our model, giving
+prediction fˆ∗b (x). The bagging estimate is defined by
+
+                                             B
+                                             X
+                                        1
+                            fˆbag (x) =            fˆ∗b (x).                         (8.51)
+                                        B
+                                             b=1
+
+
+Denote by P̂ the empirical distribution putting equal probability 1/N on
+each of the data points (xi , yi ). In fact the “true” bagging estimate is
+defined by EP̂ fˆ∗ (x), where Z∗ = {(x∗1 , y1∗ ), (x∗2 , y2∗ ), . . . , (x∗N , yN
+                                                                                ∗
+                                                                                  )} and each
+  ∗ ∗
+(xi , yi ) ∼ P̂. Expression (8.51) is a Monte Carlo estimate of the true
+bagging estimate, approaching it as B → ∞.
+  The bagged estimate (8.51) will differ from the original estimate fˆ(x)
+only when the latter is a nonlinear or adaptive function of the data. For
+example, to bag the B-spline smooth of Section 8.2.1, we average the curves
+in the bottom left panel of Figure 8.2 at each value of x. The B-spline
+smoother is linear in the data if we fix the inputs; hence if we sample using
+the parametric bootstrap in equation (8.6), then fˆbag (x) → fˆ(x) as B → ∞
+(Exercise 8.4). Hence bagging just reproduces the original smooth in the
+                                                            8.7 Bagging     283
+
+top left panel of Figure 8.2. The same is approximately true if we were to
+bag using the nonparametric bootstrap.
+   A more interesting example is a regression tree, where fˆ(x) denotes the
+tree’s prediction at input vector x (regression trees are described in Chap-
+ter 9). Each bootstrap tree will typically involve different features than the
+original, and might have a different number of terminal nodes. The bagged
+estimate is the average prediction at x from these B trees.
+   Now suppose our tree produces a classifier Ĝ(x) for a K-class response.
+Here it is useful to consider an underlying indicator-vector function fˆ(x),
+with value a single one and K − 1 zeroes, such that Ĝ(x) = arg maxk fˆ(x).
+Then the bagged estimate fˆbag (x) (8.51) is a K-vector [p1 (x), p2 (x), . . . ,
+pK (x)], with pk (x) equal to the proportion of trees predicting class k at x.
+The bagged classifier selects the class with the most “votes” from the B
+trees, Ĝbag (x) = arg maxk fˆbag (x).
+   Often we require the class-probability estimates at x, rather than the
+classifications themselves. It is tempting to treat the voting proportions
+pk (x) as estimates of these probabilities. A simple two-class example shows
+that they fail in this regard. Suppose the true probability of class 1 at x is
+0.75, and each of the bagged classifiers accurately predict a 1. Then p1 (x) =
+1, which is incorrect. For many classifiers Ĝ(x), however, there is already
+an underlying function fˆ(x) that estimates the class probabilities at x (for
+trees, the class proportions in the terminal node). An alternative bagging
+strategy is to average these instead, rather than the vote indicator vectors.
+Not only does this produce improved estimates of the class probabilities,
+but it also tends to produce bagged classifiers with lower variance, especially
+for small B (see Figure 8.10 in the next example).
+
+
+8.7.1 Example: Trees with Simulated Data
+We generated a sample of size N = 30, with two classes and p = 5 features,
+each having a standard Gaussian distribution with pairwise correlation
+0.95. The response Y was generated according to Pr(Y = 1|x1 ≤ 0.5) = 0.2,
+Pr(Y = 1|x1 > 0.5) = 0.8. The Bayes error is 0.2. A test sample of size 2000
+was also generated from the same population. We fit classification trees to
+the training sample and to each of 200 bootstrap samples (classification
+trees are described in Chapter 9). No pruning was used. Figure 8.9 shows
+the original tree and eleven bootstrap trees. Notice how the trees are all
+different, with different splitting features and cutpoints. The test error for
+the original tree and the bagged tree is shown in Figure 8.10. In this ex-
+ample the trees have high variance due to the correlation in the predictors.
+Bagging succeeds in smoothing out this variance and hence reducing the
+test error.
+   Bagging can dramatically reduce the variance of unstable procedures
+like trees, leading to improved prediction. A simple argument shows why
+284               8. Model Inference and Averaging
+
+
+
+
+                  Original Tree                                         b=1                                                 b=2
+                      x.1 < 0.395                                                   x.1 < 0.555                         x.2 < 0.205
+                           |                                                                |                                     |
+
+
+
+
+                                       1                                                            1
+                  0                                1   0                                    0
+                                                                                                                            0          1
+                       1           0
+                                                           0
+      0   1                                                        1        0                           0       1                                  0       1
+
+
+
+
+                       b=3                                              b=4                                                 b=5
+                        x.2 < 0.285                                    x.3 < 0.985                          x.4 < −1.36
+                                   |                                            |                                   |
+
+
+                                                                                                        0
+                                                                                                1   1
+                                                           0
+                                                                                                                                               0
+                                                                                                                                      1
+                                                               1                                                                                       1   0
+                                           1           0
+                           0
+                                                                                                            1
+      1           1                                                    0            1                               1       0
+
+
+
+
+                       b=6                                              b=7                                                 b=8
+                           x.1 < 0.395                                      x.1 < 0.395                                         x.3 < 0.985
+                                       |                                                |                                              |
+
+
+
+
+                                                       1
+
+                                                                                                    1                                              1       0
+
+                                                                            0               1                               0          0
+      1           1        0               0               0       1                                    0       1
+
+
+
+
+                       b=9                                             b = 10                                               b = 11
+                      x.1 < 0.395                                  x.1 < 0.555                                                        x.1 < 0.555
+                               |                                        |                                                                      |
+
+
+
+                                                                                                                                                           1
+
+      0
+                                                                            1
+                                                                                                                                           0
+              1
+                                               1       0                                    0       1
+                      0            1                       1       0                                    0               1
+
+
+
+FIGURE 8.9. Bagging trees on simulated dataset. The top left panel shows the
+original tree. Eleven trees grown on bootstrap samples are shown. For each tree,
+the top split is annotated.
+                                                                             8.7 Bagging      285
+
+                        0.50                                                  Consensus
+                                                                              Probability
+                                                    Original Tree
+                        0.45
+
+
+                        0.40                                  Bagged Trees
+
+
+
+           Test Error
+                        0.35
+
+
+                        0.30
+
+
+                        0.25
+
+                                   Bayes
+                        0.20
+
+                               0            50          100            150           200
+
+                                             Number of Bootstrap Samples
+
+
+FIGURE 8.10. Error curves for the bagging example of Figure 8.9. Shown is
+the test error of the original tree and bagged trees as a function of the number of
+bootstrap samples. The orange points correspond to the consensus vote, while the
+green points average the probabilities.
+
+bagging helps under squared-error loss, in short because averaging reduces
+variance and leaves bias unchanged.
+   Assume our training observations (xi , yi ), i = 1, . . . , N are indepen-
+dently drawn from a distribution P, and consider the ideal aggregate es-
+timator fag (x) = EP fˆ∗ (x). Here x is fixed and the bootstrap dataset Z∗
+consists of observations x∗i , yi∗ , i = 1, 2, . . . , N sampled from P. Note that
+fag (x) is a bagging estimate, drawing bootstrap samples from the actual
+population P rather than the data. It is not an estimate that we can use
+in practice, but is convenient for analysis. We can write
+
+       EP [Y − fˆ∗ (x)]2              =    EP [Y − fag (x) + fag (x) − fˆ∗ (x)]2
+                                      =    EP [Y − fag (x)]2 + EP [fˆ∗ (x) − fag (x)]2
+                                      ≥    EP [Y − fag (x)]2 .                              (8.52)
+
+The extra error on the right-hand side comes from the variance of fˆ∗ (x)
+around its mean fag (x). Therefore true population aggregation never in-
+creases mean squared error. This suggests that bagging—drawing samples
+from the training data— will often decrease mean-squared error.
+   The above argument does not hold for classification under 0-1 loss, be-
+cause of the nonadditivity of bias and variance. In that setting, bagging a
+286     8. Model Inference and Averaging
+
+good classifier can make it better, but bagging a bad classifier can make it
+worse. Here is a simple example, using a randomized rule. Suppose Y = 1
+for all x, and the classifier Ĝ(x) predicts Y = 1 (for all x) with proba-
+bility 0.4 and predicts Y = 0 (for all x) with probability 0.6. Then the
+misclassification error of Ĝ(x) is 0.6 but that of the bagged classifier is 1.0.
+   For classification we can understand the bagging effect in terms of a
+consensus of independent weak learners (Dietterich, 2000a). Let the Bayes
+optimal decision at x be G(x) = 1 in a two-class example. Suppose each
+of the weak learners G∗b have an error-rate eb = e < 0.5, and let S1 (x) =
+PB         ∗
+   b=1 I(Gb (x) = 1) be the consensus vote for class 1. Since the weak learn-
+ers are assumed to be independent, S1 (x) ∼ Bin(B, 1 − e), and Pr(S1 >
+B/2) → 1 as B gets large. This concept has been popularized outside of
+statistics as the “Wisdom of Crowds” (Surowiecki, 2004) — the collective
+knowledge of a diverse and independent body of people typically exceeds
+the knowledge of any single individual, and can be harnessed by voting.
+Of course, the main caveat here is “independent,” and bagged trees are
+not. Figure 8.11 illustrates the power of a consensus vote in a simulated
+example, where only 30% of the voters have some knowledge.
+   In Chapter 15 we see how random forests improve on bagging by reducing
+the correlation between the sampled trees.
+   Note that when we bag a model, any simple structure in the model is
+lost. As an example, a bagged tree is no longer a tree. For interpretation
+of the model this is clearly a drawback. More stable procedures like near-
+est neighbors are typically not affected much by bagging. Unfortunately,
+the unstable models most helped by bagging are unstable because of the
+emphasis on interpretability, and this is lost in the bagging process.
+   Figure 8.12 shows an example where bagging doesn’t help. The 100 data
+points shown have two features and two classes, separated by the gray
+linear boundary x1 + x2 = 1. We choose as our classifier Ĝ(x) a single
+axis-oriented split, choosing the split along either x1 or x2 that produces
+the largest decrease in training misclassification error.
+   The decision boundary obtained from bagging the 0-1 decision rule over
+B = 50 bootstrap samples is shown by the blue curve in the left panel.
+It does a poor job of capturing the true boundary. The single split rule,
+derived from the training data, splits near 0 (the middle of the range of x1
+or x2 ), and hence has little contribution away from the center. Averaging
+the probabilities rather than the classifications does not help here. Bagging
+estimates the expected class probabilities from the single split rule, that is,
+averaged over many replications. Note that the expected class probabilities
+computed by bagging cannot be realized on any single replication, in the
+same way that a woman cannot have 2.4 children. In this sense, bagging
+increases somewhat the space of models of the individual base classifier.
+However, it doesn’t help in this and many other examples where a greater
+enlargement of the model class is needed. “Boosting” is a way of doing this
+                                                                                                         8.7 Bagging    287
+
+
+
+
+                                                                    Wisdom of Crowds
+
+                                 10      Consensus
+                                         Individual
+
+
+                                 8
+
+
+
+
+    Expected Correct out of 10
+                                 6
+
+
+
+
+                                 4
+
+
+
+
+                                 2
+
+
+
+
+                                 0
+
+
+                                      0.25                   0.50                         0.75                   1.00
+
+                                                      P − Probability of Informed Person Being Correct
+
+
+
+FIGURE 8.11. Simulated academy awards voting. 50 members vote in 10 cat-
+egories, each with 4 nominations. For any category, only 15 voters have some
+knowledge, represented by their probability of selecting the “correct” candidate in
+that category (so P = 0.25 means they have no knowledge). For each category, the
+15 experts are chosen at random from the 50. Results show the expected correct
+(based on 50 simulations) for the consensus, as well as for the individuals. The
+error bars indicate one standard deviation. We see, for example, that if the 15
+informed for a category have a 50% chance of selecting the correct candidate, the
+consensus doubles the expected performance of an individual.
+288            8. Model Inference and Averaging
+
+                  Bagged Decision Rule                                                              Boosted Decision Rule
+
+
+                      • •                        •                    • •                               • •                        •                    • •
+           ••                      •         •• •                   •
+                                                                         •                   ••                      •         •• •                   •
+                                                                                                                                                           •
+      •• • •                 ••            •           •                                •• • •                 ••            •           •
+                   • • • • ••                         •        ••                                    • • • • ••                         •        ••
+                                                ••                                ••                                              ••                                ••
+                           • • ••                  •      •                                                  • • ••                  •      •
+                 • • ••                 ••                         •               •               • • ••                 ••                         •               •
+          ••• ••            • • •• •                        • • •                           ••• ••            • • •• •                        • • •
+                         •               ••          • • •                 •                               •               ••          • • •                 •
+            • •       •                   •                                         •         • •       •                   •                                         •
+                 •                    •       •                     •••        •                   •                    •       •                     •••        •
+                              •       •       •      •                •                                         •       •       •      •                •
+      • •                                              •           •       •            ••                                               •           •       •
+                 ••                 •
+                                        • •        •
+                                                        •                        • ••              ••                 •
+                                                                                                                          • •        •
+                                                                                                                                          •                        • ••
+           • •• •
+                   •                        • • • • • • •• •                                 • •• •
+                                                                                                     •                        • • • • • • •• •
+                                                          •                                                                                 •
+                                                                •                                                                                 •
+                             •                                               • •                               •                                               • •
+            •• •                                              •
+                                                               •           •                  •• •                                              •
+                                                                                                                                                 •           •
+          •
+               •               •             • • •• •                          • •          •
+                                                                                                 •               •             • • •• •                          • •
+        ••                       •  • •••                                                 ••                       •  • •••
+                        ••                         ••
+                                                         • ••          ••• • •                            ••                         ••
+                                                                                                                                           • ••          ••• • •
+      • •                                                                   •           • •                                                                   •
+                • • • • •
+                                             •                               • •                  • • • • •
+                                                                                                                               •                               • •
+         • ••• ••                   • ••                          •• •          •          • ••• ••                   • ••                          •• •          •
+      •               •    •                • • •           •  •                        •               •    •                • • •           •  •
+       ••                       ••• •                            •            • •        ••                       ••• •                            •            • •
+
+
+
+
+FIGURE 8.12. Data with two features and two classes, separated by a linear
+boundary. (Left panel:) Decision boundary estimated from bagging the decision
+rule from a single split, axis-oriented classifier. (Right panel:) Decision boundary
+from boosting the decision rule of the same classifier. The test error rates are
+0.166, and 0.065, respectively. Boosting is described in Chapter 10.
+
+and is described in Chapter 10. The decision boundary in the right panel is
+the result of the boosting procedure, and it roughly captures the diagonal
+boundary.
+
+
+8.8 Model Averaging and Stacking
+In Section 8.4 we viewed bootstrap values of an estimator as approximate
+posterior values of a corresponding parameter, from a kind of nonparamet-
+ric Bayesian analysis. Viewed in this way, the bagged estimate (8.51) is
+an approximate posterior Bayesian mean. In contrast, the training sample
+estimate fˆ(x) corresponds to the mode of the posterior. Since the posterior
+mean (not mode) minimizes squared-error loss, it is not surprising that
+bagging can often reduce mean squared-error.
+   Here we discuss Bayesian model averaging more generally. We have a
+set of candidate models Mm , m = 1, . . . , M for our training set Z. These
+models may be of the same type with different parameter values (e.g.,
+subsets in linear regression), or different models for the same task (e.g.,
+neural networks and regression trees).
+   Suppose ζ is some quantity of interest, for example, a prediction f (x) at
+some fixed feature value x. The posterior distribution of ζ is
+                                                                  M
+                                                                  X
+                                   Pr(ζ|Z) =                                 Pr(ζ|Mm , Z)Pr(Mm |Z),                                                                (8.53)
+                                                                 m=1
+                                          8.8 Model Averaging and Stacking       289
+
+with posterior mean
+                                M
+                                X
+                  E(ζ|Z) =            E(ζ|Mm , Z)Pr(Mm |Z).                   (8.54)
+                                m=1
+
+This Bayesian prediction is a weighted average of the individual predictions,
+with weights proportional to the posterior probability of each model.
+   This formulation leads to a number of different model-averaging strate-
+gies. Committee methods take a simple unweighted average of the predic-
+tions from each model, essentially giving equal probability to each model.
+More ambitiously, the development in Section 7.7 shows the BIC criterion
+can be used to estimate posterior model probabilities. This is applicable
+in cases where the different models arise from the same parametric model,
+with different parameter values. The BIC gives weight to each model de-
+pending on how well it fits and how many parameters it uses. One can also
+carry out the Bayesian recipe in full. If each model Mm has parameters
+θm , we write
+
+      Pr(Mm |Z)       ∝ Pr(Mm ) · Z
+                                  Pr(Z|Mm )
+                      ∝ Pr(Mm ) ·          Pr(Z|θm , Mm )Pr(θm |Mm )dθm .
+                                                                              (8.55)
+
+  In principle one can specify priors Pr(θm |Mm ) and numerically com-
+pute the posterior probabilities from (8.55), to be used as model-averaging
+weights. However, we have seen no real evidence that this is worth all of
+the effort, relative to the much simpler BIC approximation.
+  How can we approach model averaging from a frequentist viewpoint?
+Given predictions fˆ1 (x), fˆ2 (x), . . . , fˆM (x), under squared-error loss, we can
+seek the weights w = (w1 , w2 , . . . , wM ) such that
+                                h    M
+                                     X           i2
+                  ŵ = argmin EP Y −   wm fˆm (x) .                           (8.56)
+                            w
+                                            m=1
+
+Here the input value x is fixed and the N observations in the dataset Z (and
+the target Y ) are distributed according to P. The solution is the population
+linear regression of Y on F̂ (x)T ≡ [fˆ1 (x), fˆ2 (x), . . . , fˆM (x)]:
+
+                    ŵ = EP [F̂ (x)F̂ (x)T ]−1 EP [F̂ (x)Y ].                 (8.57)
+
+Now the full regression has smaller error than any single model
+             "                    #2
+                    XM                    h          i2
+         EP Y −         ŵm fm (x) ≤ EP Y − fˆm (x) ∀m
+                            ˆ                                                 (8.58)
+                      m=1
+
+so combining models never makes things worse, at the population level.
+290     8. Model Inference and Averaging
+
+   Of course the population linear regression (8.57) is not available, and it
+is natural to replace it with the linear regression over the training set. But
+there are simple examples where this does not work well. For example, if
+fˆm (x), m = 1, 2, . . . , M represent the prediction from the best subset of
+inputs of size m among M total inputs, then linear regression would put all
+of the weight on the largest model, that is, ŵM = 1, ŵm = 0, m < M . The
+problem is that we have not put each of the models on the same footing
+by taking into account their complexity (the number of inputs m in this
+example).
+   Stacked generalization, or stacking, is a way of doing this. Let fˆm    −i
+                                                                              (x)
+be the prediction at x, using model m, applied to the dataset with the
+ith training observation removed. The stacking estimate of the weights is
+obtained from the least squares linear regression of yi on fˆm   −i
+                                                                    (xi ), m =
+1, 2, . . . , M . In detail the stacking weights are given by
+                                   N
+                                      "      M
+                                                           #2
+                                   X        X
+                      st
+                    ŵ = argmin        yi −         ˆ−i
+                                                wm f (xi ) .              (8.59)
+                                                  m
+                         w
+                              i=1       m=1
+                           P     st ˆ
+The final prediction is      m ŵm fm (x). By using the cross-validated pre-
+dictions fˆm
+           −i
+              (x), stacking avoids giving unfairly high weight to models with
+higher complexity. Better results can be obtained by restricting the weights
+to be nonnegative, and to sum to 1. This seems like a reasonable restriction
+if we interpret the weights as posterior model probabilities as in equation
+(8.54), and it leads to a tractable quadratic programming problem.
+   There is a close connection between stacking and model selection via
+leave-one-out cross-validation (Section 7.10). If we restrict the minimization
+in (8.59) to weight vectors w that have one unit weight and the rest zero,
+this leads to a model choice m̂ with smallest leave-one-out cross-validation
+error. Rather than choose a single model, stacking combines them with
+estimated optimal weights. This will often lead to better prediction, but
+less interpretability than the choice of only one of the M models.
+   The stacking idea is actually more general than described above. One
+can use any learning method, not just linear regression, to combine the
+models as in (8.59); the weights could also depend on the input location
+x. In this way, learning methods are “stacked” on top of one another, to
+improve prediction performance.
+
+
+8.9 Stochastic Search: Bumping
+The final method described in this chapter does not involve averaging or
+combining models, but rather is a technique for finding a better single
+model. Bumping uses bootstrap sampling to move randomly through model
+space. For problems where fitting method finds many local minima, bump-
+ing can help the method to avoid getting stuck in poor solutions.
+                                                                                                  8.9 Stochastic Search: Bumping                                                                   291
+
+
+                       Regular 4-Node Tree                                                                             Bumped 4-Node Tree
+
+               ••• • •                        •• • •
+                                                           •
+                                                                   • •                                          ••• • •                        •• • •
+                                                                                                                                                            •
+                                                                                                                                                                    • •
+   • ••••• • • •                • •                                          • ••       • •         • ••••• • • •                • •                                          • ••       • •
+     •••• • • •• •• • •• •••• •• • •                                               •         •        •••• • • •• •• • •• •••• •• • •                                               •         •
+           •
+         • • •            •      •       •         • •  •                                                   •
+                                                                                                          • • •            •      •       •         • •  •
+                                           • •    • •••            •                                                                        • •    • •••            •
+       • •       • ••              • •••        •
+                                                •                                                       • •       • ••              • •••        •
+                                                                                                                                                 •
+     •• •             •• •                    ••                           ••• • •                    •• •             •• •                    ••                           ••• • •
+          • • • • • • • ••                           • •••• •
+                                                                •                                          • • • • • • • ••                           • •••• •
+                                                                                                                                                                 •
+              •            •                                                      •           •                •            •                                                       •          •
+           • • •• • • •                               •        •     • • ••                                 • • •• • • •                               •        •     • • ••
+      • • • ••           • •••• •         • •• •                           •            ••• •          • • • ••           • •••• •         • •• •                           •            ••• •
+    •            •                                       •      • •
+                                                                  •     •     • •                    •            •                                       •      • •
+                                                                                                                                                                   •     •     • •
+             •                      •      •• •• •         •           •          ••                          •                      •      •• •• •         •           •          ••
+   •• •                 • •
+                        ••                                      • •• • ••                           •• •                 • •
+                                                                                                                         ••                                      • •• • ••
+      • • • ••
+                                  •• •• • ••• • • • •• • • • •• •                                      • • • ••
+                                                                                                                                   •• •• • ••• • • • •• • • • •• •
+                                 •
+             • • • •• • • • • • • •                                                     •                                         •
+                                                                                                              • • • •• • • • • • • •                                                     •
+             • •• •• •••                                          •                 • ••                      • •• •• •••                                          •                 • ••
+       •                       •
+             •••• • • • • • • • •
+                                      •                              • • • • ••                         •                       •
+                                                                                                              •••• • • • • • • • •
+                                                                                                                                       •                              • • • • ••
+                                                           ••        • • • • •• •    •                                                                      ••        • • • • •• •    •
+    • •          • •••• •        • • ••• • • •• •                     ••••         • •• •            • •          • •••• •        • • ••• • • •• •                     ••••         • •• •
+         • • ••                        • ••             •            •• • • ••••• •
+                                                                                        •                 • • ••                        • ••             •            •• • • ••••• •
+                                                                                                                                                                                         •
+           • ••                  •          •   •  •  •        •                                            • ••                  •          •   •  •  •        •
+             •                           ••• •• •                  •                          •
+                                                                                                              •                           ••• •• •                  •                          •
+       • •• •                       •                                         •            •            • •• •                       •                                         •            •
+                          •       •               •••        •   • • • • •                                                 •       •               •••        •   • • • • •
+     • •              •
+                      • • • • • • •• •• • •                  • • • • •• • •                           • •              •
+                                                                                                                       • • • • • • •• •• • •                  • • • • •• • •
+   •• • • •                            • • • •• •               •                  ••               •• • • •                            • • • •• •               •                  ••
+                             •                               •            •• • •• •                                           •                               •            •• • •• •
+
+
+
+FIGURE 8.13. Data with two features and two classes (blue and orange), dis-
+playing a pure interaction. The left panel shows the partition found by three splits
+of a standard, greedy, tree-growing algorithm. The vertical grey line near the left
+edge is the first split, and the broken lines are the two subsequent splits. The al-
+gorithm has no idea where to make a good initial split, and makes a poor choice.
+The right panel shows the near-optimal splits found by bumping the tree-growing
+algorithm 20 times.
+
+   As in bagging, we draw bootstrap samples and fit a model to each. But
+rather than average the predictions, we choose the model estimated from a
+bootstrap sample that best fits the training data. In detail, we draw boot-
+strap samples Z∗1 , . . . , Z∗B and fit our model to each, giving predictions
+fˆ∗b (x), b = 1, 2, . . . , B at input point x. We then choose the model that
+produces the smallest prediction error, averaged over the original training
+set. For squared error, for example, we choose the model obtained from
+bootstrap sample b̂, where
+                                                                                        N
+                                                                                        X
+                                                    b̂ = arg min                          [yi − fˆ∗b (xi )]2 .                                                                          (8.60)
+                                                                                b
+                                                                                        i=1
+
+
+ The corresponding model predictions are fˆ∗b̂ (x). By convention we also
+include the original training sample in the set of bootstrap samples, so that
+the method is free to pick the original model if it has the lowest training
+error.
+  By perturbing the data, bumping tries to move the fitting procedure
+around to good areas of model space. For example, if a few data points are
+causing the procedure to find a poor solution, any bootstrap sample that
+omits those data points should procedure a better solution.
+  For another example, consider the classification data in Figure 8.13, the
+notorious exclusive or (XOR) problem. There are two classes (blue and
+orange) and two input features, with the features exhibiting a pure inter-
+292     8. Model Inference and Averaging
+
+action. By splitting the data at x1 = 0 and then splitting each resulting
+strata at x2 = 0, (or vice versa) a tree-based classifier could achieve per-
+fect discrimination. However, the greedy, short-sighted CART algorithm
+(Section 9.2) tries to find the best split on either feature, and then splits
+the resulting strata. Because of the balanced nature of the data, all initial
+splits on x1 or x2 appear to be useless, and the procedure essentially gener-
+ates a random split at the top level. The actual split found for these data is
+shown in the left panel of Figure 8.13. By bootstrap sampling from the data,
+bumping breaks the balance in the classes, and with a reasonable number
+of bootstrap samples (here 20), it will by chance produce at least one tree
+with initial split near either x1 = 0 or x2 = 0. Using just 20 bootstrap
+samples, bumping found the near optimal splits shown in the right panel
+of Figure 8.13. This shortcoming of the greedy tree-growing algorithm is
+exacerbated if we add a number of noise features that are independent of
+the class label. Then the tree-growing algorithm cannot distinguish x1 or
+x2 from the others, and gets seriously lost.
+   Since bumping compares different models on the training data, one must
+ensure that the models have roughly the same complexity. In the case of
+trees, this would mean growing trees with the same number of terminal
+nodes on each bootstrap sample. Bumping can also help in problems where
+it is difficult to optimize the fitting criterion, perhaps because of a lack of
+smoothness. The trick is to optimize a different, more convenient criterion
+over the bootstrap samples, and then choose the model producing the best
+results for the desired criterion on the training sample.
+
+
+
+Bibliographic Notes
+There are many books on classical statistical inference: Cox and Hink-
+ley (1974) and Silvey (1975) give nontechnical accounts. The bootstrap
+is due to Efron (1979) and is described more fully in Efron and Tibshi-
+rani (1993) and Hall (1992). A good modern book on Bayesian inference
+is Gelman et al. (1995). A lucid account of the application of Bayesian
+methods to neural networks is given in Neal (1996). The statistical appli-
+cation of Gibbs sampling is due to Geman and Geman (1984), and Gelfand
+and Smith (1990), with related work by Tanner and Wong (1987). Markov
+chain Monte Carlo methods, including Gibbs sampling and the Metropolis–
+Hastings algorithm, are discussed in Spiegelhalter et al. (1996). The EM
+algorithm is due to Dempster et al. (1977); as the discussants in that pa-
+per make clear, there was much related, earlier work. The view of EM as
+a joint maximization scheme for a penalized complete-data log-likelihood
+was elucidated by Neal and Hinton (1998); they credit Csiszar and Tusnády
+(1984) and Hathaway (1986) as having noticed this connection earlier. Bag-
+ging was proposed by Breiman (1996a). Stacking is due to Wolpert (1992);
+                                                              Exercises     293
+
+Breiman (1996b) contains an accessible discussion for statisticians. Leblanc
+and Tibshirani (1996) describe variations on stacking based on the boot-
+strap. Model averaging in the Bayesian framework has been recently advo-
+cated by Madigan and Raftery (1994). Bumping was proposed by Tibshi-
+rani and Knight (1999).
+
+
+Exercises
+
+Ex. 8.1 Let r(y) and q(y) be probability density functions. Jensen’s in-
+equality states that for a random variable X and a convex function φ(x),
+E[φ(X)] ≥ φ[E(X)]. Use Jensen’s inequality to show that
+
+                          Eq log[r(Y )/q(Y )]                             (8.61)
+
+is maximized as a function of r(y) when r(y) = q(y). Hence show that
+R(θ, θ) ≥ R(θ′ , θ) as stated below equation (8.46).
+Ex. 8.2 Consider the maximization of the log-likelihood
+                                                P          (8.48), over dis-
+tributions P̃ (Zm ) such that P̃ (Zm ) ≥ 0 and Zm P̃ (Zm ) = 1. Use La-
+grange multipliers to show that the solution is the conditional distribution
+P̃ (Zm ) = Pr(Zm |Z, θ′ ), as in (8.49).
+Ex. 8.3 Justify the estimate (8.50), using the relationship
+                                Z
+                       Pr(A) = Pr(A|B)d(Pr(B)).
+
+Ex. 8.4 Consider the bagging method of Section 8.7. Let our estimate fˆ(x)
+be the B-spline smoother µ̂(x) of Section 8.2.1. Consider the parametric
+bootstrap of equation (8.6), applied to this estimator. Show that if we bag
+fˆ(x), using the parametric bootstrap to generate the bootstrap samples,
+the bagging estimate fˆbag (x) converges to the original estimate fˆ(x) as
+B → ∞.
+Ex. 8.5 Suggest generalizations of each of the loss functions in Figure 10.4
+to more than two classes, and design an appropriate plot to compare them.
+Ex. 8.6 Consider the bone mineral density data of Figure 5.6.
+ (a) Fit a cubic smooth spline to the relative change in spinal BMD, as a
+      function of age. Use cross-validation to estimate the optimal amount
+      of smoothing. Construct pointwise 90% confidence bands for the un-
+      derlying function.
+ (b) Compute the posterior mean and covariance for the true function via
+     (8.28), and compare the posterior bands to those obtained in (a).
+294     8. Model Inference and Averaging
+
+ (c) Compute 100 bootstrap replicates of the fitted curves, as in the bottom
+      left panel of Figure 8.2. Compare the results to those obtained in (a)
+      and (b).
+Ex. 8.7 EM as a minorization algorithm(Hunter and Lange, 2004; Wu and
+Lange, 2007). A function g(x, y) to said to minorize a function f (x) if
+
+                     g(x, y) ≤ f (x), g(x, x) = f (x)                    (8.62)
+
+for all x, y in the domain. This is useful for maximizing f (x) since it is easy
+to show that f (x) is non-decreasing under the update
+
+                        xs+1 = argmaxx g(x, xs )                         (8.63)
+
+There are analogous definitions for majorization, for minimizing a function
+f (x). The resulting algorithms are known as MM algorithms, for “Minorize-
+Maximize” or “Majorize-Minimize.”
+   Show that the EM algorithm (Section 8.5.2) is an example of an MM al-
+gorithm, using Q(θ′ , θ)+log Pr(Z|θ)−Q(θ, θ) to minorize the observed data
+log-likelihood ℓ(θ′ ; Z). (Note that only the first term involves the relevant
+parameter θ′ ).
+                                                                                         This is page 295
+                                                                                         Printer: Opaque this
+
+
