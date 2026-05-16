@@ -1,0 +1,484 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumerate}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{tikz}
+
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+
+\newcommand{\points}[1]{\textbf{(#1\,\%)}}
+\newcommand{\subpoints}[1]{\textit{(#1\,\%)}}
+
+\title{TMA4268 Statistical Learning V2026\\[0.3em]
+\large Mock Exam 7 (estimated final exam)}
+\author{Compiled by Claude for Anders Bekkevard\\[0.2em]
+\small Based on the Apr 28 exam-review lecture, the 2023--2025 finals, and the prof's stated scope rule}
+\date{Mock for: May 18, 2026 (real exam date)}
+
+\begin{document}
+\maketitle
+
+\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+\textbf{Instructions.}
+\begin{itemize}
+  \item \textbf{Duration:} 4 hours. \textbf{Open book.} Permitted aids: ISLP (2nd ed.), one handwritten A5 sheet of notes, calculator.
+  \item \textbf{No code required.} Write answers as math, plain English, or pseudocode. Do \emph{not} memorize R/Python package names.
+  \item \textbf{Show your work} --- partial credit is generously available, including when calculator slips spoil a numeric answer but the setup is correct.
+  \item \textbf{No negative scoring.} Always answer, even when unsure.
+  \item \textbf{If a question seems broken or ambiguous}, state the assumption you are making in one short sentence and proceed.
+  \item Total: \textbf{100 points = 100\,\%}. Per-problem weights given in parentheses.
+\end{itemize}}}
+
+\vspace{0.6em}
+\noindent\textbf{Grade boundaries (NTNU \emph{prosentvurderingsmetoden}, advisory):}
+A: 89--100\,\% \quad B: 77--88\,\% \quad C: 65--76\,\% \quad D: 53--64\,\% \quad E: 41--52\,\% \quad F: 0--40\,\%.
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+%=========================================================
+\section*{Problem 1 \points{10} --- Fill-in-the-blank concepts}
+%=========================================================
+
+\noindent Read the passage and pick the best word or short phrase for each blank from the choices in parentheses. Each correct fill is worth $1$\,\%.
+
+\bigskip
+
+A central theme of this course is \underline{\hspace{2.5cm}}\,(1) (\emph{regularization} / \emph{interpolation} / \emph{model averaging} / \emph{the Bayes rule}): any modification of a learning algorithm that aims to reduce \underline{\hspace{2.5cm}}\,(2) (\emph{generalization error} / \emph{training error} / \emph{the intercept} / \emph{the residual variance}) without necessarily reducing training error.
+
+In the linear regression module we discussed what happens when two predictors are highly correlated: the matrix $\mathbf{X}^\top\mathbf{X}$ becomes nearly singular, the variances of the estimated coefficients explode, and individual $t$-tests can become misleading. This phenomenon is called \underline{\hspace{2.5cm}}\,(3) (\emph{collinearity} / \emph{heteroscedasticity} / \emph{leverage} / \emph{overfitting}).
+
+For training neural networks the standard optimizer is \underline{\hspace{2.5cm}}\,(4) (\emph{mini-batch stochastic gradient descent} / \emph{coordinate descent} / \emph{Newton--Raphson} / \emph{the EM algorithm}), and the gradients themselves are computed efficiently by an algorithm that reuses intermediates from the forward pass, namely \underline{\hspace{2.5cm}}\,(5) (\emph{backpropagation} / \emph{boosting} / \emph{bootstrapping} / \emph{cross-validation}).
+
+A neural network with many more weights than observations needs regularization to generalize well. One classification-specific trick is \underline{\hspace{2.5cm}}\,(6) (\emph{label smoothing} / \emph{batch normalization} / \emph{Adam} / \emph{the universal approximation theorem}), in which the hard one-hot targets are replaced by slightly softened versions.
+
+For tree ensembles, growing many \emph{independent} trees in parallel and averaging them describes \underline{\hspace{2.5cm}}\,(7) (\emph{bagging and random forests} / \emph{gradient boosting} / \emph{AdaBoost} / \emph{cost-complexity pruning}), whereas growing many small trees \emph{sequentially}, each one a small correction to the previous ensemble's predictions, describes \underline{\hspace{2.5cm}}\,(8) (\emph{boosting} / \emph{bagging} / \emph{stacking} / \emph{the bootstrap}).
+
+When estimating the standard error of a complicated statistic for which no clean closed-form sampling distribution is available, the standard nonparametric tool in this course is the \underline{\hspace{2.5cm}}\,(9) (\emph{bootstrap} / \emph{F-test} / \emph{validation-set approach} / \emph{Mallows' $C_p$}).
+
+Finally, when we want both to \emph{select} a hyperparameter and to \emph{honestly assess} the resulting model on the same data set, the recommended procedure is \underline{\hspace{2.5cm}}\,(10) (\emph{nested cross-validation} / \emph{the validation-set approach} / \emph{leave-one-out CV} / \emph{the bootstrap}).
+
+\vfill\eject
+
+%=========================================================
+\section*{Problem 2 \points{28} --- Multiple choice, true/false, and short numeric}
+%=========================================================
+
+For each subproblem, write \emph{True/False} for each statement (or the requested numeric answer). For true/false subproblems you may add a one-sentence justification, but only if you think it helps; do not write essays.
+
+\subsection*{a) Bias--variance and double descent \subpoints{3}}
+Mark each statement true or false.
+\begin{enumerate}[(i)]
+  \item In the expected-squared-test-error decomposition $\mathbb{E}[(y_0 - \hat f(x_0))^2] = \mathrm{Bias}^2 + \mathrm{Var} + \sigma^2$, the irreducible term $\sigma^2$ can be lowered by choosing a more flexible model.
+  \item In a regression with a heavily noisy response (large $\sigma^2$), making the model class more flexible is generally counter-productive because the extra flexibility ``chases'' noise.
+  \item In the over-parameterized regime where $p \gg n$ and many fits achieve zero training error, mini-batch SGD picks (approximately) the \emph{minimum-norm} interpolator, which can generalize well --- the so-called ``benign overfitting'' or double-descent phenomenon.
+  \item The lecturer's preferred name for what students usually call ``the bias--variance trade-off'' is ``avoid bad overfitting'', because in over-parameterized regimes one can drive \emph{both} bias and variance down at once.
+\end{enumerate}
+
+\subsection*{b) Cross-validation and nested CV \subpoints{4}}
+\begin{enumerate}[(i)]
+  \item \subpoints{1} True or false: ``Validation-set approach with a $50/50$ train/test split is the same as $2$-fold cross-validation.''
+  \item \subpoints{1} True or false: ``Compared to $5$- or $10$-fold CV, LOOCV has the lowest bias as an estimator of test error, but typically higher variance, because the $n$ leave-one-out training sets overlap almost completely.''
+  \item \subpoints{1} A genomicist has $p = 5{,}000$ predictors and $n = 100$ random labels (truly no signal, Bayes error is $50\%$). She first ranks all $5{,}000$ predictors by their marginal correlation with $y$, keeps the top $25$, then runs $10$-fold CV on a logistic regression of $y$ on those $25$. She reports CV-misclassification near $0\%$ and concludes she has built an excellent classifier. True or false: ``her conclusion is justified.''
+  \item \subpoints{1} True or false: ``In nested cross-validation, the \emph{inner} folds are used for model selection (hyperparameter tuning) and the \emph{outer} folds for performance assessment.''
+\end{enumerate}
+
+\subsection*{c) Mini-batch SGD, dropout, label smoothing, early stopping \subpoints{4}}
+\begin{enumerate}[(i)]
+  \item \subpoints{1} True or false: ``In mini-batch SGD, the mini-batch gradient is an \emph{unbiased} estimator of the full-batch gradient: it has the same expectation, but larger variance.''
+  \item \subpoints{1} True or false: ``A common course-recommendation for the dropout rate is in the range $0.2$--$0.5$, with $0.2$ a frequent default; dropout is applied during \emph{training} only, and is turned off (or absorbed by rescaling) at test time.''
+  \item \subpoints{1} True or false: ``Label smoothing replaces the hard one-hot target vector $(0,\dots,0,1,0,\dots,0)$ by a softened version such as $(\varepsilon/(C-1),\dots,1-\varepsilon,\dots)$ and is motivated, in part, by the possibility that the training labels themselves are imperfect.''
+  \item \subpoints{1} True or false: ``Early stopping returns the network parameters from the epoch at which the \emph{training} error first stops decreasing.''
+\end{enumerate}
+
+\subsection*{d) Boosting --- AdaBoost and gradient boosting \subpoints{4}}
+\begin{enumerate}[(i)]
+  \item \subpoints{1} True or false: ``In gradient boosting with squared-error loss, fitting the next tree to the current residuals is equivalent to fitting a tree to the \emph{negative gradient} of the loss with respect to the current ensemble's predictions.''
+  \item \subpoints{1} True or false: ``Boosting reduces \emph{variance} relative to a single deep tree by averaging over many bootstrap replicates.''
+  \item \subpoints{1} True or false: ``In gradient boosting, halving the shrinkage / learning rate $\nu$ approximately doubles the number of trees $M$ required for the ensemble to fit well, so $M$ and $\nu$ are tuned jointly.''
+  \item \subpoints{1} True or false: ``In AdaBoost, the classifier weight is $\alpha_m = \log\!\bigl((1-\mathrm{err}_m)/\mathrm{err}_m\bigr)$, so a base classifier with weighted error \emph{above} $0.5$ would receive a \emph{negative} $\alpha_m$ in the final vote.''
+\end{enumerate}
+
+\subsection*{e) Collinearity \subpoints{4}}
+A linear regression of $y$ on $p = 7$ continuous predictors is fit on $n = 200$ observations. Two of the predictors, $x_2$ and $x_3$, are almost perfectly correlated ($\mathrm{cor}(x_2, x_3) \approx 0.99$); the other predictors are roughly uncorrelated.
+
+Mark each statement true or false.
+
+\begin{enumerate}[(i)]
+  \item The coefficient estimates $\hat\beta_2$ and $\hat\beta_3$ are likely to have large standard errors and to be each individually \emph{insignificant} by their $t$-tests, while their joint contribution to the model may still be highly significant.
+  \item The \emph{predicted values} $\hat y$ are likely to be much more unstable across resamples than the individual coefficients $\hat\beta_2$ and $\hat\beta_3$ are.
+  \item Standardizing $x_2$ and $x_3$ to mean $0$ and variance $1$ before fitting OLS makes the matrix $\mathbf{X}^\top\mathbf{X}$ \emph{exactly} invertible and fixes the collinearity problem.
+  \item Adding an L2 (ridge) penalty $\lambda\sum_j\beta_j^2$ to the residual sum of squares makes $\mathbf{X}^\top\mathbf{X} + \lambda\mathbf{I}$ invertible for any $\lambda > 0$ and tends, in the limit of strong collinearity, to make the two collinear coefficients converge toward each other (sharing the effect roughly equally) rather than letting one of them blow up.
+\end{enumerate}
+
+\subsection*{f) Bootstrap for the standard error of a derived quantity \subpoints{3}}
+You have fit a logistic regression of \texttt{default} on \texttt{balance}, \texttt{income}, and \texttt{student\_status}. From it you compute the predicted probability of default $\hat p(x_0)$ for a specific new customer with covariates $x_0 = (\texttt{balance}=2{,}000,\, \texttt{income}=40{,}000,\, \texttt{student}=\mathrm{yes})$. The closed-form $\sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}$ formula does \emph{not} give you a direct standard error for $\hat p(x_0)$ because the sigmoid step in $\hat p = \sigma(x_0^\top\hat\beta)$ makes the propagation of variance nonlinear.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{2} Write pseudocode (or math) for a bootstrap procedure that returns an estimate $\widehat{\mathrm{SE}}_{\text{boot}}(\hat p(x_0))$ and a $95\%$ percentile confidence interval for $\hat p(x_0)$. State your choice of the number of bootstrap resamples $B$ and justify it in one short sentence.
+  \item \subpoints{1} True or false: ``If $\hat p(x_0)$ is biased as an estimator of the true conditional probability $\Pr(Y = 1 \mid X = x_0)$, the bootstrap standard error and the percentile CI computed in (i) automatically \emph{correct} for that bias.''
+\end{enumerate}
+
+\subsection*{g) Logistic regression coefficients \subpoints{3}}
+\begin{enumerate}[(i)]
+  \item \subpoints{1} A logistic regression of the binary outcome \texttt{spam} on a continuous predictor \texttt{n\_links} (the number of links in an e-mail) has fitted coefficient $\hat\beta_{\texttt{n\_links}} = 0.18$. By what factor do the odds of \texttt{spam} change between two otherwise identical messages whose \texttt{n\_links} values differ by $5$? (One numeric value, rounded to two decimals.)
+  \item \subpoints{1} For another e-mail the fitted linear predictor equals $\hat\eta = 1.2$. What is the predicted probability of \texttt{spam}? (One numeric value, rounded to three decimals.)
+  \item \subpoints{1} True or false: ``Adding $\lambda \sum_j |\beta_j|$ as an L1 penalty to the logistic-regression log-likelihood, with $\lambda$ chosen by cross-validation, can drive some $\hat\beta_j$ exactly to zero, performing automatic variable selection on top of logistic regression.''
+\end{enumerate}
+
+\subsection*{h) Random forests \subpoints{1}}
+Mark each statement true or false. \emph{($0.5$\,\% per statement.)}
+\begin{enumerate}[(i)]
+  \item In a random forest, the parameter $\mathtt{mtry}$ (number of predictors sampled at each split) controls the \emph{correlation} between trees: smaller $\mathtt{mtry}$ tends to give less correlated trees and therefore more variance reduction from averaging.
+  \item The number of trees $B$ in a random forest is a tuning parameter that must be carefully chosen by cross-validation, because random forests can overfit if $B$ is too large.
+\end{enumerate}
+
+\subsection*{i) Principal component analysis \subpoints{2}}
+You perform PCA on a dataset with four \textbf{standardized} variables $X_1, X_2, X_3, X_4$ and obtain eigenvalues $\lambda_1 = 1.80$, $\lambda_2 = 1.10$, $\lambda_3 = 0.70$, $\lambda_4 = 0.40$. The first principal-component loading vector (entries rounded to two decimals) is
+$$\phi_1 = (\,0.60,\;\,0.50,\;\,0.40,\;\,0.50\,)^\top.$$
+A new observation has standardized values $x^* = (\,1,\;\, -1,\;\, 0.5,\;\, 0\,)^\top.$
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} How many principal components must be retained to capture at least $85\%$ of the total variance? Show the cumulative-PVE calculation.
+  \item \subpoints{1} Compute the score $z^*_1$ of the new observation on PC1.
+\end{enumerate}
+
+\vfill\eject
+
+%=========================================================
+\section*{Problem 3 \points{16} --- Theory, hand calculations, pseudocode}
+%=========================================================
+
+\subsection*{a) The mathy one --- the bias--variance decomposition \subpoints{8}}
+
+Let $y_0 = f(x_0) + \varepsilon$ where $\varepsilon$ is a zero-mean noise term with $\mathrm{Var}(\varepsilon) = \sigma^2$, independent of the training set. Let $\hat f$ be a fixed estimator trained on a random training set $\mathcal D$, and let $\hat f(x_0)$ denote its prediction at the fixed query point $x_0$.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{2} State the two key independence / zero-mean assumptions you will need in the derivation below: one about $\varepsilon$ relative to the training set $\mathcal D$, and one about $\mathbb{E}[\varepsilon]$. Define explicitly what randomness the outer expectation $\mathbb{E}[\,\cdot\,]$ in $\mathbb{E}[(y_0 - \hat f(x_0))^2]$ is taken over.
+  \item \subpoints{4} Starting from
+  $$\mathbb{E}\bigl[(y_0 - \hat f(x_0))^2\bigr] \;=\; \mathbb{E}\bigl[(f(x_0) + \varepsilon - \hat f(x_0))^2\bigr],$$
+  derive the decomposition
+  $$\boxed{\;\mathbb{E}\bigl[(y_0 - \hat f(x_0))^2\bigr] \;=\; \mathrm{Bias}^2\!\bigl[\hat f(x_0)\bigr] \;+\; \mathrm{Var}\!\bigl[\hat f(x_0)\bigr] \;+\; \sigma^2.\;}$$
+  Show the algebraic steps clearly. In particular: (a)~explain why a cross-term involving $\varepsilon$ vanishes, (b)~use the add-and-subtract trick $\hat f(x_0) - f(x_0) = (\hat f(x_0) - \mathbb{E}[\hat f(x_0)]) + (\mathbb{E}[\hat f(x_0)] - f(x_0))$ to separate the bias and the variance, and (c)~identify each of the three resulting terms.
+  \item \subpoints{1} The decomposition above is an exact \emph{identity} that holds for every estimator $\hat f$. Briefly explain why it is therefore compatible \emph{both} with the classical U-shaped test-MSE curve \emph{and} with the double-descent / benign-overfitting curve seen in highly over-parameterized models.
+  \item \subpoints{1} Briefly state one practical implication: explain in one sentence why, in this course, a method that introduces a small extra bias to obtain a large reduction in variance (e.g.\ ridge, lasso, dropout, or boosting at well-chosen $M$) can have \emph{lower} test MSE than ordinary least squares.
+\end{enumerate}
+
+\subsection*{b) Pseudocode --- $k$-fold and nested cross-validation \subpoints{4}}
+
+\begin{enumerate}[(i)]
+  \item \subpoints{2} Write pseudocode for ordinary $k$-fold cross-validation that returns the CV-error of a specified model class $\mathcal M(\theta)$ at a specified hyperparameter value $\theta$, evaluated on a training set $\{(x_i, y_i)\}_{i=1}^n$. Include: the random partition into folds, the inner fit-and-evaluate loop, the per-fold error definition, and the aggregation. Then state, in one or two sentences, how you would use this procedure to \emph{select} a hyperparameter from a grid $\{\theta_1, \dots, \theta_T\}$ and what you would do with the chosen hyperparameter afterwards.
+  \item \subpoints{2} Now suppose you want \emph{both} to select $\theta$ \emph{and} to obtain an honest estimate of the test error of the selected model, using only the training set. Sketch pseudocode for \textbf{nested cross-validation} that does this in a single run, clearly distinguishing the \emph{inner} and \emph{outer} loops. State, in one short sentence, why a naive single-layer CV approach in which one reports $\min_\theta \mathrm{CV}_k(\theta)$ as the final test-error estimate is \emph{biased downward}.
+\end{enumerate}
+
+\subsection*{c) AdaBoost by hand --- one round \subpoints{4}}
+
+A small training set of $N = 5$ observations $(i, y_i, w_i^{(1)})$ is given, with labels coded $\pm 1$ and initial weights $w_i^{(1)} = 1/N$:
+
+\begin{center}\small
+\begin{tabular}{cccc}
+\toprule
+$i$ & $y_i$ & $w_i^{(1)}$ & Prediction $G_1(x_i)$ \\
+\midrule
+$1$ & $+1$ & $0.20$ & $+1$ (correct) \\
+$2$ & $+1$ & $0.20$ & $-1$ (wrong) \\
+$3$ & $-1$ & $0.20$ & $-1$ (correct) \\
+$4$ & $-1$ & $0.20$ & $-1$ (correct) \\
+$5$ & $+1$ & $0.20$ & $-1$ (wrong) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+A weak classifier $G_1(x)$ has been fit to these weighted data and its per-observation predictions are shown in the rightmost column.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} Compute the weighted misclassification error of $G_1$,
+  $$\mathrm{err}_1 = \frac{\sum_i w_i^{(1)} \cdot \mathbb{1}[y_i \neq G_1(x_i)]}{\sum_i w_i^{(1)}}.$$
+  \item \subpoints{1} Compute the classifier weight $\alpha_1 = \log\!\bigl((1 - \mathrm{err}_1)/\mathrm{err}_1\bigr)$ (give the answer to three decimals; you may use $\log = \ln$).
+  \item \subpoints{2} Apply the AdaBoost weight update
+  $$w_i^{(2)} \;\propto\; w_i^{(1)} \cdot \exp\!\bigl(\alpha_1 \cdot \mathbb{1}[y_i \neq G_1(x_i)]\bigr),$$
+  and report the renormalized weights $w_i^{(2)}$ (with $\sum_i w_i^{(2)} = 1$), rounded to three decimals. In one sentence, comment on which observations have gained weight and why this is the entire point of AdaBoost.
+\end{enumerate}
+
+\vfill\eject
+
+%=========================================================
+\section*{Problem 4 \points{20} --- Data analysis: wine quality (regression)}
+%=========================================================
+
+A wine merchant has $n = 1{,}200$ red wines, each scored by sommeliers on a continuous \texttt{quality} index (response, range $3$--$8$). The available predictors are the eight chemical measurements
+\begin{itemize}
+  \item \texttt{alcohol} --- alcohol content (\% vol.);
+  \item \texttt{volatile\_acidity} (g/L);
+  \item \texttt{sulphates} (g/L);
+  \item \texttt{pH};
+  \item \texttt{density} (g/cm$^3$);
+  \item \texttt{residual\_sugar} (g/L);
+  \item \texttt{free\_so2} --- free sulfur dioxide (mg/L);
+  \item \texttt{total\_so2} --- total sulfur dioxide (mg/L).
+\end{itemize}
+
+\textbf{Important pairwise correlation among the predictors} (computed on the training set, after standardization):
+$$\mathrm{cor}(\texttt{free\_so2},\, \texttt{total\_so2}) \approx 0.99.$$
+All other absolute correlations among predictors are below $0.55$.
+
+The data are split $800 / 400$ into training and test sets. \emph{All continuous predictors are standardized to mean $0$, variance $1$ before fitting any of the models below.}
+
+\subsection*{a) OLS with a polynomial term and an interaction \subpoints{8}}
+
+The course staff first fits, on the training set, the OLS model
+$$\texttt{quality} \,\sim\, \texttt{alcohol} + I(\texttt{alcohol}^2) + \texttt{volatile\_acidity} + \texttt{sulphates} + \texttt{pH} + \texttt{density} + \texttt{residual\_sugar} + \texttt{free\_so2} + \texttt{total\_so2} + \texttt{alcohol}\!:\!\texttt{volatile\_acidity}.$$
+The fitted output is:
+
+\begin{center}\small
+\begin{tabular}{lcccc}
+\toprule
+ & \textbf{Estimate} & \textbf{Std.\ Error} & \textbf{t-value} & \textbf{Pr($>|t|$)} \\
+\midrule
+(Intercept)                                 & $5.62$    & $0.030$ & $187.3$ & $<0.001$ \\
+\texttt{alcohol}                            & $0.420$   & $0.045$ & $9.33$  & $<0.001$ \\
+$I(\texttt{alcohol}^2)$                     & $-0.110$  & $0.030$ & $-3.67$ & $<0.001$ \\
+\texttt{volatile\_acidity}                  & $-0.305$  & $0.034$ & $-8.97$ & $<0.001$ \\
+\texttt{sulphates}                          & $0.180$   & $0.031$ & $5.81$  & $<0.001$ \\
+\texttt{pH}                                 & $-0.090$  & $0.040$ & $-2.25$ & $0.025$  \\
+\texttt{density}                            & $-0.060$  & $0.062$ & $-0.97$ & $0.334$  \\
+\texttt{residual\_sugar}                    & $0.022$   & $0.038$ & $0.58$  & $0.563$  \\
+\texttt{free\_so2}                          & $0.260$   & $0.180$ & $1.44$  & $0.149$  \\
+\texttt{total\_so2}                         & $-0.330$  & $0.190$ & $-1.74$ & $0.083$  \\
+\texttt{alcohol:volatile\_acidity}          & $-0.140$  & $0.034$ & $-4.12$ & $<0.001$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Residual standard error: $0.655$ on $789$ degrees of freedom.\quad
+Multiple $R^2 = 0.371$,\ Adjusted $R^2 = 0.363$. Training MSE $= 0.425$, \quad Test MSE $= 0.453$.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} How many parameters (including the intercept) does this model estimate? Verify the count against the printed residual degrees of freedom.
+
+  \item \subpoints{2} Two predictors, \texttt{free\_so2} and \texttt{total\_so2}, have large estimates ($+0.26$ and $-0.33$) but each appears individually \emph{insignificant} ($p = 0.149$ and $0.083$). Their standard errors ($0.180$ and $0.190$) are about $5\times$ larger than those of the other predictors. Identify, in one or two sentences, what is going on, and state \emph{precisely} which two pieces of information together let you diagnose this (no need to compute a VIF).
+
+  \item \subpoints{2} For a wine in which both \texttt{alcohol} and \texttt{volatile\_acidity} are at their training-set means (so their \emph{standardized} values are both $0$), and all other predictors are also at their means, compute the predicted \texttt{quality}. Then compute the predicted \texttt{quality} for the same wine if its \emph{standardized} \texttt{alcohol} is increased from $0$ to $+1$ while \emph{standardized} \texttt{volatile\_acidity} stays at $0$. (Two numeric answers; remember to include both the $\texttt{alcohol}^2$ term and the interaction term.)
+
+  \item \subpoints{2} Now repeat the second calculation in (iii) but with \emph{standardized} \texttt{volatile\_acidity} fixed at $+1$ (a wine with notably more volatile acidity than average) instead of at $0$, while \emph{standardized} \texttt{alcohol} again moves from $0$ to $+1$. Report (a) the implied change in predicted \texttt{quality}, and (b) one short sentence interpreting the sign and magnitude of the interaction term in plain English.
+
+  \item \subpoints{1} A classmate writes: ``\texttt{density} has $p = 0.334$, so density does not affect wine quality, and we should drop it.'' Give one short sentence rebutting this reading.
+\end{enumerate}
+
+\subsection*{b) Diagnosing collinearity and choosing a fix \subpoints{4}}
+
+Refit the OLS model after \emph{dropping} \texttt{total\_so2} (keeping \texttt{free\_so2} and all other predictors). The new fitted coefficients and SEs for the two SO$_2$-related rows are:
+
+\begin{center}\small
+\begin{tabular}{lcccc}
+\toprule
+ & \textbf{Estimate} & \textbf{Std.\ Error} & \textbf{t-value} & \textbf{Pr($>|t|$)} \\
+\midrule
+\texttt{free\_so2} (in reduced model)       & $-0.072$  & $0.040$ & $-1.80$ & $0.072$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Other coefficients are essentially unchanged from part (a). Training MSE $= 0.428$, \quad Test MSE $= 0.451$.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{2} The estimate of $\hat\beta_{\texttt{free\_so2}}$ has swung from $+0.26$ (in the original model) to $-0.072$ (in the reduced model), and its SE has shrunk from $0.180$ to $0.040$. Briefly explain, in one or two sentences, why this is the canonical fingerprint of strong collinearity between \texttt{free\_so2} and \texttt{total\_so2} in the original model, by reference to what happens to $(\mathbf{X}^\top\mathbf{X})^{-1}$ when two columns of $\mathbf{X}$ are nearly proportional.
+
+  \item \subpoints{1} The training and test MSE are essentially the same between the full model in (a) and the reduced model in (b). What does this tell you about whether the collinearity was hurting \emph{prediction} (as opposed to \emph{interpretation})?
+
+  \item \subpoints{1} The course staff lists three legitimate alternative fixes for collinearity: (1) \emph{drop a variable}, (2) \emph{combine the collinear predictors} (e.g.\ replace them by a single ``$\texttt{total\_so2}$'' channel), and (3) \emph{regularize with ridge / use principal components regression}. In one sentence, briefly state when option (2) is preferable to option (1).
+\end{enumerate}
+
+\subsection*{c) Ridge regression and the one-SE rule \subpoints{5}}
+
+The full $10$-predictor design (now including both \texttt{free\_so2} and \texttt{total\_so2}, plus the polynomial and the interaction) is fed into ridge regression. The $10$-fold CV-MSE profile is:
+
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+  \draw[->] (0,0) -- (8.3,0) node[right] {$\log\lambda$};
+  \draw[->] (0,0) -- (0,6.3) node[above] {CV-MSE};
+
+  \draw[smooth, thick, blue] plot[domain=0.4:7.6] (\x, {2.6 + 0.035*(\x-1.8)*(\x-1.8) + 0.0025*(\x-1.8)*(\x-1.8)*(\x-1.8)});
+
+  \draw[dashed] (1.8,0) -- (1.8,5.6);
+  \node[above] at (1.8,5.6) {\small $\hat\lambda_{\min}$};
+  \draw[dashed] (3.6,0) -- (3.6,5.6);
+  \node[above] at (3.6,5.6) {\small $\hat\lambda_{1\mathrm{SE}}$};
+
+  \foreach \x in {0,2,4,6}
+    \draw (\x, 0.06) -- (\x, -0.06) node[below] {\x};
+  \foreach \y in {0,1,2,3,4,5,6}
+    \draw (-0.06, \y) -- (0.06, \y) node[left,xshift=-0.1cm] {\y};
+
+  \node[blue] at (6.3,4.6) {\small CV curve};
+\end{tikzpicture}
+\end{center}
+
+\noindent Test MSEs on the same $400$-observation test set:
+\begin{center}\small
+\begin{tabular}{lcc}
+\toprule
+ & \textbf{Test MSE} & \textbf{No.\ nonzero coef's} \\
+\midrule
+OLS (full $11$-coefficient model from part (a))    & $0.453$ & $11$ \\
+Ridge at $\hat\lambda_{\min}$                      & $0.430$ & $11$ \\
+Ridge at $\hat\lambda_{1\mathrm{SE}}$              & $0.435$ & $11$ \\
+Lasso at $\hat\lambda_{1\mathrm{SE}}^{\mathrm{lasso}}$ & $0.439$ & $6$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} Write down the ridge objective function explicitly, being careful about whether the intercept is penalised. Then state, in one sentence, why the predictors were standardised \emph{before} this fit.
+
+  \item \subpoints{2} State the one-standard-error rule precisely. Then give one bias--variance reason why ridge at $\hat\lambda_{\min}$ improves on OLS by about $0.023$ in test MSE on \emph{this} dataset, even though OLS is unbiased.
+
+  \item \subpoints{1} Among the four rows in the table above, which would you recommend to a colleague who values \emph{interpretability} and is comfortable trading a small amount of predictive accuracy for it? Justify in one short sentence.
+
+  \item \subpoints{1} Briefly explain why the \emph{lasso} CV curve would, in this dataset, plausibly produce a model that \emph{zeroes out one of} \texttt{free\_so2} or \texttt{total\_so2} while ridge does not.
+\end{enumerate}
+
+\subsection*{d) Gradient boosting for comparison \subpoints{3}}
+The course staff also fits a gradient-boosted tree model (interaction depth $d = 3$, shrinkage $\nu = 0.05$, $M$ chosen by $10$-fold CV; $M^\star \approx 1{,}400$). On the same $400$-observation test set it achieves test MSE $= 0.382$.
+\begin{enumerate}[(i)]
+  \item \subpoints{1} Compare the test MSEs --- boosting $0.382$, ridge $0.430$, OLS $0.453$ --- in one short sentence: what does the gap between boosting and the linear methods suggest about the structure of the relationship between predictors and \texttt{quality}?
+
+  \item \subpoints{1} A junior colleague proposes \emph{quadrupling} $M$ to $5{,}600$ ``just to be safe.'' Briefly say why this can hurt \emph{boosting}, even though it would not hurt a random forest.
+
+  \item \subpoints{1} You also want some interpretability from the boosted model. Name one diagnostic plot and one summary statistic you can extract from it; for each, state in one short sentence what question it answers and what question it does \emph{not} answer.
+\end{enumerate}
+
+\vfill\eject
+
+%=========================================================
+\section*{Problem 5 \points{26} --- Data analysis: customer churn (classification)}
+%=========================================================
+
+A telecom company has $n = 5{,}000$ customers; the binary response \texttt{churn} equals $1$ if the customer cancelled their subscription within the next six months. The available predictors are:
+\begin{itemize}
+  \item \texttt{tenure} --- months as a customer (continuous);
+  \item \texttt{monthly\_charges} --- current monthly bill, USD (continuous);
+  \item \texttt{senior} --- binary $0/1$ (senior citizen);
+  \item \texttt{contract} --- categorical, $3$ levels: \emph{month-to-month} (reference), \emph{1-year}, \emph{2-year};
+  \item \texttt{tech\_support} --- binary $0/1$ (subscribed to tech support add-on);
+  \item \texttt{online\_security} --- binary $0/1$.
+\end{itemize}
+
+Data are split $70/30$ into training ($3{,}500$) and test ($1{,}500$) sets. Among the $1{,}500$ test customers, $420$ truly churned and $1{,}080$ did not.
+
+\subsection*{a) Logistic regression with an interaction \subpoints{10}}
+
+A logistic regression model is fit on the training set with all six predictors above, plus an interaction between \texttt{tenure} and \texttt{contract}:
+$$\mathrm{logit}\bigl(\Pr(\texttt{churn} = 1 \mid X)\bigr) \;=\; \beta_0 + \beta_1 \texttt{tenure} + \beta_2 \texttt{monthly\_charges} + \beta_3 \texttt{senior} + \boldsymbol\beta_{\texttt{contract}}^\top \texttt{contract} + \boldsymbol\beta_{\texttt{ten:contract}}^\top (\texttt{tenure}\!:\!\texttt{contract}) + \beta_4 \texttt{tech\_support} + \beta_5 \texttt{online\_security}.$$
+The fitted output is:
+
+\begin{center}\small
+\begin{tabular}{lcccc}
+\toprule
+ & \textbf{Estimate} & \textbf{Std.\ Error} & \textbf{z-value} & \textbf{Pr($>|z|$)} \\
+\midrule
+(Intercept)                                          & $-0.40$  & $0.18$    & $-2.22$  & $0.026$  \\
+\texttt{tenure}                                      & $-0.060$ & $0.005$   & $-12.0$  & $<0.001$ \\
+\texttt{monthly\_charges}                            & $0.018$  & $0.003$   & $6.00$   & $<0.001$ \\
+\texttt{senior}                                      & $0.40$   & $0.12$    & $3.33$   & $<0.001$ \\
+\texttt{contract\_1year}                             & $-1.10$  & $0.20$    & $-5.50$  & $<0.001$ \\
+\texttt{contract\_2year}                             & $-2.00$  & $0.25$    & $-8.00$  & $<0.001$ \\
+\texttt{tenure:contract\_1year}                      & $0.025$  & $0.008$   & $3.13$   & $0.002$  \\
+\texttt{tenure:contract\_2year}                      & $0.040$  & $0.010$   & $4.00$   & $<0.001$ \\
+\texttt{tech\_support}                               & $-0.55$  & $0.13$    & $-4.23$  & $<0.001$ \\
+\texttt{online\_security}                            & $-0.45$  & $0.13$    & $-3.46$  & $<0.001$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent (Reference levels: \texttt{contract = month-to-month}; \texttt{senior = 0}; \texttt{tech\_support = 0}; \texttt{online\_security = 0}.)
+
+\begin{enumerate}[(i)]
+  \item \subpoints{2} For each additional month of \texttt{tenure}, by what factor do the odds of churn change for a customer on (a) a \emph{month-to-month} contract, (b) a \emph{1-year} contract, and (c) a \emph{2-year} contract? Give all three odds-multiplication factors, rounded to three decimals, and state the encoding assumption you have made explicit.
+
+  \item \subpoints{1} Briefly explain in one short sentence why $\hat\beta_{\texttt{tenure:contract\_2year}} = +0.040$ has a \emph{positive} sign even though $\hat\beta_{\texttt{tenure}} = -0.060$ is negative. (Don't just restate that ``it's an interaction.'')
+
+  \item \subpoints{3} Consider a specific customer: \texttt{tenure}\,$=12$ months, \texttt{monthly\_charges}\,$=85$ USD, \texttt{senior}\,$=0$, \texttt{contract}\,$=$\,\emph{month-to-month}, \texttt{tech\_support}\,$=0$, \texttt{online\_security}\,$=0$. Compute the predicted probability $\hat p$ of churn for this customer. Show the linear predictor $\hat\eta$ and the sigmoid step.
+
+  \item \subpoints{2} Repeat the calculation in (iii) for an \emph{otherwise identical} customer who is on a \emph{2-year} contract. \emph{Don't forget the interaction.} Then comment in one sentence on why the marketing team might use this comparison to argue for incentivising long contracts.
+
+  \item \subpoints{2} A classmate writes: ``\texttt{senior} has $p < 0.001$, so we can conclude that being a senior \emph{causes} customers to churn more often.'' Briefly state one reason that conclusion is unwarranted from this fitted model (the answer should appeal to the kind of model the prof flagged repeatedly --- ``fancy correlations, not causal'').
+\end{enumerate}
+
+\subsection*{b) LDA vs.\ logistic regression on the same data \subpoints{5}}
+
+LDA is also fit on the same training set, using the same six predictors. On the test set:
+
+\begin{center}\small
+\textbf{LDA confusion matrix} \\[0.3em]
+\begin{tabular}{c|cc}
+ & \textbf{Predicted: churn} & \textbf{Predicted: no churn} \\ \hline
+\textbf{Actual: churn}    & $180$ & $240$ \\
+\textbf{Actual: no churn} & $130$ & $950$ \\
+\end{tabular}
+\end{center}
+
+For the logistic regression of part (a), at threshold $\hat p = 0.5$, the corresponding test-set confusion matrix is:
+\begin{center}\small
+\begin{tabular}{c|cc}
+ & \textbf{Predicted: churn} & \textbf{Predicted: no churn} \\ \hline
+\textbf{Actual: churn}    & $210$ & $210$ \\
+\textbf{Actual: no churn} & $135$ & $945$ \\
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[(i)]
+  \item \subpoints{2} Compute the sensitivity, specificity, and test error rate of the LDA classifier and of the logistic-regression classifier (both at their default thresholds). Six numeric answers, two decimals each.
+
+  \item \subpoints{1} LDA and logistic regression are both linear classifiers in this problem. State the one substantive \emph{modelling} difference between them; if a student were to add a categorical variable with many levels like \texttt{contract} into the input vector, which of the two methods' assumptions is the more obviously violated, and why?
+
+  \item \subpoints{2} A clinician colleague hands you the same problem and proposes \emph{QDA} instead of LDA. Mention one situation in which QDA would be expected to outperform LDA on a problem like this, and one situation in which it would be expected to do \emph{worse}.
+\end{enumerate}
+
+\subsection*{c) A boosting classifier \subpoints{8}}
+The course staff fits an AdaBoost ensemble of $M = 500$ shallow trees (depth $d = 2$) on the training data, and separately a gradient-boosted classifier with $M = 800$ trees, depth $d = 3$, and shrinkage $\nu = 0.05$, $M$ chosen by $10$-fold CV. The gradient-boosting test-set confusion matrix at the default classification threshold is:
+
+\begin{center}\small
+\textbf{Gradient boosting confusion matrix (default threshold)} \\[0.3em]
+\begin{tabular}{c|cc}
+ & \textbf{Predicted: churn} & \textbf{Predicted: no churn} \\ \hline
+\textbf{Actual: churn}    & $260$ & $160$ \\
+\textbf{Actual: no churn} & $145$ & $935$ \\
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[(i)]
+  \item \subpoints{2} Briefly justify the choice of each of the gradient-boosting hyperparameters ($M = 800$, $d = 3$, $\nu = 0.05$) in one short sentence per parameter. ``Sufficiently many'' is not a sufficient justification for $M$; tie each choice to the role the parameter plays in the bias--variance behaviour of the ensemble.
+
+  \item \subpoints{2} Sketch the conceptual \emph{difference} between AdaBoost and gradient boosting in two short bullet points, each at most one sentence: one bullet for the AdaBoost mechanism (sample re-weighting + $\pm 1$ vote), one for the gradient-boosting mechanism (fit next tree to the negative gradient of the loss). Then state, in one extra sentence, in what sense AdaBoost can be viewed as a special case of gradient boosting.
+
+  \item \subpoints{2} Compute the sensitivity, specificity, and test error rate of the gradient-boosting classifier (three numeric answers, two decimals). Briefly compare it to the logistic regression from part (b), one short sentence, telling the marketing team which model you would recommend deploying \emph{if} the cost of failing to identify a churner (a false negative) is substantially larger than the cost of unnecessarily targeting a loyal customer.
+
+  \item \subpoints{2} The same boosted model is used to produce a \emph{variable-importance plot}; the top three predictors by permutation importance are \texttt{tenure}, \texttt{contract}, and \texttt{monthly\_charges}. State (a) what a permutation variable-importance plot \emph{is} mechanically (one short sentence), and (b) one specific question that this plot \emph{cannot} answer about \texttt{tenure} that a logistic-regression coefficient \emph{can}.
+\end{enumerate}
+
+\subsection*{d) Class imbalance and the metric debate \subpoints{3}}
+
+In the full population, only $28\%$ of customers churn within the six-month window. A junior colleague suggests using \emph{accuracy} (i.e.\ $1 -$\,test error rate) as the sole criterion for picking between the three classifiers above.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} A trivial classifier that always predicts ``no churn'' would have test error rate of approximately what value on this data set? Justify in one sentence.
+
+  \item \subpoints{2} Comment in two or three sentences on whether accuracy is the right criterion here. In particular: (a) name one alternative metric or pair of metrics that you would privilege, and (b) explain in one sentence \emph{which decision} that metric / pair of metrics would make easier than raw accuracy would (e.g.\ choosing between two classifiers that have nearly identical accuracy but very different false-negative rates).
+\end{enumerate}
+
+\vspace{1em}
+\hrule
+\vspace{0.5em}
+
+\noindent\textbf{End of exam.} \quad Total: $10 + 28 + 16 + 20 + 26 = 100$ points.
+
+\end{document}
