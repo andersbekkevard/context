@@ -1,0 +1,731 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumerate}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{tikz}
+
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+
+\newcommand{\points}[1]{\textbf{(#1\,\%)}}
+\newcommand{\subpoints}[1]{\textit{(#1\,\%)}}
+\newcommand{\sol}{\noindent\textbf{Solution}}
+
+\title{TMA4268 V2026 Mock Exam 9 --- Solutions\\[0.3em]
+\large}
+\author{Compiled for Anders Bekkevard\\[0.2em]
+\small Companion to \texttt{mock-exam-9.tex} (same directory).}
+\date{Mock for: May 18, 2026}
+
+\begin{document}
+\maketitle
+
+\noindent\textit{Worked-solution proposal in the style of the official Stefanie/Sara solutions to the
+2024 and 2025 finals. Point values appear in each subsection heading. Partial-credit hints are
+inline. Refer back to \texttt{mock-exam-9.tex} for the problem statements.}
+
+\vspace{0.6em}
+\hrule
+\vspace{1em}
+
+%=========================================================
+\section*{Problem 1 \points{10} --- Fill-in-the-blank concepts}
+%=========================================================
+
+\sol{} \emph{(1\,P per blank.)}
+
+\begin{enumerate}[(1)]
+  \item \textbf{regression}
+  \item \textbf{inference}
+  \item \textbf{linear}
+  \item \textbf{QDA}
+  \item \textbf{$L_2$ norm}
+  \item \textbf{permutation-based}
+  \item \textbf{$1/3$}
+  \item \textbf{simplest}
+  \item \textbf{exponential loss}
+  \item \textbf{second-order}
+\end{enumerate}
+
+\noindent\emph{Grading: 1\,P per correct blank, no partial credit for ``close'' alternatives.
+Common traps: (3) ``quadratic'' confuses LDA with QDA. (5) ``training loss'' is wrong --- every
+interpolating solution has zero training loss, the implicit-regularization claim is about which one
+of those zero-loss solutions SGD lands on. (6) ``Gini-based'' is the impurity importance the prof
+explicitly disrecommended. (7) $1/e\approx 0.368$ are out-of-bag; this rounds to $1/3$, not $2/3$
+($2/3$ would be the in-bag fraction). (10) ``first-order only'' is plain GBM, not XGBoost.}
+
+\vspace{0.6em}
+\hrule
+\vspace{1em}
+
+%=========================================================
+\section*{Problem 2 \points{28} --- Multiple choice, T/F, short numeric}
+%=========================================================
+
+\subsection*{a) Bias--variance, numerically \subpoints{3}}
+
+\sol{}
+\begin{enumerate}[(i)]
+  \item \subpoints{1} $\mathrm{Bias}^2[\hat f(x_0)] = (\mathbb E[\hat f(x_0)] - f(x_0))^2
+        = (4.6 - 5.0)^2 = (-0.4)^2 = \boxed{0.16}$.
+
+  \item \subpoints{1}
+        $\mathbb E[(y_0 - \hat f(x_0))^2]
+        = \mathrm{Bias}^2 + \mathrm{Var}[\hat f(x_0)] + \sigma^2
+        = 0.16 + 0.30 + 0.40 = \boxed{0.86}$.
+
+  \item \subpoints{1} For $\hat f'$: $\mathrm{Bias}^2 = (5.0 - 5.0)^2 = 0$,
+        $\mathrm{Var} = 0.85$, $\sigma^2 = 0.40$ (unchanged), so
+        $\mathbb E[(y_0 - \hat f'(x_0))^2] = 0 + 0.85 + 0.40 = 1.25$.
+        Since $0.86 < 1.25$, the original $\hat f$ is \textbf{better}: $\hat f'$ trades all of its
+        squared bias for too much variance. Classic ``small bias buys lots of variance'' regime ---
+        flexibility hurt here.
+\end{enumerate}
+
+\noindent\emph{See ISLP \S2.2.2 for the decomposition.}
+
+\subsection*{b) CV: bias, variance, and the one-SE rule \subpoints{4}}
+
+\sol{}
+\begin{enumerate}[(i)]
+  \item \subpoints{1} \textbf{True}. LOOCV trains on $n-1$ points, $5$-fold on $4n/5$. The closer
+        the training-set size to $n$, the smaller the systematic upward bias of the CV estimate of
+        test error at sample size $n$. (See ISLP \S5.1.4.)
+
+  \item \subpoints{1} \textbf{False}. The standard reversal: LOOCV has higher variance because the
+        $n$ training sets overlap almost completely, so the $n$ fold errors are strongly correlated
+        and their average has larger variance than the average of $5$ or $10$ much-less-correlated
+        fold errors. The ``average over more terms = lower variance'' intuition fails when the
+        terms are correlated.
+
+  \item \subpoints{2} Minimum CV-MSE is at $\lambda = 2$, $\mathrm{CV}^\star = 0.458$ with
+        $\widehat{\mathrm{SE}}^\star = 0.022$.
+        $$\mathrm{CV}^\star + \widehat{\mathrm{SE}}^\star = 0.458 + 0.022 = \boxed{0.480}.$$
+        Candidate $\lambda$ values whose CV-MSE is $\leq 0.480$:
+        $$\{\lambda = 0.50\ (0.471),\ \lambda = 1.00\ (0.464),\ \lambda = 2.00\ (0.458),\ \lambda = 5.00\ (0.466)\}.$$
+        ($\lambda = 0.10$ gives $0.485 > 0.480$ and $\lambda = 10$ gives $0.487 > 0.480$, both
+        excluded.) The one-SE rule picks the \emph{simplest} (here largest) such $\lambda$, so
+        $\hat\lambda_{1\mathrm{SE}} = \boxed{5.00}$.
+\end{enumerate}
+
+\subsection*{c) Backpropagation: what it is and what it is not \subpoints{3}}
+
+\sol{}
+\begin{enumerate}[(i)]
+  \item \subpoints{1} \textbf{False}. Backprop is the \emph{gradient-computation} algorithm; the
+        parameter-update rule is (mini-batch) SGD (or Adam, etc.). Without backprop you could still
+        in principle compute gradients (e.g.\ by finite differences); it would just be hopelessly
+        slow at NN scale.
+  \item \subpoints{1} \textbf{True}. Backpropagation = the chain rule applied to the computation
+        graph of the network, organised to reuse the pre-activations and activations stored on the
+        forward pass.
+  \item \subpoints{1} \textbf{False}. Plain backprop assumes a \emph{directed acyclic} graph;
+        cyclic / recurrent connections require \emph{backpropagation through time}, which unrolls
+        the recurrence into a feedforward DAG over time steps before applying the chain rule.
+\end{enumerate}
+
+\subsection*{d) Mini-batch SGD \subpoints{3}}
+
+\sol{}
+\begin{enumerate}[(i)]
+  \item \subpoints{1} \textbf{True}. With $\mathcal B$ a uniform random subset of size $m$,
+        $\mathbb E[\widehat{\nabla L}] = \tfrac{1}{N}\sum_{i=1}^N \nabla L_i$ = full-batch gradient,
+        and $\mathrm{Var}(\widehat{\nabla L})$ scales like $1/m$, strictly positive --- noisier
+        than the full-batch gradient.
+  \item \subpoints{1} $200{,}000 / 256 = 781.25$, so
+        $\boxed{781}$ full mini-batches per epoch, plus a final partial batch of $64$ examples
+        (whether to count this as an extra update is implementation-dependent; $\lfloor N/m \rfloor
+        = 781$ is the conventional answer, $\lceil N/m \rceil = 782$ is also acceptable).
+  \item \subpoints{1} \textbf{False}. Powers of two are a hardware convention (GPU memory access
+        and SIMD lane sizes prefer $2^k$); there is no statistical-theoretic optimum that selects
+        $32, 64, \dots, 512$.
+\end{enumerate}
+
+\subsection*{e) Dropout, label smoothing, and early stopping \subpoints{3}}
+
+\sol{} \emph{(1\,P per statement.)}
+\begin{enumerate}[(i)]
+  \item \textbf{False}. The course recommendation was $p \approx 0.2$ as a default. $p=0.5$ exists
+        but is far from a universal recommendation; smaller rates are used in serious applications,
+        not just toy examples.
+  \item \textbf{True}. Label smoothing replaces $(0,\dots,1,\dots,0)$ with
+        $(\varepsilon/(C-1),\dots,1-\varepsilon,\dots)$; one stated motivation is exactly that not
+        every training label is trustworthy, and softening the target discourages over-confident
+        logits.
+  \item \textbf{True}. Early stopping monitors validation error each epoch and returns the
+        parameters at the epoch where validation error first stopped improving (the validation
+        minimum), \emph{not} the final epoch's parameters (where training error is lowest but
+        validation error has typically started rising).
+\end{enumerate}
+
+\subsection*{f) XGBoost vs.\ vanilla gradient boosting \subpoints{3}}
+
+\sol{}
+\begin{enumerate}[(i)]
+  \item \textbf{True}. XGBoost uses the gradient \emph{and} the Hessian of the loss with respect to
+        the current ensemble predictions when choosing splits and computing leaf weights (a
+        second-order Newton step in function space); vanilla gradient boosting uses only the
+        gradient.
+  \item \textbf{True}. The XGBoost regularizer is
+        $\Omega(T) = \gamma|T| + \tfrac{1}{2}\lambda\|w\|_2^2 + \alpha\|w\|_1$,
+        where $w$ are the leaf-output values --- both an $L_1$ and an $L_2$ penalty on the leaves
+        plus a per-leaf complexity penalty $\gamma|T|$.
+  \item \textbf{False}. XGBoost still has a learning-rate / shrinkage hyperparameter $\eta$ (here
+        $\nu$); the Newton step is just the per-tree weight before shrinkage. Each tree's
+        contribution is still $\eta \cdot \hat T_m$, exactly as in vanilla GBM.
+\end{enumerate}
+
+\subsection*{g) Collinearity in regression output \subpoints{3}}
+
+\sol{}
+\begin{enumerate}[(i)]
+  \item \subpoints{1} \textbf{True}. Textbook collinearity fingerprint: $\hat\beta_4, \hat\beta_5$
+        have inflated standard errors (the diagonal of $\sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}$ is
+        large in the near-degenerate direction), so individual $t$-tests fail to reject, but the
+        joint partial-$F$ test on the pair (or the overall regression) remains highly significant
+        because the pair jointly explains $y$ --- the data just cannot allocate the effect between
+        the two near-proportional columns.
+  \item \subpoints{1} \textbf{True}. Adding a predictor mechanically increases $R^2$ (or leaves it
+        unchanged in the degenerate case), but the adjusted $R^2 = 1 - (1-R^2)\frac{n-1}{n-p-1}$
+        penalises $p$ and can drop when the gain in $R^2$ is too small to overcome the $p$
+        adjustment.
+  \item \subpoints{1} \textbf{False}. Standardisation rescales columns but does not change the
+        \emph{angle} between them; the rank of $\mathbf{X}^\top\mathbf{X}$ is unchanged. If two
+        columns are nearly proportional before standardisation they remain nearly proportional
+        after, and the matrix remains near-singular. (Standardisation matters for ridge/lasso and
+        for unit-free interpretation, not for the rank.)
+\end{enumerate}
+
+\subsection*{h) Logistic regression with an interaction \subpoints{3}}
+
+\sol{} The linear predictor is
+$\hat\eta = -10.0 + 2.5\,\texttt{bal} - 0.6\,\texttt{stu} + 0.3\,\texttt{bal}\cdot\texttt{stu}$.
+A unit increase in \texttt{balance} (i.e.\ $+\$1{,}000$) changes $\hat\eta$ by
+$\hat\beta_{\texttt{bal}} + \hat\beta_{\texttt{bal:stu}}\cdot\texttt{stu}$, so the odds multiply by
+$\exp(\hat\beta_{\texttt{bal}} + \hat\beta_{\texttt{bal:stu}}\cdot\texttt{stu})$.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} Non-student ($\texttt{stu}=0$):
+        odds factor $= \exp(2.5) \approx \boxed{12.18}$.
+  \item \subpoints{1} Student ($\texttt{stu}=1$):
+        odds factor $= \exp(2.5 + 0.3) = \exp(2.8) \approx \boxed{16.44}$.
+  \item \subpoints{1} \textbf{False}. The conclusion assumes no interaction. With the interaction,
+        the multiplicative effect of \texttt{student} at a given balance is
+        $\exp(-0.6 + 0.3\cdot\texttt{bal})$. At $\texttt{bal}=0$ this is $\exp(-0.6)\approx 0.55$,
+        but at $\texttt{bal}=5$ it is $\exp(-0.6 + 1.5) = \exp(0.9) \approx 2.46 > 1$. So at high
+        balance, being a student \emph{increases} odds of default. The sign of the
+        student effect depends on balance. (ISLP \S4.3.5 makes exactly this point on the same data.)
+\end{enumerate}
+
+\subsection*{i) Random forests and OOB \subpoints{3}}
+
+\sol{}
+\begin{enumerate}[(i)]
+  \item \subpoints{1} \textbf{True}. With $V(\bar T) = \rho\sigma^2 + (1-\rho)\sigma^2/B$, smaller
+        \texttt{mtry} forces splits to consider fewer features and decorrelates the trees (smaller
+        $\rho$), so averaging reduces variance more.
+  \item \subpoints{1} \textbf{False}. $B$ for a random forest is \emph{not} a CV-tuned
+        hyperparameter --- averaging only reduces variance, so test error is monotonically
+        non-increasing in $B$. Pick ``enough'' trees (typically $500$--$1000$). The contrast with
+        boosting is the key point: in boosting, $M$ \emph{is} a real tuning parameter because
+        boosting can overfit.
+  \item \subpoints{1} Each observation is OOB for a given tree with probability
+        $(1 - 1/n)^n \to 1/e \approx 0.368$. So
+        $1000 \times 0.368 \approx \boxed{368}$ observations are OOB for any given tree.
+\end{enumerate}
+
+\vspace{0.6em}
+\hrule
+\vspace{1em}
+
+%=========================================================
+\section*{Problem 3 \points{16} --- Theory, hand calculations, pseudocode}
+%=========================================================
+
+\subsection*{a) The mathy one --- LDA decision boundary derivation \subpoints{8}}
+
+\sol{} \subpoints{2} \textbf{(i) Deriving $\delta_k(x)$.} By Bayes' rule
+$\Pr(K=k\mid X=x) = \frac{\pi_k f_k(x)}{\sum_\ell \pi_\ell f_\ell(x)}$. The denominator does not
+depend on $k$, so $\arg\max_k \Pr(K=k\mid x) = \arg\max_k \pi_k f_k(x) = \arg\max_k \log(\pi_k f_k(x))$.
+
+Substituting the multivariate-normal density,
+\begin{align*}
+\log(\pi_k f_k(x)) &= \log\pi_k - \tfrac{p}{2}\log(2\pi) - \tfrac{1}{2}\log|\bm\Sigma|
+   - \tfrac{1}{2}(x-\bm\mu_k)^\top\bm\Sigma^{-1}(x-\bm\mu_k) \\
+&= \log\pi_k - \tfrac{p}{2}\log(2\pi) - \tfrac{1}{2}\log|\bm\Sigma|
+   - \tfrac{1}{2}x^\top\bm\Sigma^{-1}x
+   + x^\top\bm\Sigma^{-1}\bm\mu_k
+   - \tfrac{1}{2}\bm\mu_k^\top\bm\Sigma^{-1}\bm\mu_k.
+\end{align*}
+
+\textbf{Terms discarded.} The constants $-\tfrac{p}{2}\log(2\pi)$ and $-\tfrac{1}{2}\log|\bm\Sigma|$
+do not depend on $k$. \emph{Crucially}, the quadratic-in-$x$ term $-\tfrac{1}{2}x^\top\bm\Sigma^{-1}x$
+also does not depend on $k$ because $\bm\Sigma$ is shared. So when we compare $\delta_A(x)$ to
+$\delta_B(x)$, those three terms cancel and what remains is
+$$\delta_k(x) = x^\top\bm\Sigma^{-1}\bm\mu_k - \tfrac{1}{2}\bm\mu_k^\top\bm\Sigma^{-1}\bm\mu_k + \log\pi_k. \qquad\square$$
+
+\medskip
+\sol{} \subpoints{3} \textbf{(ii) Explicit boundary, equal priors.} With $\bm\Sigma = \mathbf I_2$,
+$\bm\Sigma^{-1} = \mathbf I_2$, so $x^\top\bm\Sigma^{-1}\bm\mu_k = x^\top\bm\mu_k$ and
+$\bm\mu_k^\top\bm\Sigma^{-1}\bm\mu_k = \|\bm\mu_k\|^2$.
+
+For class $A$: $\bm\mu_A = (0,1)^\top$, $\|\bm\mu_A\|^2 = 1$,
+$$\delta_A(x) = 0\cdot x_1 + 1\cdot x_2 - \tfrac{1}{2}\cdot 1 + \log(0.5) = x_2 - 0.5 + \log(0.5).$$
+
+For class $B$: $\bm\mu_B = (2,3)^\top$, $\|\bm\mu_B\|^2 = 4 + 9 = 13$,
+$$\delta_B(x) = 2x_1 + 3x_2 - \tfrac{1}{2}\cdot 13 + \log(0.5) = 2x_1 + 3x_2 - 6.5 + \log(0.5).$$
+
+Set $\delta_A = \delta_B$ (the $\log(0.5)$ cancels):
+\begin{align*}
+x_2 - 0.5 &= 2x_1 + 3x_2 - 6.5 \\
+0 &= 2x_1 + 2x_2 - 6 \\
+&\boxed{\;x_1 + x_2 = 3.\;}
+\end{align*}
+Sanity check: the boundary is the perpendicular bisector of the segment from $\bm\mu_A$ to
+$\bm\mu_B$, which passes through the midpoint $(1,2)$ and is orthogonal to
+$\bm\mu_B - \bm\mu_A = (2,2)$. The point $(1,2)$ satisfies $1+2=3$. \checkmark
+
+\medskip
+\sol{} \subpoints{1} \textbf{(iii) Where did the quadratic go?} The quadratic-in-$x$ term in
+$\log(\pi_k f_k(x))$ is $-\tfrac{1}{2}x^\top\bm\Sigma_k^{-1}x$. Under LDA $\bm\Sigma_k = \bm\Sigma$
+is shared across classes, so this term is class-independent and cancels in $\delta_A - \delta_B$.
+Relaxing to $\bm\Sigma_A \neq \bm\Sigma_B$ (QDA), the term becomes
+$-\tfrac{1}{2}x^\top(\bm\Sigma_A^{-1} - \bm\Sigma_B^{-1})x$ in the difference, which is generically
+nonzero quadratic in $x$ --- hence the QDA boundary is quadratic.
+
+\medskip
+\sol{} \subpoints{2} \textbf{(iv) Unequal priors.} Now $\log\pi_A = \log(0.8)$, $\log\pi_B = \log(0.2)$.
+Setting $\delta_A = \delta_B$:
+\begin{align*}
+x_2 - 0.5 + \log(0.8) &= 2x_1 + 3x_2 - 6.5 + \log(0.2) \\
+0 &= 2x_1 + 2x_2 - 6 + \log(0.2) - \log(0.8) \\
+2x_1 + 2x_2 &= 6 + \log(0.8) - \log(0.2) = 6 + \log(0.8/0.2) = 6 + \log 4 \\
+&\approx 6 + 1.386 = 7.386.
+\end{align*}
+Hence
+$$\boxed{\;x_1 + x_2 \approx 3.693.\;}$$
+
+\textbf{Plain English.} The boundary shifted by $\approx 0.693$ units (in the $(1,1)/\sqrt 2$
+direction) \emph{away from $\bm\mu_A$ and toward $\bm\mu_B$}. Because class $A$ is now four times
+more prevalent, the Bayes-optimal classifier assigns more of $\mathbb R^2$ to class $A$: it requires
+$x$ to be closer to $\bm\mu_B$ before predicting $B$. Class $A$ now occupies the larger region.
+
+\noindent\emph{Grading: 2\,P for the derivation of $\delta_k$ (must explicitly call out which terms
+are dropped and why $-\tfrac{1}{2}x^\top\Sigma^{-1}x$ is one of them). 3\,P for the explicit boundary
+in (ii) --- 1\,P for plugging $\Sigma=I$, 1\,P for setting $\delta_A=\delta_B$, 1\,P for simplifying
+to $x_1+x_2=3$. 1\,P for the QDA contrast in (iii). 2\,P for (iv): 1\,P for the numeric $c'$, 1\,P
+for naming the shift direction and the dominant region.}
+
+\subsection*{b) Pseudocode --- mini-batch SGD training of a feedforward NN \subpoints{5}}
+
+\sol{} \subpoints{4} \textbf{(i)} Network: $p$ inputs $\to$ $M$ hidden ReLU $\to$ scalar output.
+Parameters $\bm\theta = (W^{(1)}, b^{(1)}, w^{(2)}, b^{(2)})$ with shapes $W^{(1)} \in \mathbb R^{M\times p}$,
+$b^{(1)} \in \mathbb R^M$, $w^{(2)} \in \mathbb R^M$, $b^{(2)} \in \mathbb R$.
+
+\begin{quote}\small
+\textbf{Input:} training set $\{(x_i, y_i)\}_{i=1}^N$, mini-batch size $m$, learning rate $\eta$,
+epochs $E$.
+\begin{enumerate}
+  \item \textbf{Initialise} $\bm\theta$ randomly (e.g.\ Glorot / He: each weight in $W^{(1)}, w^{(2)}$
+        drawn iid from a scaled Gaussian; biases set to $0$).
+  \item \textbf{For} $e = 1, \dots, E$:
+    \begin{enumerate}
+      \item Randomly permute $\{1,\dots,N\}$ and partition into $\lfloor N/m \rfloor$ mini-batches
+            $\mathcal B_1, \dots, \mathcal B_{\lfloor N/m \rfloor}$ of size $m$ (plus optional
+            partial batch).
+      \item \textbf{For} each mini-batch $\mathcal B$:
+        \begin{enumerate}
+          \item \textbf{Forward pass} (per example $i \in \mathcal B$): compute and \emph{store}
+            \begin{align*}
+              z_i^{(1)} &= W^{(1)} x_i + b^{(1)}, \\
+              a_i^{(1)} &= \mathrm{ReLU}(z_i^{(1)}), \\
+              \hat y_i &= w^{(2)\top} a_i^{(1)} + b^{(2)}, \\
+              \ell_i &= \tfrac{1}{2}(y_i - \hat y_i)^2.
+            \end{align*}
+          \item \textbf{Backward pass}: using the stored $(x_i, z_i^{(1)}, a_i^{(1)}, \hat y_i)$,
+            compute $\nabla_{\bm\theta}\ell_i$ via backprop (chain rule).
+          \item \textbf{Aggregate} mini-batch gradient:
+            $\widehat{\nabla_{\bm\theta} L} = \frac{1}{m}\sum_{i\in\mathcal B}\nabla_{\bm\theta}\ell_i$.
+          \item \textbf{Update}: $\bm\theta \leftarrow \bm\theta - \eta\cdot\widehat{\nabla_{\bm\theta} L}$.
+        \end{enumerate}
+    \end{enumerate}
+  \item \textbf{Return} $\bm\theta$.
+\end{enumerate}
+\end{quote}
+
+\textbf{Unbiasedness.} If $\mathcal B$ is a uniform random subset of size $m$ from
+$\{1,\dots,N\}$, then
+$\mathbb E[\widehat{\nabla_{\bm\theta} L}] = \frac{1}{N}\sum_{i=1}^N \nabla_{\bm\theta}\ell_i$,
+which is exactly the full-batch gradient. So mini-batch SGD takes \emph{noisy but unbiased} steps
+along the population gradient direction.
+
+\medskip
+\sol{} \subpoints{1} \textbf{(ii)} \textbf{Headline NN fact.} In the over-parameterized regime
+($p \gg n$, many global minima of the training loss), mini-batch SGD has an \emph{implicit
+regularization} effect: among all parameter vectors that interpolate the training data, it tends
+to pick (approximately) the one with smallest $L_2$ norm, which is empirically what generalizes
+well. (The prof's ``super weird'' fact.)
+
+\noindent\emph{Grading: 4\,P for (i): 0.5\,P initialisation, 0.5\,P epoch loop, 0.5\,P random
+mini-batching, 1\,P forward pass with explicit storage of intermediates, 0.5\,P backward pass step,
+0.5\,P mini-batch averaging, 0.5\,P SGD update. Deduct 0.5 if the unbiasedness remark is omitted.}
+
+\subsection*{c) Bootstrap by hand --- the OOB probability \subpoints{3}}
+
+\sol{}
+\begin{enumerate}[(i)]
+  \item \subpoints{1} A single draw from $\{1,\dots,n\}$ misses observation $i$ with probability
+        $1 - 1/n$, and the $n$ draws are independent (with-replacement), so
+        $$\Pr(i \notin \text{boot sample}) = (1 - 1/n)^n.$$
+        At $n=5$: $(4/5)^5 = 4^5/5^5 = 1024/3125 = \boxed{0.328}$ (to three decimals).
+  \item \subpoints{1} As $n \to \infty$:
+        $$(1 - 1/n)^n = \exp\bigl(n\log(1 - 1/n)\bigr) \to \exp\bigl(n\cdot(-1/n)\bigr) = e^{-1} \approx 0.368,$$
+        using $\log(1 - 1/n) = -1/n + O(1/n^2)$. Hence
+        $\Pr(i\in\text{boot sample}) \to 1 - 1/e \approx \boxed{0.632}$.
+  \item \subpoints{1} Each observation is OOB for roughly $1/e \approx 1/3$ of the $B$ trees in
+        the random forest, so for that observation we have $\approx B/3$ trees that never saw it
+        --- we can predict on it using only those trees and treat it as a held-out test point.
+        Averaging over all $n$ observations gives an OOB error estimate that is asymptotically
+        equivalent to a CV error estimate, but with \emph{zero} extra computational cost: it's a
+        free by-product of fitting the forest.
+\end{enumerate}
+
+\vspace{0.6em}
+\hrule
+\vspace{1em}
+
+%=========================================================
+\section*{Problem 4 \points{22} --- Data analysis: fuel-economy regression}
+%=========================================================
+
+\subsection*{a) OLS with B-spline + categorical \subpoints{8}}
+
+\sol{} \subpoints{1} \textbf{(i) Parameter count.} Intercept ($1$) + B-spline basis on \texttt{weight}
+($4$) + \texttt{displacement} ($1$) + \texttt{horsepower} ($1$) + \texttt{year} ($1$) + two
+\texttt{origin} dummies ($2$) $= \boxed{10}$. Residual d.f.\ $= 292 - 10 = 282$, matches the
+printout. \checkmark
+
+\medskip
+\sol{} \subpoints{2} \textbf{(ii) Reference level and the intercept.} (a) \textbf{Reference}: the
+omitted level, \texttt{origin\_American}. (b) The intercept $\hat\beta_0 = 29.40$ estimates the
+mean predicted \texttt{mpg} for an American car ($\texttt{origin\_European} = \texttt{origin\_Japanese} = 0$)
+with all standardized continuous predictors at $0$ and all B-spline basis values at $0$. (c) With
+three dummies plus an intercept, the $1 + 3 = 4$ columns would sum to the all-ones column for the
+\texttt{origin} encoding, so they are linearly dependent --- $\mathbf{X}^\top\mathbf{X}$ becomes
+singular and the model is unidentifiable. (``Dummy-variable trap.'')
+
+\medskip
+\sol{} \subpoints{2} \textbf{(iii) Japanese-car prediction at all-zero standardized predictors.}
+With $\texttt{origin\_Japanese}=1$, all other dummies $=0$, all standardized continuous predictors
+$=0$ and all B-spline basis values $=0$:
+\begin{align*}
+\widehat{\texttt{mpg}} &= 29.40 + 0\cdot(\text{B-spline}) + 0\cdot\texttt{disp} + 0\cdot\texttt{hp}
+                          + 0\cdot\texttt{year} + 1.95\cdot 0 + 2.30\cdot 1 \\
+   &= 29.40 + 2.30 = \boxed{31.70} \text{ mpg}.
+\end{align*}
+
+\medskip
+\sol{} \subpoints{2} \textbf{(iv) What the four B-spline coefficients mean.} They are the loadings
+on the four basis functions $b_1, \dots, b_4$ that together specify the smooth piecewise-cubic
+curve $\hat f(\texttt{weight}) = \sum_{j=1}^4 \hat\beta_j b_j(\texttt{weight})$ --- the shape of
+that curve, not any car's predicted \texttt{mpg}. The claim ``\texttt{weight} has \emph{no effect}
+on \texttt{mpg}'' is $\hat\beta_1 = \hat\beta_2 = \hat\beta_3 = \hat\beta_4 = 0$ simultaneously,
+which is most naturally tested by a \emph{joint} ($F$ or partial-$F$) test on the four B-spline
+coefficients rather than four separate $t$-tests.
+
+\medskip
+\sol{} \subpoints{1} \textbf{(v) The displacement $p$-value.} ``$p = 0.732$, drop it'' is sloppy
+because of collinearity: $\mathrm{cor}(\texttt{weight}, \texttt{displacement}) \approx 0.93$, so the
+displacement column carries almost no information \emph{beyond} the B-spline of \texttt{weight}
+already in the model --- the large $p$-value reflects redundancy, not absence of effect. Marginally
+(without \texttt{weight}), \texttt{displacement} would be highly significant.
+
+\subsection*{b) Diagnosing collinearity, and a fix \subpoints{4}}
+
+\sol{} \subpoints{2} \textbf{(i) Two symptoms together.} (1) The \texttt{displacement} \emph{row}:
+small estimate ($-0.130$) with a relatively large standard error ($0.380$), giving $t=-0.34$ and
+$p=0.732$. (2) The header datum: $\mathrm{cor}(\texttt{weight}, \texttt{displacement})=0.93$.
+Mechanism: $\mathrm{Var}(\hat\beta_j) = \sigma^2[(\mathbf X^\top\mathbf X)^{-1}]_{jj}$, and the
+near-degeneracy in the \texttt{weight}\,/\,\texttt{displacement} subspace produces a tiny eigenvalue
+of $\mathbf X^\top\mathbf X$ in that direction, so the corresponding $[(\mathbf X^\top\mathbf X)^{-1}]_{jj}$
+is huge --- the SE inflates exactly as observed. Either symptom alone could have other causes;
+together they are diagnostic.
+
+\medskip
+\sol{} \subpoints{1} \textbf{(ii)} Training MSE essentially unchanged ($8.13 \to 8.14$), test MSE
+essentially unchanged ($8.95 \to 8.92$): the collinearity was hurting \emph{interpretation}
+(which of \texttt{weight} and \texttt{displacement} carries the effect), not \emph{prediction}
+($\hat y$ is well-determined in the subspace the data span).
+
+\medskip
+\sol{} \subpoints{1} \textbf{(iii)} Prefer PCR over ridge when the goal is \emph{compression} ---
+you genuinely believe the predictors share a low-rank latent structure (here, ``car size'' carried
+by PC1) and want to model in that lower-dimensional space directly. Prefer ridge when the goal is
+\emph{shrinkage} on the original predictors --- you want to keep their unit interpretation but
+trade some bias for variance reduction along the collinear directions.
+
+\subsection*{c) PCR with cross-validation \subpoints{6}}
+
+\sol{} \subpoints{2} \textbf{(i) One-SE rule for PCR.} CV-min is at $M = 4$, $\mathrm{CV}^\star = 8.51$,
+$\widehat{\mathrm{SE}}^\star = 0.80$. Bound:
+$$8.51 + 0.80 = \boxed{9.31}.$$
+Candidates with $\mathrm{CV}(M) \leq 9.31$: $M = 2$ ($9.40$? --- $9.40 > 9.31$ by $0.09$, so
+\emph{excluded}; $M=3$ ($8.55$) and $M=4$ ($8.51$), both included. (At $M=2$ the CV-MSE is $9.40$,
+which is just \emph{above} the bound $9.31$ by $0.09$; this is within rounding of the bound, and
+many graders would treat $M=2$ as borderline. The conservative reading is that only $M\in\{3,4\}$
+qualifies.) Among the qualifying $M$ values the simplest (smallest) is $\boxed{M = 3}$.
+
+\noindent\emph{Grading: 1\,P for the bound, 1\,P for $M=3$. Accept $M=2$ if the student notes that
+$9.40$ is within rounding of $9.31$ and treats it as borderline.}
+
+\medskip
+\sol{} \subpoints{2} \textbf{(ii) Interpretation of $\phi_1$.} The first PC loads roughly equally
+and positively on \texttt{weight, displacement, horsepower} (all $\approx +0.55$), and weakly
+negatively on \texttt{year} ($-0.20$). Plain English: PC1 is essentially a ``\textbf{car-size /
+engine-power} axis'' --- big cars are heavy, large-engined, and powerful (the three positively
+correlated variables, $\mathrm{cor}(\texttt{weight},\texttt{disp})=0.93$,
+$\mathrm{cor}(\texttt{weight},\texttt{hp})=0.86$), and they tend to be slightly older models
+(the small negative loading on \texttt{year}). The near-equal $+0.55$ on the three size variables
+is exactly what one expects when three predictors are nearly collinear --- they all move together
+along the same dominant direction of variation.
+
+\medskip
+\sol{} \subpoints{2} \textbf{(iii) Training-MSE-selected PCR.} (a) Adding components only adds
+flexibility (each $z_M$ is a new regressor), so training MSE is monotonically non-increasing in
+$M$ and is minimised at the maximum $M = 4$. (b) Picking $M=4$ here would discard the whole point
+of PCR: $M = 4$ regresses on a full-rank rotation of the predictors and is essentially equivalent
+to OLS on the original four predictors --- with the same collinearity problem that motivated PCR in
+the first place. CV would have flagged this; training MSE never will.
+
+\subsection*{d) GAM with smoothing splines \subpoints{4}}
+
+\sol{}
+\begin{enumerate}[(i)]
+  \item \subpoints{1} (a) \textbf{Smaller edf $\Leftrightarrow$ larger $\lambda$}: more penalty
+        smooths $f_j$ harder, shrinking it toward a linear fit (edf $\to 1$) or further toward a
+        constant. (b) $\widehat{\mathrm{edf}}(f_3) = 1.0$ implies the LOOCV-optimal smoothing on
+        \texttt{year} reduces $f_3$ to a \emph{linear} function (a straight-line trend in
+        \texttt{year}); the smoothing spline collapses to its single linear basis function.
+
+  \item \subpoints{1} OLS $8.95 >$ ridge $8.60 >$ GAM $7.95 >$ boosted trees $6.10$. The clear
+        ordering says there is meaningful \emph{nonlinearity} in the predictor--response
+        relationship (GAM beats OLS), and meaningful \emph{interaction structure} beyond pure
+        additivity (boosted trees beat GAM by a substantial $\sim 23\%$).
+
+  \item \subpoints{1} ``Always use boosting'' ignores interpretability. The GAM gives a fitted
+        univariate effect $f_j$ per predictor that you can plot and explain to stakeholders; the
+        boosted ensemble of $\sim 2000$ trees is a black box (you need partial-dependence /
+        permutation importance to claw back any insight). For prediction-only deployments the
+        boosting wins; for inference / communication the GAM is preferable.
+
+  \item \subpoints{1} Boosting is \emph{sequential} --- each tree fits the residuals of the
+        current ensemble --- so with far too many trees the ensemble starts fitting noise and test
+        MSE \emph{rises}. The $M^\star = 2000$ was chosen by CV at the bias--variance optimum;
+        going to $M = 20{,}000$ overshoots into overfit. In a random forest, by contrast,
+        averaging only reduces variance so test MSE is monotonically non-increasing in $B$.
+\end{enumerate}
+
+\vspace{0.6em}
+\hrule
+\vspace{1em}
+
+%=========================================================
+\section*{Problem 5 \points{24} --- Data analysis: bank loan default classification}
+%=========================================================
+
+\subsection*{a) Logistic regression, odds and a categorical contrast \subpoints{7}}
+
+\sol{} \subpoints{2} \textbf{(i) Odds factor for $+1$ standardized FICO.}
+$\exp(\hat\beta_{\texttt{fico}}) = \exp(-1.20) \approx \boxed{0.301}$. The sign matches the economic
+prior: higher FICO score (better credit history) is associated with \emph{lower} odds of default ---
+each one-SD increase in FICO multiplies the odds by $\approx 0.30$, i.e.\ cuts them by roughly
+$70\%$.
+
+\medskip
+\sol{} \subpoints{2} \textbf{(ii) Linear predictor and predicted probability.} Renter (reference) so
+both home-ownership dummies are $0$:
+\begin{align*}
+\hat\eta &= -1.80 + (-1.20)\cdot(-1) + 0.85\cdot(+1) + 0.40\cdot 0 + (-0.20)\cdot 0 + 0 + 0 \\
+   &= -1.80 + 1.20 + 0.85 = \boxed{0.25}.
+\end{align*}
+Sigmoid step:
+$$\hat p = \sigma(0.25) = \frac{1}{1 + e^{-0.25}} = \frac{1}{1 + 0.7788} = \frac{1}{1.7788}
+   \approx \boxed{0.562}.$$
+
+\medskip
+\sol{} \subpoints{2} \textbf{(iii) Owner vs.\ renter.} On the \emph{odds} scale the contrast is
+$\exp(\hat\beta_{\texttt{own}} - 0) = \exp(-0.90) \approx \boxed{0.41}$: the owner's odds are
+$0.41\times$ the renter's. On the \emph{probability} scale this does \emph{not} reduce to
+``$\hat p_{\text{own}} = 0.41 \hat p_{\text{rent}}$'' in general. If $\hat p$ is the renter's
+predicted probability, then
+$$\hat p_{\text{own}} = \frac{0.41\cdot \hat p / (1-\hat p)}{1 + 0.41\cdot\hat p/(1-\hat p)}
+   = \frac{0.41\,\hat p}{(1-\hat p) + 0.41\,\hat p} = \frac{0.41\,\hat p}{1 - 0.59\,\hat p},$$
+which only equals $0.41\,\hat p$ when $\hat p$ is very small (so $1 - 0.59\hat p \approx 1$). At
+$\hat p = 0.562$ (part (ii)), the owner's probability is $0.41\cdot 0.562/(1 - 0.59\cdot 0.562)
+\approx 0.230/0.668 \approx 0.345$, not $0.41\cdot 0.562 \approx 0.230$.
+
+\noindent\emph{Grading: 1\,P for the odds factor $0.41$, 1\,P for noting that the probability does
+not scale by $0.41$ (the standard ``odds-multiplier vs.\ probability-multiplier'' trap).}
+
+\medskip
+\sol{} \subpoints{1} \textbf{(iv) Causal claim, rebutted.} A logistic regression on observational
+loan-application data is a model of \emph{conditional association}, not causation --- the prof's
+recurring ``fancy correlations, not causal'' point. People who own their home outright are
+systematically different from renters in many unobserved ways (wealth, income stability, age,
+geography), so any of those confounders could explain the lower default odds. Inferring
+\emph{causation} would require a randomised intervention on home-ownership or much richer
+confounder adjustment.
+
+\subsection*{b) LDA vs.\ QDA --- explicit discriminant computation \subpoints{6}}
+
+\sol{} \subpoints{2} \textbf{(i) LDA classification.} With $\hat{\bm\Sigma} = \mathbf I_2$,
+$\hat{\bm\Sigma}^{-1} = \mathbf I_2$, so $x^\top\hat{\bm\Sigma}^{-1}\hat{\bm\mu}_k = x^\top\hat{\bm\mu}_k$
+and $\hat{\bm\mu}_k^\top\hat{\bm\Sigma}^{-1}\hat{\bm\mu}_k = \|\hat{\bm\mu}_k\|^2$.
+Test point $x_0 = (-0.5,\, 0.8)^\top$.
+
+\textbf{Class 0:} $\hat{\bm\mu}_0 = (0.20,\, -0.30)$, $\|\hat{\bm\mu}_0\|^2 = 0.04 + 0.09 = 0.13$,
+$\log(0.80) \approx -0.223$.
+\begin{align*}
+\delta_0(x_0) &= (-0.5)(0.20) + (0.8)(-0.30) - \tfrac{1}{2}(0.13) + (-0.223) \\
+   &= -0.100 - 0.240 - 0.065 - 0.223 \\
+   &= \boxed{-0.628}.
+\end{align*}
+
+\textbf{Class 1:} $\hat{\bm\mu}_1 = (-0.80,\, 1.20)$, $\|\hat{\bm\mu}_1\|^2 = 0.64 + 1.44 = 2.08$,
+$\log(0.20) \approx -1.609$.
+\begin{align*}
+\delta_1(x_0) &= (-0.5)(-0.80) + (0.8)(1.20) - \tfrac{1}{2}(2.08) + (-1.609) \\
+   &= 0.400 + 0.960 - 1.040 - 1.609 \\
+   &= \boxed{-1.289}.
+\end{align*}
+
+$\delta_0 = -0.628 > \delta_1 = -1.289$, so LDA predicts $\boxed{\text{class } 0 \text{ (no default)}}$.
+
+\medskip
+\sol{} \subpoints{2} \textbf{(ii) QDA classification.}
+$\hat{\bm\Sigma}_0 = \mathbf I_2$ so $|\hat{\bm\Sigma}_0| = 1$, $\log|\hat{\bm\Sigma}_0| = 0$,
+$\hat{\bm\Sigma}_0^{-1} = \mathbf I_2$.
+$\hat{\bm\Sigma}_1 = \mathrm{diag}(1.5, 0.5)$ so $|\hat{\bm\Sigma}_1| = 0.75$,
+$\log|\hat{\bm\Sigma}_1| = \log(1.5) + \log(0.5) \approx 0.405 - 0.693 = -0.288$,
+$\hat{\bm\Sigma}_1^{-1} = \mathrm{diag}(1/1.5, 1/0.5) = \mathrm{diag}(2/3,\, 2)$.
+
+\textbf{Class 0.} $x_0 - \hat{\bm\mu}_0 = (-0.5 - 0.20,\, 0.8 - (-0.30)) = (-0.70,\, 1.10)$:
+\begin{align*}
+\delta_0^{\text{QDA}}(x_0) &= -\tfrac{1}{2}(0) - \tfrac{1}{2}\bigl((-0.70)^2 + (1.10)^2\bigr) + \log(0.80) \\
+   &= 0 - \tfrac{1}{2}(0.49 + 1.21) - 0.223 \\
+   &= -\tfrac{1}{2}(1.70) - 0.223 = -0.850 - 0.223 = \boxed{-1.073}.
+\end{align*}
+
+\textbf{Class 1.} $x_0 - \hat{\bm\mu}_1 = (-0.5 - (-0.80),\, 0.8 - 1.20) = (0.30,\, -0.40)$:
+\begin{align*}
+\delta_1^{\text{QDA}}(x_0) &= -\tfrac{1}{2}(-0.288)
+   - \tfrac{1}{2}\!\left[\frac{(0.30)^2}{1.5} + \frac{(-0.40)^2}{0.5}\right] + \log(0.20) \\
+   &= 0.144 - \tfrac{1}{2}\!\left[\frac{0.09}{1.5} + \frac{0.16}{0.5}\right] - 1.609 \\
+   &= 0.144 - \tfrac{1}{2}(0.06 + 0.32) - 1.609 \\
+   &= 0.144 - 0.190 - 1.609 = \boxed{-1.655}.
+\end{align*}
+
+$\delta_0^{\text{QDA}} = -1.073 > \delta_1^{\text{QDA}} = -1.655$, so QDA also predicts
+$\boxed{\text{class } 0 \text{ (no default)}}$.
+
+\medskip
+\sol{} \subpoints{1} \textbf{(iii) Linear vs.\ conic.} Under LDA the shared $\hat{\bm\Sigma}$ makes
+the term $-\tfrac{1}{2}x^\top\hat{\bm\Sigma}^{-1}x$ class-independent, so it cancels in
+$\delta_0 - \delta_1$ and the boundary is linear in $x$. Under QDA each class has its own
+$\hat{\bm\Sigma}_k$, so the $-\tfrac{1}{2}x^\top\hat{\bm\Sigma}_k^{-1}x$ term differs between classes
+and $\delta_0 - \delta_1$ retains a quadratic form $x^\top(\hat{\bm\Sigma}_1^{-1} - \hat{\bm\Sigma}_0^{-1})x/2$
+--- a conic section.
+
+\medskip
+\sol{} \subpoints{1} \textbf{(iv) Effect of changing $\hat\pi_0$.} The priors enter $\delta_k$ only
+through $\log\hat\pi_k$. Going from $\hat\pi_0 = 0.80$ to $\hat\pi_0 = 0.50$ changes
+$\log(\hat\pi_0/\hat\pi_1)$ from $\log 4 \approx 1.386$ to $\log 1 = 0$, removing the
+$\approx 1.386$ ``boost'' that class $0$ previously enjoyed. The boundary shifts toward $\hat{\bm\mu}_0$
+(class $0$'s region shrinks, class $1$'s region grows) by $\approx 1.386$ in the relevant scalar
+projection.
+
+\subsection*{c) XGBoost: the regularization knobs \subpoints{8}}
+
+\sol{} \subpoints{2} \textbf{(i) Which two derivatives.} XGBoost uses both the \emph{first}
+derivative (gradient $g_i = \partial L/\partial\hat y_i$) and the \emph{second} derivative
+(Hessian $h_i = \partial^2 L/\partial\hat y_i^2$) of the loss with respect to the current
+ensemble's predictions; vanilla GBM uses only the gradient. Geometrically, the gradient gives a
+\emph{linear} (first-order) approximation to the loss --- equivalent to a gradient-descent step
+in function space --- whereas adding the Hessian gives a \emph{quadratic} (second-order, Newton)
+approximation. The Newton step automatically scales the per-tree update by local curvature, so it
+takes more accurate steps near the optimum and is less reliant on a tiny learning rate.
+
+\medskip
+\sol{} \subpoints{3} \textbf{(ii) Three XGBoost regularizers.}
+\begin{itemize}
+  \item $\bm{\lambda}$ ($L_2$ on leaf weights): exactly analogous to ridge regression on linear
+        regression coefficients --- shrinks every leaf output smoothly toward zero, reducing
+        variance of the per-tree fit.
+  \item $\bm{\alpha}$ ($L_1$ on leaf weights): analogous to lasso --- can drive small leaf outputs
+        \emph{exactly} to zero, neutralising leaves whose contribution doesn't survive the
+        $L_1$-corner geometry.
+  \item $\bm{\gamma|T|}$ (per-leaf complexity penalty): analogous to cost-complexity pruning ---
+        adding a leaf must reduce the loss by more than $\gamma$ to be accepted, so $\gamma$
+        controls how aggressively splits are kept or pruned.
+\end{itemize}
+
+\medskip
+\sol{} \subpoints{2} \textbf{(iii) Doubling $M$ and $\eta$.}
+\begin{itemize}
+  \item (a) The ``preserve bias--variance balance'' claim is wrong. In boosting $M$ and $\eta$ are
+        \emph{coupled}: smaller $\eta$ at fixed $M$ adds less per tree, smaller total cumulative
+        effect; the folklore is that the cumulative ensemble strength is approximately
+        $\eta\cdot M$. Doubling \emph{both} more than doubles the effective ensemble's
+        cumulative correction, dramatically increasing variance and risk of overfit, not
+        ``preserving the balance.''
+  \item (b) The diagnostic is a \textbf{CV-error curve as a function of $M$} (with $\eta$ fixed at
+        $0.05$): plot CV-MSE / CV-AUC versus $M$, identify the validation minimum (or the elbow);
+        pick $M$ there. The early-stopping signal --- ``test error has started to rise'' --- is
+        the standard way to choose $M$ in boosting.
+\end{itemize}
+
+\medskip
+\sol{} \subpoints{1} \textbf{(iv)} \textbf{True}. The $L_1$ corner geometry of $\alpha\|w\|_1$ on
+the leaf-weight vector $w$ can drive individual leaf weights to exactly zero (a leaf whose
+optimal $w_j$ would have small magnitude in the absence of $\alpha$ gets clipped to $0$), which is
+on top of the $\gamma|T|$ leaf-count penalty (the latter penalises the \emph{number} of leaves;
+$\alpha$ shrinks the \emph{values} on those leaves and can sparsify them exactly).
+
+\subsection*{d) Sensitivity, specificity, ROC, and class imbalance \subpoints{3}}
+
+\sol{} \subpoints{1} \textbf{(i) Trivial baseline.} ``Always predict no-default'' is correct on all
+$1200$ non-defaulters and wrong on all $300$ defaulters:
+$$\text{accuracy}_{\text{trivial}} = \frac{1200}{1500} = \boxed{0.80}.$$
+The three classifier rows show accuracies of $0.84$, $0.85$, $0.85$ --- only $0.04$--$0.05$ above
+the trivial baseline. Accuracy compresses sensitivity and specificity into a single scalar that is
+dominated by the majority class, so it cannot distinguish a model that catches more defaulters
+(XGBoost, sens $0.55$) from one that catches almost none but is slightly more careful with the
+non-defaulters (LDA, sens $0.36$). Use sensitivity / specificity (or ROC-AUC) instead.
+
+\medskip
+\sol{} \subpoints{2} \textbf{(ii) Deployment recommendation.} Among the three classifiers at the
+default threshold $\hat p = 0.5$, only candidates with specificity $\geq 0.90$ are admissible: all
+three pass. Sensitivities are $0.40$ (logistic) $< 0.55$ (XGBoost), with LDA's $0.36$ lowest. The
+clear winner under the stated objective is \textbf{XGBoost}: highest sensitivity ($0.55$) while
+keeping specificity $0.93 \geq 0.90$, plus highest AUC ($0.88$ vs.\ $0.83, 0.81$) for further
+threshold flexibility.
+
+\textbf{Threshold adjustment.} Lowering the XGBoost threshold below $\hat p = 0.5$ classifies more
+applicants as positive (defaulter), which raises the true-positive rate (\emph{sensitivity goes
+up}) at the cost of more false positives (\emph{specificity goes down}). This is exactly the
+trade-off encoded by the ROC curve. The team would move the threshold downward until specificity
+hits its $0.90$ floor, harvesting the maximum sensitivity along the way.
+
+\vspace{1em}
+\hrule
+\vspace{0.5em}
+
+\noindent\textbf{End of solution proposal.}\quad Total awarded: $10 + 28 + 16 + 22 + 24 = 100$ points.
+
+\end{document}
