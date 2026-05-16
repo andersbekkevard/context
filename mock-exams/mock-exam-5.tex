@@ -1,0 +1,435 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumerate}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{tikz}
+
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+
+\newcommand{\points}[1]{\textbf{(#1\,\%)}}
+\newcommand{\subpoints}[1]{\textit{(#1\,\%)}}
+
+\title{TMA4268 Statistical Learning V2026\\[0.3em]
+\large Mock Exam 5 (estimated final exam)}
+\author{Compiled by Claude for Anders Bekkevard\\[0.2em]
+\small Based on the Apr 28 exam-review lecture, the 2023--2025 finals, and the prof's stated scope rule}
+\date{Mock for: May 18, 2026 (real exam date)}
+
+\begin{document}
+\maketitle
+
+\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+\textbf{Instructions.}
+\begin{itemize}
+  \item \textbf{Duration:} 4 hours. \textbf{Open book.} Permitted aids: ISLP (2nd ed.), one handwritten A5 sheet of notes, calculator.
+  \item \textbf{No code required.} Write answers as math, plain English, or pseudocode. Do \emph{not} memorize R/Python package names.
+  \item \textbf{Show your work} --- partial credit is generously available, including when calculator slips spoil a numeric answer but the setup is correct.
+  \item \textbf{No negative scoring.} Always answer, even when unsure.
+  \item \textbf{If a question seems broken or ambiguous}, state the assumption you are making in one short sentence and proceed.
+  \item Total: \textbf{100 points = 100\,\%}. Per-problem weights given in parentheses.
+\end{itemize}}}
+
+\vspace{0.6em}
+\noindent\textbf{Grade boundaries (NTNU \emph{prosentvurderingsmetoden}, advisory):}
+A: 89--100\,\% \quad B: 77--88\,\% \quad C: 65--76\,\% \quad D: 53--64\,\% \quad E: 41--52\,\% \quad F: 0--40\,\%.
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+%=========================================================
+\section*{Problem 1 \points{10} --- Fill-in-the-blank concepts}
+%=========================================================
+
+\noindent Read the passage and pick the best word or short phrase for each blank from the choices in parentheses. Each correct fill is worth $1$\,\%.
+
+\bigskip
+
+In multiple linear regression, when two or more predictors are highly correlated with each other, the matrix $\mathbf X^\top \mathbf X$ becomes near-singular and the variances of the estimated coefficients $\hat{\boldsymbol\beta}$ inflate. This phenomenon is known as \underline{\hspace{2.5cm}}\,(1) (\emph{collinearity} / \emph{heteroscedasticity} / \emph{leverage} / \emph{influence}). Two classical remedies discussed in this course are ridge regression, which adds a penalty proportional to the squared L2 norm of the coefficient vector and is therefore also called a \underline{\hspace{2.5cm}}\,(2) (\emph{shrinkage} / \emph{forward-selection} / \emph{decorrelation} / \emph{bagging}) method, and principal components regression, which first replaces the correlated predictors by their orthogonal \underline{\hspace{2.5cm}}\,(3) (\emph{principal components} / \emph{residuals} / \emph{Tukey directions} / \emph{leverages}) and then regresses on a subset of those.
+
+In neural networks, fitting a feedforward model with many more parameters than training observations is only possible because we always combine training with one or more forms of regularization. Common explicit choices include L1 / L2 weight decay; randomly zeroing a fraction of node outputs at each training iteration, called \underline{\hspace{2.5cm}}\,(4) (\emph{dropout} / \emph{pruning} / \emph{pooling} / \emph{thinning}); halting training when validation error stops improving, called \underline{\hspace{2.5cm}}\,(5) (\emph{early stopping} / \emph{warm starting} / \emph{tolerance gating} / \emph{patience tuning}); and softening one-hot targets so the network does not become over-confident, called \underline{\hspace{2.5cm}}\,(6) (\emph{label smoothing} / \emph{soft margins} / \emph{class reweighting} / \emph{batch normalization}). In addition, training the network with stochastic gradient descent on \underline{\hspace{2.5cm}}\,(7) (\emph{mini-batches} / \emph{full passes} / \emph{leave-one-out folds} / \emph{out-of-bag samples}) provides an \emph{implicit} regularization effect for free, which is one of the reasons over-parameterized networks generalize.
+
+For estimating the test error of a chosen procedure honestly while also using cross-validation to \emph{select} a hyperparameter, the recommended approach is to run two layers of cross-validation, with outer folds for assessment and inner folds for selection. This procedure is known as \underline{\hspace{2.5cm}}\,(8) (\emph{nested cross-validation} / \emph{stratified CV} / \emph{leave-one-out CV} / \emph{bootstrap aggregation}).
+
+In ensemble methods for classification, \underline{\hspace{2.5cm}}\,(9) (\emph{AdaBoost} / \emph{bagging} / \emph{random forests} / \emph{LDA}) builds a sequence of weak classifiers, each fit on training data that have been \emph{re-weighted} so that observations the previous classifiers have misclassified receive higher weight. A modern unifying view interprets this and related methods as fitting a tree at each step to the \emph{negative gradient} of a chosen differentiable loss, giving the general framework called \underline{\hspace{2.5cm}}\,(10) (\emph{gradient boosting} / \emph{coordinate descent} / \emph{Newton stepping} / \emph{posterior averaging}).
+
+\vfill\eject
+
+%=========================================================
+\section*{Problem 2 \points{28} --- Multiple choice, true/false, and short numeric}
+%=========================================================
+
+For each subproblem, write \emph{True} or \emph{False} for each statement (or the requested numeric answer). You may add a one-sentence justification, but only if you think it helps; do not write essays.
+
+\subsection*{a) Bias--variance decomposition and double descent \subpoints{3}}
+Mark each statement true or false.
+\begin{enumerate}[(i)]
+  \item In the decomposition $\mathbb{E}[(y_0 - \hat f(x_0))^2] = \mathrm{Bias}^2 + \mathrm{Var} + \sigma^2$, the irreducible term $\sigma^2$ can be made smaller by collecting more training data.
+  \item In the over-parameterized regime ($p \gg n$), the bias--variance decomposition no longer holds as an algebraic identity, which is why test MSE can exhibit a second descent past the interpolation peak.
+  \item For a fixed problem and a fixed model class, switching from no regularization to a well-tuned regularizer typically lowers variance \emph{more} than it raises bias, and therefore lowers expected test error.
+\end{enumerate}
+
+\subsection*{b) Cross-validation and its pitfalls \subpoints{3}}
+Mark each statement true or false.
+\begin{enumerate}[(i)]
+  \item Leave-one-out CV (LOOCV) has \emph{lower} bias than $10$-fold CV as an estimator of test error, because each LOOCV fit uses $n-1$ observations.
+  \item In nested cross-validation, the \emph{inner} folds are used to select a hyperparameter (or model), and the \emph{outer} folds are used to give an honest estimate of the chosen procedure's test error.
+  \item For temporally autocorrelated data, randomly assigning observations to $k$ folds gives an \emph{honest} estimate of test error provided $k$ is large enough (say $k \ge 10$).
+\end{enumerate}
+
+\subsection*{c) Bootstrap, standard errors and CIs \subpoints{3}}
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} For a training sample of size $n = 10$, what is the probability (rounded to three decimals) that a given original observation is included in a particular bootstrap sample?
+  \item \subpoints{1} You wish to obtain a $95\%$ confidence interval for a scalar statistic $\hat\theta$ using $B = 1000$ bootstrap resamples. Specify the \emph{percentile} confidence interval as two specific quantiles of the bootstrap distribution $\{\hat\theta^*_1, \ldots, \hat\theta^*_B\}$.
+  \item \subpoints{1} Mark each of the following true or false. (A) The bootstrap standard error of $\hat\theta$ is the sample standard deviation across the bootstrap replicates $\hat\theta^*_b$. (B) The bootstrap can correct for the bias of $\hat\theta$ as an estimator of $\theta$. (C) Bootstrap resamples should be drawn \emph{without} replacement to avoid duplicating observations.
+\end{enumerate}
+
+\subsection*{d) Neural network regularization \subpoints{3}}
+Mark each statement true or false.
+\begin{enumerate}[(i)]
+  \item In a feedforward network trained with dropout, the dropout layer is active during both training and test-time prediction.
+  \item Label smoothing replaces hard one-hot targets like $(0, 0, 1, 0)$ with softened targets like $(\varepsilon/3, \varepsilon/3, 1-\varepsilon, \varepsilon/3)$ for a small $\varepsilon > 0$; this tends to make the model less over-confident on the training set and improves generalization in classification tasks.
+  \item Adding L2 weight decay always decreases the network's training error.
+\end{enumerate}
+
+\subsection*{e) Mini-batch SGD and backpropagation \subpoints{3}}
+Mark each statement true or false.
+\begin{enumerate}[(i)]
+  \item Backpropagation is an algorithm that \emph{computes} the gradient of the loss with respect to the network's parameters, by applying the chain rule and reusing intermediate values stored during the forward pass.
+  \item Mini-batch stochastic gradient descent yields, on each update, an \emph{unbiased} estimator of the full-data gradient.
+  \item In typical practice, batch sizes for mini-batch SGD are chosen as powers of two (e.g. $32, 128, 256$) primarily for hardware-efficiency reasons rather than statistical reasons.
+\end{enumerate}
+
+\subsection*{f) Boosting: AdaBoost, gradient boosting, XGBoost \subpoints{4}}
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} In the AdaBoost algorithm, at iteration $m$ the weak classifier $G_m(x)$ has weighted misclassification rate $\mathrm{err}_m = 0.20$ on the current sample weights $w_i$. Using $\alpha_m = \log\frac{1-\mathrm{err}_m}{\mathrm{err}_m}$, compute the resulting classifier weight $\alpha_m$ (two decimals).
+  \item \subpoints{1} For a gradient boosting model with squared-error loss $L(y, f) = \tfrac{1}{2}(y - f)^2$, give the negative gradient $-\partial L / \partial f$ evaluated at the current ensemble's prediction $\hat f^{(m-1)}(x_i)$, and identify what familiar quantity it equals.
+  \item \subpoints{2} Mark each statement true or false. (A) In gradient boosting, the number of trees $M$ is a real tuning parameter; using $M$ much larger than necessary will typically over-fit. (B) For a random forest, in contrast, the number of trees $B$ is \emph{not} a serious tuning parameter and one can simply ``use enough.'' (C) Decreasing the learning rate $\nu$ in gradient boosting usually \emph{decreases} the number of trees $M$ needed to reach a good fit. (D) XGBoost augments vanilla gradient boosting with second-order (Newton-like) gradient information and with L1 / L2 penalties on the leaf weights.
+\end{enumerate}
+
+\subsection*{g) Logistic regression: odds, log-odds, interaction \subpoints{3}}
+\begin{enumerate}[(i)]
+  \item \subpoints{1} A logistic regression of \texttt{chd} ($1$ = developed coronary heart disease, $0$ = did not) on \texttt{ldl} (LDL cholesterol, mmol/L) reports $\hat\beta_{\text{ldl}} = 0.30$. By what factor (two decimals) do the odds of CHD change for a $2$\,mmol/L increase in LDL, holding other predictors fixed?
+  \item \subpoints{1} A model includes the predictors $\texttt{age}$ and $\texttt{smoker}$ and an interaction $\texttt{age:smoker}$. The fitted coefficients are $\hat\beta_{\text{age}} = 0.04$ and $\hat\beta_{\text{age:smoker}} = 0.03$. By what factor (two decimals) do the odds of the event change for a one-year increase in \texttt{age} for a \emph{smoker}?
+  \item \subpoints{1} True or false: ``In a binary logistic regression with a one-unit increase in $x_j$, the \emph{probability} of $Y = 1$ changes by approximately $\hat\beta_j$.''
+\end{enumerate}
+
+\subsection*{h) PCA: explained variance and loadings \subpoints{3}}
+You perform PCA on $p = 6$ \emph{standardized} variables and obtain eigenvalues
+$$\lambda_1 = 2.7,\ \lambda_2 = 1.5,\ \lambda_3 = 0.9,\ \lambda_4 = 0.5,\ \lambda_5 = 0.3,\ \lambda_6 = 0.1.$$
+\begin{enumerate}[(i)]
+  \item \subpoints{1} What is the total variance in the standardized data, and what proportion of this total variance is explained by the first two principal components combined (two decimals)?
+  \item \subpoints{1} How many principal components must be retained to capture at least $90\%$ of the total variance? Show your cumulative sum.
+  \item \subpoints{1} True or false: ``Because the variables were standardized before PCA, the loadings $\phi_{jk}$ for the $k$-th principal component depend only on $\mathbf X$ and not on the response $y$.''
+\end{enumerate}
+
+\subsection*{i) Discriminant analysis and splines \subpoints{3}}
+\begin{enumerate}[(i)]
+  \item \subpoints{1} True or false: ``Under the LDA assumption that the class-conditional densities share a common covariance matrix $\boldsymbol\Sigma$, the resulting Bayes-optimal decision boundary between two classes is linear in $\mathbf x$.''
+  \item \subpoints{1} True or false: ``The QDA decision boundary is \emph{quadratic} in $\mathbf x$ because the class-specific covariances $\boldsymbol\Sigma_k$ make the term $\mathbf x^\top \boldsymbol\Sigma_k^{-1} \mathbf x$ in the discriminant fail to cancel between classes.''
+  \item \subpoints{1} A cubic regression spline (using the truncated-power basis, with a global intercept) on a single predictor $x$ has $K$ interior knots. How many parameters does this spline term consume, \emph{including} the global intercept of the model?
+\end{enumerate}
+
+\vfill\eject
+
+%=========================================================
+\section*{Problem 3 \points{16} --- Theory and pseudocode}
+%=========================================================
+
+\subsection*{a) The mathy one --- bias--variance decomposition \subpoints{7}}
+
+Let
+$$y_0 = f(x_0) + \varepsilon, \qquad \mathbb{E}[\varepsilon] = 0, \quad \mathrm{Var}(\varepsilon) = \sigma^2, \quad \varepsilon \perp x_0,$$
+and let $\hat f$ be a model fit on a random training set $\mathcal D$, independent of $\varepsilon$. All expectations and variances below are jointly over the random training set $\mathcal D$ \emph{and} the noise $\varepsilon$ at the test point.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{2} Show that
+  $$\mathbb{E}\!\left[(y_0 - \hat f(x_0))^2\right] \;=\; \mathbb{E}\!\left[(f(x_0) - \hat f(x_0))^2\right] \;+\; \sigma^2.$$
+  Be explicit about why the cross term vanishes.
+  \item \subpoints{3} Starting from the right-hand side of (i) and the trick of adding and subtracting $\mathbb{E}[\hat f(x_0)]$, derive
+  $$\boxed{\;\mathbb{E}\!\left[(y_0 - \hat f(x_0))^2\right] \;=\; \bigl(f(x_0) - \mathbb{E}[\hat f(x_0)]\bigr)^{\!2} \;+\; \mathrm{Var}\!\left(\hat f(x_0)\right) \;+\; \sigma^2.\;}$$
+  Identify each term with its standard name (\emph{Bias}$^2$, \emph{Variance}, \emph{Irreducible error}) and explain in one sentence which randomness each term captures.
+  \item \subpoints{1} A lasso regression is fit with $\lambda$ chosen by CV. Compared with ordinary least squares on the same data, the lasso typically has \emph{higher} bias and \emph{lower} variance. In one short sentence each, explain (a) why the bias is generally higher under lasso, and (b) why the variance is generally lower.
+  \item \subpoints{1} A student writes: ``Bias--variance is just a \emph{trade-off}; you cannot improve both at the same time.'' Briefly explain why this assertion is too strong in light of regularization and the over-parameterized / double-descent regime. (One short sentence.)
+\end{enumerate}
+
+\subsection*{b) Cross-validation: pseudocode and nested CV \subpoints{4}}
+
+\begin{enumerate}[(i)]
+  \item \subpoints{2} Write \emph{pseudocode} (math, plain English, or programming-language-agnostic notation) for $k$-fold cross-validation of a regression model $\mathcal M$ at a fixed hyperparameter setting $\theta$, returning the cross-validation MSE estimate $\widehat{\mathrm{CV}}_k(\theta)$. Make explicit (a) how the data is partitioned, (b) what is held out and what is fit at each iteration, and (c) how the per-fold errors are aggregated.
+  \item \subpoints{1} Using the pseudocode in (i) as a primitive, write a short description of how to use it to \emph{choose} a hyperparameter $\theta$ from a finite grid $\theta \in \{\theta_1, \ldots, \theta_G\}$, and how to use the chosen $\theta$ to produce a final fitted model.
+  \item \subpoints{1} A colleague proposes the following pipeline: ``Step 1: compute the marginal correlation of each of $p = 5000$ predictors with the response $y$ on the full training set; keep the top $25$. Step 2: run $10$-fold CV on a logistic regression fit using just those $25$. The CV misclassification rate is my honest estimate of test error.'' Briefly state why this estimate is biased \emph{downward}, and describe in one or two sentences the corrected procedure.
+\end{enumerate}
+
+\subsection*{c) Bootstrap by hand \subpoints{3}}
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} Show that, for a sample of size $n$, the probability that a specific observation $i$ is \emph{not} included in a given bootstrap sample is $(1 - 1/n)^n$, and that this probability tends to $1/e \approx 0.368$ as $n \to \infty$. (One line of reasoning is sufficient.)
+  \item \subpoints{1} You wish to estimate the standard error of the sample median $\hat\theta = \widehat{\mathrm{med}}(X_1, \ldots, X_n)$, for which no clean closed-form expression is available. Describe in $3$--$4$ short sentences (or short pseudocode lines) the bootstrap procedure that estimates $\widehat{\mathrm{SE}}_{\text{boot}}(\hat\theta)$ using $B$ resamples. Be explicit about whether resampling is with or without replacement.
+  \item \subpoints{1} A logistic regression of \texttt{default} on \texttt{balance} produces $\hat\beta_{\text{balance}} = 0.005$ with closed-form $\widehat{\mathrm{SE}}(\hat\beta) = 0.00020$ from the inverse Fisher information. A bootstrap with $B = 5000$ resamples gives $\widehat{\mathrm{SE}}_{\text{boot}}(\hat\beta) = 0.00050$. Give \emph{one} substantive reason (one sentence) why these two SEs can disagree.
+\end{enumerate}
+
+\subsection*{d) Hierarchical clustering by hand \subpoints{2}}
+
+Four observations have the following Euclidean dissimilarity matrix:
+$$D = \begin{pmatrix}
+0 & 2 & 8 & 7 \\
+2 & 0 & 9 & 6 \\
+8 & 9 & 0 & 3 \\
+7 & 6 & 3 & 0 \\
+\end{pmatrix}.$$
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} Run agglomerative hierarchical clustering with \emph{complete} linkage. List the two earliest fusions (which observations / clusters fuse, and at what height).
+  \item \subpoints{1} At what height does the \emph{final} fusion (all four observations joined into one cluster) occur under complete linkage? Show the inter-cluster distance you used.
+\end{enumerate}
+
+\vfill\eject
+
+%=========================================================
+\section*{Problem 4 \points{22} --- Data analysis: energy use of homes
+%=========================================================
+}
+
+An energy utility collects $n = 800$ single-family houses' annual heating cost \texttt{cost} (in $1000$\,EUR). The available predictors are:
+\begin{itemize}
+  \item \texttt{area} --- floor area (m$^2$, continuous);
+  \item \texttt{age} --- age of the house (years, continuous);
+  \item \texttt{insulation} --- categorical, $3$ levels: \emph{poor} (reference), \emph{standard}, \emph{premium};
+  \item \texttt{heatpump} --- binary $0/1$: 1 if the house uses a heat pump, 0 otherwise;
+  \item \texttt{rooms} --- number of rooms (count).
+\end{itemize}
+
+The data are split $600 / 200$ into a training and a test set. All continuous predictors are standardized to mean $0$, standard deviation $1$ \emph{before} fitting any of the models below; the standardized variables are denoted $\widetilde{\texttt{area}}, \widetilde{\texttt{age}}, \widetilde{\texttt{rooms}}$ (so that one unit in the model corresponds to one standard deviation in the raw variable).
+
+\subsection*{a) Linear regression with a polynomial and an interaction \subpoints{7}}
+
+The course staff first fit, on the training set, the model
+$$\texttt{cost} \;\sim\; \widetilde{\texttt{area}} \;+\; \widetilde{\texttt{age}} \;+\; \widetilde{\texttt{age}}^2 \;+\; \texttt{insulation} \;+\; \texttt{heatpump} \;+\; \widetilde{\texttt{area}}\!:\!\texttt{heatpump} \;+\; \widetilde{\texttt{rooms}}.$$
+The fitted output is:
+
+\begin{center}\small
+\begin{tabular}{lcccc}
+\toprule
+ & \textbf{Estimate} & \textbf{Std.\ Error} & \textbf{t-value} & \textbf{Pr($>|t|$)} \\
+\midrule
+(Intercept)                         & $2.80$   & $0.10$  & $28.00$   & $<0.001$ \\
+$\widetilde{\texttt{area}}$         & $0.80$   & $0.09$  & $8.89$    & $<0.001$ \\
+$\widetilde{\texttt{age}}$          & $-0.05$  & $0.10$  & $-0.50$   & $0.617$  \\
+$\widetilde{\texttt{age}}^2$        & $0.30$   & $0.06$  & $5.00$    & $<0.001$ \\
+\texttt{insulation\_standard}       & $-0.40$  & $0.10$  & $-4.00$   & $<0.001$ \\
+\texttt{insulation\_premium}        & $-0.80$  & $0.12$  & $-6.67$   & $<0.001$ \\
+\texttt{heatpump}                   & $-0.60$  & $0.15$  & $-4.00$   & $<0.001$ \\
+$\widetilde{\texttt{area}}\!:\!\texttt{heatpump}$ & $-0.50$  & $0.12$  & $-4.17$  & $<0.001$ \\
+$\widetilde{\texttt{rooms}}$        & $0.10$   & $0.09$  & $1.11$    & $0.268$  \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Multiple $R^2 = 0.71$,\quad Adjusted $R^2 = 0.706$.\quad Residual standard error: $0.45$ on $591$ d.f.
+
+\medskip
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} How many parameters (including the intercept) does this model estimate? Verify the count against the printed residual degrees of freedom.
+  \item \subpoints{2} For a house \emph{without} a heat pump, by how much does an increase of one standard deviation in $\widetilde{\texttt{area}}$ change the predicted \texttt{cost} (in $1000$\,EUR), holding all other predictors fixed? Repeat the calculation for a house \emph{with} a heat pump, and briefly comment on the sign of the difference.
+  \item \subpoints{2} Consider two houses, both at $\widetilde{\texttt{area}} = 0$, $\widetilde{\texttt{rooms}} = 0$, \texttt{insulation} = \emph{poor}, $\texttt{heatpump} = 0$. House $A$ has $\widetilde{\texttt{age}} = -1$ (one SD younger than average); house $B$ has $\widetilde{\texttt{age}} = +2$ (two SDs older than average). Compute the predicted \texttt{cost} of each (two numerics, $1000$\,EUR). Briefly comment on what the $\widetilde{\texttt{age}}^2$ term implies about the marginal effect of age at older versus younger houses.
+  \item \subpoints{1} A classmate writes: ``$\widetilde{\texttt{age}}$ has a $p$-value of $0.617$, so we should drop it from the model.'' In one or two sentences, explain why this is wrong given the rest of the fitted model. (Hint: marginal effect of $\widetilde{\texttt{age}}$ depends on both $\hat\beta_{\widetilde{\text{age}}}$ and $\hat\beta_{\widetilde{\text{age}}^2}$, and this course follows the hierarchical-principle convention.)
+  \item \subpoints{1} The main-effect coefficient on \texttt{heatpump} is $\hat\beta_{\text{heatpump}} = -0.60$. A classmate concludes: ``On average, houses with a heat pump cost \texttt{€}\,$600$ per year less to heat than houses without.'' Briefly explain why this is misleading \emph{given the interaction in the model}, and write down the actual change in predicted \texttt{cost} (in $1000$\,EUR) of installing a heat pump for a house at standardized area $\widetilde{\texttt{area}} = +1$.
+\end{enumerate}
+
+\subsection*{b) Collinearity diagnosis \subpoints{4}}
+
+In a separate, more realistic version of the same dataset, the predictors $\widetilde{\texttt{area}}$ and $\widetilde{\texttt{rooms}}$ are found to have empirical correlation $r = 0.92$. The course staff fit two models, both \emph{without} the interaction and quadratic terms, on the same training set:
+\begin{center}\small
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Model} & \textbf{$\hat\beta_{\widetilde{\text{area}}}$} & \textbf{SE} & \textbf{$\hat\beta_{\widetilde{\text{rooms}}}$} & \textbf{SE} & \textbf{Adjusted $R^2$} \\
+\midrule
+$\widetilde{\texttt{area}}$ only        & $0.90$ & $0.06$ & --- & --- & $0.43$ \\
+$\widetilde{\texttt{area}} + \widetilde{\texttt{rooms}}$ & $0.55$ & $0.15$ & $0.42$ & $0.16$ & $0.44$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} Briefly identify the \emph{two} numerical symptoms in the second row of the table above that are characteristic of collinearity.
+  \item \subpoints{1} Explain in one short sentence the source of this behavior in terms of $(\mathbf X^\top \mathbf X)^{-1}$ and the fact that $\widetilde{\texttt{area}}$ and $\widetilde{\texttt{rooms}}$ are nearly the same column of the design matrix.
+  \item \subpoints{1} Briefly comment on whether \emph{predictions} of $\texttt{cost}$ from the second model are also expected to be unstable, given that the joint contribution $\hat\beta_{\widetilde{\text{area}}} \cdot \widetilde{\texttt{area}} + \hat\beta_{\widetilde{\text{rooms}}} \cdot \widetilde{\texttt{rooms}}$ is well-determined.
+  \item \subpoints{1} Name two methods discussed in this course that one could apply to address the collinearity \emph{without} simply dropping one of the two predictors, and for each one state in one short sentence the trade-off it makes (in terms of bias, variance, or interpretability).
+\end{enumerate}
+
+\subsection*{c) Lasso with $10$-fold CV \subpoints{5}}
+
+The same $p = 8$ \emph{standardized} predictors from part (a) (including the $\widetilde{\texttt{age}}^2$ and the $\widetilde{\texttt{area}}\!:\!\texttt{heatpump}$ interaction) are now fed into a lasso regression. A $10$-fold cross-validation gives the CV-MSE profile
+
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+  \draw[->] (0,0) -- (8.3,0) node[right] {$\log\lambda$};
+  \draw[->] (0,0) -- (0,6.3) node[above] {CV-MSE};
+
+  \draw[smooth, thick, blue] plot[domain=0.3:7.7] (\x, {1.6 + 0.04*(\x-2.4)*(\x-2.4) + 0.002*(\x-2.4)*(\x-2.4)*(\x-2.4)});
+
+  \draw[dashed] (2.4,0) -- (2.4,5.6);
+  \node[above] at (2.4,5.6) {\small $\hat\lambda_{\min}$};
+  \draw[dashed] (4.1,0) -- (4.1,5.6);
+  \node[above] at (4.1,5.6) {\small $\hat\lambda_{1\mathrm{SE}}$};
+
+  \foreach \x in {0,2,4,6}
+    \draw (\x, 0.06) -- (\x, -0.06) node[below] {\x};
+  \foreach \y in {0,1,2,3,4,5,6}
+    \draw (-0.06, \y) -- (0.06, \y) node[left,xshift=-0.1cm] {\y};
+
+  \node[blue] at (6.3,4.4) {\small CV curve};
+\end{tikzpicture}
+\end{center}
+
+\noindent The corresponding test MSEs on the held-out $200$ observations:
+\begin{center}\small
+\begin{tabular}{lcc}
+\toprule
+ & \textbf{Test MSE} & \textbf{No.\ of nonzero coefs (excl.\ intercept)} \\
+\midrule
+OLS (full model from (a))    & $0.205$ & $8$ \\
+Lasso at $\hat\lambda_{\min}$            & $0.196$ & $6$ \\
+Lasso at $\hat\lambda_{1\text{SE}}$      & $0.203$ & $4$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} The \texttt{insulation} factor has been entered into the design matrix as two dummies (\texttt{insulation\_standard} and \texttt{insulation\_premium}). Briefly explain why the resulting lasso path is \emph{not} invariant to the choice of reference level (i.e.\ which level is dropped). What practical consequence does this have for interpretation when one of the dummies is shrunk to exactly zero?
+  \item \subpoints{1} State the \emph{one-standard-error rule} precisely, and give one reason a practitioner might choose $\hat\lambda_{1\mathrm{SE}}$ over $\hat\lambda_{\min}$.
+  \item \subpoints{1} On this dataset, lasso at $\hat\lambda_{\min}$ improves test MSE from $0.205$ to $0.196$, a small improvement, and drops 2 of 8 coefficients. Interpret in bias--variance terms: what does the small improvement plus a modest reduction in active predictors suggest about the importance of the dropped predictors?
+  \item \subpoints{2} Suppose the practitioner cares primarily about \emph{interpretability} and would prefer a simpler model. Which of $\hat\lambda_{\min}$ and $\hat\lambda_{1\mathrm{SE}}$ would you recommend, and why? Give a concrete claim about the trade-off the recommendation makes in test MSE terms (refer to the numbers in the table).
+\end{enumerate}
+
+\subsection*{d) Gradient boosting interpretation and pseudocode \subpoints{6}}
+
+A gradient-boosted regression tree (squared-error loss) is fit on the same training data, achieving test MSE $= 0.151$, lower than the lasso.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{2} Write \emph{pseudocode} for the squared-error gradient-boosting algorithm, with $B$ trees, learning rate $\nu$ and tree depth $d$ as hyperparameters. Make explicit (a) the initialization, (b) the per-iteration step (a fit-residuals view is fine for squared-error loss), and (c) the final returned function. Two short sentences of accompanying explanation are fine if helpful.
+  \item \subpoints{1} For \emph{squared-error} loss, derive in one or two lines that fitting a tree to the current residuals $r^{(m)}_i = y_i - \hat f^{(m-1)}(x_i)$ is equivalent to fitting a tree to the negative gradient of the loss with respect to the function values $\hat f^{(m-1)}(x_i)$.
+  \item \subpoints{1} Briefly describe how you would tune the three boosting hyperparameters $(B, d, \nu)$ in practice, and tie each one's role to a single sentence about bias--variance.
+  \item \subpoints{1} A junior colleague proposes setting $B = 10{,}000$ ``just to be safe.'' Is this a good idea? Why or why not?
+  \item \subpoints{1} The gradient boosting test MSE ($0.151$) is substantially below the OLS / lasso test MSE ($\approx 0.20$). Briefly interpret what this gap suggests about the structure of the underlying relationship between predictors and \texttt{cost}, and name one diagnostic plot you would compute from the boosted ensemble to recover some \emph{interpretability}.
+\end{enumerate}
+
+\vfill\eject
+
+%=========================================================
+\section*{Problem 5 \points{24} --- Data analysis: hospital-readmission classification}
+%=========================================================
+
+A regional hospital records $n = 3000$ patients discharged after a cardiac event and follows each for $90$ days. The binary response \texttt{readmit} is $1$ if the patient is readmitted within $90$ days and $0$ otherwise. The available predictors are:
+\begin{itemize}
+  \item \texttt{age} --- age in years (continuous);
+  \item \texttt{los} --- length of initial hospital stay (days, continuous);
+  \item \texttt{prev\_adm} --- number of prior admissions in the past year (count, $0$--$10$);
+  \item \texttt{diabetes} --- binary $0/1$ indicator;
+  \item \texttt{insulin} --- binary $0/1$ indicator (insulin therapy during stay);
+  \item \texttt{sex} --- binary $0/1$ (female $= 0$ reference, male $= 1$).
+\end{itemize}
+
+The data are split $70/30$ into training ($2100$) and test ($900$) sets. Among the test set, $180$ patients are truly readmitted and $720$ are not.
+
+\subsection*{a) Logistic regression with an interaction \subpoints{7}}
+
+A logistic regression model is fit on the training set:
+$$\text{logit}\bigl(\Pr(\texttt{readmit} = 1 \mid X)\bigr) \;=\; \beta_0 + \beta_1 \texttt{age} + \beta_2 \texttt{los} + \beta_3 \texttt{prev\_adm} + \beta_4 \texttt{diabetes} + \beta_5 \texttt{insulin} + \beta_6 (\texttt{diabetes}\!:\!\texttt{insulin}) + \beta_7 \texttt{sex}.$$
+
+\begin{center}\small
+\begin{tabular}{lcccc}
+\toprule
+ & \textbf{Estimate} & \textbf{Std.\ Error} & \textbf{z-value} & \textbf{Pr($>|z|$)} \\
+\midrule
+(Intercept)            & $-4.20$   & $0.45$    & $-9.33$   & $<0.001$ \\
+\texttt{age}           & $0.030$   & $0.005$   & $6.00$    & $<0.001$ \\
+\texttt{los}           & $0.080$   & $0.020$   & $4.00$    & $<0.001$ \\
+\texttt{prev\_adm}     & $0.40$    & $0.06$    & $6.67$    & $<0.001$ \\
+\texttt{diabetes}      & $0.10$    & $0.18$    & $0.56$    & $0.578$  \\
+\texttt{insulin}       & $0.05$    & $0.20$    & $0.25$    & $0.804$  \\
+\texttt{diabetes:insulin} & $0.90$ & $0.30$    & $3.00$    & $0.003$  \\
+\texttt{sex}           & $0.15$    & $0.12$    & $1.25$    & $0.211$  \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} State your encoding assumption for the binary predictors \texttt{diabetes} and \texttt{insulin} explicitly. By what factor (two decimals) do the odds of readmission multiply for each additional prior admission \texttt{prev\_adm}, holding the other predictors fixed?
+  \item \subpoints{2} For each of the four combinations of $(\texttt{diabetes}, \texttt{insulin}) \in \{(0,0), (1,0), (0,1), (1,1)\}$, write down the joint contribution of the three diabetes / insulin terms to the linear predictor $\hat\eta$. By what factor do the odds of readmission change for a diabetic-and-on-insulin patient compared with a reference patient (\texttt{diabetes} $= 0$, \texttt{insulin} $= 0$), holding all other predictors fixed? (Two decimals.)
+  \item \subpoints{2} Consider a $70$-year-old male patient with \texttt{los} $= 6$ days, $\texttt{prev\_adm} = 2$, \texttt{diabetes} $= 1$, \texttt{insulin} $= 1$. Compute the linear predictor $\hat\eta$ and the predicted probability $\hat p$ of readmission. Show your work.
+  \item \subpoints{1} A classmate writes: ``$\hat\beta_{\text{diabetes}} = 0.10$ with $p$-value $0.578$ and $\hat\beta_{\text{insulin}} = 0.05$ with $p$-value $0.804$. Both are insignificant, so we should drop both \texttt{diabetes} and \texttt{insulin} from the model.'' In one or two sentences, explain why this is wrong given that the model also contains an $\texttt{diabetes}\!:\!\texttt{insulin}$ interaction.
+  \item \subpoints{1} Define, \emph{in plain words appropriate to this readmission setting}, what \emph{sensitivity} means for this classifier. (One sentence.)
+\end{enumerate}
+
+\subsection*{b) Confusion matrix and threshold tuning \subpoints{3}}
+
+On the held-out test set, the logistic model with default threshold $\hat p = 0.5$ produces the confusion matrix
+
+\begin{center}\small
+\begin{tabular}{c|cc}
+ & \textbf{Predicted: readmit} & \textbf{Predicted: no readmit} \\ \hline
+\textbf{Actual: readmit}    & $54$  & $126$ \\
+\textbf{Actual: no readmit} & $72$  & $648$ \\
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} Compute, to two decimals, the test \emph{sensitivity}, \emph{specificity}, and overall \emph{error rate} of the classifier.
+  \item \subpoints{1} The care-coordination team argues that ``we are missing too many true readmissions.'' Indicate the direction (up / down) in which \emph{sensitivity} and \emph{specificity} are expected to move if the classification threshold is lowered from $0.5$ to $0.3$.
+  \item \subpoints{1} In the readmission context (where a false negative means a high-risk patient is sent home without targeted follow-up), explain in one sentence which of \emph{sensitivity} and \emph{specificity} you would prioritize, and why.
+\end{enumerate}
+
+\subsection*{c) AdaBoost: pseudocode and a small numerical iteration \subpoints{6}}
+
+To compare with logistic regression, an AdaBoost classifier with binary weak learners (stumps) is also fit. The classifier returns a label $G(x) \in \{-1, +1\}$ (with $+1$ encoding readmission).
+
+\begin{enumerate}[(i)]
+  \item \subpoints{2} Write \emph{pseudocode} for the AdaBoost algorithm with $M$ rounds. Make explicit (a) the initialization of the sample weights $w_i$, (b) the weighted misclassification rate $\mathrm{err}_m$, (c) the classifier weight $\alpha_m$, (d) the per-observation weight update, and (e) the final ensemble classifier.
+  \item \subpoints{2} A tiny illustrative example: at iteration $m = 1$ on a training sample of $N = 10$ observations, the initial sample weights are $w_i = 1/10$. The stump $G_1(x)$ misclassifies exactly two of the ten observations. Compute the weighted misclassification rate $\mathrm{err}_1$, the classifier weight $\alpha_1$, and the \emph{updated, un-normalized} weights $w_i$ for (a) a correctly-classified observation and (b) a misclassified one. Round numerics to two decimals.
+  \item \subpoints{1} On the same test set, the AdaBoost ensemble (with $M = 200$ stumps) achieves sensitivity $0.55$, specificity $0.86$, and error rate $0.16$. Compare these to the logistic regression numbers from (b)(i). Which model would you recommend to the hospital, and on which criterion?
+  \item \subpoints{1} True or false, with one sentence of justification: ``AdaBoost can be derived as a special case of gradient boosting, in which the loss function is the \emph{exponential loss} $L(y, f) = e^{-y f}$.''
+\end{enumerate}
+
+\subsection*{d) A neural network classifier and a backprop mini-derivation \subpoints{8}}
+
+You also fit a feed-forward neural network with the following architecture (using the standardized version of the six predictors above, plus a derived $\widetilde{\texttt{prev\_adm}^2}$ to capture non-linearity, for $p = 7$ inputs):
+\begin{itemize}
+  \item input layer of $7$ standardized predictors;
+  \item hidden layer of $M = 10$ neurons (with biases, ReLU activations);
+  \item output layer of $1$ neuron (with bias, sigmoid activation, returning $\hat p$).
+\end{itemize}
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} How many parameters does this network have in total, \emph{including all bias terms}? Show your layer-by-layer breakdown.
+  \item \subpoints{1} A neuron in the hidden layer has weights $w = (0.20, -0.50, 1.00, 0.40, -0.60, 0.30, 0.10)$ and bias $b = -0.20$. Its inputs on a given observation are $x = (0.5, -0.5, 2, 1, 0, 1, -1)$. Compute the output of this neuron under a ReLU activation, rounded to two decimals.
+  \item \subpoints{3} A mini backpropagation derivation. Consider, for a single observation $(x_i, y_i)$, the simple network
+  $$z_k = g\!\left(\alpha_{k0} + \sum_{j=1}^p \alpha_{kj}\, x_{ij}\right), \qquad \hat f(x_i) = \beta_0 + \sum_{k=1}^M \beta_k z_k,$$
+  with squared-error loss $L_i = \tfrac{1}{2}(y_i - \hat f(x_i))^2$ and a generic differentiable activation $g(\cdot)$.
+  \begin{enumerate}[(a)]
+    \item \subpoints{1} Compute $\partial L_i / \partial \hat f(x_i)$.
+    \item \subpoints{1} Using the chain rule and your answer to (a), compute $\partial L_i / \partial \beta_k$ for $k \ge 1$ in terms of $z_k$, $y_i$, and $\hat f(x_i)$.
+    \item \subpoints{1} Using the chain rule once more, compute $\partial L_i / \partial \alpha_{kj}$ in terms of $y_i$, $\hat f(x_i)$, $\beta_k$, $x_{ij}$, and $g'(v_{ik})$, where $v_{ik} = \alpha_{k0} + \sum_j \alpha_{kj} x_{ij}$ is the pre-activation of hidden unit $k$.
+  \end{enumerate}
+  \item \subpoints{2} Briefly state \emph{two} regularization techniques from this course that you would apply to this network. For each, give a concrete numeric value of any associated hyperparameter where applicable, and one short sentence on what role it plays. \emph{(One of the two must be a technique other than L2 weight decay.)}
+  \item \subpoints{1} A friend trains the same network with mini-batch SGD (batch size $128$) and no explicit weight-decay penalty, and observes that it generalizes \emph{better} than the much smaller logistic regression in (a). Briefly state one feature of mini-batch SGD that, according to the lectures, can rationalize this surprising outcome.
+\end{enumerate}
+
+\vspace{1em}
+\hrule
+\vspace{0.5em}
+
+\noindent\textbf{End of exam.} \quad Total: $10 + 28 + 16 + 22 + 24 = 100$ points.
+
+\end{document}
