@@ -1,0 +1,878 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumerate}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{tikz}
+
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+
+\newcommand{\points}[1]{\textbf{(#1\,\%)}}
+\newcommand{\subpoints}[1]{\textit{(#1\,\%)}}
+\newcommand{\sol}{\noindent\textbf{Solution}}
+
+\title{TMA4268 V2026 Mock Exam 6 --- Solution Proposal\\[0.3em]
+\large}
+\author{Compiled for Anders Bekkevard\\[0.2em]
+\small Companion to \texttt{mock-exam-6.tex} (same directory).}
+\date{Mock for: May 18, 2026}
+
+\begin{document}
+\maketitle
+
+\noindent\textit{This document is a worked-solution proposal in the style of the official
+Stefanie/Sara solutions to the 2024 and 2025 finals. Point values are quoted in the heading of
+each solved sub-part. Partial-credit hints are inline. Refer back to \texttt{mock-exam-6.tex}
+for the problem statements.}
+
+\vspace{0.6em}
+\hrule
+\vspace{1em}
+
+%=========================================================
+\section*{Problem 1 \points{10} --- Fill-in-the-blank concepts}
+%=========================================================
+
+\sol{} \emph{(1\,P per blank.)}
+
+\begin{enumerate}[(1)]
+  \item \textbf{parametric}
+  \item \textbf{prediction}
+  \item \textbf{inference}
+  \item \textbf{irreducible}
+  \item \textbf{ridge}
+  \item \textbf{nested cross-validation}
+  \item \textbf{mini-batch stochastic gradient descent}
+  \item \textbf{dropout}
+  \item \textbf{early stopping}
+  \item \textbf{label smoothing}
+\end{enumerate}
+
+\noindent\emph{Grading: 1\,P per correct blank. No partial credit for ``close'' alternatives.
+For (5), ``lasso'' is the textbook trap --- lasso \emph{does} zero coefficients (corner of $L^1$
+ball), ridge does not. For (6), ``stratified cross-validation'' is about preserving class balance,
+not about honest hyperparameter assessment.}
+
+\vspace{0.6em}
+\hrule
+\vspace{1em}
+
+%=========================================================
+\section*{Problem 2 \points{28} --- Multiple choice, T/F, short numeric}
+%=========================================================
+
+\subsection*{a) Bias--variance and benign overfitting \subpoints{3}}
+\sol{} \emph{(0.75\,P per statement.)}
+\begin{enumerate}[(i)]
+  \item \textbf{True}. The decomposition is an algebraic identity. The first cross-term
+        $2(f-\hat f)\cdot\varepsilon$ vanishes because $\mathbb{E}[\varepsilon]=0$ and
+        $\varepsilon$ is independent of $\hat f$; the second cross-term
+        $2(f-\mathbb{E}[\hat f])\cdot(\mathbb{E}[\hat f]-\hat f)$ vanishes after taking expectation
+        over $\hat f$ because the second factor has mean zero by construction. Both rely on
+        independence/zero-mean structure, not on any property of $\hat f$.
+  \item \textbf{True}. In the classical view ridge introduces bias to lower variance, so one
+        usually expects a trade. But \emph{moving from OLS to ridge changes the estimator}, which
+        can shift both curves: if OLS suffers from collinearity its variance explodes, while a
+        modestly regularized ridge fit can have both lower variance \emph{and} negligible bias
+        (because the data don't really distinguish between the collinear coefficients anyway).
+        The prof's ``trade-off'' skepticism leans on exactly this. Either example argument earns
+        credit.
+  \item \textbf{False}. This is benign overfitting / double descent. With $p\gg n$ and an
+        appropriate optimizer (e.g.\ the min-norm interpolator picked by gradient descent), an
+        interpolating model can still generalize.
+  \item \textbf{True}. Larger irreducible noise $\sigma^2$ makes complex models spend variance
+        chasing noise; the optimum on the bias/variance trade shifts toward simpler (less
+        flexible) models.
+\end{enumerate}
+
+\subsection*{b) Cross-validation, with and without nesting \subpoints{4}}
+
+\sol{} \subpoints{0.5} \textbf{(i)} \textbf{True}. Each LOO/large-$k$ fold uses $n-1$ ($\approx n$)
+training points, so the CV-fitted models are closer to the model that would be trained on all $n$
+data points $\Rightarrow$ less bias. Bias of CV decreases as $k$ grows.
+
+\medskip
+\sol{} \subpoints{0.5} \textbf{(ii)} \textbf{True}. The $n$ leave-one-out training sets overlap
+almost completely, so their per-fold errors are highly correlated; averaging strongly correlated
+numbers does not reduce variance much, and the LOOCV estimate has higher variance than the
+$5$-fold one. (Prof's L11 line: \emph{``leave-one-out has better bias but K-fold will have a much
+better variance, and typically you're winning by having less variance.''})
+
+\medskip
+\sol{} \subpoints{1} \textbf{(iii)} \textbf{False}. This is the canonical ``wrong-way CV''
+pipeline: the predictor screening uses $y$, so the held-out folds have already informed which
+predictors are retained. The CV estimate is biased \emph{downward} (it can be near zero even when
+the truth is pure noise). Fix: redo the correlation screen \emph{inside} each training fold.
+
+\medskip
+\sol{} \subpoints{1} \textbf{(iv)} \textbf{1-SE rule}: Let $\hat\theta=\arg\min_\theta
+\mathrm{CV}(\theta)$ achieving CV-MSE $m^\star$ with estimated standard error $\mathrm{SE}^\star$
+across folds. Pick the \emph{simplest} (largest-$\lambda$, smallest model size) $\theta$ whose
+CV-MSE is within $m^\star+\mathrm{SE}^\star$.
+
+\medskip
+\sol{} \subpoints{1} \textbf{(v)} Sum $=22.0$, so
+$$\widehat{\mathrm{CV}\text{-MSE}}=\frac{22.0}{10}=\boxed{2.20}.$$
+Sample variance of the $10$ fold MSEs (using $n-1=9$ in the denominator): squared deviations from
+$2.20$ are $(0.10)^2,(0.20)^2,(0.20)^2,(0.40)^2,(0)^2,(0.30)^2,(0.10)^2,(0.30)^2,(0.20)^2,(0.20)^2$
+$=0.01+0.04+0.04+0.16+0+0.09+0.01+0.09+0.04+0.04=0.52$. Sample SD $s=\sqrt{0.52/9}\approx 0.240$.
+$$\widehat{\mathrm{SE}}(\widehat{\mathrm{CV}\text{-MSE}})=\frac{s}{\sqrt{10}}\approx\frac{0.240}{3.162}\approx\boxed{0.08}.$$
+Accept anywhere in $[0.07, 0.09]$.
+
+\subsection*{c) Mini-batch SGD and learning rate \subpoints{3}}
+\sol{} \emph{(0.75\,P per statement.)}
+\begin{enumerate}[(i)]
+  \item \textbf{True}. Powers of two map cleanly onto GPU memory layouts; the choice is engineering
+        rather than statistical. (Prof L23.)
+  \item \textbf{False}. Larger batch sizes \emph{decrease} noise in the gradient estimate, but
+        decreased noise means \emph{less} implicit $L^2$ regularization, not more. Small-batch SGD
+        is the one that injects the noise that biases toward minimum-norm solutions. Direction
+        reversed.
+  \item \textbf{True}. Prof's L24 anecdote: $\eta=2$ ``horrible, bouncing everywhere,''
+        $\eta\approx 0.1$ fine.
+  \item \textbf{True}. Backprop \emph{is} the chain rule applied so each intermediate quantity is
+        used (not recomputed). SGD is the update rule that consumes backprop's gradients.
+\end{enumerate}
+
+\subsection*{d) Odds, log-odds, interactions \subpoints{3}}
+
+\sol{} \subpoints{1} \textbf{(i)} $p=\dfrac{\text{odds}}{1+\text{odds}}=\dfrac{0.25}{1.25}=\boxed{0.20}$.
+
+\medskip
+\sol{} \subpoints{1} \textbf{(ii)} Odds multiplier $=\exp(\hat\beta\cdot\Delta)=\exp(0.18\cdot 5)
+=\exp(0.90)\approx \boxed{2.46}$.
+
+\medskip
+\sol{} \subpoints{1} \textbf{(iii)} For a treated patient, a unit increase in \texttt{age}
+changes the log-odds by $\hat\beta_{\texttt{age}}+\hat\beta_{\texttt{age:treatment}}=0.04-0.03=0.01$,
+so the odds multiply by $\exp(0.01)\approx \boxed{1.010}$.
+
+\noindent\emph{Grading: full credit for $\approx 1.010$. Half credit for $\exp(0.04)\approx 1.041$
+(ignoring the interaction --- the standard trap). Zero for treating the interaction in isolation.}
+
+\subsection*{e) Collinearity and identifiability \subpoints{3}}
+\sol{} \emph{(0.75\,P per statement.)}
+\begin{enumerate}[(i)]
+  \item \textbf{True}. Exact collinearity makes $X^\top X$ singular, so $(X^\top X)^{-1}$ does not
+        exist and $\hat\beta=(X^\top X)^{-1}X^\top y$ is not uniquely defined. Any solution along
+        the affine subspace $\beta_2 = (\text{const}) - 2\beta_1$ achieves the same fitted values.
+  \item \textbf{True}. Under near-collinearity, the diagonal of $\sigma^2(X^\top X)^{-1}$ inflates
+        (the individual SEs blow up), while the variance of an appropriate linear combination of
+        the coefficients (essentially their sum) can stay controlled because the off-diagonal
+        covariances are large and negative and ``cancel.'' This is the ``a million minus a million''
+        intuition.
+  \item \textbf{True}. With high correlation the individual $t$-tests can both fail to reject
+        while the partial $F$-test on the pair rejects strongly. Concluding from the individual
+        $t$-tests alone that neither predictor matters is exactly the trap; the variables matter
+        \emph{jointly}.
+  \item \textbf{False}. $K$ dummies together with an intercept produces a rank-deficient design
+        matrix ($\sum$ of dummies $\equiv 1$, the intercept column). Use $K-1$ dummies and
+        absorb the reference level into the intercept (or drop the intercept and use $K$ dummies).
+\end{enumerate}
+
+\subsection*{f) Bootstrap standard error \subpoints{3}}
+
+\sol{} \subpoints{1} \textbf{(i)} With $\bar\theta^* = \frac{1}{B}\sum_{b=1}^B \hat\theta_b^*$,
+$$\widehat{\mathrm{SE}}_{\mathrm{boot}}(\hat\theta) \;=\; \sqrt{\frac{1}{B-1}\sum_{b=1}^B
+   \bigl(\hat\theta_b^* - \bar\theta^*\bigr)^2}.$$
+
+\medskip
+\sol{} \subpoints{1} \textbf{(ii)} Mean
+$\bar\theta^* = \tfrac{1}{4}(2.1+2.5+1.8+2.4) = \tfrac{8.8}{4} = 2.20$.
+Squared deviations from $2.20$: $(2.1-2.2)^2 = 0.01$,
+$(2.5-2.2)^2 = 0.09$, $(1.8-2.2)^2 = 0.16$, $(2.4-2.2)^2 = 0.04$. Sum $= 0.30$.
+Dividing by $B-1=3$ gives $0.30/3 = 0.10$, and
+$$\widehat{\mathrm{SE}}_{\mathrm{boot}}(\hat\theta) = \sqrt{0.10} \approx \boxed{0.32}.$$
+
+\medskip
+\sol{} \subpoints{1} \textbf{(iii)} \textbf{(A) False} --- bootstrap is \emph{with} replacement.
+\textbf{(B) True} --- the bootstrap quantifies the sampling \emph{variability} of $\hat\theta$
+around itself, not its distance from the true $\theta$; biased estimators stay biased.
+\textbf{(C) True} --- $B\in\{1000, 10000\}$ is the standard range.
+
+\noindent\emph{Grading: 0.5 each for any one wrong, 1\,P all correct.}
+
+\subsection*{g) Boosting: AdaBoost, gradient boosting, XGBoost \subpoints{3}}
+\sol{} \emph{(0.75\,P per statement.)}
+\begin{enumerate}[(i)]
+  \item \textbf{True}. With $\alpha_m=\tfrac{1}{2}\log\tfrac{1-\mathrm{err}_m}{\mathrm{err}_m}>0$
+        when $\mathrm{err}_m<0.5$, the weight-update $w_i\leftarrow w_i\exp(-\alpha_m\,y_i G_m(x_i))$
+        multiplies misclassified weights by $e^{\alpha_m}>1$ and correctly classified weights by
+        $e^{-\alpha_m}<1$; after renormalization the misclassified points end up with strictly
+        higher \emph{relative} weight at the next iteration. (Some textbook conventions instead
+        multiply only the misclassified weights and then renormalize; the relative-weight statement
+        in the question is true under both.)
+  \item \textbf{True}. The Hastie--Tibshirani--Friedman (HTF) gradient-boosting algorithm fits
+        the new tree to the negative gradient $r_{im}=-[\partial L/\partial f]_{f=f_{m-1}}$ of the
+        loss; for $L=\tfrac{1}{2}(y-f)^2$ this gradient is exactly $-(y-f)$, so the residual is the
+        negative gradient up to sign.
+  \item \textbf{False}. The directions are swapped. \emph{Random forest:} $B$ is not a tuning
+        parameter (more trees can only help, by variance reduction); just pick ``enough.''
+        \emph{Boosting:} $M$ \emph{is} a real tuning parameter because boosting \emph{can} overfit
+        --- once residuals are noise, additional trees fit that noise.
+  \item \textbf{True}. All three are core XGBoost ingredients; row/column subsampling, $L^2$
+        leaf-weight penalty (and pruning parameter $\gamma$), and second-order Newton-style
+        information are exactly what XGBoost adds on top of plain gradient boosting.
+\end{enumerate}
+
+\subsection*{h) Neural-network regularization \subpoints{3}}
+\sol{} \emph{(0.75\,P per statement.)}
+\begin{enumerate}[(i)]
+  \item \textbf{False}. Dropout is a \emph{training-time-only} mechanism; at inference time the
+        full network is used (with the surviving activations rescaled in the standard ``inverted
+        dropout'' formulation).
+  \item \textbf{True}. Prof L24: ``20\% is very common, never use 50\%.''
+  \item \textbf{True}. This is exactly what early stopping does --- the validation-loss curve
+        $U$-shapes and we return the weights at the minimum.
+  \item \textbf{False}. Prof L26: \emph{``I can't think of an example where you'd ever want to
+        train a neural network without a regularization.''} Even a small architecture relative to
+        $n$ should use \emph{some} regularizer (mini-batch SGD itself counts).
+\end{enumerate}
+
+\subsection*{i) Principal component analysis \subpoints{3}}
+
+\sol{} \subpoints{1} \textbf{(i)} Cumulative PVE: $0.60$, $0.85$, $0.95$, $1.00$. The first time
+the cumulative crosses $0.90$ is at $\boxed{3}$ components.
+
+\medskip
+\sol{} \subpoints{1} \textbf{(ii)}
+$z^*_1 = \phi_1^\top x^* = 0.60\cdot 1.0 + (-0.20)\cdot(-0.5) + 0.70\cdot 2.0 + 0.30\cdot 1.0
+   = 0.60 + 0.10 + 1.40 + 0.30 = \boxed{2.40}$.
+
+\medskip
+\sol{} \subpoints{1} \textbf{(iii)} \textbf{(A) True} --- without standardization the largest-scale
+predictor dominates the variance computation and tends to define PC1. \textbf{(B) True} --- loading
+vectors are unit-norm by construction (otherwise PVE wouldn't be a proportion). \textbf{(C) False}
+--- the first principal component is, by definition, the unit-norm linear combination of the
+centered variables with the \emph{largest} sample variance; later components have progressively
+smaller variances under the orthogonality constraint.
+
+\noindent\emph{Grading for (iii): 0.33 per correct mark; full credit for the $(T,T,F)$ pattern.
+Half credit if (C) is marked True --- a very common misread.}
+
+\vspace{0.6em}
+\hrule
+\vspace{1em}
+
+%=========================================================
+\section*{Problem 3 \points{16} --- Theory, math, and pseudocode}
+%=========================================================
+
+\subsection*{a) The mathy one --- bias--variance decomposition and shrinkage \subpoints{8}}
+
+\sol{} \subpoints{4} \textbf{(i) Derivation.} Write $y_0 = f(x_0) + \varepsilon_0$ with
+$\mathbb{E}[\varepsilon_0]=0$ and $\mathrm{Var}(\varepsilon_0)=\sigma^2$. Add and subtract
+$\mathbb{E}[\hat f(x_0)]$ inside the squared term:
+$$(y_0 - \hat f(x_0))
+   = \underbrace{\bigl(f(x_0) - \mathbb{E}[\hat f(x_0)]\bigr)}_{=:A}
+   + \underbrace{\bigl(\mathbb{E}[\hat f(x_0)] - \hat f(x_0)\bigr)}_{=:B}
+   + \underbrace{\varepsilon_0}_{=:C}.$$
+
+\textbf{Square and take expectation.} $A$ is non-random (depends only on the true $f$ and on the
+distribution of $\hat f$), so $\mathbb{E}[A^2] = A^2$. Expand:
+\begin{align*}
+\mathbb{E}[(y_0-\hat f(x_0))^2]
+&= A^2 + \mathbb{E}[B^2] + \mathbb{E}[C^2] + 2A\,\mathbb{E}[B] + 2A\,\mathbb{E}[C] + 2\,\mathbb{E}[BC].
+\end{align*}
+
+\textbf{Cross-terms vanish.}
+\begin{itemize}
+  \item $\mathbb{E}[B] = \mathbb{E}[\hat f(x_0)] - \mathbb{E}[\hat f(x_0)] = 0$, so $2A\,\mathbb{E}[B]=0$.
+  \item $\mathbb{E}[C] = \mathbb{E}[\varepsilon_0] = 0$, so $2A\,\mathbb{E}[C]=0$.
+  \item For $\mathbb{E}[BC]$: $B$ is a function of $\hat f$ (so of the training set $\mathcal T$),
+        $C=\varepsilon_0$ is independent of $\mathcal T$ by assumption, hence $B\perp C$ and
+        $\mathbb{E}[BC]=\mathbb{E}[B]\mathbb{E}[C]=0$.
+\end{itemize}
+
+\textbf{The three surviving terms:}
+\begin{align*}
+A^2 &= \bigl(f(x_0)-\mathbb{E}[\hat f(x_0)]\bigr)^2 =: \mathrm{Bias}^2[\hat f(x_0)], \\
+\mathbb{E}[B^2] &= \mathbb{E}\!\left[(\hat f(x_0)-\mathbb{E}[\hat f(x_0)])^2\right] = \mathrm{Var}(\hat f(x_0)), \\
+\mathbb{E}[C^2] &= \mathrm{Var}(\varepsilon_0) = \sigma^2.
+\end{align*}
+Hence
+$$\boxed{\;\mathbb{E}\!\left[(y_0-\hat f(x_0))^2\right]
+   = \mathrm{Bias}^2[\hat f(x_0)] + \mathrm{Var}(\hat f(x_0)) + \sigma^2.\;}$$
+
+\textbf{Sources of randomness.}
+The outer expectation in $\mathbb{E}[(y_0-\hat f(x_0))^2]$ is taken \emph{jointly} over (a) the
+random training sample $\mathcal T$ used to fit $\hat f$, and (b) the test-point noise
+$\varepsilon_0$ in $y_0=f(x_0)+\varepsilon_0$. The inner $\mathbb{E}[\hat f(x_0)]$ and
+$\mathrm{Var}(\hat f(x_0))$ are over the training-set distribution only. $f$ and $x_0$ are treated
+as fixed.
+
+\textbf{Naming the terms.} Squared bias and variance are both \emph{reducible} (one can lower
+them by choosing a different estimator or different model class). The noise variance $\sigma^2$ is
+\emph{irreducible} --- no estimator built from $X$ alone can predict $\varepsilon_0$.
+
+\noindent\emph{Grading: 2\,P for both cross-terms vanishing with justification; 1\,P for the
+``random over what'' explanation; 1\,P for the names and the reducibility comment. Deduct 0.5 if
+$\sigma^2$ is dropped, 0.5 if the bias is reported without the square. Watch for sign errors in
+the expansion.}
+
+\medskip
+\sol{} \subpoints{3} \textbf{(ii) Application to $\hat\mu_c = c\bar y$.}
+
+We have $\bar y = \mu + \bar\varepsilon$ with $\bar\varepsilon\sim N(0,\sigma^2/n)$, so
+$\mathbb{E}[\bar y]=\mu$ and $\mathrm{Var}(\bar y)=\sigma^2/n$. Hence:
+\begin{align*}
+\mathrm{Bias}(\hat\mu_c) &= \mathbb{E}[c\bar y] - \mu = c\mu - \mu = -(1-c)\mu,\\
+\mathrm{Bias}^2(\hat\mu_c) &= (1-c)^2\,\mu^2,\\
+\mathrm{Var}(\hat\mu_c) &= c^2\,\mathrm{Var}(\bar y) = \frac{c^2\sigma^2}{n}.
+\end{align*}
+Reducible MSE $= (1-c)^2\mu^2 + c^2\sigma^2/n$. Differentiate w.r.t.\ $c$ and set to zero:
+$$-2(1-c)\mu^2 + 2c\,\sigma^2/n = 0 \;\Longrightarrow\; c\bigl(\mu^2 + \sigma^2/n\bigr) = \mu^2
+   \;\Longrightarrow\; \boxed{\;c^\star = \frac{\mu^2}{\mu^2 + \sigma^2/n}\;}\in(0,1).$$
+Sanity: when $\sigma^2/n\to 0$ (lots of data, low noise), $c^\star\to 1$ (no shrinkage, just use
+the sample mean). When $\sigma^2/n \gg \mu^2$ (noisy, small sample), $c^\star\to 0$ --- the
+optimal estimator collapses toward zero, sacrificing all bias to kill variance. \emph{Either
+comment earns the closing point.}
+
+\noindent\emph{Grading: 1\,P for $\mathrm{Bias}^2 = (1-c)^2\mu^2$; 1\,P for
+$\mathrm{Var}=c^2\sigma^2/n$; 1\,P for the optimum $c^\star$. Accept stating $c^\star$ without the
+limit comment if the algebra is right.}
+
+\medskip
+\sol{} \subpoints{1} \textbf{(iii) ``Trade-off'' skepticism.} The decomposition is exact, but it
+is not always true that lowering one term \emph{requires} raising the other. Two cases the prof
+flagged in the lectures:
+\begin{enumerate}[(a)]
+  \item \emph{Regularization can reduce both.} Adding a ridge penalty $\lambda\|\beta\|^2$ to a
+        collinear OLS problem shrinks coefficients (small bias hit) but cuts the variance massively
+        because $(X^\top X+\lambda I)^{-1}$ tames the inverse --- both terms can drop relative to
+        plain OLS.
+  \item \emph{Benign overfitting / double descent.} In the over-parameterized regime ($p\gg n$),
+        once the model interpolates the training data, additional flexibility only changes which
+        zero-training-error solution is picked (minimum-norm by the implicit bias of SGD);
+        variance often \emph{decreases} again as $p$ grows.
+\end{enumerate}
+Either of the two earns the point.
+
+\subsection*{b) Pseudocode for nested cross-validation \subpoints{5}}
+
+\sol{} \subpoints{3} \textbf{(i) Pseudocode.}
+
+\medskip
+\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+\small
+\textbf{Input:} data $D=\{(x_i,y_i)\}_{i=1}^n$; hyperparameter grid $\Lambda=\{\lambda_1,\dots,\lambda_T\}$; outer folds $K$, inner folds $K'$.
+
+\textbf{Output:} an estimate of generalization error of the procedure
+``ridge regression with $\lambda$ chosen by inner CV.''
+
+\begin{enumerate}
+  \item Randomly partition $D$ into $K$ disjoint \emph{outer} folds $F_1,\dots,F_K$.
+  \item \textbf{For} $k=1,\dots,K$:
+  \begin{enumerate}
+    \item Let $D_k^{\mathrm{out}} = F_k$ (held-out test fold) and $D_k^{\mathrm{tr}} = D \setminus F_k$ (outer training).
+    \item Randomly partition $D_k^{\mathrm{tr}}$ into $K'$ \emph{inner} folds $G_1,\dots,G_{K'}$.
+    \item \textbf{For} each $\lambda\in\Lambda$:
+       \textbf{For} $j=1,\dots,K'$: fit ridge with penalty $\lambda$ on $D_k^{\mathrm{tr}}\setminus G_j$; record MSE on $G_j$ as $\mathrm{MSE}_{k,j}(\lambda)$. \\
+       Compute inner-CV score $\mathrm{IC}_k(\lambda) = \tfrac{1}{K'}\sum_{j=1}^{K'}\mathrm{MSE}_{k,j}(\lambda)$.
+    \item Pick $\lambda^\star_k = \arg\min_{\lambda\in\Lambda} \mathrm{IC}_k(\lambda)$. \emph{(The choice can differ across outer folds.)}
+    \item Refit ridge with penalty $\lambda^\star_k$ on all of $D_k^{\mathrm{tr}}$, predict on $D_k^{\mathrm{out}}=F_k$, and record outer-fold MSE $e_k=\mathrm{MSE}_{D_k^{\mathrm{out}}}$.
+  \end{enumerate}
+  \item Return $\widehat{\mathrm{Err}} = \tfrac{1}{K}\sum_{k=1}^K e_k$ as the nested-CV estimate of generalization error of the whole pipeline.
+\end{enumerate}}}
+
+\noindent\emph{Grading: 1\,P for explicit outer/inner loop structure; 1\,P for ``$\lambda^\star_k$ chosen using only $D_k^{\mathrm{tr}}$, and the outer fold $F_k$ never participates in selection''; 1\,P for the final aggregation across outer folds. Deduct 0.5 if the analyst's chosen $\lambda$ is presented as a single global $\hat\lambda$ instead of $\lambda^\star_k$ varying with $k$.}
+
+\medskip
+\sol{} \subpoints{1} \textbf{(ii)} If you pick $\lambda$ by single $K$-fold CV and \emph{report
+the minimum CV-MSE} as the test-error estimate, you are taking the minimum of a noisy set of
+estimates --- i.e.\ you are reporting an ``argmin'' statistic without correcting for the selection
+bias. The reported CV-MSE will be \emph{optimistically biased downward}: the lower the noise at
+the picked $\lambda$ relative to others, the more $\lambda$ ``benefits'' from the selection. Honest
+assessment requires an outer loop whose held-out folds never participated in selecting $\lambda$.
+
+\medskip
+\sol{} \subpoints{1} \textbf{(iii)} If you screen predictors using their correlation with $y$
+\emph{outside} the CV loop, the held-out CV folds have already informed the variable-selection
+step, so the supposed ``held-out'' data is no longer held out --- it has helped shape the model.
+The CV estimate is therefore biased \emph{downward}, and can be near zero even when the truth is
+pure noise (the canonical ISLP exercise: $p=5000$ random predictors, two equiprobable labels;
+naive pipeline reports ~0\% error). \textbf{Structural fix:} redo the correlation screen
+\emph{inside each training fold}, using only that fold's training portion.
+
+\subsection*{c) Backpropagation in a tiny network \subpoints{3}}
+
+\sol{} \subpoints{2} \textbf{(i) Derivation.} Forward pass:
+$z = w_1 x + b_1$, $h = \sigma(z)$, $\hat y = w_2 h + b_2$, $L = \tfrac{1}{2}(\hat y - y)^2$.
+
+\textbf{Output-layer gradient.} Chain rule:
+$$\frac{\partial L}{\partial w_2}
+   = \frac{\partial L}{\partial \hat y}\cdot \frac{\partial \hat y}{\partial w_2}
+   = (\hat y - y)\cdot h.$$
+
+\textbf{Hidden-layer gradient.}
+$$\frac{\partial L}{\partial w_1}
+   = \frac{\partial L}{\partial \hat y}\cdot \frac{\partial \hat y}{\partial h}\cdot
+     \frac{\partial h}{\partial z}\cdot \frac{\partial z}{\partial w_1}
+   = (\hat y - y)\cdot w_2 \cdot h(1-h)\cdot x.$$
+
+\noindent\emph{Grading: 1\,P for $\partial L/\partial w_2 = (\hat y - y)\cdot h$; 1\,P for the
+full chain through to $\partial L/\partial w_1 = (\hat y - y)\cdot w_2 \cdot h(1-h)\cdot x$.
+Accept either $\sigma'(z)$ or $h(1-h)$.}
+
+\medskip
+\sol{} \subpoints{1} \textbf{(ii) Numerical.}
+$z = 0.5\cdot 2 + 0 = 1.0$.
+$h = \sigma(1) = 1/(1+e^{-1}) = 1/(1+0.3679) = 1/1.3679 \approx 0.7311$.
+$\hat y = 1\cdot 0.7311 + 0 \approx \boxed{0.731}$.
+$\hat y - y \approx -0.269$.
+$h(1-h) \approx 0.7311\cdot 0.2689 \approx 0.1966$.
+$\frac{\partial L}{\partial w_1} = (-0.269)\cdot 1 \cdot 0.1966 \cdot 2 \approx \boxed{-0.106}$.
+
+Accept any answer in $[-0.110, -0.100]$. Sign matters: a negative gradient means SGD will increase
+$w_1$ to reduce loss, which is correct (current $\hat y$ undershoots $y=1$, and increasing $w_1$
+pushes $z$ up, hence $h$ and $\hat y$ up).
+
+\vspace{0.6em}
+\hrule
+\vspace{1em}
+
+%=========================================================
+\section*{Problem 4 \points{18} --- Concrete compressive strength}
+%=========================================================
+
+\subsection*{a) Linear regression with collinearity, interactions, encoding \subpoints{8}}
+
+\sol{} \subpoints{1} \textbf{(i)} Count rows in the coefficient table: intercept, \texttt{cement},
+\texttt{slag}, \texttt{water}, \texttt{superplast}, \texttt{coarse\_agg}, \texttt{fine\_agg},
+$\log(\texttt{age})$, two \texttt{mix\_type} dummies, two \texttt{cement:mix\_type} interactions
+$=\boxed{12}$ parameters. Sanity: residual d.f.\ $= 700-12 = 688$. \checkmark
+
+\medskip
+\sol{} \subpoints{2} \textbf{(ii) Collinearity diagnosis.}
+\begin{itemize}
+  \item \textbf{(a)} The variance-covariance matrix of OLS is $\mathrm{Var}(\hat\beta) = \sigma^2
+        (X^\top X)^{-1}$. When two columns of $X$ are near-collinear, $X^\top X$ has a near-zero
+        eigenvalue in their joint direction; the corresponding diagonal entries of $(X^\top X)^{-1}$
+        blow up, so the individual SEs of $\hat\beta_{\texttt{water}}$ and
+        $\hat\beta_{\texttt{superplast}}$ inflate, killing their individual $t$-statistics. The
+        \emph{sum} $\beta_{\texttt{water}}+\beta_{\texttt{superplast}}$ (or any other well-conditioned
+        combination orthogonal to the collinearity direction) remains well-estimated, which is
+        why the joint $F$-test rejects: the model can be sure that \emph{some} combination of
+        \texttt{water} and \texttt{superplast} matters, just not which of the two carries the
+        effect.
+  \item \textbf{(b)} \textbf{No.} Dropping both predictors on the basis of their individual
+        $t$-tests would be wrong: the joint $F$-test on the pair rejects with $p<10^{-9}$, which
+        means at least one of them belongs in the model. One sensible response is to drop one and
+        keep the other (and live with the fact that you can't disentangle them), or to use a
+        regularized fit (ridge / lasso / elastic net) that handles correlated predictors
+        gracefully.
+\end{itemize}
+
+\noindent\emph{Grading: 1\,P for the $\mathrm{Var}(\hat\beta) = \sigma^2(X^\top X)^{-1}$ argument
+plus the SE-inflation conclusion; 1\,P for explicitly rejecting the ``drop both'' inference and
+giving a reasonable remedy.}
+
+\medskip
+\sol{} \subpoints{2} \textbf{(iii) Cement effect by mix type.}
+A unit increase in \texttt{cement} changes the predicted \texttt{strength} (in MPa) by:
+\begin{align*}
+\text{Standard mix:}\quad &\hat\beta_{\texttt{cement}} = 0.110\;\text{MPa per kg/m}^3.\\
+\text{High-strength:}\quad &\hat\beta_{\texttt{cement}} + \hat\beta_{\texttt{cement:mix\_high}}
+   = 0.110 + 0.030 = \boxed{0.140}\;\text{MPa per kg/m}^3.\\
+\text{Lightweight:}\quad &\hat\beta_{\texttt{cement}} + \hat\beta_{\texttt{cement:mix\_light}}
+   = 0.110 + (-0.020) = \boxed{0.090}\;\text{MPa per kg/m}^3.
+\end{align*}
+The question asks for high-strength and lightweight; both shown.
+
+\noindent\emph{Grading: 1\,P each. Half credit if the student reports $0.030$ or $-0.020$ alone
+(the interaction term in isolation --- the standard trap). Zero if both terms are reported as
+$0.110$ (interaction entirely ignored).}
+
+\medskip
+\sol{} \subpoints{1} \textbf{(iv) Encoding flip.} Switching the reference level from
+\emph{standard} to \emph{lightweight}:
+\begin{itemize}
+  \item \textbf{(a) Residual standard error:} \textbf{unchanged} (the column space of $X$ is
+        identical; only the basis changes).
+  \item \textbf{(b) Coefficient on \texttt{cement}:} \textbf{changes} (it is now the slope
+        \emph{for the lightweight reference mix}, which is $0.110-0.020 = 0.090$ instead of $0.110$).
+  \item \textbf{(c) Coefficient on \texttt{mix\_high}:} \textbf{changes} (it is now the contrast
+        ``high-strength vs.\ lightweight'' instead of ``high-strength vs.\ standard'').
+  \item \textbf{(d) Predicted strength of any given mix:} \textbf{unchanged} --- fitted values are
+        invariant under reparameterization.
+\end{itemize}
+
+\noindent\emph{Grading: 0.25\,P per part. All-or-nothing on each. The (a) and (d) ``unchanged''
+items are the most commonly missed; flag if the student claims that ``fits change'' under
+re-encoding.}
+
+\medskip
+\sol{} \subpoints{1} \textbf{(v) CI vs.\ PI.}
+\begin{itemize}
+  \item \textbf{(a)} A $95\%$ \emph{confidence interval} for $\mathbb{E}[\texttt{strength}\mid x_0]$
+        contains the (population-level) mean strength of the sub-population of concrete mixes with
+        predictor values $x_0$; a $95\%$ \emph{prediction interval} contains the future
+        \texttt{strength} of \emph{one new individual} mix with predictor values $x_0$.
+  \item \textbf{(b)} The prediction interval is wider. Its variance picks up an extra additive
+        $\sigma^2$ term for the irreducible noise on the individual observation: ${\hat y}_0\pm t\,
+        \hat\sigma\sqrt{1 + x_0^\top(X^\top X)^{-1}x_0}$ vs.\ ${\hat y}_0\pm t\,
+        \hat\sigma\sqrt{x_0^\top(X^\top X)^{-1}x_0}$. As $n\to\infty$ the CI shrinks to a point but
+        the PI stays bounded below by $\pm t\,\hat\sigma$.
+\end{itemize}
+
+\medskip
+\sol{} \subpoints{1} \textbf{(vi) Fanning residuals.} The constant-variance (homoscedasticity)
+assumption is violated. Common remedies: transform the response (e.g.\ $\log\texttt{strength}$ or
+$\sqrt{\texttt{strength}}$), or use weighted least squares with weights inversely proportional to
+the local residual variance.
+
+\subsection*{b) Ridge regression with $10$-fold CV \subpoints{5}}
+
+\sol{} \subpoints{1} \textbf{(i)} The ridge penalty $\lambda\sum_j\beta_j^2$ is scale-dependent;
+without standardization a predictor in larger units (e.g.\ \texttt{cement} in kg/m$^3$ vs.\ a
+binary dummy) is penalized far less because its coefficient is naturally small. Standardizing to
+mean $0$ and variance $1$ puts every predictor on the same footing so shrinkage reflects signal,
+not units.
+
+\medskip
+\sol{} \subpoints{1} \textbf{(ii)} Ridge minimizes
+$$\hat\beta^R_\lambda \;=\; \arg\min_{\beta}\; \sum_{i=1}^n (y_i - \beta_0 - x_i^\top\beta)^2
+   \;+\; \lambda\sum_{j=1}^p \beta_j^2.$$
+As $\lambda\to 0$, the penalty disappears and $\hat\beta^R_\lambda\to\hat\beta^{\mathrm{OLS}}$.
+As $\lambda\to\infty$, every coefficient is shrunk to $0$ and the fit collapses to the
+unpenalized intercept ($\bar y$).
+
+\medskip
+\sol{} \subpoints{1} \textbf{(iii) 1-SE rule.} Among all $\lambda$ whose CV-MSE is within one
+standard error (across folds) of the minimum CV-MSE, choose the \emph{largest} (most regularized,
+simplest model). Formally,
+$$\hat\lambda_{1\mathrm{SE}} = \max\Bigl\{\lambda:\;\mathrm{CV}(\lambda) \leq \mathrm{CV}(\hat\lambda_{\min}) + \widehat{\mathrm{SE}}(\mathrm{CV}(\hat\lambda_{\min}))\Bigr\}.$$
+
+\medskip
+\sol{} \subpoints{2} \textbf{(iv) Bias--variance interpretation.}
+\begin{itemize}
+  \item \textbf{(a)} OLS (test MSE $41.5$) is beaten by ridge at $\hat\lambda_{\min}$ (test MSE
+        $39.8$). This suggests OLS is \emph{over-fitting} on this dataset --- variance is the
+        binding term, and a moderate amount of bias buys a bigger reduction in variance, lowering
+        test MSE. The concrete-strength data are a plausible case for this: with the strong
+        collinearity between \texttt{water} and \texttt{superplast}, $X^\top X$ is poorly
+        conditioned, OLS coefficients are unstable, and ridge specifically tames that instability.
+  \item \textbf{(b)} The $1$-SE choice sits in between because it is \emph{more} regularized than
+        $\hat\lambda_{\min}$. It picks up extra bias (every coefficient is shrunk further), giving
+        up a little of the variance saving; the net effect is worse than $\hat\lambda_{\min}$ on
+        test MSE here. We accept the $1$-SE penalty in exchange for a simpler, more stable model.
+\end{itemize}
+
+\subsection*{c) Gradient boosting \subpoints{5}}
+
+\sol{} \subpoints{2} \textbf{(i) One iteration.}
+
+Initialize $\hat f(x) \leftarrow \bar y$. Let $r_i = y_i - \hat f(x_i)$ be the current residuals.
+At iteration $b+1$:
+\begin{enumerate}
+  \item Fit a regression tree $\hat g^{(b+1)}(x)$ of (small) interaction depth $d$ on the data
+        $(x_i, r_i)$ --- i.e.\ \emph{the new tree is fit to the current residuals}.
+  \item Update the ensemble: $\hat f(x) \leftarrow \hat f(x) + \nu \cdot \hat g^{(b+1)}(x)$.
+  \item Update residuals: $r_i \leftarrow r_i - \nu \cdot \hat g^{(b+1)}(x_i)$, or equivalently
+        recompute $r_i = y_i - \hat f(x_i)$ with the updated $\hat f$.
+\end{enumerate}
+After $M$ iterations the final predictor is $\hat f(x) = \bar y + \sum_{b=1}^{M} \nu\,\hat g^{(b)}(x)$.
+
+\emph{Where $\nu$ enters: in step 2 (and equivalently step 3), shrinking each new tree's
+contribution to the ensemble. With squared-error loss the residual is the negative gradient of
+the loss, so this is a special case of the general gradient-boosting recipe.}
+
+\noindent\emph{Grading: 1\,P for ``fit the new tree to current residuals''; 1\,P for the update
+with the $\nu$ shrinkage shown explicitly. Accept either residuals-first or gradient-first framing.}
+
+\medskip
+\sol{} \subpoints{2} \textbf{(ii) Hyperparameters.}
+\begin{itemize}
+  \item $\nu$ \emph{(shrinkage / learning rate):} fix small ($\nu \le 0.1$ typical) --- not really
+        tuned by CV, just chosen small.
+  \item $d$ \emph{(interaction depth):} tune by CV. Small $d$ (e.g.\ $1$--$4$): each tree captures
+        only low-order interactions, lowest variance per tree; larger $d$ admits higher-order
+        interactions, more variance per tree.
+  \item $M$ \emph{(number of trees):} tune by CV (or early stopping on a validation curve).
+        Boosting \emph{can} overfit if $M$ is too large.
+  \item \textbf{Coupling.} If $\nu$ is halved, each tree contributes half as much, so roughly
+        \emph{twice as many} trees are needed to reach the same overall fit. Practically: $M\cdot\nu
+        \approx$ constant for a given total ``capacity.''
+\end{itemize}
+
+\medskip
+\sol{} \subpoints{1} \textbf{(iii) Ridge vs.\ boosting gap.} Ridge merely shrinks linear
+coefficients; boosting fits a sum of (small) trees and can therefore capture \emph{non-linear
+shapes} and \emph{interactions among predictors} that no linear model can. The large drop from
+$39.8$ (ridge) to $26.3$ (boosting) suggests the predictors enter the truth non-linearly and/or
+with non-trivial interactions --- which is consistent with the prior knowledge that, say,
+\texttt{cement}, \texttt{water}, and \texttt{age} affect strength through complex chemical-curing
+dynamics that no linear-in-the-coefficients model would capture.
+
+\vspace{0.6em}
+\hrule
+\vspace{1em}
+
+%=========================================================
+\section*{Problem 5 \points{28} --- Telecom customer churn}
+%=========================================================
+
+\subsection*{a) Logistic regression with interaction \subpoints{8}}
+
+\sol{} \subpoints{2} \textbf{(i)} For a one-unit increase in \texttt{monthly} the log-odds
+change by the slope at that contract level.
+\begin{align*}
+\text{Month-to-month}\;(\text{reference}):\;& \Delta\hat\eta = 0.030;\\
+\text{Two-year}:\;& \Delta\hat\eta = \hat\beta_{\texttt{monthly}} + \hat\beta_{\texttt{monthly:contract\_2yr}}
+   = 0.030 + (-0.040) = -0.010.
+\end{align*}
+For an increase of $\Delta=10$ EUR:
+\begin{align*}
+\text{Month-to-month:}\;\text{odds}\times \exp(10\cdot 0.030) = \exp(0.30) \approx \boxed{1.350}.\\
+\text{Two-year:}\;\text{odds}\times \exp(10\cdot (-0.010)) = \exp(-0.10) \approx \boxed{0.905}.
+\end{align*}
+\emph{Interpretation:} on a month-to-month contract, extra EUR is associated with \emph{more}
+churn; on a two-year contract the sign flips and the same EUR increase is associated with
+slightly \emph{lower} churn (the customer is locked in and modest price changes don't drive them
+out).
+
+\noindent\emph{Grading: 1\,P each. Half credit if the student reports $\exp(0.030)$ and
+$\exp(-0.010)$ alone (per-unit factors, ignoring the requested $\Delta=10$). Zero if the
+two-year case drops the interaction term entirely.}
+
+\medskip
+\sol{} \subpoints{1} \textbf{(ii)} The main-effect coefficient $0.030$ is the per-EUR effect of
+\texttt{monthly} on log-odds \emph{only on the reference (month-to-month) contract}, because the
+interactions $\texttt{monthly:contract\_1yr}$ and $\texttt{monthly:contract\_2yr}$ shift the
+slope on the other levels. To describe the effect of \texttt{monthly} on churn ``on average''
+across contracts you must combine $\hat\beta_{\texttt{monthly}}$ with the relevant interaction
+coefficient on a per-contract basis:
+$$\text{slope for contract level } c \;=\; \hat\beta_{\texttt{monthly}} + \hat\beta_{\texttt{monthly:}c}\quad\text{(zero for the reference level).}$$
+
+\medskip
+\sol{} \subpoints{3} \textbf{(iii) Predicted probability.} For the given customer, the linear
+predictor is built term by term:
+\begin{align*}
+\hat\eta &= -1.90  &&\text{(intercept)} \\
+& + (-0.040)\cdot 12 = -0.480 &&\text{(\texttt{tenure})}\\
+& + 0.030\cdot 70 = 2.100 &&\text{(\texttt{monthly})}\\
+& + (-0.010)\cdot 45 = -0.450 &&\text{(\texttt{age})}\\
+& + 1.50 &&\text{(\texttt{contract\_1yr})}\\
+& + (-0.020)\cdot 70 = -1.400 &&\text{(\texttt{monthly:contract\_1yr})}\\
+& + 0 &&\text{(\texttt{senior} $=0$, \texttt{contract\_2yr} $=0$)}\\
+&= \boxed{-0.630}.
+\end{align*}
+Sigmoid:
+$$\hat p = \frac{1}{1+e^{-\hat\eta}} = \frac{1}{1+e^{0.630}} = \frac{1}{1+1.878} = \frac{1}{2.878} \approx \boxed{0.348}.$$
+Accept any answer in $[0.34, 0.36]$.
+
+\noindent\emph{Grading: 1\,P for assembling all relevant terms (incl.\ the one-year contract main
+effect and its monthly-interaction; deduct if either is dropped); 1\,P for the value of
+$\hat\eta\approx -0.63$; 1\,P for the correctly applied sigmoid. Deduct 0.5 for using
+\texttt{contract\_2yr} instead of \texttt{contract\_1yr}.}
+
+\medskip
+\sol{} \subpoints{1} \textbf{(iv)} $\hat p \approx 0.35 < 0.5$, so the customer is predicted
+\textbf{not} to churn at the default threshold. But the base rate of churn is $\approx 26\%$, so
+$\hat p = 0.35$ is already well above the base rate; a more sensible classification threshold
+might be lower (e.g.\ around $0.26$, the base rate), in which case the same customer would be
+flagged as a likely churner --- $0.5$ is a poor default here.
+
+\medskip
+\sol{} \subpoints{1} \textbf{(v) Re-encoding.} If the colleague swaps the reference level of
+\texttt{contract} from \emph{month-to-month} to \emph{two-year}:
+\begin{itemize}
+  \item \textbf{(a)} \textbf{No change.} The predicted probability of churn for any given customer
+        is invariant under reparameterization of the design matrix.
+  \item \textbf{(b)} \textbf{Yes, changes.} The two dummies are now ``month-to-month vs.\ two-year''
+        and ``one-year vs.\ two-year,'' which is a different basis; the estimates and SEs are
+        different numbers (though they encode the same fitted model).
+  \item \textbf{(c)} \textbf{No change.} The overall fit (residual deviance, $-2\log L$, AIC) is
+        invariant under reparameterization of the same model.
+\end{itemize}
+
+\subsection*{b) AdaBoost with pseudocode \subpoints{6}}
+
+\sol{} \subpoints{3} \textbf{(i) Pseudocode.}
+
+\medskip
+\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+\small
+\textbf{Input:} training data $\{(x_i, y_i)\}_{i=1}^n$ with $y_i\in\{-1,+1\}$; weak-learner
+class $\mathcal G$; number of rounds $M$.
+
+\textbf{Output:} ensemble classifier $G(x)$.
+
+\begin{enumerate}
+  \item Initialize weights $w_i^{(1)} = \tfrac{1}{n}$ for $i=1,\dots,n$.
+  \item \textbf{For} $m=1,\dots,M$:
+  \begin{enumerate}
+    \item Fit weak classifier $G_m\in\mathcal G$ to the training data using weights $w_i^{(m)}$.
+    \item Compute the weighted misclassification error
+          $$\mathrm{err}_m \;=\; \frac{\sum_{i=1}^n w_i^{(m)}\,\mathbb{1}\!\{y_i\neq G_m(x_i)\}}
+                                       {\sum_{i=1}^n w_i^{(m)}}.$$
+    \item Compute the classifier weight
+          $$\alpha_m \;=\; \tfrac{1}{2}\log\!\frac{1-\mathrm{err}_m}{\mathrm{err}_m}.$$
+    \item Update observation weights
+          $$w_i^{(m+1)} \;=\; w_i^{(m)} \cdot \exp\!\bigl(-\alpha_m\, y_i\, G_m(x_i)\bigr),
+            \quad i=1,\dots,n,$$
+          and renormalize so $\sum_i w_i^{(m+1)} = 1$.
+  \end{enumerate}
+  \item Return the final classifier $G(x) = \mathrm{sign}\!\left(\sum_{m=1}^{M} \alpha_m\, G_m(x)\right)$.
+\end{enumerate}}}
+
+\noindent\emph{Grading: 1\,P for the weight initialization, the $\mathrm{err}_m$ definition, and
+the classifier weight $\alpha_m$ (the trio is standard); 1\,P for the multiplicative weight update
+with $y_i G_m(x_i)\in\{\pm 1\}$; 1\,P for the final weighted-vote classifier with $\mathrm{sign}$.
+Accept the equivalent ``factor-of-$2$'' convention $\alpha_m = \log\tfrac{1-\mathrm{err}_m}{\mathrm{err}_m}$
+(without the $\tfrac{1}{2}$); the prof has used both. Deduct 0.5 if labels are coded as $\{0,1\}$
+instead of $\{-1,+1\}$ --- the weight update only works with the signed convention.}
+
+\medskip
+\sol{} \subpoints{1} \textbf{(ii)} With $\mathrm{err}_m = 0.30$:
+$$\alpha_m \;=\; \tfrac{1}{2}\log\frac{1-0.30}{0.30}
+   = \tfrac{1}{2}\log\frac{0.70}{0.30}
+   = \tfrac{1}{2}\log(2.333)
+   = \tfrac{1}{2}\cdot 0.847
+   \approx \boxed{0.42}.$$
+Accept any answer in $[0.40, 0.44]$. \emph{If the student uses the unscaled convention $\alpha_m
+=\log\tfrac{1-\mathrm{err}_m}{\mathrm{err}_m}\approx 0.85$, accept that too.}
+
+\medskip
+\sol{} \subpoints{1} \textbf{(iii) Weight updates.} Under the $\{-1,+1\}$ convention with
+$\alpha_m\approx 0.42$:
+\begin{itemize}
+  \item \textbf{Misclassified} ($y_i G_m(x_i) = -1$): $\exp(+\alpha_m) = \exp(0.42)
+        \approx \boxed{1.53}$.
+  \item \textbf{Correctly classified} ($y_i G_m(x_i) = +1$): $\exp(-\alpha_m) = \exp(-0.42)
+        \approx \boxed{0.65}$.
+\end{itemize}
+(With the unscaled $\alpha_m\approx 0.85$: misclassified factor $\approx 2.33$, correct factor
+$\approx 0.43$. Either convention is accepted, provided consistent with the student's choice in
+(ii).)
+
+\medskip
+\sol{} \subpoints{1} \textbf{(iv) Why weak learners (bias--variance).} Boosting builds a high-bias
+low-variance \emph{ensemble} out of \emph{many} simple learners, each contributing a small,
+shrunken correction. If the base learner were itself deep (low-bias, high-variance), each tree
+would already fit much of the training signal --- including noise --- and only a few iterations
+would suffice; the ensemble would inherit the per-tree variance and overfit aggressively. Shallow
+``stumps'' have high bias individually but low variance; the sequential corrections drive bias
+down without re-introducing the variance that deep trees would bring back in.
+
+\subsection*{c) Neural-network classifier with regularization \subpoints{8}}
+
+\sol{} \subpoints{2} \textbf{(i)} Each layer contributes $(\#\text{inputs} + 1)\cdot \#\text{outputs}$
+parameters (the $+1$ counts the bias).
+\begin{align*}
+\text{input}\to\text{hidden}: & \quad (7+1)\cdot 16 = 128, \\
+\text{hidden}\to\text{output}: & \quad (16+1)\cdot 1 = 17, \\
+\text{Total:} & \quad \boxed{128 + 17 = 145} \text{ parameters.}
+\end{align*}
+
+\noindent\emph{Grading: 1\,P for the per-layer breakdown, 1\,P for the total. Deduct 0.5 if any
+biases are dropped (e.g.\ a student forgetting all biases reports $7\cdot 16 + 16\cdot 1 = 128$,
+or forgetting only the output bias reports $128+16=144$). The dropout, label smoothing, and early
+stopping add \emph{no} parameters; the sigmoid on the output adds none.}
+
+\medskip
+\sol{} \subpoints{2} \textbf{(ii) Forward pass.}
+$$z = b + \sum_{j=1}^{7} w_j x_j
+   = -0.2 + 0.5\cdot 1 + (-0.3)\cdot 0 + 0.1\cdot 2 + 1.0\cdot 1 + (-0.5)\cdot 0 + 0.2\cdot(-1) + 0.4\cdot 1.$$
+Term by term: $0.5 + 0 + 0.2 + 1.0 + 0 - 0.2 + 0.4 = 1.9$; with the bias, $z = -0.2 + 1.9 = \boxed{1.7}$.
+ReLU: $h = \max(0, z) = \max(0, 1.7) = \boxed{1.7}$.
+
+\medskip
+\sol{} \subpoints{1} \textbf{(iii)} A network with only identity (linear) activations collapses
+across layers: $\hat y = W_L\,W_{L-1}\cdots W_1\, x + (\text{biases}) = W_{\mathrm{eff}}\,x + b_{\mathrm{eff}}$,
+where $W_{\mathrm{eff}}$ is a single matrix. The composite model is mathematically equivalent to
+ordinary (multivariate) linear regression --- depth adds no representational capacity, because the
+composition of linear maps is itself linear.
+
+\medskip
+\sol{} \subpoints{1} \textbf{(iv) The three regularizers.}
+\begin{itemize}
+  \item \textbf{Dropout:} During \emph{training only}, randomly zero out a fraction (here $20\%$)
+        of the hidden-layer activations on each forward pass; the surviving activations are
+        rescaled. At \emph{inference} the full network is used (no dropout, no rescaling beyond
+        what was applied in training).
+  \item \textbf{Early stopping:} During \emph{training}, monitor the loss on a held-out validation
+        set; stop training when the validation loss has stopped improving, and return the weights
+        from the validation-loss minimum (not the final iteration).
+  \item \textbf{Label smoothing:} During \emph{training only}, replace the hard target $y\in\{0,1\}$
+        by a softened target $\bigl((1-\varepsilon)\,y + \varepsilon/2\bigr)$ for each class (here
+        $\varepsilon=0.05$); discourages the network from driving its logits to $\pm\infty$ to
+        approach $\{0,1\}$.
+\end{itemize}
+
+\medskip
+\sol{} \subpoints{1} \textbf{(v) Dropout rate of $50\%$.} Not a good idea --- the prof's convention
+is ``$20\%$ is common, $50\%$ is too aggressive and almost never used.'' Dropping half of the
+hidden units in every forward pass strips the network's representational capacity to the point
+where it underfits.
+
+\medskip
+\sol{} \subpoints{1} \textbf{(vi) Training without regularization.} The classic over-fitting
+signature: training loss continues to decrease monotonically (eventually toward zero) while the
+validation loss drops initially, reaches a minimum, and then \emph{rises} as the model memorizes
+training-set noise. The gap between train and validation loss widens with epochs.
+
+\subsection*{d) LDA vs.\ QDA, plus random-forest variable importance \subpoints{4}}
+
+\sol{} \subpoints{2} \textbf{(i)} LDA's two main modelling assumptions:
+\begin{enumerate}
+  \item \textbf{Gaussian class-conditional densities.} Within each class, the predictors are
+        multivariate normal: $\mathbf{X}\mid Y=k \sim \mathcal{N}_p(\boldsymbol\mu_k, \boldsymbol\Sigma)$.
+  \item \textbf{Common (pooled) covariance.} All classes share the \emph{same} $\boldsymbol\Sigma$.
+\end{enumerate}
+\textbf{Why prefer LDA when one class is small.} QDA estimates a separate covariance matrix
+$\boldsymbol\Sigma_k$ per class --- here $K=2$ with the minority class ``churners'' having
+roughly $900$ training points. QDA must estimate $p(p+1)/2$ covariance parameters from those $900$
+points; with $p=5$ that is $15$ parameters from $900$ obs, not catastrophic, but the variance of
+$\widehat{\boldsymbol\Sigma}_{\text{churn}}$ is much higher than the pooled $\widehat{\boldsymbol\Sigma}$ used
+by LDA. The bias QDA pays for assuming distinct covariances is small if they really are similar;
+the variance saving of LDA's pooled estimate is real either way. In a small-class regime LDA
+typically wins on test error --- as is consistent here ($0.196$ for LDA, $0.221$ for QDA).
+
+\medskip
+\sol{} \subpoints{1} \textbf{(ii)} For classification the standard default is $\mathtt{mtry}
+=\sqrt{p}=\sqrt{7}\approx 2.65$, conventionally rounded up to $\mathtt{mtry}=3$. We want
+$\mathtt{mtry}<p$ so the individual trees are forced to use different predictors at the top splits
+and become \emph{decorrelated}; averaging decorrelated trees yields better variance reduction than
+averaging the highly-correlated trees that bagging ($\mathtt{mtry}=p$) would produce.
+
+\medskip
+\sol{} \subpoints{1} \textbf{(iii) What variable importance \emph{cannot} tell you.} It does not
+tell you the \emph{direction} (sign) or \emph{shape} of any predictor's effect on $\hat p(\text{churn})$.
+For example, the plot tells you that \texttt{tenure} matters a lot, but it does not tell you
+whether long tenure raises or lowers the churn probability, nor what the functional form of that
+relationship looks like (linear? saturating?). To recover those, you would compute partial
+dependence plots (or ICE curves) or compare with a parametric model. \emph{Also acceptable: it
+says nothing about causality --- a predictor that proxies for a confounder will have high
+importance without having any causal effect.}
+
+\subsection*{e) Class imbalance \subpoints{2}}
+
+\sol{} \subpoints{1} \textbf{(i)} A constant ``no churn'' classifier mis-classifies exactly the
+$26\%$ of customers who churn and correctly classifies the rest, so its test error rate is
+$\approx \boxed{0.26}$.
+
+\medskip
+\sol{} \subpoints{1} \textbf{(ii)} The naive baseline ($0.26$) is \emph{worse} than LDA ($0.196$),
+QDA ($0.221$), and the random forest ($0.179$), so plain accuracy does usefully discriminate
+here --- but only modestly, and at the price of saying nothing about the model's ability to catch
+the (commercially valuable) churners. In this kind of imbalanced setting one should privilege the
+\emph{pair} (\textbf{sensitivity, specificity}), or a threshold-independent summary such as
+\textbf{AUC}, or a cost-weighted metric reflecting that one retained customer is worth far more
+than the cost of one unnecessary retention offer. Reporting only the overall test error rate
+hides the fact that, at threshold $0.5$, all three classifiers are still missing a substantial
+fraction of churners (sensitivity well below $1$).
+
+\vspace{1em}
+\hrule
+\vspace{0.5em}
+
+\noindent\textbf{End of solution proposal.}\quad Total awarded: $10+28+16+18+28=100$ points.
+
+\end{document}
