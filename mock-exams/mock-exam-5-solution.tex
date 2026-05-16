@@ -140,17 +140,20 @@ $0.5$ if (B) is marked True (the canonical confusion: bootstrap quantifies varia
         vanishes and the network is less prone to over-confident, badly calibrated predictions on
         unseen data.
   \item \textbf{False}. L2 weight decay penalizes large weights, which forces the optimizer toward
-        a less expressive solution and generally \emph{increases} training error. Its purpose is
-        to reduce \emph{test} error (variance reduction at the cost of some bias).
+        a less expressive solution and generally \emph{increases} training error (an unconstrained
+        OLS-style optimum can only do at least as well on training as a constrained one). Its
+        purpose is to reduce \emph{test} error (variance reduction at the cost of some bias).
 \end{enumerate}
 
 \subsection*{e) Mini-batch SGD and backpropagation \subpoints{3}}
 \sol{} \emph{(1\,P per statement.)}
 \begin{enumerate}[(i)]
-  \item \textbf{True}. Backpropagation is exactly the chain-rule application: the forward pass
-        stores intermediate activations, and the backward pass uses them to compute
-        $\partial L/\partial \theta$ for every parameter $\theta$ in time proportional to the
-        forward pass. It does not \emph{do} the gradient step; that is the optimizer's job.
+  \item \textbf{False}. Backpropagation only \emph{computes} the gradient
+        $\partial L/\partial \theta$ for every parameter $\theta$, via a chain-rule pass that
+        reuses intermediate activations from the forward pass. The actual parameter update is
+        performed by the \emph{optimizer} (SGD, Adam, etc.) using the gradients that backprop
+        delivered. Conflating ``computes the gradient'' with ``performs the update'' is the
+        canonical confusion.
   \item \textbf{True}. The mini-batch gradient $\tfrac{1}{|\mathcal B|}\sum_{i\in\mathcal B}\nabla L_i$
         has expectation $\tfrac{1}{n}\sum_{i=1}^n \nabla L_i$ (the full-data gradient), provided
         the mini-batch is drawn uniformly at random; hence it is unbiased.

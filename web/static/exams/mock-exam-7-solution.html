@@ -182,11 +182,13 @@ which discourages the network from producing extreme logits and is
 partly motivated by the observation that hard labels over-confidently
 assume every training example is perfectly labelled.</p></li>
 <li><p><em>(1 %)</em> <strong>False</strong>. Early stopping uses the
-<em>validation</em> error: training is halted at the epoch where
-validation error first stops improving (or starts rising), and the
-weights from that epoch are returned. Stopping at the training-error
-minimum would never stop — training error typically decreases
-monotonically.</p></li>
+<em>validation</em> error, not the training error: training is halted at
+the epoch where validation error first stops improving (or starts
+rising), and the weights from that epoch are returned. Stopping at the
+training-error minimum would never stop — training error typically
+decreases monotonically — and would entirely miss the moment when
+generalization begins to deteriorate, which is the whole point of early
+stopping.</p></li>
 </ol>
 <h2 class="unnumbered"
 id="d-boosting-adaboost-and-gradient-boosting-4">d) Boosting — AdaBoost
@@ -203,9 +205,12 @@ squared-error gradient boosting is also called “forward stagewise
 regression on residuals.”</p></li>
 <li><p><em>(1 %)</em> <strong>False</strong>. Boosting reduces
 <em>bias</em> relative to a single shallow tree, by fitting trees
-sequentially to residuals; trees are <em>not</em> fit on bootstrap
-replicates. Variance reduction by bootstrap averaging is what
-<em>bagging</em> (and random forests) does.</p></li>
+sequentially to the residuals (or negative gradient) of the current
+ensemble; the trees are <em>not</em> fit on independent bootstrap
+replicates, and they are <em>not</em> simply averaged — they are added
+in a stagewise sum with shrinkage. Variance reduction by bootstrap
+averaging is the mechanism of <em>bagging</em> and random forests, not
+boosting.</p></li>
 <li><p><em>(1 %)</em> <strong>True</strong>. Each tree’s contribution to
 the ensemble is <span class="math inline">\(\nu\cdot\hat
 T_m(x)\)</span>, so halving <span class="math inline">\(\nu\)</span>
@@ -359,11 +364,13 @@ is <span class="math inline">\(\rho\sigma^2 +
 (1-\rho)\sigma^2/B\)</span>, so reducing the pairwise correlation <span
 class="math inline">\(\rho\)</span> is exactly how random forests
 improve over bagging.</p></li>
-<li><p><strong>False</strong>. <span class="math inline">\(B\)</span> is
-<em>not</em> tuned by CV for a random forest. Test error is
-monotonically non-increasing in <span class="math inline">\(B\)</span>
-(averaging only reduces variance), so one picks “enough” trees —
-typically <span class="math inline">\(500\)</span>–<span
+<li><p><strong>False</strong>. The test error of a random forest is
+<em>monotonically non-increasing</em> in <span
+class="math inline">\(B\)</span> (averaging only reduces variance, never
+causes overfitting), so the curve is not U-shaped and <span
+class="math inline">\(B\)</span> is <em>not</em> tuned by CV. One simply
+picks “enough” trees — typically <span
+class="math inline">\(500\)</span>–<span
 class="math inline">\(1000\)</span>. The standard contrast: in
 <em>boosting</em>, <span class="math inline">\(B\)</span> <em>is</em> a
 real tuning parameter because boosting can overfit.</p></li>

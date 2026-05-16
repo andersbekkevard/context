@@ -65,19 +65,19 @@ blank from the choices in parentheses. Each correct fill is worth <span
 class="math inline">\(1\)</span> %.</p>
 <p>In supervised statistical learning we typically distinguish between
 methods that produce an explicit functional form for the relationship
-between predictors and response, called <u></u> (1) (<em>parametric</em>
-/ <em>generative</em> / <em>nonparametric</em> / <em>regularized</em>)
+between predictors and response, called <u></u> (1) (<em>generative</em>
+/ <em>parametric</em> / <em>nonparametric</em> / <em>regularized</em>)
 methods, and methods that estimate the relationship more flexibly
 without assuming such a form, called <u></u> (2) (<em>parametric</em> /
 <em>nonparametric</em> / <em>linear</em> / <em>Bayesian</em>)
 methods.</p>
 <p>A central concept of the course was that the expected squared test
 error of a fitted model can be written as the sum of three pieces: a
-squared bias, a variance, and an <u></u> (3) (<em>irreducible</em> /
-<em>reducible</em> / <em>regularized</em> / <em>validated</em>)
+squared bias, a variance, and an <u></u> (3) (<em>reducible</em> /
+<em>regularized</em> / <em>irreducible</em> / <em>validated</em>)
 component that does not vanish as we collect more training data. Methods
 such as ridge regression and lasso are referred to as <u></u> (4)
-(<em>shrinkage</em> / <em>boosting</em> / <em>generative</em> /
+(<em>boosting</em> / <em>generative</em> / <em>shrinkage</em> /
 <em>kernel</em>) methods because they shrink coefficients toward zero.
 Of these two, <u></u> (5) (<em>ridge</em> / <em>lasso</em> /
 <em>both</em> / <em>neither</em>) can produce a model in which some
@@ -88,26 +88,26 @@ honestly, we use a resampling technique. The simplest is the
 validation-set approach; a more reliable variant that splits the
 training data into <span class="math inline">\(k\)</span> roughly equal
 pieces and rotates which piece serves as held-out data is called
-<u></u> (6) (<em>k-fold cross-validation</em> / <em>the bootstrap</em> /
-<em>leave-one-out cross-validation</em> / <em>nested CV</em>). The
-lecturer in this course generally prefers this technique to
-penalty-based criteria such as AIC because the latter rely on
-<u></u> (7) (<em>distributional assumptions</em> / <em>shrinkage</em> /
-<em>regularization</em> / <em>cross-validation</em>) that often fail in
-practice.</p>
+<u></u> (6) (<em>the bootstrap</em> / <em>leave-one-out
+cross-validation</em> / <em>nested CV</em> / <em>k-fold
+cross-validation</em>). The lecturer in this course generally prefers
+this technique to penalty-based criteria such as AIC because the latter
+rely on <u></u> (7) (<em>shrinkage</em> / <em>distributional
+assumptions</em> / <em>regularization</em> / <em>cross-validation</em>)
+that often fail in practice.</p>
 <p>For non-linear regression we discussed methods that allow each
 predictor to enter the model through its own non-linear shape and are
-then summed; this family is called <u></u> (8) (<em>generalized additive
-models</em> / <em>principal components</em> / <em>convolutional
-networks</em> / <em>boosted trees</em>).</p>
+then summed; this family is called <u></u> (8) (<em>principal
+components</em> / <em>convolutional networks</em> / <em>boosted
+trees</em> / <em>generalized additive models</em>).</p>
 <p>Finally, in unsupervised learning we discussed two main families. One
 reduces the dimensionality of the data by finding orthogonal directions
-of maximal variance and is called <u></u> (9) (<em>principal component
-analysis</em> / <em>lasso</em> / <em>partial least squares</em> /
+of maximal variance and is called <u></u> (9) (<em>lasso</em> /
+<em>principal component analysis</em> / <em>partial least squares</em> /
 <em>neural networks</em>); another partitions the observations into
 groups, of which the agglomerative variant produces a tree-like
-structure called a <u></u> (10) (<em>dendrogram</em> / <em>biplot</em> /
-<em>scree plot</em> / <em>decision tree</em>).</p>
+structure called a <u></u> (10) (<em>biplot</em> / <em>scree plot</em> /
+<em>dendrogram</em> / <em>decision tree</em>).</p>
 <h1 class="unnumbered"
 id="problem-2-28-multiple-choice-truefalse-and-short-numeric">Problem 2
 <strong>(28 %)</strong> — Multiple choice, true/false, and short
@@ -129,8 +129,9 @@ for any fitted model <span class="math inline">\(\hat
 f\)</span>.</p></li>
 <li><p>In the over-parameterized regime where the number of model
 parameters <span class="math inline">\(p\)</span> is much larger than
-<span class="math inline">\(n\)</span>, a model that fits the training
-data perfectly cannot generalize to new data.</p></li>
+<span class="math inline">\(n\)</span>, a model that interpolates the
+training data has test error that grows without bound as <span
+class="math inline">\(p/n\)</span> increases.</p></li>
 <li><p>In a regression setting in which <span
 class="math inline">\(\sigma^2\)</span> is large, a more flexible model
 is generally preferable because it can chase down more of the
@@ -213,8 +214,9 @@ because the natural spline is constrained to be linear outside the
 boundary knots.</p></li>
 <li><p>For a cubic regression spline, the third derivative is continuous
 at every knot.</p></li>
-<li><p>Adding more knots to a regression spline typically makes the fit
-<em>less</em> flexible.</p></li>
+<li><p>In a cubic regression spline the knot locations enter the fit
+non-linearly and are estimated jointly with the spline coefficients by
+least squares.</p></li>
 </ol>
 <h2 class="unnumbered" id="f-principal-component-analysis-5">f)
 Principal component analysis <em>(5 %)</em></h2>

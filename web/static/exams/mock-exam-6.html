@@ -66,47 +66,47 @@ class="math inline">\(1\)</span> %.</p>
 <p>Statistical learning methods that assume a specific functional form
 <span class="math inline">\(f(x;\theta)\)</span> for the regression
 function and then estimate <span class="math inline">\(\theta\)</span>
-from data are called <u></u> (1) (<em>parametric</em> /
-<em>nonparametric</em> / <em>generative</em> / <em>kernel</em>) methods.
+from data are called <u></u> (1) (<em>nonparametric</em> /
+<em>generative</em> / <em>parametric</em> / <em>kernel</em>) methods.
 Within the supervised-learning framework, the goal of estimating <span
 class="math inline">\(f\)</span> so as to forecast the response on new
-inputs is called <u></u> (2) (<em>prediction</em> / <em>inference</em> /
+inputs is called <u></u> (2) (<em>inference</em> / <em>prediction</em> /
 <em>classification</em> / <em>clustering</em>), while the goal of
 understanding which inputs drive the response and by how much is called
 <u></u> (3) (<em>prediction</em> / <em>inference</em> /
 <em>regression</em> / <em>bootstrap</em>).</p>
 <p>The expected squared test error of a fitted regression model at a new
 point can always be written as the sum of a squared bias, a variance,
-and an <u></u> (4) (<em>irreducible</em> / <em>reducible</em> /
-<em>cross-validated</em> / <em>biased</em>) component arising from the
-noise in the response itself. Among the two main shrinkage methods we
-discussed, <u></u> (5) (<em>ridge</em> / <em>lasso</em> / <em>both</em>
+and an <u></u> (4) (<em>reducible</em> / <em>cross-validated</em> /
+<em>biased</em> / <em>irreducible</em>) component arising from the noise
+in the response itself. Among the two main shrinkage methods we
+discussed, <u></u> (5) (<em>lasso</em> / <em>both</em> / <em>ridge</em>
 / <em>neither</em>) shrinks coefficients toward zero but, except in
-degenerate cases, never sets them exactly to zero.</p>
+degenerate cases, does not set them exactly to zero.</p>
 <p>To estimate the generalization error of a fitted model without using
 the test set, one applies a resampling procedure. When the goal is also
 to <em>tune</em> a hyperparameter (e.g. the penalty <span
 class="math inline">\(\lambda\)</span>) and then assess the resulting
 pipeline honestly, one must wrap the hyperparameter-selection step
-inside an outer resampling loop — this is called <u></u> (6) (<em>nested
-cross-validation</em> / <em>stratified cross-validation</em> / <em>the
-bootstrap</em> / <em>the validation-set approach</em>).</p>
+inside an outer resampling loop — this is called <u></u> (6)
+(<em>stratified cross-validation</em> / <em>nested cross-validation</em>
+/ <em>the bootstrap</em> / <em>the validation-set approach</em>).</p>
 <p>In the neural-network module we saw that updating the parameters
 using the gradient computed on a small random subset of training
 observations, rather than the full dataset, is called <u></u> (7)
-(<em>mini-batch stochastic gradient descent</em> / <em>batch gradient
-descent</em> / <em>Newton’s method</em> / <em>backpropagation through
-time</em>). Three regularization techniques specific to neural networks
-are: randomly zeroing a fraction of node outputs during each training
-pass, called <u></u> (8) (<em>dropout</em> / <em>label smoothing</em> /
-<em>early stopping</em> / <em>batch normalization</em>); monitoring
-validation loss and halting training when it begins to rise, called
-<u></u> (9) (<em>early stopping</em> / <em>dropout</em> / <em>weight
-decay</em> / <em>data augmentation</em>); and replacing the hard one-hot
-training targets by slightly softened versions to discourage
-overconfident predictions, called <u></u> (10) (<em>label smoothing</em>
-/ <em>dropout</em> / <em>transfer learning</em> / <em>batch
-normalization</em>).</p>
+(<em>batch gradient descent</em> / <em>Newton’s method</em> /
+<em>backpropagation through time</em> / <em>mini-batch stochastic
+gradient descent</em>). Three regularization techniques specific to
+neural networks are: randomly zeroing a fraction of node outputs during
+each training pass, called <u></u> (8) (<em>dropout</em> / <em>label
+smoothing</em> / <em>early stopping</em> / <em>batch
+normalization</em>); monitoring validation loss and halting training
+when it begins to rise, called <u></u> (9) (<em>dropout</em> /
+<em>weight decay</em> / <em>early stopping</em> / <em>data
+augmentation</em>); and replacing the hard one-hot training targets by
+slightly softened versions to discourage overconfident predictions,
+called <u></u> (10) (<em>dropout</em> / <em>label smoothing</em> /
+<em>transfer learning</em> / <em>batch normalization</em>).</p>
 <h1 class="unnumbered"
 id="problem-2-28-multiple-choice-truefalse-and-short-numeric">Problem 2
 <strong>(28 %)</strong> — Multiple choice, true/false, and short
@@ -132,8 +132,7 @@ regularization to ordinary least squares can lower test MSE <em>by
 simultaneously lowering both squared bias and variance</em>.</p></li>
 <li><p>In the over-parameterized regime (<span
 class="math inline">\(p\gg n\)</span>), a model that fits the training
-data with zero residual error necessarily generalizes badly to new
-data.</p></li>
+data with zero residual error generalizes badly to new data.</p></li>
 <li><p>Doubling the noise variance <span
 class="math inline">\(\sigma^2\)</span>, with everything else held
 fixed, generally makes the optimal flexibility of <span

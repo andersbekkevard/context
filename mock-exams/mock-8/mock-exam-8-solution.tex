@@ -63,7 +63,8 @@ problem statements.}
 split);
 (8) ``the EM algorithm'' (EM is for latent-variable models, not for chain-rule gradient
 computation);
-(9) ``dropout'' (dropout zeros activations, not targets).}
+(9) ``dropout'' (dropout zeros activations, not targets). Note: distractor order has been rotated across
+items so that the correct answer's position varies across (1)--(10); read each list of choices carefully.}
 
 \vspace{0.6em}
 \hrule
@@ -92,9 +93,10 @@ computation);
 \end{enumerate}
 
 \noindent\emph{Grading: 1\,P each. (i) full credit requires both formulas; deduct 0.5 if bias is
-written un-squared. (ii) the common trap is to say ``True --- ridge always helps,'' which conflates
-the qualitative bias--variance message with a literal-always claim. (iii) the trap is to confuse the
-\emph{shape} of variance-vs-flexibility with the validity of the identity.}
+written un-squared. (ii) the common trap is to say ``True --- shrinkage helps,'' which conflates
+the qualitative bias--variance message with the claim that shrinkage dominates the unbiased estimator
+regardless of $\mu$ and $\sigma^2/n$. (iii) the trap is to confuse the \emph{shape} of
+variance-vs-flexibility with the validity of the identity.}
 
 \subsection*{b) Cross-validation: LOOCV vs $k$-fold and the OLS shortcut \subpoints{4}}
 \sol{}
@@ -157,9 +159,10 @@ MSE. For (iv) accept any phrasing that names the dependence between folds.}
         $\tfrac{1}{N}\sum_i \nabla L_i$ (the full-batch gradient) when $\mathcal B$ is a uniform
         random subset of size $m$. Variance scales like $1/m$, so smaller batches are noisier --- a
         trade-off the prof flagged as the source of SGD's implicit-regularization effect.
-  \item \textbf{True}. The course-stated practical range is $\eta \in [10^{-3}, 10^{-1}]$ with
-        $0.01$--$0.1$ typical; $\eta = 2$ would overshoot every basin and oscillate without
-        converging.
+  \item \textbf{False}. The course-stated practical range is $\eta \in [10^{-3}, 10^{-1}]$ with
+        $0.01$--$0.1$ typical, \emph{not} $\eta \approx 2$. A learning rate of $2$ would overshoot
+        every basin and oscillate without converging, while $\eta = 0.1$ sits at the high end of the
+        usable range and is a perfectly reasonable practical value.
   \item \textbf{True}. For large positive $z$, $\mathrm{ReLU}'(z) = 1$ exactly, while
         $\sigma'(z) = \sigma(z)(1-\sigma(z)) \to 0$ as $\sigma(z) \to 1$. The standard ``vanishing
         gradient'' story: in deep networks the chain rule multiplies many activation derivatives;
@@ -168,8 +171,8 @@ MSE. For (iv) accept any phrasing that names the dependence between folds.}
         textbook fix.
 \end{enumerate}
 
-\noindent\emph{Grading: 1\,P each. The (ii) trap is to think ``larger = faster'' --- the prof
-explicitly cited divergent-loss screenshots at large $\eta$.}
+\noindent\emph{Grading: 1\,P each. The (ii) trap is to think ``larger = faster'' and accept $\eta \approx 2$
+as typical --- the prof explicitly cited divergent-loss screenshots at large $\eta$.}
 
 \subsection*{e) Boosting: AdaBoost, gradient boosting, XGBoost \subpoints{4}}
 \sol{}
@@ -184,10 +187,11 @@ explicitly cited divergent-loss screenshots at large $\eta$.}
   \item \subpoints{1} \textbf{True}. With $L(y, F) = \tfrac{1}{2}(y - F)^2$, the negative gradient
         w.r.t.\ $F$ is $-\partial L/\partial F = y - F$, exactly the current residual. So squared-error
         gradient boosting and ``forward stagewise regression on residuals'' are the same algorithm.
-  \item \subpoints{1} \textbf{True}. Each tree's effective contribution to the ensemble is
-        $\nu\cdot\hat T_m$, so halving $\nu$ roughly doubles the trees needed to reach the same
-        cumulative fit. This is the well-known $(M, \nu)$ joint trade-off; the rule of thumb is
-        ``smaller $\nu$ is better if you can afford the trees.''
+  \item \subpoints{1} \textbf{False}. Each tree's effective contribution to the ensemble is
+        $\nu\cdot\hat T_m$, so halving $\nu$ roughly \emph{doubles} (not halves) the trees needed to
+        reach the same cumulative fit. The statement gets the direction backwards. This is the
+        well-known $(M, \nu)$ joint trade-off; the rule of thumb is ``smaller $\nu$ is better if you
+        can afford the trees.''
   \item \subpoints{1} \textbf{True}. XGBoost's two structural additions over vanilla gradient
         boosting are (a) explicit $L_1$ and $L_2$ regularization on the per-leaf weights and
         (b) a second-order Taylor expansion of the loss, so split scores depend on both the
@@ -196,8 +200,8 @@ explicitly cited divergent-loss screenshots at large $\eta$.}
 \end{enumerate}
 
 \noindent\emph{Grading: 1\,P each. (i) full credit requires both the numeric and the sign-flip
-interpretation. The trap on (iii) is the easy reverse misreading: ``halving $\nu$ halves $M$,''
-which gets the qualitative direction backward.}
+interpretation. (iii) is exactly the reverse misreading ``halving $\nu$ halves $M$'' --- it gets
+the qualitative direction backward and is therefore False.}
 
 \subsection*{f) Neural network regularization \subpoints{3}}
 \sol{}
@@ -440,8 +444,9 @@ $\nabla_{\boldsymbol\theta} \ell_i$ as a known primitive.
 \textbf{(A) True.} Since each batch is a uniform random sample (without replacement at the
 within-epoch level, but the same expectation argument as with replacement applies),
 $\mathbb E_{\text{batch}}[\widehat{\nabla L}] = (1/N)\sum_{i=1}^N \nabla \ell_i = \nabla L(\boldsymbol\theta)$.
-\textbf{(B) True.} For $m$ i.i.d.\ summands, $\mathrm{Var}(\widehat{\nabla L}) \propto 1/m$, so
-doubling $m$ halves the variance, all else equal.
+\textbf{(B) False.} For $m$ i.i.d.\ summands, $\mathrm{Var}(\widehat{\nabla L}) \propto 1/m$, so
+doubling $m$ \emph{halves} (not doubles) the variance, all else equal. The statement inverts the
+relationship.
 \textbf{(C) True.} The course's claim (Apr 21): the per-step gradient \emph{noise} from small
 batches biases the optimizer toward \emph{flat} minima (which generalize better) and away from
 \emph{sharp} minima. This is the prof's ``implicit $L^2$ regularization'' story.
@@ -460,7 +465,7 @@ optimization dynamics.
 on the mini-batch, the update rule $\boldsymbol\theta \leftarrow \boldsymbol\theta - \eta\widehat{\nabla L}$, and the
 ``every observation seen exactly once per epoch'' detail; 0.5\,P off for missing the shuffle, 0.5\,P
 off for forgetting that the update happens \emph{within} the inner loop (not once at the end of the
-epoch). (ii) 1\,P for the full T/T/T pattern. (iii) 1\,P for any defensible
+epoch). (ii) 1\,P for the full T/F/T pattern. (iii) 1\,P for any defensible
 bias-for-variance framing tying SGD noise to flat-vs-sharp minima or to the same effect as explicit
 regularizers. Common trap on (ii)(C): saying ``False --- smaller batches mean more variance, not
 more regularization'' confuses the variance of the gradient estimator with the regularization effect

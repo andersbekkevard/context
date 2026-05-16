@@ -125,8 +125,10 @@ is correctly placed.}
         gradient: $\mathbb{E}_{\text{batch}}[\nabla L_{\text{batch}}] = \nabla L_{\text{full}}$.
   \item \textbf{True}. Larger batches have lower-variance gradient estimates; the gradient noise
         from small batches is itself a (mild) regulariser, so reducing it reduces that regularisation.
-  \item \textbf{True}. With $L = \tfrac{1}{2}(y_i-\hat f(x_i))^2$, $\partial L/\partial \hat f = -(y_i-\hat f(x_i))$;
-        this is the seed of the backward pass.
+  \item \textbf{False}. With $L = \tfrac{1}{2}(y_i-\hat f(x_i))^2$,
+        $\partial L/\partial \hat f = -(y_i-\hat f(x_i))$, so the backward-pass seed is the
+        \emph{negative} residual, $\delta^{\text{out}}_i = -(y_i-\hat f(x_i))$. The sign matters:
+        backprop pushes the gradient of the loss, not the residual itself.
 \end{enumerate}
 
 \subsection*{e) Neural-network regularization \subpoints{3}}
@@ -134,9 +136,10 @@ is correctly placed.}
 \begin{enumerate}[(i)]
   \item \textbf{False}. Dropout is active \emph{only} at training time. At test time all units are
         used, with outputs scaled appropriately (or weights scaled, in ``inverted dropout'').
-  \item \textbf{False}. $50\%$ is too aggressive for fully-connected hidden layers in this course;
-        the prof's typical default is $\sim 20\%$. Rates near $0.5$ tend to under-fit on small
-        tabular data.
+  \item \textbf{True}. The prof's typical default is $\sim 20\%$ dropout for fully-connected
+        hidden layers on tabular data; she explicitly flagged $50\%$ as too aggressive on
+        signal-poor tabular problems (it tends to under-fit). The statement just records both
+        facts together.
   \item \textbf{False}. Early stopping monitors the \emph{validation} loss and returns the
         parameters from the epoch that minimised it. Stopping when training loss plateaus would
         defeat the purpose.

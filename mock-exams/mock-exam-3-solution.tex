@@ -77,9 +77,11 @@ as a classic exam trap). For (7), ``cross-validation'' loops back on itself and 
         is an algebraic identity (the cross-term vanishes by independence of $\varepsilon$ and the
         training set). It holds for \emph{any} estimator $\hat f$, including over-parameterized ones.
   \item \textbf{False}. This is the \emph{double-descent / benign-overfitting} regime: when
-        $p \gg n$, an interpolating model can still generalize, because the optimization implicitly
-        picks the minimum-norm interpolator from the infinite family of zero-training-error
-        solutions. (Prof's hobbyhorse, hammered five times across the course.)
+        $p \gg n$, an interpolating model can still generalize well, and indeed empirically the
+        test error \emph{decreases} again past the interpolation threshold rather than growing
+        without bound. The optimization implicitly picks the minimum-norm interpolator from the
+        infinite family of zero-training-error solutions. (Prof's hobbyhorse, hammered five times
+        across the course.)
   \item \textbf{False}. With large $\sigma^2$ a flexible model spends extra variance ``chasing
         noise'' that is irreducible by definition, so test error \emph{rises}. Less-flexible models
         win when noise dominates.
@@ -168,8 +170,10 @@ credit for $e^{0.02}\approx 1.02$ (ignoring the interaction --- the standard tra
         generally discontinuous (it is the lowest derivative the construction is allowed to
         ``break''). A function whose third derivative were continuous everywhere would be a single
         global cubic.
-  \item \textbf{False}. More knots = more basis functions = \emph{more} flexible fit. The whole
-        point of adding knots is to give the spline more local adaptivity.
+  \item \textbf{False}. In a regression spline the knot locations are \emph{fixed in advance} by
+        the user (e.g.\ at quantiles of the predictor); only the spline coefficients are estimated
+        by least squares. Joint estimation of knot positions is what would turn the problem
+        non-linear, which is precisely why classical regression splines do \emph{not} do it.
 \end{enumerate}
 
 \subsection*{f) Principal component analysis \subpoints{5}}

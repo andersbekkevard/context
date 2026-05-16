@@ -99,7 +99,9 @@ holds for <em>any</em> estimator <span class="math inline">\(\hat
 f\)</span>, including over-parameterized ones.</p></li>
 <li><p><strong>False</strong>. This is the <em>double-descent /
 benign-overfitting</em> regime: when <span class="math inline">\(p \gg
-n\)</span>, an interpolating model can still generalize, because the
+n\)</span>, an interpolating model can still generalize well, and indeed
+empirically the test error <em>decreases</em> again past the
+interpolation threshold rather than growing without bound. The
 optimization implicitly picks the minimum-norm interpolator from the
 infinite family of zero-training-error solutions. (Prof’s hobbyhorse,
 hammered five times across the course.)</p></li>
@@ -214,9 +216,12 @@ derivatives at every knot; the <em>third</em> derivative is generally
 discontinuous (it is the lowest derivative the construction is allowed
 to “break”). A function whose third derivative were continuous
 everywhere would be a single global cubic.</p></li>
-<li><p><strong>False</strong>. More knots = more basis functions =
-<em>more</em> flexible fit. The whole point of adding knots is to give
-the spline more local adaptivity.</p></li>
+<li><p><strong>False</strong>. In a regression spline the knot locations
+are <em>fixed in advance</em> by the user (e.g. at quantiles of the
+predictor); only the spline coefficients are estimated by least squares.
+Joint estimation of knot positions is what would turn the problem
+non-linear, which is precisely why classical regression splines do
+<em>not</em> do it.</p></li>
 </ol>
 <h2 class="unnumbered" id="f-principal-component-analysis-5">f)
 Principal component analysis <em>(5 %)</em></h2>

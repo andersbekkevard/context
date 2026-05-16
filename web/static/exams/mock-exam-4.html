@@ -73,8 +73,8 @@ the affected coefficients explode. This phenomenon is called <u></u> (1)
 (<em>heteroscedasticity</em> / <em>collinearity</em> / <em>leverage</em>
 / <em>double descent</em>). One way to escape this problem without
 dropping a variable is to add a quadratic penalty on the coefficients to
-the OLS objective, a technique known as <u></u> (2) (<em>ridge
-regression</em> / <em>the lasso</em> / <em>partial least squares</em> /
+the OLS objective, a technique known as <u></u> (2) (<em>the lasso</em>
+/ <em>partial least squares</em> / <em>ridge regression</em> /
 <em>forward stepwise selection</em>).</p>
 <p>When the goal is to honestly estimate the test error of a model, the
 simplest tool is the validation-set approach; a more reliable variant
@@ -88,26 +88,25 @@ use the response <span class="math inline">\(y\)</span> to pre-select
 predictors on the full data and only then run cross-validation on the
 reduced predictor set; this gives an unbiased estimate of test error
 only when the selection step is moved <em>inside</em> each fold, an idea
-known as <u></u> (4) (<em>nested cross-validation</em> / <em>bootstrap
-aggregation</em> / <em>stratified <span
-class="math inline">\(k\)</span>-fold</em> / <em>leave-one-out
-CV</em>).</p>
+known as <u></u> (4) (<em>bootstrap aggregation</em> / <em>stratified
+<span class="math inline">\(k\)</span>-fold</em> / <em>leave-one-out
+CV</em> / <em>nested cross-validation</em>).</p>
 <p>In neural networks, the parameters are typically fit by an iterative
 optimizer that, at each step, takes a small step in the direction of the
 negative gradient computed on a random subset of the training data. This
-optimizer is called <u></u> (5) (<em>mini-batch SGD</em> /
-<em>coordinate descent</em> / <em>the Newton-Raphson method</em> /
+optimizer is called <u></u> (5) (<em>coordinate descent</em> /
+<em>mini-batch SGD</em> / <em>the Newton-Raphson method</em> /
 <em>conjugate gradient</em>). The gradient itself is computed
 efficiently by repeated application of the chain rule from output back
-toward input, an algorithm called <u></u> (6) (<em>backpropagation</em>
-/ <em>boosting</em> / <em>forward propagation</em> / <em>the EM
+toward input, an algorithm called <u></u> (6) (<em>boosting</em> /
+<em>forward propagation</em> / <em>backpropagation</em> / <em>the EM
 algorithm</em>).</p>
-<p>A neural network with many more parameters than observations must
-always be trained with some form of regularization. One option is to
-randomly zero out a fraction of the hidden-unit outputs at each training
-iteration; this technique is called <u></u> (7) (<em>dropout</em> /
-<em>label smoothing</em> / <em>batch normalization</em> /
-<em>cost-complexity pruning</em>). Another option is to monitor the
+<p>A neural network with many more parameters than observations is, as a
+rule in this course, trained with some form of regularization. One
+option is to randomly zero out a fraction of the hidden-unit outputs at
+each training iteration; this technique is called <u></u> (7) (<em>label
+smoothing</em> / <em>batch normalization</em> / <em>cost-complexity
+pruning</em> / <em>dropout</em>). Another option is to monitor the
 validation error during training and return the parameter values from
 the epoch that minimized it, a technique called <u></u> (8) (<em>early
 stopping</em> / <em>annealing</em> / <em>transfer learning</em> /
@@ -116,13 +115,13 @@ class labels may themselves contain errors, replaces the one-hot target
 vector <span class="math inline">\((0,\dots,1,\dots,0)\)</span> by a
 softened version such as <span
 class="math inline">\((\varepsilon/(C-1),\dots,1-\varepsilon,\dots,\varepsilon/(C-1))\)</span>;
-this technique is called <u></u> (9) (<em>label smoothing</em> /
-<em>data augmentation</em> / <em>Laplace smoothing</em> / <em>weight
+this technique is called <u></u> (9) (<em>data augmentation</em> /
+<em>label smoothing</em> / <em>Laplace smoothing</em> / <em>weight
 decay</em>).</p>
 <p>Finally, an ensemble method for trees that fits weak learners
 <em>sequentially</em>, each one to the negative gradient of the loss of
-the running ensemble, is called <u></u> (10) (<em>gradient boosting</em>
-/ <em>bagging</em> / <em>random forests</em> / <em>stacked
+the running ensemble, is called <u></u> (10) (<em>bagging</em> /
+<em>random forests</em> / <em>gradient boosting</em> / <em>stacked
 generalization</em>).</p>
 <h1 class="unnumbered"
 id="problem-2-28-multiple-choice-truefalse-and-short-numeric">Problem 2
@@ -219,9 +218,9 @@ class="math inline">\(2m\)</span> tends to <em>reduce</em> the variance
 of the per-step gradient estimate, and accordingly <em>reduces</em> the
 implicit regularization that mini-batch SGD provides.</p></li>
 <li><p>For a feed-forward network with squared-error output loss, the
-backward-pass “seed” at the output layer is <span
-class="math inline">\(\delta^{\text{out}}_i = -(y_i - \hat
-f(x_i))\)</span>.</p></li>
+backward-pass “seed” at the output layer is the residual <span
+class="math inline">\(\delta^{\text{out}}_i = y_i - \hat f(x_i)\)</span>
+itself, not its negative.</p></li>
 </ol>
 <h2 class="unnumbered" id="e-neural-network-regularization-3">e)
 Neural-network regularization <em>(3 %)</em></h2>
@@ -229,9 +228,11 @@ Neural-network regularization <em>(3 %)</em></h2>
 <ol type="i">
 <li><p>Dropout in a neural network is active at <em>both</em> training
 and test time.</p></li>
-<li><p>In practice, a dropout rate of <span
-class="math inline">\(50\%\)</span> is the standard recommendation for
-hidden layers in fully connected networks.</p></li>
+<li><p>In this course, the prof’s typical default dropout rate for
+hidden layers in fully-connected tabular networks is around <span
+class="math inline">\(20\%\)</span>, with rates near <span
+class="math inline">\(50\%\)</span> flagged as too aggressive on
+signal-poor tabular data.</p></li>
 <li><p>“Early stopping” means halting training as soon as the
 <em>training</em> loss stops decreasing.</p></li>
 <li><p>Label smoothing replaces hard one-hot targets by softened ones,

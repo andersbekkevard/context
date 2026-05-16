@@ -184,9 +184,13 @@ the correct identification that the $\sigma^2$ term is shared and only the varia
         $\mathbf{X}^\top \mathbf{X}$ is singular and the OLS normal equations have infinitely many
         solutions; only the predicted value $\hat\beta_1 X_1 + \hat\beta_2 X_2$ (and hence
         $\hat{\mathbf{y}}$) is uniquely identified.
-  \item \subpoints{1} \textbf{True}. With $K$ dummies and an intercept the dummy columns sum
-        to the intercept column, producing exact rank deficiency. The standard remedy is to drop
-        one dummy (reference encoding), or equivalently to drop the intercept.
+  \item \subpoints{1} \textbf{False}. The collinearity diagnosis is correct, but the
+        \emph{standard} remedy is to drop one dummy (reference encoding) or equivalently to
+        drop the intercept, restoring full column rank of $\mathbf{X}$. Adding a ridge
+        penalty does numerically stabilise $\mathbf{X}^\top \mathbf{X} + \lambda I$, but
+        the individual ridge-coefficients of the $K$ dummies are not identified in the
+        usual structural sense --- they depend on $\lambda$ and on the (arbitrary) choice
+        of intercept column, so this is not the canonical remedy.
   \item \subpoints{1} \textbf{True}. The variance of the joint contribution
         $\mathrm{Var}(\hat\beta_1 X_1 + \hat\beta_2 X_2)$ includes the (large, \emph{negative})
         covariance term that cancels much of the per-coefficient variance inflation; this is why
@@ -204,10 +208,11 @@ covariance cancellation.}
   \item \subpoints{1} \textbf{True}. Each tree contributes $\nu\cdot\hat T_m(x)$, so halving $\nu$
         approximately doubles the $M$ needed to reach the same cumulative ensemble; $(M,\nu)$
         are jointly tuned because they trade off against each other.
-  \item \subpoints{1} \textbf{True}. The prof gave $d \in \{1,\dots,8\}$ as the canonical range,
-        with stumps as a special case; deep trees defeat the ``many weak learners'' principle by
-        making each base learner already low-bias and high-variance, which boosting cannot easily
-        unwind.
+  \item \subpoints{1} \textbf{False}. The prof's canonical range is $d \in \{1,\dots,8\}$,
+        with stumps ($d=1$) as a routine default; deep trees ($d \in \{10,\dots,50\}$) defeat
+        the ``many weak learners'' principle by making each base learner already low-bias and
+        high-variance, which boosting cannot easily unwind. Using stumps is the textbook
+        recommendation, not a defeat of the bias--variance logic.
   \item \subpoints{1} \textbf{True}. All three claims are lecture-verbatim XGBoost differences:
         (a) leaf-weight penalty $\gamma|T| + \tfrac{1}{2}\lambda\sum_j w_j^2$ in the split
         objective, (b) Newton-style split scoring using both first and second derivatives of

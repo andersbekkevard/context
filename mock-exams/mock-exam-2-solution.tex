@@ -42,16 +42,16 @@ hints are inline. Refer back to \texttt{mock-exam-2.tex} for the problem stateme
 \sol{} \emph{(1\,P per blank.)}
 
 \begin{enumerate}[(1)]
-  \item \textbf{validation}
-  \item \textbf{cross-validation}
-  \item \textbf{bootstrap}
-  \item \textbf{forward stepwise}
-  \item \textbf{lasso}
-  \item \textbf{sparse}
-  \item \textbf{principal component analysis}
-  \item \textbf{local}
-  \item \textbf{dendrogram}
-  \item \textbf{boosting}
+  \item \textbf{validation} (2nd option)
+  \item \textbf{cross-validation} (3rd option)
+  \item \textbf{bootstrap} (1st option)
+  \item \textbf{forward stepwise} (4th option)
+  \item \textbf{lasso} (2nd option)
+  \item \textbf{sparse} (1st option)
+  \item \textbf{principal component analysis} (4th option)
+  \item \textbf{local} (3rd option)
+  \item \textbf{dendrogram} (2nd option)
+  \item \textbf{boosting} (1st option)
 \end{enumerate}
 
 \noindent\emph{Grading: 1\,P per correct blank. ``Holdout'' is acceptable for (1) only if accompanied by
@@ -74,7 +74,7 @@ is the bootstrap.}
   \item \textbf{False}. A single resample gives one realisation of $\hat\theta^*$; the SE estimate is the
         standard deviation of $\hat\theta^{*1},\dots,\hat\theta^{*B}$, which requires $B$ resamples (typically
         $B\geq 200$ for SEs, $\geq 1000$ for percentile CIs).
-  \item \textbf{True}. $P(\text{obs } i \notin \text{sample}) = (1-1/n)^n \to 1/e \approx 0.368$.
+  \item \textbf{False}. The probability $1/e \approx 0.368$ is the probability that observation $i$ is \emph{absent} from the bootstrap sample: $P(\text{obs } i \notin \text{sample}) = (1-1/n)^n \to 1/e$. So the probability that observation $i$ \emph{does} appear approaches $1 - 1/e \approx 0.632$, not $0.368$.
   \item \textbf{True}. The \emph{percentile interval} is one of the two standard bootstrap-CI constructions;
         the other is the normal-approximation interval $\hat\theta \pm z_{\alpha/2}\cdot\widehat{\mathrm{SE}}_{\text{boot}}$.
         The percentile method makes no Gaussianity assumption and is directly read off the bootstrap

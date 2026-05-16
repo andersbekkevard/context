@@ -52,19 +52,19 @@ A: 89--100\,\% \quad B: 77--88\,\% \quad C: 65--76\,\% \quad D: 53--64\,\% \quad
 
 \bigskip
 
-A central theme of this course is \underline{\hspace{2.5cm}}\,(1) (\emph{regularization} / \emph{interpolation} / \emph{model averaging} / \emph{the Bayes rule}): any modification of a learning algorithm that aims to reduce \underline{\hspace{2.5cm}}\,(2) (\emph{generalization error} / \emph{training error} / \emph{the intercept} / \emph{the residual variance}) without necessarily reducing training error.
+A central theme of this course is \underline{\hspace{2.5cm}}\,(1) (\emph{interpolation} / \emph{regularization} / \emph{model averaging} / \emph{the Bayes rule}): any modification of a learning algorithm that aims to reduce \underline{\hspace{2.5cm}}\,(2) (\emph{training error} / \emph{the intercept} / \emph{generalization error} / \emph{the residual variance}) without necessarily reducing training error.
 
-In the linear regression module we discussed what happens when two predictors are highly correlated: the matrix $\mathbf{X}^\top\mathbf{X}$ becomes nearly singular, the variances of the estimated coefficients explode, and individual $t$-tests can become misleading. This phenomenon is called \underline{\hspace{2.5cm}}\,(3) (\emph{collinearity} / \emph{heteroscedasticity} / \emph{leverage} / \emph{overfitting}).
+In the linear regression module we discussed what happens when two predictors are highly correlated: the matrix $\mathbf{X}^\top\mathbf{X}$ becomes nearly singular, the variances of the estimated coefficients explode, and individual $t$-tests can become misleading. This phenomenon is called \underline{\hspace{2.5cm}}\,(3) (\emph{heteroscedasticity} / \emph{leverage} / \emph{collinearity} / \emph{overfitting}).
 
-For training neural networks the standard optimizer is \underline{\hspace{2.5cm}}\,(4) (\emph{mini-batch stochastic gradient descent} / \emph{coordinate descent} / \emph{Newton--Raphson} / \emph{the EM algorithm}), and the gradients themselves are computed efficiently by an algorithm that reuses intermediates from the forward pass, namely \underline{\hspace{2.5cm}}\,(5) (\emph{backpropagation} / \emph{boosting} / \emph{bootstrapping} / \emph{cross-validation}).
+For training neural networks the standard optimizer is \underline{\hspace{2.5cm}}\,(4) (\emph{coordinate descent} / \emph{Newton--Raphson} / \emph{the EM algorithm} / \emph{mini-batch stochastic gradient descent}), and the gradients themselves are computed efficiently by an algorithm that reuses intermediates from the forward pass, namely \underline{\hspace{2.5cm}}\,(5) (\emph{boosting} / \emph{backpropagation} / \emph{bootstrapping} / \emph{cross-validation}).
 
-A neural network with many more weights than observations needs regularization to generalize well. One classification-specific trick is \underline{\hspace{2.5cm}}\,(6) (\emph{label smoothing} / \emph{batch normalization} / \emph{Adam} / \emph{the universal approximation theorem}), in which the hard one-hot targets are replaced by slightly softened versions.
+A neural network with many more weights than observations needs regularization to generalize well. One classification-specific trick is \underline{\hspace{2.5cm}}\,(6) (\emph{batch normalization} / \emph{Adam} / \emph{label smoothing} / \emph{the universal approximation theorem}), in which the hard one-hot targets are replaced by slightly softened versions.
 
-For tree ensembles, growing many \emph{independent} trees in parallel and averaging them describes \underline{\hspace{2.5cm}}\,(7) (\emph{bagging and random forests} / \emph{gradient boosting} / \emph{AdaBoost} / \emph{cost-complexity pruning}), whereas growing many small trees \emph{sequentially}, each one a small correction to the previous ensemble's predictions, describes \underline{\hspace{2.5cm}}\,(8) (\emph{boosting} / \emph{bagging} / \emph{stacking} / \emph{the bootstrap}).
+For tree ensembles, growing many \emph{independent} trees in parallel and averaging them describes \underline{\hspace{2.5cm}}\,(7) (\emph{gradient boosting} / \emph{AdaBoost} / \emph{cost-complexity pruning} / \emph{bagging and random forests}), whereas growing many small trees \emph{sequentially}, each one a small correction to the previous ensemble's predictions, describes \underline{\hspace{2.5cm}}\,(8) (\emph{bagging} / \emph{boosting} / \emph{stacking} / \emph{the bootstrap}).
 
-When estimating the standard error of a complicated statistic for which no clean closed-form sampling distribution is available, the standard nonparametric tool in this course is the \underline{\hspace{2.5cm}}\,(9) (\emph{bootstrap} / \emph{F-test} / \emph{validation-set approach} / \emph{Mallows' $C_p$}).
+When estimating the standard error of a complicated statistic for which no clean closed-form sampling distribution is available, the standard nonparametric tool in this course is the \underline{\hspace{2.5cm}}\,(9) (\emph{F-test} / \emph{validation-set approach} / \emph{Mallows' $C_p$} / \emph{bootstrap}).
 
-Finally, when we want both to \emph{select} a hyperparameter and to \emph{honestly assess} the resulting model on the same data set, the recommended procedure is \underline{\hspace{2.5cm}}\,(10) (\emph{nested cross-validation} / \emph{the validation-set approach} / \emph{leave-one-out CV} / \emph{the bootstrap}).
+Finally, when we want both to \emph{select} a hyperparameter and to \emph{honestly assess} the resulting model on the same data set, the recommended procedure is \underline{\hspace{2.5cm}}\,(10) (\emph{the validation-set approach} / \emph{nested cross-validation} / \emph{leave-one-out CV} / \emph{the bootstrap}).
 
 \vfill\eject
 
@@ -96,13 +96,13 @@ Mark each statement true or false.
   \item \subpoints{1} True or false: ``In mini-batch SGD, the mini-batch gradient is an \emph{unbiased} estimator of the full-batch gradient: it has the same expectation, but larger variance.''
   \item \subpoints{1} True or false: ``A common course-recommendation for the dropout rate is in the range $0.2$--$0.5$, with $0.2$ a frequent default; dropout is applied during \emph{training} only, and is turned off (or absorbed by rescaling) at test time.''
   \item \subpoints{1} True or false: ``Label smoothing replaces the hard one-hot target vector $(0,\dots,0,1,0,\dots,0)$ by a softened version such as $(\varepsilon/(C-1),\dots,1-\varepsilon,\dots)$ and is motivated, in part, by the possibility that the training labels themselves are imperfect.''
-  \item \subpoints{1} True or false: ``Early stopping returns the network parameters from the epoch at which the \emph{training} error first stops decreasing.''
+  \item \subpoints{1} True or false: ``Early stopping is a regularization technique that monitors the \emph{training} error during gradient descent and returns the network parameters from the epoch at which it first stops decreasing, motivated by the observation that overfitting begins precisely when the training loss flattens out.''
 \end{enumerate}
 
 \subsection*{d) Boosting --- AdaBoost and gradient boosting \subpoints{4}}
 \begin{enumerate}[(i)]
   \item \subpoints{1} True or false: ``In gradient boosting with squared-error loss, fitting the next tree to the current residuals is equivalent to fitting a tree to the \emph{negative gradient} of the loss with respect to the current ensemble's predictions.''
-  \item \subpoints{1} True or false: ``Boosting reduces \emph{variance} relative to a single deep tree by averaging over many bootstrap replicates.''
+  \item \subpoints{1} True or false: ``Boosting reduces \emph{variance} relative to a single deep tree because each of its constituent trees is fit on an independent bootstrap replicate of the training data and the resulting predictions are averaged, in the same fashion as in bagging and random forests.''
   \item \subpoints{1} True or false: ``In gradient boosting, halving the shrinkage / learning rate $\nu$ approximately doubles the number of trees $M$ required for the ensemble to fit well, so $M$ and $\nu$ are tuned jointly.''
   \item \subpoints{1} True or false: ``In AdaBoost, the classifier weight is $\alpha_m = \log\!\bigl((1-\mathrm{err}_m)/\mathrm{err}_m\bigr)$, so a base classifier with weighted error \emph{above} $0.5$ would receive a \emph{negative} $\alpha_m$ in the final vote.''
 \end{enumerate}
@@ -138,7 +138,7 @@ You have fit a logistic regression of \texttt{default} on \texttt{balance}, \tex
 Mark each statement true or false. \emph{($0.5$\,\% per statement.)}
 \begin{enumerate}[(i)]
   \item In a random forest, the parameter $\mathtt{mtry}$ (number of predictors sampled at each split) controls the \emph{correlation} between trees: smaller $\mathtt{mtry}$ tends to give less correlated trees and therefore more variance reduction from averaging.
-  \item The number of trees $B$ in a random forest is a tuning parameter that must be carefully chosen by cross-validation, because random forests can overfit if $B$ is too large.
+  \item The number of trees $B$ in a random forest is a tuning parameter selected by cross-validation, because the test error of a random forest follows a U-shaped curve in $B$ and rises again once $B$ becomes too large.
 \end{enumerate}
 
 \subsection*{i) Principal component analysis \subpoints{2}}

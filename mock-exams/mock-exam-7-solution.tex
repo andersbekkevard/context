@@ -128,10 +128,12 @@ folds, which biases the reported error downward.}
         $(\varepsilon/(C-1),\dots,1-\varepsilon,\dots)$, which discourages the network from
         producing extreme logits and is partly motivated by the observation that hard labels
         over-confidently assume every training example is perfectly labelled.
-  \item \subpoints{1} \textbf{False}. Early stopping uses the \emph{validation} error: training is
-        halted at the epoch where validation error first stops improving (or starts rising), and the
-        weights from that epoch are returned. Stopping at the training-error minimum would never
-        stop --- training error typically decreases monotonically.
+  \item \subpoints{1} \textbf{False}. Early stopping uses the \emph{validation} error, not the
+        training error: training is halted at the epoch where validation error first stops
+        improving (or starts rising), and the weights from that epoch are returned. Stopping at
+        the training-error minimum would never stop --- training error typically decreases
+        monotonically --- and would entirely miss the moment when generalization begins to
+        deteriorate, which is the whole point of early stopping.
 \end{enumerate}
 
 \subsection*{d) Boosting --- AdaBoost and gradient boosting \subpoints{4}}
@@ -142,9 +144,11 @@ folds, which biases the reported error downward.}
         the next tree to the residual is fitting to the negative gradient, which is why squared-error
         gradient boosting is also called ``forward stagewise regression on residuals.''
   \item \subpoints{1} \textbf{False}. Boosting reduces \emph{bias} relative to a single shallow
-        tree, by fitting trees sequentially to residuals; trees are \emph{not} fit on bootstrap
-        replicates. Variance reduction by bootstrap averaging is what \emph{bagging} (and random
-        forests) does.
+        tree, by fitting trees sequentially to the residuals (or negative gradient) of the current
+        ensemble; the trees are \emph{not} fit on independent bootstrap replicates, and they are
+        \emph{not} simply averaged --- they are added in a stagewise sum with shrinkage. Variance
+        reduction by bootstrap averaging is the mechanism of \emph{bagging} and random forests,
+        not boosting.
   \item \subpoints{1} \textbf{True}. Each tree's contribution to the ensemble is $\nu\cdot\hat T_m(x)$,
         so halving $\nu$ requires roughly twice as many trees for the cumulative contribution to
         reach the same level. The pair $(M,\nu)$ is tuned jointly --- the conventional folklore is
@@ -243,10 +247,11 @@ standard ``why lasso, not ridge'' points).
         decorrelates the trees (different trees fixate on different subsets of strong predictors).
         The variance of the average of $B$ trees is $\rho\sigma^2 + (1-\rho)\sigma^2/B$, so reducing
         the pairwise correlation $\rho$ is exactly how random forests improve over bagging.
-  \item \textbf{False}. $B$ is \emph{not} tuned by CV for a random forest. Test error is
-        monotonically non-increasing in $B$ (averaging only reduces variance), so one picks
-        ``enough'' trees --- typically $500$--$1000$. The standard contrast: in \emph{boosting},
-        $B$ \emph{is} a real tuning parameter because boosting can overfit.
+  \item \textbf{False}. The test error of a random forest is \emph{monotonically non-increasing}
+        in $B$ (averaging only reduces variance, never causes overfitting), so the curve is not
+        U-shaped and $B$ is \emph{not} tuned by CV. One simply picks ``enough'' trees --- typically
+        $500$--$1000$. The standard contrast: in \emph{boosting}, $B$ \emph{is} a real tuning
+        parameter because boosting can overfit.
 \end{enumerate}
 
 \subsection*{i) Principal component analysis \subpoints{2}}

@@ -67,61 +67,61 @@ class="math inline">\(1\)</span> %.</p>
 that model the class-conditional density <span
 class="math inline">\(f_k(x) = \Pr(X \mid Y = k)\)</span> and the prior
 <span class="math inline">\(\pi_k\)</span>, then flip with Bayes’ rule
-to obtain the posterior, are called <u></u> (1) (<em>generative</em> /
-<em>discriminative</em> / <em>semi-supervised</em> / <em>kernel</em>)
+to obtain the posterior, are called <u></u> (1) (<em>discriminative</em>
+/ <em>generative</em> / <em>semi-supervised</em> / <em>kernel</em>)
 methods. Linear discriminant analysis is the canonical example. The
 decision boundary between two classes under LDA is obtained by setting
 the two discriminant scores <span
 class="math inline">\(\delta_k(x)\)</span> equal, and is <u></u> (2)
-(<em>linear</em> / <em>quadratic</em> / <em>piecewise constant</em> /
+(<em>quadratic</em> / <em>piecewise constant</em> / <em>linear</em> /
 <em>circular</em>) in <span class="math inline">\(x\)</span>, because
 the term <span class="math inline">\(x^\top \Sigma^{-1} x\)</span>
 cancels (it does not depend on <span class="math inline">\(k\)</span>
-when the covariance is <u></u> (3) (<em>pooled</em> /
-<em>class-specific</em> / <em>diagonal</em> /
-<em>block-diagonal</em>)).</p>
+when the covariance is <u></u> (3) (<em>class-specific</em> /
+<em>diagonal</em> / <em>block-diagonal</em> / <em>pooled</em>)).</p>
 <p>When fitting a multiple linear regression with two predictors that
 are nearly proportional, the matrix <span class="math inline">\(\mathbf
 X^\top \mathbf X\)</span> becomes nearly singular and the variance of
 <span class="math inline">\(\hat{\boldsymbol\beta}\)</span> explodes.
-This phenomenon is called <u></u> (4) (<em>collinearity</em> /
-<em>heteroscedasticity</em> / <em>leverage</em> / <em>influence</em>).
-The remedy proposed in the lectures that <em>adds a penalty</em> <span
+This phenomenon is called <u></u> (4) (<em>heteroscedasticity</em> /
+<em>collinearity</em> / <em>leverage</em> / <em>influence</em>). The
+remedy proposed in the lectures that <em>adds a penalty</em> <span
 class="math inline">\(\lambda \sum_j \beta_j^2\)</span> to the residual
 sum of squares without setting any coefficient exactly to zero is called
-<u></u> (5) (<em>ridge regression</em> / <em>the lasso</em> /
-<em>forward selection</em> / <em>partial least squares</em>).</p>
+<u></u> (5) (<em>the lasso</em> / <em>forward selection</em> / <em>ridge
+regression</em> / <em>partial least squares</em>).</p>
 <p>For tree ensembles, sampling, at each candidate split, a random
 subset of <span class="math inline">\(m\)</span> predictors of size
 <span class="math inline">\(m &lt; p\)</span> is the trick that
-distinguishes <u></u> (6) (<em>random forests</em> / <em>AdaBoost</em> /
-<em>gradient boosting</em> / <em>cost-complexity pruning</em>) from
-plain bagging. For each tree built on a bootstrap sample, roughly <span
-class="math inline">\(37\%\)</span> of the original observations are not
-in the sample, and the predictions on those left-out observations are
-aggregated into the so-called <u></u> (7) (<em>out-of-bag error</em> /
-<em>validation error</em> / <em>training error</em> / <em>Bayes
-error</em>) estimate of test error.</p>
+distinguishes <u></u> (6) (<em>AdaBoost</em> / <em>gradient
+boosting</em> / <em>cost-complexity pruning</em> / <em>random
+forests</em>) from plain bagging. For each tree built on a bootstrap
+sample, roughly <span class="math inline">\(37\%\)</span> of the
+original observations are not in the sample, and the predictions on
+those left-out observations are aggregated into the so-called
+<u></u> (7) (<em>validation error</em> / <em>out-of-bag error</em> /
+<em>training error</em> / <em>Bayes error</em>) estimate of test
+error.</p>
 <p>In neural networks, the central optimization recipe is mini-batch
 stochastic gradient descent. The gradients with respect to all weights
 are computed efficiently by reusing intermediate values from the forward
 pass through repeated application of the chain rule; this algorithm is
-called <u></u> (8) (<em>backpropagation</em> / <em>boosting</em> /
-<em>the EM algorithm</em> / <em>Newton-Raphson</em>). To prevent the
+called <u></u> (8) (<em>boosting</em> / <em>the EM algorithm</em> /
+<em>backpropagation</em> / <em>Newton-Raphson</em>). To prevent the
 network from becoming over-confident in its class predictions,
 especially when labels may themselves contain errors, one can replace
 the hard one-hot target by a slightly softened one; this technique is
-called <u></u> (9) (<em>label smoothing</em> / <em>dropout</em> /
-<em>early stopping</em> / <em>batch normalization</em>).</p>
+called <u></u> (9) (<em>dropout</em> / <em>early stopping</em> /
+<em>batch normalization</em> / <em>label smoothing</em>).</p>
 <p>Finally, the workhorse for estimating the standard error of a
 complicated statistic when no closed-form sampling distribution is
 available is to resample <span class="math inline">\(n\)</span>
 observations with replacement from the original sample many times,
 recompute the statistic on each resample, and take the sample standard
 deviation of the resulting values. This procedure is called the
-<u></u> (10) (<em>bootstrap</em> / <em><span
-class="math inline">\(F\)</span>-test</em> / <em>Bonferroni
-correction</em> / <em>Newton step</em>).</p>
+<u></u> (10) (<em><span class="math inline">\(F\)</span>-test</em> /
+<em>bootstrap</em> / <em>Bonferroni correction</em> / <em>Newton
+step</em>).</p>
 <h1 class="unnumbered"
 id="problem-2-28-multiple-choice-truefalse-and-short-numeric">Problem 2
 <strong>(28 %)</strong> — Multiple choice, true/false, and short
@@ -148,10 +148,10 @@ class="math inline">\(\sigma^2\)</span>, and <span
 class="math inline">\(n\)</span>. (Two short formulas.)</p></li>
 <li><p><em>(1 %)</em> Mark true or false: “Compared to the unbiased
 choice <span class="math inline">\(c = 1\)</span>, the shrunken
-estimator with <span class="math inline">\(c &lt; 1\)</span>
-<em>always</em> has a smaller mean squared error <span
-class="math inline">\(\mathrm{Bias}^2 + \mathrm{Var}\)</span>,
-regardless of <span class="math inline">\(\mu\)</span> and <span
+estimator with <span class="math inline">\(c &lt; 1\)</span> has a
+smaller mean squared error <span class="math inline">\(\mathrm{Bias}^2 +
+\mathrm{Var}\)</span>, regardless of <span
+class="math inline">\(\mu\)</span> and <span
 class="math inline">\(\sigma^2/n\)</span>.”</p></li>
 <li><p><em>(1 %)</em> Mark true or false: “In the over-parameterized
 regime where many fitted models interpolate the training data, the
@@ -244,10 +244,10 @@ class="math inline">\(m\)</span> gives, on each step, an
 over the batch equals the full-data gradient, but the variance grows
 when <span class="math inline">\(m\)</span> shrinks.</p></li>
 <li><p>A typical practical learning rate for mini-batch SGD on a neural
-network is <span class="math inline">\(\eta \approx 0.1\)</span>; a
-learning rate of <span class="math inline">\(\eta = 2\)</span> is
-generally too large and would cause the loss to bounce around without
-converging.</p></li>
+network is <span class="math inline">\(\eta \approx 2\)</span>; a
+learning rate of <span class="math inline">\(\eta = 0.1\)</span> would
+generally be too small and would cause the loss to make almost no
+progress per epoch.</p></li>
 <li><p>One advantage of the <em>ReLU</em> activation <span
 class="math inline">\(\mathrm{ReLU}(z) = \max(0, z)\)</span> over the
 classical <em>sigmoid</em> <span class="math inline">\(\sigma(z) = 1/(1
@@ -280,7 +280,7 @@ loss with respect to the current ensemble’s predictions.”</p></li>
 <li><p><em>(1 %)</em> Mark true or false: “In gradient boosting, halving
 the shrinkage parameter <span class="math inline">\(\nu\)</span> from
 <span class="math inline">\(0.10\)</span> to <span
-class="math inline">\(0.05\)</span> roughly <em>doubles</em> the number
+class="math inline">\(0.05\)</span> roughly <em>halves</em> the number
 of trees <span class="math inline">\(M\)</span> needed for the ensemble
 to reach a comparable fit, which is why <span
 class="math inline">\(M\)</span> and <span
@@ -313,8 +313,8 @@ target <span class="math inline">\((1, 0)\)</span> for class <span
 class="math inline">\(1\)</span> by what soft target <span
 class="math inline">\((t_1, t_0)\)</span>? (Two numerics.)</p></li>
 <li><p><em>(1 %)</em> Mark true or false: “Adding <span
-class="math inline">\(L_2\)</span> weight decay always decreases the
-network’s training error.”</p></li>
+class="math inline">\(L_2\)</span> weight decay decreases the network’s
+training error.”</p></li>
 </ol>
 <h2 class="unnumbered"
 id="g-logistic-regression-odds-log-odds-interaction-3">g) Logistic
@@ -493,7 +493,7 @@ class="math inline">\(\mathbb{E}_{\text{batch}}[\widehat{\nabla L}] =
 \nabla L(\boldsymbol\theta)\)</span>. <strong>(B)</strong> Doubling the
 batch size <span class="math inline">\(m\)</span> from <span
 class="math inline">\(32\)</span> to <span
-class="math inline">\(64\)</span> approximately <em>halves</em> the
+class="math inline">\(64\)</span> approximately <em>doubles</em> the
 variance of <span class="math inline">\(\widehat{\nabla L}\)</span>, all
 else equal. <strong>(C)</strong> Smaller mini-batches provide
 <em>stronger</em> implicit regularization, because the noise in <span

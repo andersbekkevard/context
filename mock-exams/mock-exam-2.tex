@@ -52,13 +52,13 @@ A: 89--100\,\% \quad B: 77--88\,\% \quad C: 65--76\,\% \quad D: 53--64\,\% \quad
 
 \bigskip
 
-In statistical learning we often partition the data into three disjoint pieces: a training set used to fit a candidate model, a \underline{\hspace{2cm}}\,(1) (\emph{validation} / \emph{holdout-of-the-residuals} / \emph{bootstrap} / \emph{oob}) set used to choose between candidate models or tune a hyperparameter, and a test set used to estimate the chosen model's final generalization error. When data are too scarce for a clean three-way split we replace the validation set by \underline{\hspace{2cm}}\,(2) (\emph{cross-validation} / \emph{regularization} / \emph{permutation testing} / \emph{label smoothing}); the most common choice in this course is $k$-fold with $k = 5$ or $10$.
+In statistical learning we often partition the data into three disjoint pieces: a training set used to fit a candidate model, a \underline{\hspace{2cm}}\,(1) (\emph{bootstrap} / \emph{validation} / \emph{holdout-of-the-residuals} / \emph{oob}) set used to choose between candidate models or tune a hyperparameter, and a test set used to estimate the chosen model's final generalization error. When data are too scarce for a clean three-way split we replace the validation set by \underline{\hspace{2cm}}\,(2) (\emph{regularization} / \emph{permutation testing} / \emph{cross-validation} / \emph{label smoothing}); the most common choice in this course is $k$-fold with $k = 5$ or $10$.
 
 A complementary resampling tool, the \underline{\hspace{2cm}}\,(3) (\emph{bootstrap} / \emph{bagging} / \emph{Bayes rule} / \emph{Markov chain}), draws repeated samples \emph{with replacement} of the same size as the original training set, and uses the empirical sampling distribution of a statistic to estimate its standard error and confidence intervals.
 
-For model selection within the regression module we distinguished discrete and continuous approaches. Best-subset selection considers all $2^p$ subsets of predictors, while \underline{\hspace{2cm}}\,(4) (\emph{forward stepwise} / \emph{lasso shrinkage} / \emph{principal component} / \emph{boosted}) selection performs a greedy search that adds one predictor at a time and is computationally tractable even when $p > n$. Among continuous approaches, ridge regression shrinks coefficients toward zero but never sets them exactly to zero, whereas \underline{\hspace{2cm}}\,(5) (\emph{lasso} / \emph{ridge} / \emph{PCR} / \emph{GAM}) can yield \underline{\hspace{2cm}}\,(6) (\emph{sparse} / \emph{dense} / \emph{orthogonal} / \emph{biased}) coefficient vectors because the geometry of its constraint set has corners on the coordinate axes.
+For model selection within the regression module we distinguished discrete and continuous approaches. Best-subset selection considers all $2^p$ subsets of predictors, while \underline{\hspace{2cm}}\,(4) (\emph{lasso shrinkage} / \emph{principal component} / \emph{boosted} / \emph{forward stepwise}) selection performs a greedy search that adds one predictor at a time and is computationally tractable even when $p > n$. Among continuous approaches, ridge regression shrinks coefficients toward zero but never sets them exactly to zero, whereas \underline{\hspace{2cm}}\,(5) (\emph{ridge} / \emph{lasso} / \emph{PCR} / \emph{GAM}) can yield \underline{\hspace{2cm}}\,(6) (\emph{sparse} / \emph{dense} / \emph{orthogonal} / \emph{biased}) coefficient vectors because the geometry of its constraint set has corners on the coordinate axes.
 
-For unsupervised analyses on the same data, dimensionality reduction can be performed by \underline{\hspace{2cm}}\,(7) (\emph{principal component analysis} / \emph{ridge regression} / \emph{the bootstrap} / \emph{the F-test}), which finds orthogonal directions of maximal variance. Clustering can be done by $K$-means (which always returns a flat partition into $K$ clusters and can converge to a \underline{\hspace{2cm}}\,(8) (\emph{local} / \emph{global} / \emph{Bayes-optimal} / \emph{deterministic}) minimum depending on initialization) or by hierarchical clustering, which produces a tree-structured nested family of clusterings called a \underline{\hspace{2cm}}\,(9) (\emph{dendrogram} / \emph{biplot} / \emph{scree plot} / \emph{ROC curve}).
+For unsupervised analyses on the same data, dimensionality reduction can be performed by \underline{\hspace{2cm}}\,(7) (\emph{ridge regression} / \emph{the bootstrap} / \emph{the F-test} / \emph{principal component analysis}), which finds orthogonal directions of maximal variance. Clustering can be done by $K$-means (which always returns a flat partition into $K$ clusters and can converge to a \underline{\hspace{2cm}}\,(8) (\emph{global} / \emph{Bayes-optimal} / \emph{local} / \emph{deterministic}) minimum depending on initialization) or by hierarchical clustering, which produces a tree-structured nested family of clusterings called a \underline{\hspace{2cm}}\,(9) (\emph{biplot} / \emph{dendrogram} / \emph{scree plot} / \emph{ROC curve}).
 
 In ensemble methods for trees, \underline{\hspace{2cm}}\,(10) (\emph{boosting} / \emph{bagging} / \emph{random forests} / \emph{stacking}) builds many trees \emph{sequentially}, each one trained on residuals (or, more generally, negative gradients) of the running ensemble, and combines them with a small shrinkage factor.
 
@@ -75,8 +75,8 @@ Mark each statement true or false.
 \begin{enumerate}[(i)]
   \item Bootstrap samples are drawn from the training data \emph{with} replacement, and each bootstrap sample has the same size $n$ as the original.
   \item A single bootstrap resample is enough to obtain a reasonable estimate of the standard error of a statistic; the role of the number of resamples $B$ is purely computational.
-  \item For large $n$, the probability that a given training observation does \emph{not} appear in a particular bootstrap sample approaches $1/e \approx 0.368$.
-  \item A common bootstrap-based $95\%$ confidence interval for a scalar statistic $\hat\theta$ is the \emph{percentile interval}: report the $2.5\%$ and $97.5\%$ quantiles of the bootstrap distribution $\{\hat\theta^*_1, \dots, \hat\theta^*_B\}$.
+  \item For large $n$, the probability that a given training observation \emph{appears} in a particular bootstrap sample approaches $1/e \approx 0.368$.
+  \item A common bootstrap-based $95\%$ confidence interval for $\hat\theta$ is the \emph{percentile interval}: the $2.5\%$ and $97.5\%$ quantiles of the bootstrap distribution $\{\hat\theta^*_1, \dots, \hat\theta^*_B\}$.
 \end{enumerate}
 
 \subsection*{b) Cross-validation and its pitfalls \subpoints{3}}
@@ -131,10 +131,10 @@ Compute, with two decimals:
 \subsection*{g) $K$-means clustering \subpoints{3}}
 Mark each statement true or false.
 \begin{enumerate}[(i)]
-  \item Given a fixed initialization, the $K$-means algorithm is guaranteed to converge to the \emph{global} minimum of the within-cluster sum of squares.
+  \item Given a fixed initialization, the $K$-means algorithm converges to the \emph{global} minimum of the within-cluster sum of squares.
   \item The within-cluster sum of squares (the $K$-means objective) is \emph{non-increasing} from one iteration to the next.
   \item For predictors measured in very different units (e.g.\ kilograms and meters), running $K$-means on the raw data without standardizing can lead to clusters dominated by the largest-scale variable.
-  \item Going from $K = 4$ to $K = 5$ in $K$-means is guaranteed to produce a $5$-cluster solution in which one of the original $4$ clusters is split, with the other three unchanged.
+  \item Going from $K = 4$ to $K = 5$ in $K$-means produces a $5$-cluster solution in which one of the original $4$ clusters is split, with the other three unchanged.
 \end{enumerate}
 
 \subsection*{h) Tree ensembles: bagging, random forests, boosting \subpoints{4}}

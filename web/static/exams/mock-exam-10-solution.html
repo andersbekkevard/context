@@ -272,11 +272,17 @@ infinitely many solutions; only the predicted value <span
 class="math inline">\(\hat\beta_1 X_1 + \hat\beta_2 X_2\)</span> (and
 hence <span class="math inline">\(\hat{\mathbf{y}}\)</span>) is uniquely
 identified.</p></li>
-<li><p><em>(1 %)</em> <strong>True</strong>. With <span
-class="math inline">\(K\)</span> dummies and an intercept the dummy
-columns sum to the intercept column, producing exact rank deficiency.
-The standard remedy is to drop one dummy (reference encoding), or
-equivalently to drop the intercept.</p></li>
+<li><p><em>(1 %)</em> <strong>False</strong>. The collinearity diagnosis
+is correct, but the <em>standard</em> remedy is to drop one dummy
+(reference encoding) or equivalently to drop the intercept, restoring
+full column rank of <span class="math inline">\(\mathbf{X}\)</span>.
+Adding a ridge penalty does numerically stabilise <span
+class="math inline">\(\mathbf{X}^\top \mathbf{X} + \lambda I\)</span>,
+but the individual ridge-coefficients of the <span
+class="math inline">\(K\)</span> dummies are not identified in the usual
+structural sense — they depend on <span
+class="math inline">\(\lambda\)</span> and on the (arbitrary) choice of
+intercept column, so this is not the canonical remedy.</p></li>
 <li><p><em>(1 %)</em> <strong>True</strong>. The variance of the joint
 contribution <span class="math inline">\(\mathrm{Var}(\hat\beta_1 X_1 +
 \hat\beta_2 X_2)\)</span> includes the (large, <em>negative</em>)
@@ -302,11 +308,14 @@ class="math inline">\(\nu\)</span> approximately doubles the <span
 class="math inline">\(M\)</span> needed to reach the same cumulative
 ensemble; <span class="math inline">\((M,\nu)\)</span> are jointly tuned
 because they trade off against each other.</p></li>
-<li><p><em>(1 %)</em> <strong>True</strong>. The prof gave <span
-class="math inline">\(d \in \{1,\dots,8\}\)</span> as the canonical
-range, with stumps as a special case; deep trees defeat the “many weak
-learners” principle by making each base learner already low-bias and
-high-variance, which boosting cannot easily unwind.</p></li>
+<li><p><em>(1 %)</em> <strong>False</strong>. The prof’s canonical range
+is <span class="math inline">\(d \in \{1,\dots,8\}\)</span>, with stumps
+(<span class="math inline">\(d=1\)</span>) as a routine default; deep
+trees (<span class="math inline">\(d \in \{10,\dots,50\}\)</span>)
+defeat the “many weak learners” principle by making each base learner
+already low-bias and high-variance, which boosting cannot easily unwind.
+Using stumps is the textbook recommendation, not a defeat of the
+bias–variance logic.</p></li>
 <li><p><em>(1 %)</em> <strong>True</strong>. All three claims are
 lecture-verbatim XGBoost differences: (a) leaf-weight penalty <span
 class="math inline">\(\gamma|T| + \tfrac{1}{2}\lambda\sum_j

@@ -113,7 +113,7 @@ Consider a smoothing spline fit with smoothing parameter $\lambda$.
 
 Which of the following are true?
 \begin{enumerate}[(i)]
-  \item As $\lambda \to 0$, the fit approaches the rough interpolating spline that goes through (essentially) every training point.
+  \item As $\lambda \to 0$, the fit approaches the rough interpolating spline that passes through every training point.
   \item As $\lambda \to \infty$, the fit approaches the ordinary-least-squares straight line.
   \item Increasing $\lambda$ \emph{increases} the effective degrees of freedom of the fit.
   \item The effective degrees of freedom $\mathrm{df}_\lambda = \mathrm{tr}(S_\lambda)$ of a smoothing spline is, in general, not an integer.
@@ -165,7 +165,7 @@ A classifier is applied to a test set of $1000$ patients, of whom $200$ truly ha
   \item \subpoints{1} Which of the following is true about the AUC (area under the ROC curve)? Mark all that apply.
   \begin{itemize}
     \item[(A)] AUC $= 0.5$ corresponds to a classifier no better than random guessing.
-    \item[(B)] A classifier with AUC $= 0.95$ is necessarily better than one with AUC $= 0.85$ on every possible threshold.
+    \item[(B)] Two classifiers with the same AUC must produce ROC curves of the same shape.
     \item[(C)] The ROC curve plots true positive rate (TPR) on the $y$-axis against false positive rate (FPR) on the $x$-axis, varying the classification threshold.
     \item[(D)] AUC is unaffected by class imbalance in the way raw accuracy is.
   \end{itemize}
@@ -176,8 +176,8 @@ Mark all that are true. In a feed-forward neural network, the hidden-layer activ
 \begin{enumerate}[(i)]
   \item it allows the network to approximate complex, non-linear functions of the inputs;
   \item without it the entire network collapses to an affine map of the input, no matter how many hidden layers are stacked;
-  \item it reduces the total number of parameters;
-  \item it forces the network to be fully connected.
+  \item it acts as an implicit regularizer that shrinks the hidden weights toward zero;
+  \item it makes the empirical loss surface convex in the network weights.
 \end{enumerate}
 
 \subsection*{i) LDA vs.\ QDA \subpoints{2}}

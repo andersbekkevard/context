@@ -189,8 +189,8 @@ class="math inline">\(\lambda\)</span>.</p>
 <p>Which of the following are true?</p>
 <ol type="i">
 <li><p>As <span class="math inline">\(\lambda \to 0\)</span>, the fit
-approaches the rough interpolating spline that goes through
-(essentially) every training point.</p></li>
+approaches the rough interpolating spline that passes through every
+training point.</p></li>
 <li><p>As <span class="math inline">\(\lambda \to \infty\)</span>, the
 fit approaches the ordinary-least-squares straight line.</p></li>
 <li><p>Increasing <span class="math inline">\(\lambda\)</span>
@@ -309,9 +309,8 @@ under the ROC curve)? Mark all that apply.</p>
 <ul>
 <li><p>AUC <span class="math inline">\(= 0.5\)</span> corresponds to a
 classifier no better than random guessing.</p></li>
-<li><p>A classifier with AUC <span class="math inline">\(= 0.95\)</span>
-is necessarily better than one with AUC <span class="math inline">\(=
-0.85\)</span> on every possible threshold.</p></li>
+<li><p>Two classifiers with the same AUC must produce ROC curves of the
+same shape.</p></li>
 <li><p>The ROC curve plots true positive rate (TPR) on the <span
 class="math inline">\(y\)</span>-axis against false positive rate (FPR)
 on the <span class="math inline">\(x\)</span>-axis, varying the
@@ -330,8 +329,10 @@ hidden-layer activation function is nonlinear because…</p>
 functions of the inputs;</p></li>
 <li><p>without it the entire network collapses to an affine map of the
 input, no matter how many hidden layers are stacked;</p></li>
-<li><p>it reduces the total number of parameters;</p></li>
-<li><p>it forces the network to be fully connected.</p></li>
+<li><p>it acts as an implicit regularizer that shrinks the hidden
+weights toward zero;</p></li>
+<li><p>it makes the empirical loss surface convex in the network
+weights.</p></li>
 </ol>
 <h2 class="unnumbered" id="i-lda-vs.-qda-2">i) LDA vs. QDA
 <em>(2 %)</em></h2>

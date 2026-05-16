@@ -228,16 +228,22 @@ class="math inline">\(\dfrac{140}{200} = \boxed{0.70}\)</span>.</p>
 Specificity = TN rate among true negatives: <span
 class="math inline">\(\dfrac{720}{800} = \boxed{0.90}\)</span>.</p>
 <p><strong>Solution</strong> <em>(1 %)</em> <strong>(iii)</strong>
-<strong>(A), (C), (D)</strong> are true. (B) is <em>false</em>: AUC is
-the <em>average</em> TPR over all thresholds; a higher AUC does not
-imply uniform dominance, because two ROC curves can cross.</p>
+<strong>(A), (C), (D)</strong> are true. (B) is <em>false</em>: AUC is a
+single scalar summary (the average TPR over thresholds, or equivalently
+the probability of correctly ranking a random positive above a random
+negative); two ROC curves with very different shapes can integrate to
+the same area, so equal AUC does not pin down the curve.</p>
 <h2 class="unnumbered"
 id="h-why-nonlinear-activations-are-necessary-2">h) Why nonlinear
 activations are necessary <em>(2 %)</em></h2>
 <p><strong>Solution</strong> <em>(0.5 P per correct mark.)</em>
-<strong>(i) True</strong>, <strong>(ii) True</strong>, (iii) False (it
-does not affect parameter count), (iv) False (connectivity is a separate
-architectural choice).</p>
+<strong>(i) True</strong>, <strong>(ii) True</strong>, (iii) False (a
+nonlinear activation does not by itself shrink weights; regularization
+is a separate mechanism, e.g. an <span
+class="math inline">\(\ell_2\)</span> penalty or dropout), (iv) False
+(introducing a nonlinearity generally makes the loss surface
+<em>non</em>-convex in the weights; convexity holds for linear/logistic
+regression, not for multi-layer networks).</p>
 <h2 class="unnumbered" id="i-lda-vs.-qda-2">i) LDA vs. QDA
 <em>(2 %)</em></h2>
 <p><strong>Solution</strong> <em>(0.5 P per statement.)</em> <strong>(i)

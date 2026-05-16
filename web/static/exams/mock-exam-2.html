@@ -65,15 +65,15 @@ blank from the choices in parentheses. Each correct fill is worth <span
 class="math inline">\(1\)</span> %.</p>
 <p>In statistical learning we often partition the data into three
 disjoint pieces: a training set used to fit a candidate model, a
-<u></u> (1) (<em>validation</em> / <em>holdout-of-the-residuals</em> /
-<em>bootstrap</em> / <em>oob</em>) set used to choose between candidate
-models or tune a hyperparameter, and a test set used to estimate the
-chosen model’s final generalization error. When data are too scarce for
-a clean three-way split we replace the validation set by <u></u> (2)
-(<em>cross-validation</em> / <em>regularization</em> / <em>permutation
-testing</em> / <em>label smoothing</em>); the most common choice in this
-course is <span class="math inline">\(k\)</span>-fold with <span
-class="math inline">\(k = 5\)</span> or <span
+<u></u> (1) (<em>bootstrap</em> / <em>validation</em> /
+<em>holdout-of-the-residuals</em> / <em>oob</em>) set used to choose
+between candidate models or tune a hyperparameter, and a test set used
+to estimate the chosen model’s final generalization error. When data are
+too scarce for a clean three-way split we replace the validation set by
+<u></u> (2) (<em>regularization</em> / <em>permutation testing</em> /
+<em>cross-validation</em> / <em>label smoothing</em>); the most common
+choice in this course is <span class="math inline">\(k\)</span>-fold
+with <span class="math inline">\(k = 5\)</span> or <span
 class="math inline">\(10\)</span>.</p>
 <p>A complementary resampling tool, the <u></u> (3) (<em>bootstrap</em>
 / <em>bagging</em> / <em>Bayes rule</em> / <em>Markov chain</em>), draws
@@ -83,28 +83,28 @@ statistic to estimate its standard error and confidence intervals.</p>
 <p>For model selection within the regression module we distinguished
 discrete and continuous approaches. Best-subset selection considers all
 <span class="math inline">\(2^p\)</span> subsets of predictors, while
-<u></u> (4) (<em>forward stepwise</em> / <em>lasso shrinkage</em> /
-<em>principal component</em> / <em>boosted</em>) selection performs a
+<u></u> (4) (<em>lasso shrinkage</em> / <em>principal component</em> /
+<em>boosted</em> / <em>forward stepwise</em>) selection performs a
 greedy search that adds one predictor at a time and is computationally
 tractable even when <span class="math inline">\(p &gt; n\)</span>. Among
 continuous approaches, ridge regression shrinks coefficients toward zero
-but never sets them exactly to zero, whereas <u></u> (5) (<em>lasso</em>
-/ <em>ridge</em> / <em>PCR</em> / <em>GAM</em>) can yield <u></u> (6)
+but never sets them exactly to zero, whereas <u></u> (5) (<em>ridge</em>
+/ <em>lasso</em> / <em>PCR</em> / <em>GAM</em>) can yield <u></u> (6)
 (<em>sparse</em> / <em>dense</em> / <em>orthogonal</em> /
 <em>biased</em>) coefficient vectors because the geometry of its
 constraint set has corners on the coordinate axes.</p>
 <p>For unsupervised analyses on the same data, dimensionality reduction
-can be performed by <u></u> (7) (<em>principal component analysis</em> /
-<em>ridge regression</em> / <em>the bootstrap</em> / <em>the
-F-test</em>), which finds orthogonal directions of maximal variance.
+can be performed by <u></u> (7) (<em>ridge regression</em> / <em>the
+bootstrap</em> / <em>the F-test</em> / <em>principal component
+analysis</em>), which finds orthogonal directions of maximal variance.
 Clustering can be done by <span class="math inline">\(K\)</span>-means
 (which always returns a flat partition into <span
 class="math inline">\(K\)</span> clusters and can converge to a
-<u></u> (8) (<em>local</em> / <em>global</em> / <em>Bayes-optimal</em> /
+<u></u> (8) (<em>global</em> / <em>Bayes-optimal</em> / <em>local</em> /
 <em>deterministic</em>) minimum depending on initialization) or by
 hierarchical clustering, which produces a tree-structured nested family
-of clusterings called a <u></u> (9) (<em>dendrogram</em> /
-<em>biplot</em> / <em>scree plot</em> / <em>ROC curve</em>).</p>
+of clusterings called a <u></u> (9) (<em>biplot</em> /
+<em>dendrogram</em> / <em>scree plot</em> / <em>ROC curve</em>).</p>
 <p>In ensemble methods for trees, <u></u> (10) (<em>boosting</em> /
 <em>bagging</em> / <em>random forests</em> / <em>stacking</em>) builds
 many trees <em>sequentially</em>, each one trained on residuals (or,
@@ -129,14 +129,13 @@ estimate of the standard error of a statistic; the role of the number of
 resamples <span class="math inline">\(B\)</span> is purely
 computational.</p></li>
 <li><p>For large <span class="math inline">\(n\)</span>, the probability
-that a given training observation does <em>not</em> appear in a
-particular bootstrap sample approaches <span class="math inline">\(1/e
-\approx 0.368\)</span>.</p></li>
+that a given training observation <em>appears</em> in a particular
+bootstrap sample approaches <span class="math inline">\(1/e \approx
+0.368\)</span>.</p></li>
 <li><p>A common bootstrap-based <span
-class="math inline">\(95\%\)</span> confidence interval for a scalar
-statistic <span class="math inline">\(\hat\theta\)</span> is the
-<em>percentile interval</em>: report the <span
-class="math inline">\(2.5\%\)</span> and <span
+class="math inline">\(95\%\)</span> confidence interval for <span
+class="math inline">\(\hat\theta\)</span> is the <em>percentile
+interval</em>: the <span class="math inline">\(2.5\%\)</span> and <span
 class="math inline">\(97.5\%\)</span> quantiles of the bootstrap
 distribution <span class="math inline">\(\{\hat\theta^*_1, \dots,
 \hat\theta^*_B\}\)</span>.</p></li>
@@ -271,9 +270,8 @@ class="math inline">\(K\)</span>-means clustering <em>(3 %)</em></h2>
 <p>Mark each statement true or false.</p>
 <ol type="i">
 <li><p>Given a fixed initialization, the <span
-class="math inline">\(K\)</span>-means algorithm is guaranteed to
-converge to the <em>global</em> minimum of the within-cluster sum of
-squares.</p></li>
+class="math inline">\(K\)</span>-means algorithm converges to the
+<em>global</em> minimum of the within-cluster sum of squares.</p></li>
 <li><p>The within-cluster sum of squares (the <span
 class="math inline">\(K\)</span>-means objective) is
 <em>non-increasing</em> from one iteration to the next.</p></li>
@@ -283,7 +281,7 @@ raw data without standardizing can lead to clusters dominated by the
 largest-scale variable.</p></li>
 <li><p>Going from <span class="math inline">\(K = 4\)</span> to <span
 class="math inline">\(K = 5\)</span> in <span
-class="math inline">\(K\)</span>-means is guaranteed to produce a <span
+class="math inline">\(K\)</span>-means produces a <span
 class="math inline">\(5\)</span>-cluster solution in which one of the
 original <span class="math inline">\(4\)</span> clusters is split, with
 the other three unchanged.</p></li>

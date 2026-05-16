@@ -72,21 +72,21 @@ main goal is to understand how <span class="math inline">\(Y\)</span>
 depends on the components of <span class="math inline">\(X\)</span>
 (rather than predict <span class="math inline">\(Y\)</span> on new
 inputs as accurately as possible), we say our goal is <u></u> (2)
-(<em>inference</em> / <em>prediction</em> / <em>compression</em> /
+(<em>prediction</em> / <em>inference</em> / <em>compression</em> /
 <em>regularization</em>).</p>
 <p>Linear discriminant analysis assumes that, within each class, the
 predictors follow a multivariate normal distribution with the
 <em>same</em> covariance matrix <span
 class="math inline">\(\bm\Sigma\)</span> across classes; under this
 assumption the resulting decision boundary between any two classes is
-<u></u> (3) (<em>linear</em> / <em>quadratic</em> / <em>piecewise
-constant</em> / <em>cubic</em>) in <span
+<u></u> (3) (<em>quadratic</em> / <em>piecewise constant</em> /
+<em>linear</em> / <em>cubic</em>) in <span
 class="math inline">\(x\)</span>. Relaxing the equal-covariance
 assumption so that each class has its own <span
-class="math inline">\(\bm\Sigma_k\)</span> gives <u></u> (4)
-(<em>QDA</em> / <em>LDA with shrinkage</em> / <em>logistic
-regression</em> / <em>naive Bayes</em>), whose boundary is then
-quadratic in <span class="math inline">\(x\)</span>.</p>
+class="math inline">\(\bm\Sigma_k\)</span> gives <u></u> (4) (<em>LDA
+with shrinkage</em> / <em>logistic regression</em> / <em>naive
+Bayes</em> / <em>QDA</em>), whose boundary is then quadratic in <span
+class="math inline">\(x\)</span>.</p>
 <p>In the neural-network module the lecturer emphasized that
 <em>mini-batch</em> stochastic gradient descent, in the
 over-parameterized regime where many fits achieve zero training error,
@@ -97,28 +97,28 @@ class="math inline">\(L_\infty\)</span> norm</em> / <em>number of
 nonzero weights</em> / <em>training loss</em>). This is an example of
 <em>implicit</em> regularization.</p>
 <p>For tree ensembles, the lecturer said he prefers <u></u> (6)
-(<em>permutation-based</em> / <em>Gini-based</em> /
-<em>coefficient-based</em> / <em><span
+(<em>Gini-based</em> / <em>coefficient-based</em> /
+<em>permutation-based</em> / <em><span
 class="math inline">\(p\)</span>-value-based</em>) variable importance
 over the impurity-based variant “because it makes more sense”. In random
 forests, OOB error is, on each individual tree, computed using
 approximately what fraction of the original observations? <u></u> (7)
-(<em><span class="math inline">\(1/3\)</span></em> / <em><span
-class="math inline">\(1/2\)</span></em> / <em><span
+(<em><span class="math inline">\(1/2\)</span></em> / <em><span
+class="math inline">\(1/3\)</span></em> / <em><span
 class="math inline">\(2/3\)</span></em> / <em><span
 class="math inline">\(1/e^2\)</span></em>).</p>
 <p>In model selection by cross-validation, when several values of a
 hyperparameter give CV errors within one estimated standard error of the
-minimum, the lecturer prefers to take the <u></u> (8) (<em>simplest</em>
-/ <em>most complex</em> / <em>first-fitted</em> /
-<em>minimum-error</em>) such model; this is the <em>one-standard-error
+minimum, the lecturer prefers to take the <u></u> (8) (<em>most
+complex</em> / <em>first-fitted</em> / <em>minimum-error</em> /
+<em>simplest</em>) such model; this is the <em>one-standard-error
 rule</em>.</p>
 <p>In the classification module, the loss function used for AdaBoost
 (when one recasts it as forward stagewise additive modelling) is the
-<u></u> (9) (<em>exponential loss</em> / <em>squared-error loss</em> /
-<em>absolute-error loss</em> / <em>0–1 loss</em>). XGBoost extends
+<u></u> (9) (<em>squared-error loss</em> / <em>absolute-error loss</em>
+/ <em>exponential loss</em> / <em>0–1 loss</em>). XGBoost extends
 vanilla gradient boosting by, among other things, fitting each tree
-using <u></u> (10) (<em>second-order</em> / <em>first-order only</em> /
+using <u></u> (10) (<em>first-order only</em> / <em>second-order</em> /
 <em>zeroth-order</em> / <em>stochastic-finite-difference</em>) gradient
 information.</p>
 <h1 class="unnumbered"
@@ -336,6 +336,14 @@ class="math inline">\(x_5\)</span>, are highly correlated (<span
 class="math inline">\(\mathrm{cor}(x_4, x_5) \approx 0.98\)</span>); the
 rest are roughly mutually uncorrelated.</p>
 <ol type="i">
+<li><p><em>(1 %)</em> True or false: “Standardizing <span
+class="math inline">\(x_4\)</span> and <span
+class="math inline">\(x_5\)</span> to mean <span
+class="math inline">\(0\)</span> and variance <span
+class="math inline">\(1\)</span> before fitting OLS fixes the
+collinearity problem by making <span
+class="math inline">\(\mathbf{X}^\top\mathbf{X}\)</span> exactly
+invertible.”</p></li>
 <li><p><em>(1 %)</em> True or false: “The estimated coefficients <span
 class="math inline">\(\hat\beta_4\)</span> and <span
 class="math inline">\(\hat\beta_5\)</span> will tend to be
@@ -348,14 +356,6 @@ strongly-correlated predictors of <span class="math inline">\(y\)</span>
 to the model can only <em>increase</em> the multiple <span
 class="math inline">\(R^2\)</span>, but it can decrease the
 <em>adjusted</em> <span class="math inline">\(R^2\)</span>.”</p></li>
-<li><p><em>(1 %)</em> True or false: “Standardizing <span
-class="math inline">\(x_4\)</span> and <span
-class="math inline">\(x_5\)</span> to mean <span
-class="math inline">\(0\)</span> and variance <span
-class="math inline">\(1\)</span> before fitting OLS fixes the
-collinearity problem by making <span
-class="math inline">\(\mathbf{X}^\top\mathbf{X}\)</span> exactly
-invertible.”</p></li>
 </ol>
 <h2 class="unnumbered"
 id="h-logistic-regression-with-an-interaction-short-numeric-3">h)

@@ -73,7 +73,7 @@ phenomenon is known as <u></u> (1) (<em>collinearity</em> /
 Two classical remedies discussed in this course are ridge regression,
 which adds a penalty proportional to the squared L2 norm of the
 coefficient vector and is therefore also called a <u></u> (2)
-(<em>shrinkage</em> / <em>forward-selection</em> /
+(<em>forward-selection</em> / <em>shrinkage</em> /
 <em>decorrelation</em> / <em>bagging</em>) method, and principal
 components regression, which first replaces the correlated predictors by
 their orthogonal <u></u> (3) (<em>principal components</em> /
@@ -84,18 +84,18 @@ parameters than training observations is only possible because we always
 combine training with one or more forms of regularization. Common
 explicit choices include L1 / L2 weight decay; randomly zeroing a
 fraction of node outputs at each training iteration, called <u></u> (4)
-(<em>dropout</em> / <em>pruning</em> / <em>pooling</em> /
+(<em>pruning</em> / <em>pooling</em> / <em>dropout</em> /
 <em>thinning</em>); halting training when validation error stops
-improving, called <u></u> (5) (<em>early stopping</em> / <em>warm
-starting</em> / <em>tolerance gating</em> / <em>patience tuning</em>);
+improving, called <u></u> (5) (<em>warm starting</em> / <em>early
+stopping</em> / <em>tolerance gating</em> / <em>patience tuning</em>);
 and softening one-hot targets so the network does not become
 over-confident, called <u></u> (6) (<em>label smoothing</em> / <em>soft
 margins</em> / <em>class reweighting</em> / <em>batch
 normalization</em>). In addition, training the network with stochastic
-gradient descent on <u></u> (7) (<em>mini-batches</em> / <em>full
-passes</em> / <em>leave-one-out folds</em> / <em>out-of-bag
-samples</em>) provides an <em>implicit</em> regularization effect for
-free, which is one of the reasons over-parameterized networks
+gradient descent on <u></u> (7) (<em>full passes</em> /
+<em>leave-one-out folds</em> / <em>out-of-bag samples</em> /
+<em>mini-batches</em>) provides an <em>implicit</em> regularization
+effect for free, which is one of the reasons over-parameterized networks
 generalize.</p>
 <p>For estimating the test error of a chosen procedure honestly while
 also using cross-validation to <em>select</em> a hyperparameter, the
@@ -104,16 +104,16 @@ outer folds for assessment and inner folds for selection. This procedure
 is known as <u></u> (8) (<em>nested cross-validation</em> /
 <em>stratified CV</em> / <em>leave-one-out CV</em> / <em>bootstrap
 aggregation</em>).</p>
-<p>In ensemble methods for classification, <u></u> (9)
-(<em>AdaBoost</em> / <em>bagging</em> / <em>random forests</em> /
-<em>LDA</em>) builds a sequence of weak classifiers, each fit on
-training data that have been <em>re-weighted</em> so that observations
-the previous classifiers have misclassified receive higher weight. A
-modern unifying view interprets this and related methods as fitting a
-tree at each step to the <em>negative gradient</em> of a chosen
-differentiable loss, giving the general framework called <u></u> (10)
-(<em>gradient boosting</em> / <em>coordinate descent</em> / <em>Newton
-stepping</em> / <em>posterior averaging</em>).</p>
+<p>In ensemble methods for classification, <u></u> (9) (<em>bagging</em>
+/ <em>AdaBoost</em> / <em>random forests</em> / <em>LDA</em>) builds a
+sequence of weak classifiers, each fit on training data that have been
+<em>re-weighted</em> so that observations the previous classifiers have
+misclassified receive higher weight. A modern unifying view interprets
+this and related methods as fitting a tree at each step to the
+<em>negative gradient</em> of a chosen differentiable loss, giving the
+general framework called <u></u> (10) (<em>gradient boosting</em> /
+<em>coordinate descent</em> / <em>Newton stepping</em> / <em>posterior
+averaging</em>).</p>
 <h1 class="unnumbered"
 id="problem-2-28-multiple-choice-truefalse-and-short-numeric">Problem 2
 <strong>(28 %)</strong> — Multiple choice, true/false, and short
@@ -194,17 +194,16 @@ class="math inline">\((0, 0, 1, 0)\)</span> with softened targets like
 class="math inline">\(\varepsilon &gt; 0\)</span>; this tends to make
 the model less over-confident on the training set and improves
 generalization in classification tasks.</p></li>
-<li><p>Adding L2 weight decay always decreases the network’s training
+<li><p>Adding L2 weight decay decreases the network’s training
 error.</p></li>
 </ol>
 <h2 class="unnumbered" id="e-mini-batch-sgd-and-backpropagation-3">e)
 Mini-batch SGD and backpropagation <em>(3 %)</em></h2>
 <p>Mark each statement true or false.</p>
 <ol type="i">
-<li><p>Backpropagation is an algorithm that <em>computes</em> the
-gradient of the loss with respect to the network’s parameters, by
-applying the chain rule and reusing intermediate values stored during
-the forward pass.</p></li>
+<li><p>Backpropagation is the algorithm that <em>performs</em> the
+parameter update at each iteration of mini-batch SGD, by stepping each
+weight in the direction that most decreases the per-batch loss.</p></li>
 <li><p>Mini-batch stochastic gradient descent yields, on each update, an
 <em>unbiased</em> estimator of the full-data gradient.</p></li>
 <li><p>In typical practice, batch sizes for mini-batch SGD are chosen as

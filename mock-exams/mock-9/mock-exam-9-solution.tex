@@ -185,6 +185,11 @@ explicitly disrecommended. (7) $1/e\approx 0.368$ are out-of-bag; this rounds to
 
 \sol{}
 \begin{enumerate}[(i)]
+  \item \subpoints{1} \textbf{False}. Standardisation rescales columns but does not change the
+        \emph{angle} between them; the rank of $\mathbf{X}^\top\mathbf{X}$ is unchanged. If two
+        columns are nearly proportional before standardisation they remain nearly proportional
+        after, and the matrix remains near-singular. (Standardisation matters for ridge/lasso and
+        for unit-free interpretation, not for the rank.)
   \item \subpoints{1} \textbf{True}. Textbook collinearity fingerprint: $\hat\beta_4, \hat\beta_5$
         have inflated standard errors (the diagonal of $\sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}$ is
         large in the near-degenerate direction), so individual $t$-tests fail to reject, but the
@@ -195,11 +200,6 @@ explicitly disrecommended. (7) $1/e\approx 0.368$ are out-of-bag; this rounds to
         unchanged in the degenerate case), but the adjusted $R^2 = 1 - (1-R^2)\frac{n-1}{n-p-1}$
         penalises $p$ and can drop when the gain in $R^2$ is too small to overcome the $p$
         adjustment.
-  \item \subpoints{1} \textbf{False}. Standardisation rescales columns but does not change the
-        \emph{angle} between them; the rank of $\mathbf{X}^\top\mathbf{X}$ is unchanged. If two
-        columns are nearly proportional before standardisation they remain nearly proportional
-        after, and the matrix remains near-singular. (Standardisation matters for ridge/lasso and
-        for unit-free interpretation, not for the rank.)
 \end{enumerate}
 
 \subsection*{h) Logistic regression with an interaction \subpoints{3}}

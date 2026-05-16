@@ -179,14 +179,17 @@ $\dfrac{140}{200} = \boxed{0.70}$.
 $\dfrac{720}{800} = \boxed{0.90}$.
 
 \medskip
-\sol{} \subpoints{1} \textbf{(iii)} \textbf{(A), (C), (D)} are true. (B) is \emph{false}: AUC is the
-\emph{average} TPR over all thresholds; a higher AUC does not imply uniform dominance, because two
-ROC curves can cross.
+\sol{} \subpoints{1} \textbf{(iii)} \textbf{(A), (C), (D)} are true. (B) is \emph{false}: AUC is a
+single scalar summary (the average TPR over thresholds, or equivalently the probability of correctly
+ranking a random positive above a random negative); two ROC curves with very different shapes can
+integrate to the same area, so equal AUC does not pin down the curve.
 
 \subsection*{h) Why nonlinear activations are necessary \subpoints{2}}
 \sol{} \emph{(0.5\,P per correct mark.)}
-\textbf{(i) True}, \textbf{(ii) True}, (iii) False (it does not affect parameter count), (iv) False
-(connectivity is a separate architectural choice).
+\textbf{(i) True}, \textbf{(ii) True}, (iii) False (a nonlinear activation does not by itself shrink
+weights; regularization is a separate mechanism, e.g.\ an $\ell_2$ penalty or dropout), (iv) False
+(introducing a nonlinearity generally makes the loss surface \emph{non}-convex in the weights;
+convexity holds for linear/logistic regression, not for multi-layer networks).
 
 \subsection*{i) LDA vs.\ QDA \subpoints{2}}
 \sol{} \emph{(0.5\,P per statement.)}

@@ -71,47 +71,47 @@ regression function and fits a small, finite set of parameters <span
 class="math inline">\(\theta\)</span> is called <u></u> (1)
 (<em>parametric</em> / <em>nonparametric</em> / <em>generative</em> /
 <em>ensemble</em>). When the goal is to forecast the response on new
-inputs we speak of <u></u> (2) (<em>prediction</em> / <em>inference</em>
-/ <em>clustering</em> / <em>calibration</em>); when instead the goal is
-to understand which inputs drive the response and by how much, we speak
-of <u></u> (3) (<em>prediction</em> / <em>inference</em> /
-<em>boosting</em> / <em>cross-validation</em>).</p>
+inputs we speak of <u></u> (2) (<em>clustering</em> /
+<em>calibration</em> / <em>prediction</em> / <em>inference</em>); when
+instead the goal is to understand which inputs drive the response and by
+how much, we speak of <u></u> (3) (<em>prediction</em> /
+<em>inference</em> / <em>boosting</em> / <em>cross-validation</em>).</p>
 <p>A central decomposition of expected test error at a fixed test point
 <span class="math inline">\(x_0\)</span> splits it as <span
 class="math inline">\(\mathrm{Bias}^2 + \mathrm{Var} +
 \sigma^2\)</span>, where the last term, the variance of the noise on the
-response, is called the <u></u> (4) (<em>irreducible</em> /
-<em>reducible</em> / <em>Bayes-optimal</em> / <em>cross-validated</em>)
-error. The classical wisdom relating the first two terms is the
-bias–variance <em>trade-off</em>; in the over-parameterized regime where
-the number of parameters far exceeds <span
+response, is called the <u></u> (4) (<em>reducible</em> /
+<em>Bayes-optimal</em> / <em>cross-validated</em> /
+<em>irreducible</em>) error. The classical wisdom relating the first two
+terms is the bias–variance <em>trade-off</em>; in the over-parameterized
+regime where the number of parameters far exceeds <span
 class="math inline">\(n\)</span> and yet test error keeps falling past
 the interpolation threshold, the phenomenon is called <u></u> (5)
-(<em>double descent</em> / <em>shrinkage</em> / <em>stacking</em> /
+(<em>shrinkage</em> / <em>double descent</em> / <em>stacking</em> /
 <em>cold start</em>).</p>
 <p>Among classifiers, methods that model <span
 class="math inline">\(\Pr(X \mid Y)\)</span> together with a prior <span
 class="math inline">\(\pi_k = \Pr(Y = k)\)</span> and then invert with
-Bayes’ rule are called <u></u> (6) (<em>generative</em> /
-<em>discriminative</em> / <em>nonparametric</em> / <em>shrinkage</em>)
+Bayes’ rule are called <u></u> (6) (<em>discriminative</em> /
+<em>nonparametric</em> / <em>generative</em> / <em>shrinkage</em>)
 classifiers. The canonical example in this course assumes the
 class-conditional densities are Gaussian with a <em>shared</em>
 covariance matrix, giving a decision boundary that is linear in <span
 class="math inline">\(x\)</span>; this method is called <u></u> (7)
-(<em>LDA</em> / <em>QDA</em> / <em>logistic regression</em> / <em>naive
-Bayes</em>).</p>
+(<em>QDA</em> / <em>logistic regression</em> / <em>naive Bayes</em> /
+<em>LDA</em>).</p>
 <p>In tree ensembles, growing many <em>independent</em>
 bootstrap-replicated trees in parallel and averaging them is called
 <u></u> (8) (<em>bagging</em> / <em>boosting</em> / <em>stacking</em> /
 <em>pruning</em>); growing many small trees <em>sequentially</em>, each
 one a small correction to the previous ensemble, is called <u></u> (9)
-(<em>boosting</em> / <em>bagging</em> / <em>cost-complexity pruning</em>
+(<em>bagging</em> / <em>boosting</em> / <em>cost-complexity pruning</em>
 / <em>stratified sampling</em>). When the goal is both to
 <em>select</em> a hyperparameter and to obtain an <em>honest</em>
 estimate of test error from the same training data, the appropriate
-resampling procedure is <u></u> (10) (<em>nested cross-validation</em> /
-<em>stratified cross-validation</em> / <em>validation-set approach</em>
-/ <em>the bootstrap</em>).</p>
+resampling procedure is <u></u> (10) (<em>stratified
+cross-validation</em> / <em>validation-set approach</em> / <em>nested
+cross-validation</em> / <em>the bootstrap</em>).</p>
 <h1 class="unnumbered"
 id="problem-2-28-multiple-choice-truefalse-and-short-numeric">Problem 2
 <strong>(28 %)</strong> — Multiple choice, true/false, and short
@@ -304,8 +304,10 @@ only the linear combination <span class="math inline">\(\hat\beta_1 X_1
 with <span class="math inline">\(K\)</span> levels using <span
 class="math inline">\(K\)</span> dummy variables <em>in addition to</em>
 an intercept column produces an exactly collinear design
-(‘dummy-variable trap’); the standard remedy is to drop one of the
-dummies, whose level then becomes the reference.”</p></li>
+(‘dummy-variable trap’); the standard remedy is to add a small ridge
+penalty to the OLS objective, which restores identifiability of all
+<span class="math inline">\(K\)</span> dummy coefficients
+individually.”</p></li>
 <li><p><em>(1 %)</em> True or false: “Near-collinearity inflates the
 individual standard errors of the affected coefficients, but the
 standard error of the <em>joint</em> contribution <span
@@ -326,10 +328,10 @@ comparable level; the pair <span class="math inline">\((M, \nu)\)</span>
 is jointly tuned.”</p></li>
 <li><p><em>(1 %)</em> True or false: “A reasonable default for the
 interaction depth of trees in gradient boosting is <span
-class="math inline">\(d \in \{1, 2, \dots, 8\}\)</span> — very shallow
-trees, sometimes even <em>stumps</em> (<span class="math inline">\(d =
-1\)</span>); growing each tree fully would defeat the bias–variance
-logic that motivates many <em>weak</em> learners.”</p></li>
+class="math inline">\(d \in \{10, 20, \dots, 50\}\)</span> — deep trees
+that each capture rich, high-order interactions; using stumps (<span
+class="math inline">\(d = 1\)</span>) would be too restrictive and
+defeat the bias–variance logic that motivates boosting.”</p></li>
 <li><p><em>(1 %)</em> True or false: “XGBoost differs from vanilla
 gradient boosting in three concrete ways named in the lectures: (a) it
 adds an explicit <span class="math inline">\(L^2\)</span> (and optional

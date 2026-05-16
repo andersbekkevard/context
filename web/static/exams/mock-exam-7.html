@@ -63,49 +63,49 @@ id="problem-1-10-fill-in-the-blank-concepts">Problem 1
 <p>Read the passage and pick the best word or short phrase for each
 blank from the choices in parentheses. Each correct fill is worth <span
 class="math inline">\(1\)</span> %.</p>
-<p>A central theme of this course is <u></u> (1)
-(<em>regularization</em> / <em>interpolation</em> / <em>model
-averaging</em> / <em>the Bayes rule</em>): any modification of a
-learning algorithm that aims to reduce <u></u> (2) (<em>generalization
-error</em> / <em>training error</em> / <em>the intercept</em> / <em>the
-residual variance</em>) without necessarily reducing training error.</p>
+<p>A central theme of this course is <u></u> (1) (<em>interpolation</em>
+/ <em>regularization</em> / <em>model averaging</em> / <em>the Bayes
+rule</em>): any modification of a learning algorithm that aims to reduce
+<u></u> (2) (<em>training error</em> / <em>the intercept</em> /
+<em>generalization error</em> / <em>the residual variance</em>) without
+necessarily reducing training error.</p>
 <p>In the linear regression module we discussed what happens when two
 predictors are highly correlated: the matrix <span
 class="math inline">\(\mathbf{X}^\top\mathbf{X}\)</span> becomes nearly
 singular, the variances of the estimated coefficients explode, and
 individual <span class="math inline">\(t\)</span>-tests can become
-misleading. This phenomenon is called <u></u> (3) (<em>collinearity</em>
-/ <em>heteroscedasticity</em> / <em>leverage</em> /
-<em>overfitting</em>).</p>
+misleading. This phenomenon is called <u></u> (3)
+(<em>heteroscedasticity</em> / <em>leverage</em> / <em>collinearity</em>
+/ <em>overfitting</em>).</p>
 <p>For training neural networks the standard optimizer is <u></u> (4)
-(<em>mini-batch stochastic gradient descent</em> / <em>coordinate
-descent</em> / <em>Newton–Raphson</em> / <em>the EM algorithm</em>), and
+(<em>coordinate descent</em> / <em>Newton–Raphson</em> / <em>the EM
+algorithm</em> / <em>mini-batch stochastic gradient descent</em>), and
 the gradients themselves are computed efficiently by an algorithm that
 reuses intermediates from the forward pass, namely <u></u> (5)
-(<em>backpropagation</em> / <em>boosting</em> / <em>bootstrapping</em> /
+(<em>boosting</em> / <em>backpropagation</em> / <em>bootstrapping</em> /
 <em>cross-validation</em>).</p>
 <p>A neural network with many more weights than observations needs
 regularization to generalize well. One classification-specific trick is
-<u></u> (6) (<em>label smoothing</em> / <em>batch normalization</em> /
-<em>Adam</em> / <em>the universal approximation theorem</em>), in which
+<u></u> (6) (<em>batch normalization</em> / <em>Adam</em> / <em>label
+smoothing</em> / <em>the universal approximation theorem</em>), in which
 the hard one-hot targets are replaced by slightly softened versions.</p>
 <p>For tree ensembles, growing many <em>independent</em> trees in
-parallel and averaging them describes <u></u> (7) (<em>bagging and
-random forests</em> / <em>gradient boosting</em> / <em>AdaBoost</em> /
-<em>cost-complexity pruning</em>), whereas growing many small trees
+parallel and averaging them describes <u></u> (7) (<em>gradient
+boosting</em> / <em>AdaBoost</em> / <em>cost-complexity pruning</em> /
+<em>bagging and random forests</em>), whereas growing many small trees
 <em>sequentially</em>, each one a small correction to the previous
-ensemble’s predictions, describes <u></u> (8) (<em>boosting</em> /
-<em>bagging</em> / <em>stacking</em> / <em>the bootstrap</em>).</p>
+ensemble’s predictions, describes <u></u> (8) (<em>bagging</em> /
+<em>boosting</em> / <em>stacking</em> / <em>the bootstrap</em>).</p>
 <p>When estimating the standard error of a complicated statistic for
 which no clean closed-form sampling distribution is available, the
 standard nonparametric tool in this course is the <u></u> (9)
-(<em>bootstrap</em> / <em>F-test</em> / <em>validation-set approach</em>
-/ <em>Mallows’ <span class="math inline">\(C_p\)</span></em>).</p>
+(<em>F-test</em> / <em>validation-set approach</em> / <em>Mallows’ <span
+class="math inline">\(C_p\)</span></em> / <em>bootstrap</em>).</p>
 <p>Finally, when we want both to <em>select</em> a hyperparameter and to
 <em>honestly assess</em> the resulting model on the same data set, the
-recommended procedure is <u></u> (10) (<em>nested cross-validation</em>
-/ <em>the validation-set approach</em> / <em>leave-one-out CV</em> /
-<em>the bootstrap</em>).</p>
+recommended procedure is <u></u> (10) (<em>the validation-set
+approach</em> / <em>nested cross-validation</em> / <em>leave-one-out
+CV</em> / <em>the bootstrap</em>).</p>
 <h1 class="unnumbered"
 id="problem-2-28-multiple-choice-truefalse-and-short-numeric">Problem 2
 <strong>(28 %)</strong> — Multiple choice, true/false, and short
@@ -190,9 +190,11 @@ version such as <span
 class="math inline">\((\varepsilon/(C-1),\dots,1-\varepsilon,\dots)\)</span>
 and is motivated, in part, by the possibility that the training labels
 themselves are imperfect.”</p></li>
-<li><p><em>(1 %)</em> True or false: “Early stopping returns the network
-parameters from the epoch at which the <em>training</em> error first
-stops decreasing.”</p></li>
+<li><p><em>(1 %)</em> True or false: “Early stopping is a regularization
+technique that monitors the <em>training</em> error during gradient
+descent and returns the network parameters from the epoch at which it
+first stops decreasing, motivated by the observation that overfitting
+begins precisely when the training loss flattens out.”</p></li>
 </ol>
 <h2 class="unnumbered"
 id="d-boosting-adaboost-and-gradient-boosting-4">d) Boosting — AdaBoost
@@ -203,8 +205,10 @@ squared-error loss, fitting the next tree to the current residuals is
 equivalent to fitting a tree to the <em>negative gradient</em> of the
 loss with respect to the current ensemble’s predictions.”</p></li>
 <li><p><em>(1 %)</em> True or false: “Boosting reduces <em>variance</em>
-relative to a single deep tree by averaging over many bootstrap
-replicates.”</p></li>
+relative to a single deep tree because each of its constituent trees is
+fit on an independent bootstrap replicate of the training data and the
+resulting predictions are averaged, in the same fashion as in bagging
+and random forests.”</p></li>
 <li><p><em>(1 %)</em> True or false: “In gradient boosting, halving the
 shrinkage / learning rate <span class="math inline">\(\nu\)</span>
 approximately doubles the number of trees <span
@@ -324,9 +328,10 @@ smaller <span class="math inline">\(\mathtt{mtry}\)</span> tends to give
 less correlated trees and therefore more variance reduction from
 averaging.</p></li>
 <li><p>The number of trees <span class="math inline">\(B\)</span> in a
-random forest is a tuning parameter that must be carefully chosen by
-cross-validation, because random forests can overfit if <span
-class="math inline">\(B\)</span> is too large.</p></li>
+random forest is a tuning parameter selected by cross-validation,
+because the test error of a random forest follows a U-shaped curve in
+<span class="math inline">\(B\)</span> and rises again once <span
+class="math inline">\(B\)</span> becomes too large.</p></li>
 </ol>
 <h2 class="unnumbered" id="i-principal-component-analysis-2">i)
 Principal component analysis <em>(2 %)</em></h2>

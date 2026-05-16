@@ -62,16 +62,17 @@ id="problem-1-10-fill-in-the-blank-concepts">Problem 1
 <strong>(10 %)</strong> — Fill-in-the-blank concepts</h1>
 <p><strong>Solution</strong> <em>(1 P per blank.)</em></p>
 <ol type="1">
-<li><p><strong>validation</strong></p></li>
-<li><p><strong>cross-validation</strong></p></li>
-<li><p><strong>bootstrap</strong></p></li>
-<li><p><strong>forward stepwise</strong></p></li>
-<li><p><strong>lasso</strong></p></li>
-<li><p><strong>sparse</strong></p></li>
-<li><p><strong>principal component analysis</strong></p></li>
-<li><p><strong>local</strong></p></li>
-<li><p><strong>dendrogram</strong></p></li>
-<li><p><strong>boosting</strong></p></li>
+<li><p><strong>validation</strong> (2nd option)</p></li>
+<li><p><strong>cross-validation</strong> (3rd option)</p></li>
+<li><p><strong>bootstrap</strong> (1st option)</p></li>
+<li><p><strong>forward stepwise</strong> (4th option)</p></li>
+<li><p><strong>lasso</strong> (2nd option)</p></li>
+<li><p><strong>sparse</strong> (1st option)</p></li>
+<li><p><strong>principal component analysis</strong> (4th
+option)</p></li>
+<li><p><strong>local</strong> (3rd option)</p></li>
+<li><p><strong>dendrogram</strong> (2nd option)</p></li>
+<li><p><strong>boosting</strong> (1st option)</p></li>
 </ol>
 <p><em>Grading: 1 P per correct blank. “Holdout” is acceptable for (1)
 only if accompanied by “validation”; the passage contrasts validation
@@ -96,9 +97,14 @@ class="math inline">\(\hat\theta^{*1},\dots,\hat\theta^{*B}\)</span>,
 which requires <span class="math inline">\(B\)</span> resamples
 (typically <span class="math inline">\(B\geq 200\)</span> for SEs, <span
 class="math inline">\(\geq 1000\)</span> for percentile CIs).</p></li>
-<li><p><strong>True</strong>. <span class="math inline">\(P(\text{obs }
-i \notin \text{sample}) = (1-1/n)^n \to 1/e \approx
-0.368\)</span>.</p></li>
+<li><p><strong>False</strong>. The probability <span
+class="math inline">\(1/e \approx 0.368\)</span> is the probability that
+observation <span class="math inline">\(i\)</span> is <em>absent</em>
+from the bootstrap sample: <span class="math inline">\(P(\text{obs } i
+\notin \text{sample}) = (1-1/n)^n \to 1/e\)</span>. So the probability
+that observation <span class="math inline">\(i\)</span> <em>does</em>
+appear approaches <span class="math inline">\(1 - 1/e \approx
+0.632\)</span>, not <span class="math inline">\(0.368\)</span>.</p></li>
 <li><p><strong>True</strong>. The <em>percentile interval</em> is one of
 the two standard bootstrap-CI constructions; the other is the
 normal-approximation interval <span class="math inline">\(\hat\theta \pm

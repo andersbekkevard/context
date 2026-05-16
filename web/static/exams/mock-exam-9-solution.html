@@ -248,6 +248,13 @@ vanilla GBM.</p></li>
 Collinearity in regression output <em>(3 %)</em></h2>
 <p><strong>Solution</strong></p>
 <ol type="i">
+<li><p><em>(1 %)</em> <strong>False</strong>. Standardisation rescales
+columns but does not change the <em>angle</em> between them; the rank of
+<span class="math inline">\(\mathbf{X}^\top\mathbf{X}\)</span> is
+unchanged. If two columns are nearly proportional before standardisation
+they remain nearly proportional after, and the matrix remains
+near-singular. (Standardisation matters for ridge/lasso and for
+unit-free interpretation, not for the rank.)</p></li>
 <li><p><em>(1 %)</em> <strong>True</strong>. Textbook collinearity
 fingerprint: <span class="math inline">\(\hat\beta_4,
 \hat\beta_5\)</span> have inflated standard errors (the diagonal of
@@ -266,13 +273,6 @@ class="math inline">\(R^2 = 1 - (1-R^2)\frac{n-1}{n-p-1}\)</span>
 penalises <span class="math inline">\(p\)</span> and can drop when the
 gain in <span class="math inline">\(R^2\)</span> is too small to
 overcome the <span class="math inline">\(p\)</span> adjustment.</p></li>
-<li><p><em>(1 %)</em> <strong>False</strong>. Standardisation rescales
-columns but does not change the <em>angle</em> between them; the rank of
-<span class="math inline">\(\mathbf{X}^\top\mathbf{X}\)</span> is
-unchanged. If two columns are nearly proportional before standardisation
-they remain nearly proportional after, and the matrix remains
-near-singular. (Standardisation matters for ridge/lasso and for
-unit-free interpretation, not for the rank.)</p></li>
 </ol>
 <h2 class="unnumbered"
 id="h-logistic-regression-with-an-interaction-3">h) Logistic regression

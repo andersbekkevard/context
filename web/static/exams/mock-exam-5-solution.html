@@ -193,21 +193,24 @@ cross-entropy gradient never vanishes and the network is less prone to
 over-confident, badly calibrated predictions on unseen data.</p></li>
 <li><p><strong>False</strong>. L2 weight decay penalizes large weights,
 which forces the optimizer toward a less expressive solution and
-generally <em>increases</em> training error. Its purpose is to reduce
-<em>test</em> error (variance reduction at the cost of some
-bias).</p></li>
+generally <em>increases</em> training error (an unconstrained OLS-style
+optimum can only do at least as well on training as a constrained one).
+Its purpose is to reduce <em>test</em> error (variance reduction at the
+cost of some bias).</p></li>
 </ol>
 <h2 class="unnumbered" id="e-mini-batch-sgd-and-backpropagation-3">e)
 Mini-batch SGD and backpropagation <em>(3 %)</em></h2>
 <p><strong>Solution</strong> <em>(1 P per statement.)</em></p>
 <ol type="i">
-<li><p><strong>True</strong>. Backpropagation is exactly the chain-rule
-application: the forward pass stores intermediate activations, and the
-backward pass uses them to compute <span class="math inline">\(\partial
-L/\partial \theta\)</span> for every parameter <span
-class="math inline">\(\theta\)</span> in time proportional to the
-forward pass. It does not <em>do</em> the gradient step; that is the
-optimizer’s job.</p></li>
+<li><p><strong>False</strong>. Backpropagation only <em>computes</em>
+the gradient <span class="math inline">\(\partial L/\partial
+\theta\)</span> for every parameter <span
+class="math inline">\(\theta\)</span>, via a chain-rule pass that reuses
+intermediate activations from the forward pass. The actual parameter
+update is performed by the <em>optimizer</em> (SGD, Adam, etc.) using
+the gradients that backprop delivered. Conflating “computes the
+gradient” with “performs the update” is the canonical
+confusion.</p></li>
 <li><p><strong>True</strong>. The mini-batch gradient <span
 class="math inline">\(\tfrac{1}{|\mathcal B|}\sum_{i\in\mathcal B}\nabla
 L_i\)</span> has expectation <span

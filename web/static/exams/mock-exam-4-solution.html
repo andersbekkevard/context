@@ -162,10 +162,13 @@ class="math inline">\(\mathbb{E}_{\text{batch}}[\nabla L_{\text{batch}}]
 <li><p><strong>True</strong>. Larger batches have lower-variance
 gradient estimates; the gradient noise from small batches is itself a
 (mild) regulariser, so reducing it reduces that regularisation.</p></li>
-<li><p><strong>True</strong>. With <span class="math inline">\(L =
+<li><p><strong>False</strong>. With <span class="math inline">\(L =
 \tfrac{1}{2}(y_i-\hat f(x_i))^2\)</span>, <span
 class="math inline">\(\partial L/\partial \hat f = -(y_i-\hat
-f(x_i))\)</span>; this is the seed of the backward pass.</p></li>
+f(x_i))\)</span>, so the backward-pass seed is the <em>negative</em>
+residual, <span class="math inline">\(\delta^{\text{out}}_i = -(y_i-\hat
+f(x_i))\)</span>. The sign matters: backprop pushes the gradient of the
+loss, not the residual itself.</p></li>
 </ol>
 <h2 class="unnumbered" id="e-neural-network-regularization-3">e)
 Neural-network regularization <em>(3 %)</em></h2>
@@ -174,11 +177,12 @@ Neural-network regularization <em>(3 %)</em></h2>
 <li><p><strong>False</strong>. Dropout is active <em>only</em> at
 training time. At test time all units are used, with outputs scaled
 appropriately (or weights scaled, in “inverted dropout”).</p></li>
-<li><p><strong>False</strong>. <span class="math inline">\(50\%\)</span>
-is too aggressive for fully-connected hidden layers in this course; the
-prof’s typical default is <span class="math inline">\(\sim
-20\%\)</span>. Rates near <span class="math inline">\(0.5\)</span> tend
-to under-fit on small tabular data.</p></li>
+<li><p><strong>True</strong>. The prof’s typical default is <span
+class="math inline">\(\sim 20\%\)</span> dropout for fully-connected
+hidden layers on tabular data; she explicitly flagged <span
+class="math inline">\(50\%\)</span> as too aggressive on signal-poor
+tabular problems (it tends to under-fit). The statement just records
+both facts together.</p></li>
 <li><p><strong>False</strong>. Early stopping monitors the
 <em>validation</em> loss and returns the parameters from the epoch that
 minimised it. Stopping when training loss plateaus would defeat the

@@ -81,8 +81,10 @@ class="math inline">\(L_2\)</span>, and <em>does</em> zero
 coefficients); (6) “gradient boosting” (random forests is the one
 defined by predictor sub-sampling at each split); (8) “the EM algorithm”
 (EM is for latent-variable models, not for chain-rule gradient
-computation); (9) “dropout” (dropout zeros activations, not
-targets).</em></p>
+computation); (9) “dropout” (dropout zeros activations, not targets).
+Note: distractor order has been rotated across items so that the correct
+answer’s position varies across (1)–(10); read each list of choices
+carefully.</em></p>
 <hr />
 <h1 class="unnumbered"
 id="problem-2-28-multiple-choice-tf-short-numeric">Problem 2
@@ -121,9 +123,11 @@ has a non-monotone shape, not that the formula fails.</p></li>
 </ol>
 <p><em>Grading: 1 P each. (i) full credit requires both formulas; deduct
 0.5 if bias is written un-squared. (ii) the common trap is to say “True
-— ridge always helps,” which conflates the qualitative bias–variance
-message with a literal-always claim. (iii) the trap is to confuse the
-<em>shape</em> of variance-vs-flexibility with the validity of the
+— shrinkage helps,” which conflates the qualitative bias–variance
+message with the claim that shrinkage dominates the unbiased estimator
+regardless of <span class="math inline">\(\mu\)</span> and <span
+class="math inline">\(\sigma^2/n\)</span>. (iii) the trap is to confuse
+the <em>shape</em> of variance-vs-flexibility with the validity of the
 identity.</em></p>
 <h2 class="unnumbered"
 id="b-cross-validation-loocv-vs-k-fold-and-the-ols-shortcut-4">b)
@@ -226,12 +230,15 @@ class="math inline">\(m\)</span>. Variance scales like <span
 class="math inline">\(1/m\)</span>, so smaller batches are noisier — a
 trade-off the prof flagged as the source of SGD’s
 implicit-regularization effect.</p></li>
-<li><p><strong>True</strong>. The course-stated practical range is <span
-class="math inline">\(\eta \in [10^{-3}, 10^{-1}]\)</span> with <span
-class="math inline">\(0.01\)</span>–<span
-class="math inline">\(0.1\)</span> typical; <span
-class="math inline">\(\eta = 2\)</span> would overshoot every basin and
-oscillate without converging.</p></li>
+<li><p><strong>False</strong>. The course-stated practical range is
+<span class="math inline">\(\eta \in [10^{-3}, 10^{-1}]\)</span> with
+<span class="math inline">\(0.01\)</span>–<span
+class="math inline">\(0.1\)</span> typical, <em>not</em> <span
+class="math inline">\(\eta \approx 2\)</span>. A learning rate of <span
+class="math inline">\(2\)</span> would overshoot every basin and
+oscillate without converging, while <span class="math inline">\(\eta =
+0.1\)</span> sits at the high end of the usable range and is a perfectly
+reasonable practical value.</p></li>
 <li><p><strong>True</strong>. For large positive <span
 class="math inline">\(z\)</span>, <span
 class="math inline">\(\mathrm{ReLU}&#39;(z) = 1\)</span> exactly, while
@@ -244,9 +251,10 @@ lower layers stop receiving useful gradient signal. ReLU keeps the
 derivative at <span class="math inline">\(1\)</span> on its active
 half-line and is the textbook fix.</p></li>
 </ol>
-<p><em>Grading: 1 P each. The (ii) trap is to think “larger = faster” —
-the prof explicitly cited divergent-loss screenshots at large <span
-class="math inline">\(\eta\)</span>.</em></p>
+<p><em>Grading: 1 P each. The (ii) trap is to think “larger = faster”
+and accept <span class="math inline">\(\eta \approx 2\)</span> as
+typical — the prof explicitly cited divergent-loss screenshots at large
+<span class="math inline">\(\eta\)</span>.</em></p>
 <h2 class="unnumbered"
 id="e-boosting-adaboost-gradient-boosting-xgboost-4">e) Boosting:
 AdaBoost, gradient boosting, XGBoost <em>(4 %)</em></h2>
@@ -269,11 +277,12 @@ negative gradient w.r.t. <span class="math inline">\(F\)</span> is <span
 class="math inline">\(-\partial L/\partial F = y - F\)</span>, exactly
 the current residual. So squared-error gradient boosting and “forward
 stagewise regression on residuals” are the same algorithm.</p></li>
-<li><p><em>(1 %)</em> <strong>True</strong>. Each tree’s effective
+<li><p><em>(1 %)</em> <strong>False</strong>. Each tree’s effective
 contribution to the ensemble is <span class="math inline">\(\nu\cdot\hat
 T_m\)</span>, so halving <span class="math inline">\(\nu\)</span>
-roughly doubles the trees needed to reach the same cumulative fit. This
-is the well-known <span class="math inline">\((M, \nu)\)</span> joint
+roughly <em>doubles</em> (not halves) the trees needed to reach the same
+cumulative fit. The statement gets the direction backwards. This is the
+well-known <span class="math inline">\((M, \nu)\)</span> joint
 trade-off; the rule of thumb is “smaller <span
 class="math inline">\(\nu\)</span> is better if you can afford the
 trees.”</p></li>
@@ -291,10 +300,10 @@ class="math inline">\(\sum_i h_i\)</span> partial sums that XGBoost
 accumulates.</p></li>
 </ol>
 <p><em>Grading: 1 P each. (i) full credit requires both the numeric and
-the sign-flip interpretation. The trap on (iii) is the easy reverse
-misreading: “halving <span class="math inline">\(\nu\)</span> halves
-<span class="math inline">\(M\)</span>,” which gets the qualitative
-direction backward.</em></p>
+the sign-flip interpretation. (iii) is exactly the reverse misreading
+“halving <span class="math inline">\(\nu\)</span> halves <span
+class="math inline">\(M\)</span>” — it gets the qualitative direction
+backward and is therefore False.</em></p>
 <h2 class="unnumbered" id="f-neural-network-regularization-3">f) Neural
 network regularization <em>(3 %)</em></h2>
 <p><strong>Solution</strong></p>
@@ -645,16 +654,17 @@ treat <span class="math inline">\(\nabla_{\boldsymbol\theta}
 argument as with replacement applies), <span
 class="math inline">\(\mathbb E_{\text{batch}}[\widehat{\nabla L}] =
 (1/N)\sum_{i=1}^N \nabla \ell_i = \nabla L(\boldsymbol\theta)\)</span>.
-<strong>(B) True.</strong> For <span class="math inline">\(m\)</span>
+<strong>(B) False.</strong> For <span class="math inline">\(m\)</span>
 i.i.d. summands, <span
 class="math inline">\(\mathrm{Var}(\widehat{\nabla L}) \propto
-1/m\)</span>, so doubling <span class="math inline">\(m\)</span> halves
-the variance, all else equal. <strong>(C) True.</strong> The course’s
-claim (Apr 21): the per-step gradient <em>noise</em> from small batches
-biases the optimizer toward <em>flat</em> minima (which generalize
-better) and away from <em>sharp</em> minima. This is the prof’s
-“implicit <span class="math inline">\(L^2\)</span> regularization”
-story.</p>
+1/m\)</span>, so doubling <span class="math inline">\(m\)</span>
+<em>halves</em> (not doubles) the variance, all else equal. The
+statement inverts the relationship. <strong>(C) True.</strong> The
+course’s claim (Apr 21): the per-step gradient <em>noise</em> from small
+batches biases the optimizer toward <em>flat</em> minima (which
+generalize better) and away from <em>sharp</em> minima. This is the
+prof’s “implicit <span class="math inline">\(L^2\)</span>
+regularization” story.</p>
 <p><strong>Solution</strong> <em>(1 %)</em> <strong>(iii)</strong> The
 implicit-regularization story is a bias-for-variance trade applied to
 the <em>optimizer’s trajectory</em>, not to the explicit loss: the
@@ -672,7 +682,7 @@ class="math inline">\(\boldsymbol\theta \leftarrow \boldsymbol\theta -
 \eta\widehat{\nabla L}\)</span>, and the “every observation seen exactly
 once per epoch” detail; 0.5 P off for missing the shuffle, 0.5 P off for
 forgetting that the update happens <em>within</em> the inner loop (not
-once at the end of the epoch). (ii) 1 P for the full T/T/T pattern.
+once at the end of the epoch). (ii) 1 P for the full T/F/T pattern.
 (iii) 1 P for any defensible bias-for-variance framing tying SGD noise
 to flat-vs-sharp minima or to the same effect as explicit regularizers.
 Common trap on (ii)(C): saying “False — smaller batches mean more
