@@ -1,0 +1,452 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumerate}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{tikz}
+
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+
+\newcommand{\points}[1]{\textbf{(#1\,\%)}}
+\newcommand{\subpoints}[1]{\textit{(#1\,\%)}}
+
+\title{TMA4268 Statistical Learning V2026\\[0.3em]
+\large Mock Exam 4 (estimated final exam)}
+\author{Compiled by Claude for Anders Bekkevard\\[0.2em]
+\small Based on the Apr 28 exam-review lecture, the 2023--2025 finals, and the prof's stated scope rule}
+\date{Mock for: May 18, 2026 (real exam date)}
+
+\begin{document}
+\maketitle
+
+\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+\textbf{Instructions.}
+\begin{itemize}
+  \item \textbf{Duration:} 4 hours. \textbf{Open book.} Permitted aids: ISLP (2nd ed.), one handwritten A5 sheet of notes, calculator.
+  \item \textbf{No code required.} Write answers as math, plain English, or pseudocode. Do \emph{not} memorize R/Python package names.
+  \item \textbf{Show your work} --- partial credit is generously available, including when calculator slips spoil a numeric answer but the setup is correct.
+  \item \textbf{No negative scoring.} Always answer, even when unsure.
+  \item \textbf{If a question seems broken or ambiguous}, state the assumption you are making in one short sentence and proceed.
+  \item Total: \textbf{100 points = 100\,\%}. Per-problem weights given in parentheses.
+\end{itemize}}}
+
+\vspace{0.6em}
+\noindent\textbf{Grade boundaries (NTNU \emph{prosentvurderingsmetoden}, advisory):}
+A: 89--100\,\% \quad B: 77--88\,\% \quad C: 65--76\,\% \quad D: 53--64\,\% \quad E: 41--52\,\% \quad F: 0--40\,\%.
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+%=========================================================
+\section*{Problem 1 \points{10} --- Fill-in-the-blank concepts}
+%=========================================================
+
+\noindent Read the passage and pick the best word or short phrase for each blank from the choices in parentheses. Each correct fill is worth $1$\,\%.
+
+\bigskip
+
+In ordinary least squares, the covariance matrix of the fitted coefficient vector is $\mathrm{Cov}(\hat{\boldsymbol\beta}) = \sigma^2 (\mathbf X^\top \mathbf X)^{-1}$. When two predictors are nearly linearly related, the matrix $\mathbf X^\top \mathbf X$ becomes nearly singular and the standard errors of the affected coefficients explode. This phenomenon is called \underline{\hspace{2.5cm}}\,(1) (\emph{heteroscedasticity} / \emph{collinearity} / \emph{leverage} / \emph{double descent}). One way to escape this problem without dropping a variable is to add a quadratic penalty on the coefficients to the OLS objective, a technique known as \underline{\hspace{2.5cm}}\,(2) (\emph{ridge regression} / \emph{the lasso} / \emph{partial least squares} / \emph{forward stepwise selection}).
+
+When the goal is to honestly estimate the test error of a model, the simplest tool is the validation-set approach; a more reliable variant rotates the held-out part through $k$ equal-sized folds and averages the $k$ resulting errors, a procedure known as \underline{\hspace{2.5cm}}\,(3) (\emph{$k$-fold cross-validation} / \emph{the bootstrap} / \emph{stratified sampling} / \emph{permutation testing}). A common pitfall is to use the response $y$ to pre-select predictors on the full data and only then run cross-validation on the reduced predictor set; this gives an unbiased estimate of test error only when the selection step is moved \emph{inside} each fold, an idea known as \underline{\hspace{2.5cm}}\,(4) (\emph{nested cross-validation} / \emph{bootstrap aggregation} / \emph{stratified $k$-fold} / \emph{leave-one-out CV}).
+
+In neural networks, the parameters are typically fit by an iterative optimizer that, at each step, takes a small step in the direction of the negative gradient computed on a random subset of the training data. This optimizer is called \underline{\hspace{2.5cm}}\,(5) (\emph{mini-batch SGD} / \emph{coordinate descent} / \emph{the Newton-Raphson method} / \emph{conjugate gradient}). The gradient itself is computed efficiently by repeated application of the chain rule from output back toward input, an algorithm called \underline{\hspace{2.5cm}}\,(6) (\emph{backpropagation} / \emph{boosting} / \emph{forward propagation} / \emph{the EM algorithm}).
+
+A neural network with many more parameters than observations must always be trained with some form of regularization. One option is to randomly zero out a fraction of the hidden-unit outputs at each training iteration; this technique is called \underline{\hspace{2.5cm}}\,(7) (\emph{dropout} / \emph{label smoothing} / \emph{batch normalization} / \emph{cost-complexity pruning}). Another option is to monitor the validation error during training and return the parameter values from the epoch that minimized it, a technique called \underline{\hspace{2.5cm}}\,(8) (\emph{early stopping} / \emph{annealing} / \emph{transfer learning} / \emph{boosting}). A third option, especially useful when the recorded class labels may themselves contain errors, replaces the one-hot target vector $(0,\dots,1,\dots,0)$ by a softened version such as $(\varepsilon/(C-1),\dots,1-\varepsilon,\dots,\varepsilon/(C-1))$; this technique is called \underline{\hspace{2.5cm}}\,(9) (\emph{label smoothing} / \emph{data augmentation} / \emph{Laplace smoothing} / \emph{weight decay}).
+
+Finally, an ensemble method for trees that fits weak learners \emph{sequentially}, each one to the negative gradient of the loss of the running ensemble, is called \underline{\hspace{2.5cm}}\,(10) (\emph{gradient boosting} / \emph{bagging} / \emph{random forests} / \emph{stacked generalization}).
+
+\vfill\eject
+
+%=========================================================
+\section*{Problem 2 \points{28} --- Multiple choice, true/false, and short numeric}
+%=========================================================
+
+For each subproblem, write \emph{True} or \emph{False} for each statement (or the requested numeric answer). You may add a one-sentence justification but only if you think it helps; do not write essays.
+
+\subsection*{a) Bias--variance and double descent \subpoints{3}}
+Mark each statement as true or false.
+\begin{enumerate}[(i)]
+  \item The bias--variance decomposition $\mathbb{E}[(y_0-\hat f(x_0))^2] = \mathrm{Bias}^2[\hat f(x_0)] + \mathrm{Var}[\hat f(x_0)] + \sigma^2$ is an algebraic identity that holds for any fitted $\hat f$, regardless of whether $\hat f$ minimizes a squared-error loss.
+  \item In the over-parameterized regime where many fitted models achieve zero training error, the bias--variance decomposition no longer holds and must be replaced by a separate ``double-descent identity''.
+  \item Reducing the variance of $\hat f$ always requires a compensating increase in its bias.
+\end{enumerate}
+
+\subsection*{b) Cross-validation and the wrong-way CV trap \subpoints{4}}
+Mark each statement as true or false.
+\begin{enumerate}[(i)]
+  \item In ordinary $k$-fold CV with $k=10$, the procedure fits the model $10$ times (not $n$ times).
+  \item Suppose you have $n = 100$ observations and $p = 5000$ random predictors, and you (a) compute the marginal correlation $\hat\rho_j$ between each predictor $x_j$ and the response $y$ on the full data, (b) keep the $25$ predictors with the largest $|\hat\rho_j|$, and (c) run $10$-fold CV on a logistic regression using only those $25$. The resulting CV misclassification rate is an unbiased estimator of the test error of this procedure.
+  \item Nested CV uses an \emph{inner} cross-validation loop to select a hyperparameter and an \emph{outer} cross-validation loop to estimate the test error of the \emph{procedure that includes the selection step}.
+  \item For ordinary least squares, leave-one-out CV can be computed without refitting the model $n$ times, by exploiting the diagonal $h_{ii}$ of the hat matrix $\mathbf H = \mathbf X(\mathbf X^\top \mathbf X)^{-1}\mathbf X^\top$.
+\end{enumerate}
+
+\subsection*{c) Neural network parameters and forward pass \subpoints{3}}
+Consider a fully-connected feed-forward neural network with:
+\begin{itemize}
+  \item $4$ input variables,
+  \item one hidden layer of $5$ neurons (with biases, ReLU activations),
+  \item one hidden layer of $3$ neurons (with biases, ReLU activations),
+  \item one output neuron (with bias, linear activation).
+\end{itemize}
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} How many parameters does this network have in total, \emph{including all bias terms}? Show the layer-by-layer breakdown.
+  \item \subpoints{2} A neuron in the \emph{first} hidden layer has weights $w = (1.0,\,-0.5,\,2.0,\,0.0)$ and bias $b = -1.5$. Its inputs on a given observation are $x = (1,\,2,\,-1,\,4)$. Using ReLU activation, compute the output of this neuron.
+\end{enumerate}
+
+\subsection*{d) Backprop and mini-batch SGD \subpoints{3}}
+Mark each statement as true or false.
+\begin{enumerate}[(i)]
+  \item Backpropagation is an \emph{optimizer} that updates a network's weights by stepping in the direction of the negative gradient.
+  \item In mini-batch SGD with batch size $m \ll N$, the gradient computed on a single batch is an unbiased estimator of the full-data gradient $\nabla_{\boldsymbol\theta} L$.
+  \item Doubling the mini-batch size from $m$ to $2m$ tends to \emph{reduce} the variance of the per-step gradient estimate, and accordingly \emph{reduces} the implicit regularization that mini-batch SGD provides.
+  \item For a feed-forward network with squared-error output loss, the backward-pass ``seed'' at the output layer is $\delta^{\text{out}}_i = -(y_i - \hat f(x_i))$.
+\end{enumerate}
+
+\subsection*{e) Neural-network regularization \subpoints{3}}
+Mark each statement as true or false.
+\begin{enumerate}[(i)]
+  \item Dropout in a neural network is active at \emph{both} training and test time.
+  \item In practice, a dropout rate of $50\%$ is the standard recommendation for hidden layers in fully connected networks.
+  \item ``Early stopping'' means halting training as soon as the \emph{training} loss stops decreasing.
+  \item Label smoothing replaces hard one-hot targets by softened ones, and is motivated in part by the possibility that the recorded class labels themselves may contain errors.
+\end{enumerate}
+
+\subsection*{f) Boosting flavors: AdaBoost, gradient boosting, XGBoost \subpoints{4}}
+Mark each statement as true or false.
+\begin{enumerate}[(i)]
+  \item AdaBoost re-weights the \emph{training observations} between rounds so that points misclassified by the current ensemble receive larger weight on the next round.
+  \item In gradient boosting with squared-error loss, fitting the next tree to the current residuals is mathematically equivalent to fitting a tree to the \emph{negative gradient} of the loss with respect to the current ensemble's predictions.
+  \item In gradient boosting, decreasing the shrinkage/learning rate $\nu$ generally requires \emph{fewer} trees $M$ to achieve a given training fit, because each tree contributes more strongly.
+  \item XGBoost differs from vanilla gradient boosting in that it adds explicit $L_1$ / $L_2$ regularization on the leaf-weight values, and also uses second-order (curvature) information about the loss when choosing splits.
+\end{enumerate}
+
+\subsection*{g) Collinearity \subpoints{3}}
+Mark each statement as true or false.
+\begin{enumerate}[(i)]
+  \item Strong collinearity among predictors typically \emph{inflates} the standard errors of the affected coefficients, making each one individually look statistically insignificant even when the predictors jointly explain a large fraction of the variance in $y$.
+  \item Strong collinearity always degrades the predictive accuracy of the model on a held-out test set.
+  \item Suppose a linear regression model includes both $\text{age}$ (in years) and $\text{age\_decades} = \text{age}/10$ as predictors. The OLS estimates of the two coefficients are well-defined but their standard errors are infinite.
+\end{enumerate}
+
+\subsection*{h) Principal component analysis \subpoints{3}}
+You perform PCA on a dataset with seven \textbf{standardized} variables $X_1,\dots,X_7$ and obtain the following eigenvalues of the (centered) sample covariance matrix:
+\begin{center}\small
+\begin{tabular}{lccccccc}
+\toprule
+PC               & 1   & 2   & 3   & 4   & 5   & 6   & 7   \\
+\midrule
+Eigenvalue       & 2.5 & 1.5 & 1.1 & 0.8 & 0.5 & 0.4 & 0.2 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The loading vector of the first principal component (entries rounded to two decimals) is
+$$\phi_1 = (\,0.50,\;\, -0.40,\;\, 0.45,\;\, 0.30,\;\, -0.35,\;\, 0.40,\;\, 0.15\,)^\top.$$
+
+A new observation has standardized values $x^* = (\,2,\;\, 0,\;\, 1,\;\, -1,\;\, 0,\;\, 1,\;\, 2\,)^\top$.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} How many principal components must be retained to capture at least $80\%$ of the total variance? Show the cumulative-variance calculation.
+  \item \subpoints{1} Compute the score $z^*_1$ of the new observation on PC1.
+  \item \subpoints{1} True or false: ``Running PCA on the same dataset \emph{without} first standardizing the variables would generally yield the same loading vectors, because PCA is invariant under coordinate rescaling.''
+\end{enumerate}
+
+\subsection*{i) Hierarchical clustering and $K$-means \subpoints{2}}
+Mark each statement as true or false.
+\begin{enumerate}[(i)]
+  \item In agglomerative hierarchical clustering, replacing \emph{single} linkage with \emph{complete} linkage on the same dissimilarity matrix can never change the identity of the \emph{first} merge, because the first merge is always between the two observations with the smallest pairwise dissimilarity.
+  \item Because the $K$-means algorithm depends on a random initialization of the cluster centroids and converges only to a local minimum of the within-cluster sum of squares, it is recommended in practice to run it from several different random initializations and pick the solution with the smallest within-cluster sum of squares.
+\end{enumerate}
+
+\vfill\eject
+
+%=========================================================
+\section*{Problem 3 \points{16} --- Theory and hand calculations}
+%=========================================================
+
+\subsection*{a) The mathy one --- the bias--variance decomposition \subpoints{8}}
+
+Consider a regression problem in which the response is generated as
+$$y_0 = f(x_0) + \varepsilon,\qquad \mathbb{E}[\varepsilon] = 0,\qquad \mathrm{Var}(\varepsilon) = \sigma^2,$$
+where $x_0$ is a fixed test point and the noise $\varepsilon$ is independent of any random training set. Let $\hat f$ be a model fit on a random training sample $\mathcal{D}$ drawn independently of $\varepsilon$, and write $\hat f(x_0)$ for its prediction at the test point. Expectations below are taken jointly over $\mathcal{D}$ and over $\varepsilon$.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{2} Show that the expected squared prediction error at $x_0$ splits cleanly into a ``reducible'' and an ``irreducible'' part:
+  $$\mathbb{E}\!\left[(y_0 - \hat f(x_0))^2\right] \;=\; \mathbb{E}\!\left[(f(x_0) - \hat f(x_0))^2\right] \;+\; \sigma^2.$$
+  Be explicit about \emph{which} of the cross terms vanish and \emph{why}.
+
+  \item \subpoints{3} Starting from your answer to (i), show that the reducible part further decomposes as
+  $$\mathbb{E}\!\left[(f(x_0) - \hat f(x_0))^2\right] \;=\; \underbrace{\big(f(x_0) - \mathbb{E}[\hat f(x_0)]\big)^2}_{\mathrm{Bias}^2[\hat f(x_0)]} \;+\; \underbrace{\mathbb{E}\!\big[(\hat f(x_0) - \mathbb{E}[\hat f(x_0)])^2\big]}_{\mathrm{Var}[\hat f(x_0)]}.$$
+  Be explicit about the ``add and subtract $\mathbb{E}[\hat f(x_0)]$'' step and the vanishing cross term.
+
+  \item \subpoints{1} Combining (i) and (ii), state the full bias--variance decomposition of $\mathbb{E}[(y_0 - \hat f(x_0))^2]$, identify the irreducible component by name, and state what kind of \emph{randomness} the expectations $\mathbb{E}[\hat f(x_0)]$ and $\mathrm{Var}[\hat f(x_0)]$ are taken over.
+
+  \item \subpoints{1} Explain in one or two sentences why the prof in this course has urged you to call the result a ``\emph{decomposition}'' rather than a ``\emph{trade-off}.'' (You may, for example, refer to the existence of regularizers that reduce variance without increasing bias, or to the over-parameterized / benign-overfitting regime.)
+
+  \item \subpoints{1} Lasso regression at a small positive penalty $\lambda$ has, on a particular dataset, a test MSE that is \emph{lower} than ordinary least squares. Using the decomposition you derived, write down in one or two short sentences which of the three terms changed and in which direction. (No numbers required; conceptual answer.)
+\end{enumerate}
+
+\subsection*{b) Pseudocode --- nested $k$-fold cross-validation \subpoints{4}}
+
+You have a training set $(\mathbf X, \mathbf y)$ of size $n$, a model class indexed by a hyperparameter $\lambda$ taking values in a finite grid $\Lambda = \{\lambda_1, \dots, \lambda_L\}$, and you wish to (a) \emph{select} the best $\lambda$ and (b) report an \emph{honest} estimate of the test error of the resulting procedure. You have decided to use $K_\text{outer} = 5$ outer folds for assessment and $K_\text{inner} = 5$ inner folds for selection.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{3} Write \emph{pseudocode} (math, plain English, or programming-language-style is fine) for the nested $k$-fold CV procedure. Your pseudocode should make explicit, by the structure of nested loops:
+  \begin{itemize}
+    \item which data are used to \emph{fit} the model;
+    \item which data are used to \emph{select} the hyperparameter;
+    \item which data are used to \emph{assess} the test error;
+    \item how the outer-fold scores are aggregated into a single test-error estimate.
+  \end{itemize}
+  \item \subpoints{1} A classmate proposes an alternative ``shortcut'': run a single (not nested) $K_\text{inner}=5$ CV to pick the $\lambda$ with the smallest CV error, and then \emph{report that same CV error as the test-error estimate of the procedure}. Briefly explain in one sentence why this estimate is biased \emph{downward}.
+\end{enumerate}
+
+\subsection*{c) Bootstrap standard error \subpoints{4}}
+
+You have an i.i.d.\ sample $X_1, \dots, X_n$ from an unknown distribution and you wish to estimate the standard error of the sample \emph{median} $\hat\theta = \mathrm{median}(X_1, \dots, X_n)$. No clean closed-form expression for the sampling distribution of $\hat\theta$ is available.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{2} Write \emph{pseudocode} for the bootstrap algorithm that returns an estimate $\widehat{\mathrm{SE}}_{\mathrm{boot}}(\hat\theta)$. Be explicit about (i) how each bootstrap sample is drawn, (ii) what statistic is recomputed on each bootstrap sample, and (iii) how the final standard-error estimate is computed from the $B$ recomputed values.
+
+  \item \subpoints{1} For $n = 6$, what is the probability that observation $X_1$ is included in a given bootstrap sample? (Numeric, three decimals.) What does this probability tend to as $n \to \infty$? (Symbolic plus a numeric approximation.)
+
+  \item \subpoints{1} A second statistician wants a $95\%$ bootstrap \emph{confidence interval} for $\hat\theta$ (not just a standard error). Briefly describe the \emph{percentile} method in one or two sentences.
+\end{enumerate}
+
+\vfill\eject
+
+%=========================================================
+\section*{Problem 4 \points{22} --- Data analysis: regression on apartment rents}
+%=========================================================
+
+A property-management company records $n = 750$ city apartments. The response is the monthly \texttt{rent} (in $1000$ NOK). The available predictors are:
+\begin{itemize}
+  \item \texttt{area} --- total floor area in m\textsuperscript{2} (continuous);
+  \item \texttt{rooms} --- number of rooms (count, $1$--$6$);
+  \item \texttt{area\_per\_room} --- $\texttt{area}/\texttt{rooms}$, in m\textsuperscript{2}/room (continuous);
+  \item \texttt{age} --- age of the building in years (continuous, $0$--$120$);
+  \item \texttt{floor} --- which floor the apartment is on (continuous, $0$--$15$);
+  \item \texttt{distance} --- distance to the city centre, in km (continuous, $0.2$--$15$);
+  \item \texttt{has\_balcony} --- binary $0/1$ indicator;
+  \item \texttt{type} --- categorical, $3$ levels: \emph{flat} (reference), \emph{studio}, \emph{loft}.
+\end{itemize}
+
+The data are split $500 / 250$ into a training and a test set. The continuous predictors \texttt{area}, \texttt{rooms}, \texttt{area\_per\_room}, \texttt{floor}, and \texttt{distance} are standardized to mean $0$ and standard deviation $1$ \emph{before} fitting any of the models below. The variable \texttt{age} (and consequently $\texttt{age}^2$) is kept on its original scale, in years.
+
+\subsection*{a) OLS with collinearity, interaction, and a polynomial term \subpoints{10}}
+
+The course staff fits, on the training set, the linear model
+\begin{align*}
+\texttt{rent} \;\sim\; & \texttt{area} + \texttt{rooms} + \texttt{area\_per\_room} \\
+ & + \texttt{age} + I(\texttt{age}^2) + \texttt{floor} + \texttt{distance} \\
+ & + \texttt{has\_balcony} + \texttt{type} \\
+ & + \texttt{distance}\!:\!\texttt{has\_balcony}.
+\end{align*}
+The fitted output is:
+
+\begin{center}\small
+\begin{tabular}{lcccc}
+\toprule
+ & \textbf{Estimate} & \textbf{Std.\ Error} & \textbf{t-value} & \textbf{Pr($>|t|$)} \\
+\midrule
+(Intercept)                       & $14.50$    & $0.95$    & $15.26$ & $<0.001$ \\
+\texttt{area}                     & $5.80$     & $2.10$    & $2.76$  & $0.006$  \\
+\texttt{rooms}                    & $2.40$     & $1.95$    & $1.23$  & $0.219$  \\
+\texttt{area\_per\_room}          & $0.50$     & $1.40$    & $0.36$  & $0.720$  \\
+\texttt{age}                      & $-0.080$   & $0.018$   & $-4.44$ & $<0.001$ \\
+$I(\texttt{age}^2)$               & $0.00045$  & $0.00012$ & $3.75$  & $<0.001$ \\
+\texttt{floor}                    & $0.45$     & $0.18$    & $2.50$  & $0.013$  \\
+\texttt{distance}                 & $-1.95$    & $0.28$    & $-6.96$ & $<0.001$ \\
+\texttt{has\_balcony}             & $0.70$     & $0.30$    & $2.33$  & $0.020$  \\
+\texttt{type\_studio}             & $-2.10$    & $0.45$    & $-4.67$ & $<0.001$ \\
+\texttt{type\_loft}               & $1.40$     & $0.60$    & $2.33$  & $0.020$  \\
+\texttt{distance:has\_balcony}    & $0.55$     & $0.22$    & $2.50$  & $0.013$  \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Multiple $R^2 = 0.812$,\quad Adjusted $R^2 = 0.808$.\quad
+Residual standard error: $1.85$ on $488$ d.f.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} How many parameters does this model estimate, including the intercept? Verify your count against the printed residual degrees of freedom ($n_\text{train} = 500$).
+  \item \subpoints{2} Notice that the three predictors \texttt{area}, \texttt{rooms}, and \texttt{area\_per\_room} are not algebraically independent: $\texttt{area} = \texttt{rooms} \cdot \texttt{area\_per\_room}$ (and after standardization, they remain nearly so). Look at the estimate / SE / $p$-value pattern in the rows for \texttt{rooms} and \texttt{area\_per\_room}. Identify (in one short sentence) the statistical phenomenon at work, and state what would happen to the standard errors of these three predictors if you dropped \texttt{area\_per\_room} from the model.
+  \item \subpoints{1} A classmate concludes: ``Since the $p$-value of \texttt{rooms} is $0.219$ and that of \texttt{area\_per\_room} is $0.720$, neither variable is associated with rent, so the model captures no information about apartment size beyond \texttt{area}.'' Briefly say in one sentence why this reading is \emph{wrong} given the diagnostic you identified in (ii).
+  \item \subpoints{2} The model includes a quadratic term $I(\texttt{age}^2)$. Treating $\hat\beta_{\texttt{age}}$ and $\hat\beta_{\texttt{age}^2}$ jointly, find the value of $\texttt{age}$ (in years) at which the model's predicted partial effect of \emph{age} on \texttt{rent} is \emph{minimized}, holding all other predictors fixed. Show your work; one decimal is fine.
+  \item \subpoints{2} The interaction \texttt{distance}:\texttt{has\_balcony} is included. \emph{State your standardization convention for} \texttt{distance} \emph{explicitly} (recall that all continuous predictors have been centred to mean $0$ and scaled to standard deviation $1$ before fitting, so a one-unit change in the predictor as it enters the model corresponds to a one-standard-deviation change on the original scale), then compute, in this model, the predicted change in \texttt{rent} (in $1000$ NOK) when \texttt{distance} is increased by one standard deviation, separately (a) for an apartment with no balcony and (b) for an apartment with a balcony. Briefly comment in one sentence on why the two answers differ.
+  \item \subpoints{1} The model reports adjusted $R^2 = 0.808$. The course staff considers adding a second polynomial term $I(\texttt{age}^3)$ to the model. State, with one short justification, whether you would expect the \emph{training} $R^2$ to increase, decrease, or stay the same, and what about \emph{adjusted} $R^2$.
+  \item \subpoints{1} Suppose you would like to test whether \texttt{type} (a $3$-level categorical) is \emph{jointly} relevant after controlling for the other predictors. State (briefly) which test you would use and write the null hypothesis. You do \emph{not} need to compute the test statistic.
+\end{enumerate}
+
+\subsection*{b) Lasso with $10$-fold cross-validation \subpoints{5}}
+
+To attack the collinearity flagged in (a), the staff re-fits the same predictors (now without the redundant \texttt{area\_per\_room}; $p = 10$ predictors after dummy coding) with a lasso. The penalty parameter $\lambda$ is chosen by $10$-fold cross-validation:
+
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+  \draw[->] (0,0) -- (8.3,0) node[right] {$\log\lambda$};
+  \draw[->] (0,0) -- (0,6.3) node[above] {CV-MSE};
+
+  \draw[smooth, thick, blue] plot[domain=0.3:7.7] (\x, {2.4 + 0.04*(\x-1.4)*(\x-1.4) + 0.0022*(\x-1.4)*(\x-1.4)*(\x-1.4)});
+
+  \draw[dashed] (1.4,0) -- (1.4,5.6);
+  \node[above] at (1.4,5.6) {\small $\hat\lambda_{\min}$};
+  \draw[dashed] (3.2,0) -- (3.2,5.6);
+  \node[above] at (3.2,5.6) {\small $\hat\lambda_{1\mathrm{SE}}$};
+
+  \foreach \x in {0,2,4,6}
+    \draw (\x, 0.06) -- (\x, -0.06) node[below] {\x};
+  \foreach \y in {0,1,2,3,4,5,6}
+    \draw (-0.06, \y) -- (0.06, \y) node[left,xshift=-0.1cm] {\y};
+
+  \node[blue] at (6.3,4.7) {\small CV curve};
+\end{tikzpicture}
+\end{center}
+
+\noindent The test-MSE values, evaluated on the held-out $250$ apartments, are:
+
+\begin{center}\small
+\begin{tabular}{lcc}
+\toprule
+                                                 & \textbf{Test MSE} & \textbf{Nonzero coefs} \\
+\midrule
+OLS (full model from part (a))                   & $3.85$            & $11$ \\
+Lasso at $\hat\lambda_{\min}$                    & $3.40$            & $8$  \\
+Lasso at $\hat\lambda_{1\text{SE}}$              & $3.50$            & $5$  \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} Write down the lasso objective function (math or pseudocode), being explicit about whether the intercept is penalized.
+  \item \subpoints{1} Briefly explain why the lasso reduces the number of nonzero coefficients as $\lambda$ increases, whereas ridge regression does not.
+  \item \subpoints{2} Compare lasso-at-$\hat\lambda_{\min}$ (test MSE $3.40$, $8$ nonzero) to OLS (test MSE $3.85$, $11$ nonzero). Interpret the comparison in bias--variance terms, and connect to your diagnosis in part (a)(ii).
+  \item \subpoints{1} A practitioner argues: ``I'm just going to use $\hat\lambda_{1\mathrm{SE}}$ because it gives a simpler model.'' Briefly state the \emph{one-standard-error rule} and give one short reason why this practitioner's preference is reasonable.
+\end{enumerate}
+
+\subsection*{c) Gradient boosting \subpoints{4}}
+
+A gradient-boosted regression-tree model is fit on the same training set with parameters $M = 800$ trees, interaction depth $d = 4$, and shrinkage $\nu = 0.05$. The test MSE is $2.20$, lower than every method tried above.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{2} Write \emph{pseudocode} for a single round of gradient boosting in the regression case (squared-error loss). Be explicit about (i) what quantity the new tree is fit to, (ii) what role $\nu$ plays in the update, (iii) how the running ensemble is updated. You do not need to spell out the tree-fitting routine internally.
+  \item \subpoints{1} The prof has said: ``\emph{by updating according to the residuals, what we were really doing is fitting the gradient of the function we're optimizing}.'' Briefly verify this by computing the (negative) gradient of $L(y, f) = \tfrac{1}{2}(y - f)^2$ with respect to $f$, and identifying it.
+  \item \subpoints{1} Comparing the test MSEs (boosting $2.20$, lasso $3.40$, OLS $3.85$), what does the ranking suggest about the structure of the relationship between the predictors and \texttt{rent}? Name one diagnostic plot you would produce from the boosted ensemble to recover some interpretability about \emph{which} predictors matter.
+\end{enumerate}
+
+\subsection*{d) GAM degrees of freedom \subpoints{3}}
+
+Finally, a generalized additive model (GAM) is fit on the same training set:
+$$\texttt{rent} = \beta_0 + s(\texttt{area},\mathrm{df}=4) + s(\texttt{age},\mathrm{df}=5) + \mathrm{bs}(\texttt{distance},\mathrm{knots}=\{2, 4, 7\}) + \beta_{\texttt{floor}}\cdot\texttt{floor} + \beta_{\texttt{bal}}\cdot\texttt{has\_balcony} + g(\texttt{type}) + \varepsilon,$$
+where $s(\cdot,\mathrm{df}=k)$ is a smoothing spline with $k$ effective degrees of freedom (intercept removed), $\mathrm{bs}(\cdot,\mathrm{knots}=\dots)$ is a cubic regression spline with the specified interior knots (intercept removed), and $g(\texttt{type})$ uses dummy coding as in part (a).
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} How many degrees of freedom does the cubic regression spline $\mathrm{bs}(\texttt{distance},\mathrm{knots}=\{2,4,7\})$ alone consume? (Count basis functions, excluding the global intercept.)
+  \item \subpoints{1} How many total degrees of freedom does this GAM consume, including the global intercept?
+  \item \subpoints{1} In one sentence, state one \emph{structural limitation} of this GAM compared to the gradient-boosted ensemble of part (c). (Hint: think about interactions.)
+\end{enumerate}
+
+\vfill\eject
+
+%=========================================================
+\section*{Problem 5 \points{24} --- Data analysis: image classification of skin lesions}
+%=========================================================
+
+A teaching dermatology clinic has $n = 6{,}000$ images of skin lesions, each labelled by a panel of physicians as \texttt{lesion\_type} $\in \{\text{benign}, \text{malignant}\}$. The data are split $4{,}500 / 1{,}500$ into a training set and a test set. The available features are tabular ``hand-crafted'' summaries of each image:
+\begin{itemize}
+  \item \texttt{size\_mm} --- maximum diameter of the lesion, in mm (continuous);
+  \item \texttt{asymmetry} --- a continuous asymmetry score in $[0, 1]$;
+  \item \texttt{darkness} --- mean pixel intensity of the lesion (continuous);
+  \item \texttt{age} --- patient age in years;
+  \item \texttt{sex} --- categorical: \emph{female} (reference), \emph{male};
+  \item \texttt{family\_history} --- binary $0/1$ indicator.
+\end{itemize}
+
+Among the $1{,}500$ test images, $300$ are truly malignant and $1{,}200$ are truly benign.
+
+\subsection*{a) Logistic regression with an interaction \subpoints{9}}
+
+The clinic fits the model
+\begin{align*}
+\text{logit}\bigl(\Pr(\texttt{lesion\_type}=\text{malignant} \mid X)\bigr) \;=\; & \beta_0 + \beta_1 \texttt{size\_mm} + \beta_2 \texttt{asymmetry} + \beta_3 \texttt{darkness} \\
+& + \beta_4 \texttt{age} + \beta_5 \texttt{sex} + \beta_6 \texttt{family\_history} \\
+& + \beta_7 (\texttt{size\_mm}\!:\!\texttt{age}).
+\end{align*}
+
+The fitted output is:
+
+\begin{center}\small
+\begin{tabular}{lcccc}
+\toprule
+ & \textbf{Estimate} & \textbf{Std.\ Error} & \textbf{z-value} & \textbf{Pr($>|z|$)} \\
+\midrule
+(Intercept)                & $-6.20$  & $0.55$    & $-11.27$ & $<0.001$ \\
+\texttt{size\_mm}          & $0.20$   & $0.04$    & $5.00$   & $<0.001$ \\
+\texttt{asymmetry}         & $2.50$   & $0.70$    & $3.57$   & $<0.001$ \\
+\texttt{darkness}          & $-0.012$ & $0.005$   & $-2.40$  & $0.016$  \\
+\texttt{age}               & $0.030$  & $0.006$   & $5.00$   & $<0.001$ \\
+\texttt{sex\_male}         & $0.18$   & $0.15$    & $1.20$   & $0.230$  \\
+\texttt{family\_history}   & $0.55$   & $0.18$    & $3.06$   & $0.002$  \\
+\texttt{size\_mm:age}      & $0.0020$ & $0.0008$  & $2.50$   & $0.012$  \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+(\texttt{size\_mm} is in millimetres; \texttt{age} is in years.)
+
+\begin{enumerate}[(i)]
+  \item \subpoints{2} For a patient of age $\texttt{age} = 30$, by what factor do the odds of a malignant lesion change for each additional millimetre of \texttt{size\_mm}, holding all other predictors fixed? Repeat the calculation for a patient of age $\texttt{age} = 70$. Two numeric factors, to three decimals.
+  \item \subpoints{1} Briefly explain (one or two sentences) why the answer to (i) is \emph{not} the same at $\texttt{age}=30$ and $\texttt{age}=70$, and why the main-effect coefficient $\hat\beta_{\texttt{size\_mm}} = 0.20$ alone is therefore not a useful summary of the size effect.
+  \item \subpoints{3} Consider a patient with $\texttt{size\_mm}=8$, $\texttt{asymmetry}=0.6$, $\texttt{darkness}=120$, $\texttt{age}=60$, $\texttt{sex}=$\emph{male}, $\texttt{family\_history}=1$. Compute the linear predictor $\hat\eta$ and the fitted probability $\hat p$ of a malignant lesion. Show the linear-predictor sum and the sigmoid step explicitly.
+  \item \subpoints{1} At the default threshold $\hat p = 0.5$, would this patient be flagged as ``malignant''? Justify in one sentence.
+  \item \subpoints{2} Define, \emph{in words appropriate to this specific dermatology problem}, what \emph{sensitivity} and \emph{specificity} mean. Then state, with one short clinical justification, which of the two you would weigh more heavily when choosing a threshold for this screening task.
+\end{enumerate}
+
+\subsection*{b) A neural-network classifier with regularization \subpoints{7}}
+
+A small fully-connected feed-forward neural network is fit on the same training set with the same $6$ features as input (after standardizing the continuous ones). The architecture is: $6$ inputs $\to$ $32$ hidden ReLU units $\to$ $16$ hidden ReLU units $\to$ $1$ sigmoid output. The network is trained with mini-batch SGD using cross-entropy loss.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} How many parameters does this network have in total, including all bias terms? Show the layer-by-layer breakdown.
+  \item \subpoints{2} The student who fits the network first tries it \emph{without any explicit regularization}, with batch size $32$. The training accuracy quickly reaches $100\%$, while the test accuracy is $0.78$ --- worse than the logistic regression of part (a). Briefly explain in two short sentences (a) why this outcome is consistent with the prof's iron rule that ``you should never train a neural network without regularization'' and (b) why, somewhat surprisingly, mini-batch SGD itself already provides \emph{some} regularization on top of the explicit one she ultimately adds.
+  \item \subpoints{2} The student then adds (a) dropout at rate $0.2$ on each hidden layer, (b) early stopping on a held-out validation slice, and (c) label smoothing with $\varepsilon = 0.05$. Briefly describe what each of these three regularizers does at training time (one sentence each). For dropout, also state what changes between training time and test time.
+  \item \subpoints{1} A junior data scientist proposes increasing the dropout rate from $0.2$ to $0.5$ to ``regularize even more aggressively.'' Briefly state, in one sentence, why this is not the standard recommendation in this course.
+  \item \subpoints{1} After all three regularizers are added, the network achieves a test accuracy of $0.86$, beating the logistic regression. Frame this improvement in one short sentence using the bias--variance lens you derived in Problem~3(a).
+\end{enumerate}
+
+\subsection*{c) AdaBoost \subpoints{5}}
+
+The clinic also fits an AdaBoost classifier on the same training set, using $M = 200$ rounds of \emph{stumps} (depth-$1$ trees) as the weak learner. Labels are encoded as $y \in \{-1, +1\}$ with $+1 =$ malignant. Recall the AdaBoost recipe: initialize weights $w_i = 1/N$; for $m = 1, \dots, M$, fit $G_m$ to the weighted data, compute $\mathrm{err}_m$, set $\alpha_m = \log\big((1-\mathrm{err}_m)/\mathrm{err}_m\big)$, and update $w_i \leftarrow w_i \exp\!\big(\alpha_m \mathbb{1}[y_i \neq G_m(x_i)]\big)$. The final classifier is $G(x) = \mathrm{sign}\!\big(\sum_m \alpha_m G_m(x)\big)$.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{2} Briefly explain (one or two sentences) what the weight-update rule does to observations that are repeatedly misclassified across rounds, and why this re-weighting mechanism is fundamentally different from the row-resampling mechanism used by bagging / random forests.
+  \item \subpoints{1} Suppose at some round $m^*$ the chosen weak learner $G_{m^*}$ happens to have weighted error $\mathrm{err}_{m^*} = 0.5$. What value does $\alpha_{m^*}$ take, and what is its effect on the final ensemble's predictions? (One short sentence each.)
+  \item \subpoints{1} A second researcher reports the same AdaBoost run achieves test sensitivity $0.84$, specificity $0.91$, and accuracy $0.90$, vs.\ the logistic regression at threshold $0.5$ which reports test sensitivity $0.55$, specificity $0.95$, and accuracy $0.87$. State, with one short clinical justification, which classifier you would deploy as a screening tool.
+  \item \subpoints{1} AdaBoost can be shown to be a special case of gradient boosting under a particular choice of loss function. State the name of that loss function. (One word / one formula.)
+\end{enumerate}
+
+\subsection*{d) Class imbalance and threshold tuning \subpoints{3}}
+
+In the full skin-lesion dataset, roughly $20\%$ of images are malignant.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} A naive classifier that always predicts ``benign'' would achieve a test accuracy of approximately what value? Justify in one sentence.
+  \item \subpoints{1} The logistic regression of part (a) at threshold $\hat p = 0.5$ has test accuracy $0.87$, only slightly above (i). Briefly explain (one or two sentences) in what sense its sensitivity / specificity behaviour is nevertheless much better than the naive classifier's.
+  \item \subpoints{1} A clinician proposes lowering the threshold from $0.5$ to $0.3$. State the direction of the effect on \emph{sensitivity} and on \emph{specificity}, and in which direction the operating point of the classifier moves along the ROC curve.
+\end{enumerate}
+
+\vspace{1em}
+\hrule
+\vspace{0.5em}
+
+\noindent\textbf{End of exam.} \quad Total: $10 + 28 + 16 + 22 + 24 = 100$ points.
+
+\end{document}
