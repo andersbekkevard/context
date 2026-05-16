@@ -6,6 +6,9 @@
    width approximates a 2.5cm-margin A4 page.
    ========================================================================== */
 
+/* Light theme is the default. Dark theme applies when:
+   - the user has explicitly picked dark via the toggle (html[data-theme="dark"]), or
+   - they're on "auto" (no data-theme attribute) and the OS prefers dark. */
 :root {
   --fg: #1a1a1a;
   --muted: #555;
@@ -15,10 +18,25 @@
   --frame: #888;
   --note-bg: #f6f3ea;
   --note-border: #d6cda1;
+  --btn-bg: #f0eee9;
+  --btn-border: #c8c5bf;
+}
+
+html[data-theme="dark"] {
+  --fg: #e8e6e3;
+  --muted: #a0a0a0;
+  --bg: #1a1a1c;
+  --rule: #444;
+  --link: #8db4ff;
+  --frame: #777;
+  --note-bg: #2a261b;
+  --note-border: #5a4f2f;
+  --btn-bg: #25252a;
+  --btn-border: #444;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  html:not([data-theme]) {
     --fg: #e8e6e3;
     --muted: #a0a0a0;
     --bg: #1a1a1c;
@@ -27,6 +45,8 @@
     --frame: #777;
     --note-bg: #2a261b;
     --note-border: #5a4f2f;
+    --btn-bg: #25252a;
+    --btn-border: #444;
   }
 }
 
@@ -146,6 +166,41 @@ mjx-container[jax="CHTML"][display="true"] {
   color: var(--muted);
 }
 .exam-banner a { margin: 0 0.4em; }
+
+/* Dark / light toggle button — fixed top-right so it doesn't interfere with the
+   article column. Hidden in print so it doesn't bleed into PDF exports. */
+.theme-toggle {
+  position: fixed;
+  top: 0.9em;
+  right: 0.9em;
+  z-index: 100;
+  width: 2.2em;
+  height: 2.2em;
+  border-radius: 50%;
+  border: 1px solid var(--btn-border);
+  background: var(--btn-bg);
+  color: var(--fg);
+  font-size: 1em;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.theme-toggle:hover { border-color: var(--fg); }
+.theme-toggle .icon-sun { display: none; }
+.theme-toggle .icon-moon { display: inline; }
+html[data-theme="dark"] .theme-toggle .icon-sun { display: inline; }
+html[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme]) .theme-toggle .icon-sun { display: inline; }
+  html:not([data-theme]) .theme-toggle .icon-moon { display: none; }
+}
+@media print {
+  .theme-toggle { display: none; }
+}
 
 /* Marker for places where tikz figures were stripped */
 .figure-omitted {

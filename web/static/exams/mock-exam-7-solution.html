@@ -7,11 +7,43 @@
   <meta name="author" content="Compiled for Anders Bekkevard Companion to mock-exam-7.tex (same directory).">
   <title>Mock Exam 7 — Solution</title>
   <link rel="stylesheet" href="exam.css">
+  <script>
+    // Apply saved theme before first paint to avoid a light-mode flash.
+    (function () {
+      try {
+        var t = localStorage.getItem("exam-theme");
+        if (t === "light" || t === "dark") {
+          document.documentElement.setAttribute("data-theme", t);
+        }
+      } catch (e) {}
+    })();
+  </script>
   <script defer=""
   src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
   type="text/javascript"></script>
 </head>
 <body>
+<button class="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark / light mode">
+  <span class="icon-moon" aria-hidden="true">☾</span>
+  <span class="icon-sun" aria-hidden="true">☀</span>
+</button>
+<script>
+  (function () {
+    var btn = document.querySelector(".theme-toggle");
+    if (!btn) return;
+    function currentTheme() {
+      var explicit = document.documentElement.getAttribute("data-theme");
+      if (explicit) return explicit;
+      return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark" : "light";
+    }
+    btn.addEventListener("click", function () {
+      var next = currentTheme() === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      try { localStorage.setItem("exam-theme", next); } catch (e) {}
+    });
+  })();
+</script>
 <div class="exam-banner"><a href="/pdfs/mock-exam-7-solution.pdf">PDF</a> · <a href="mock-exam-7.html">Exam (HTML)</a> · <a href="/mock-exams">Index</a></div>
 <header>
   <h1 class="title">Mock Exam 7 — Solution</h1>

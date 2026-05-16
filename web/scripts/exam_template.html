@@ -9,6 +9,17 @@ $for(author-meta)$
 $endfor$
   <title>$pagetitle$</title>
   <link rel="stylesheet" href="exam.css">
+  <script>
+    // Apply saved theme before first paint to avoid a light-mode flash.
+    (function () {
+      try {
+        var t = localStorage.getItem("exam-theme");
+        if (t === "light" || t === "dark") {
+          document.documentElement.setAttribute("data-theme", t);
+        }
+      } catch (e) {}
+    })();
+  </script>
 $if(math)$
   $math$
 $endif$
@@ -17,6 +28,27 @@ $for(header-includes)$
 $endfor$
 </head>
 <body>
+<button class="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark / light mode">
+  <span class="icon-moon" aria-hidden="true">☾</span>
+  <span class="icon-sun" aria-hidden="true">☀</span>
+</button>
+<script>
+  (function () {
+    var btn = document.querySelector(".theme-toggle");
+    if (!btn) return;
+    function currentTheme() {
+      var explicit = document.documentElement.getAttribute("data-theme");
+      if (explicit) return explicit;
+      return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark" : "light";
+    }
+    btn.addEventListener("click", function () {
+      var next = currentTheme() === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      try { localStorage.setItem("exam-theme", next); } catch (e) {}
+    });
+  })();
+</script>
 $if(banner)$
 <div class="exam-banner">$banner$</div>
 $endif$
