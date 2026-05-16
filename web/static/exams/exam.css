@@ -1,0 +1,160 @@
+/* ==========================================================================
+   TMA4268 mock-exam HTML — LaTeX-like article styling
+   Goal: stay close to the look of a compiled LaTeX `article` so the HTML
+   variant feels like the PDF, not like a wiki page. Body is serif, math
+   renders via MathJax (loaded by the pandoc template), and the column
+   width approximates a 2.5cm-margin A4 page.
+   ========================================================================== */
+
+:root {
+  --fg: #1a1a1a;
+  --muted: #555;
+  --bg: #fdfdfd;
+  --rule: #c0c0c0;
+  --link: #1a428a;
+  --frame: #888;
+  --note-bg: #f6f3ea;
+  --note-border: #d6cda1;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fg: #e8e6e3;
+    --muted: #a0a0a0;
+    --bg: #1a1a1c;
+    --rule: #444;
+    --link: #8db4ff;
+    --frame: #777;
+    --note-bg: #2a261b;
+    --note-border: #5a4f2f;
+  }
+}
+
+html {
+  color: var(--fg);
+  background: var(--bg);
+}
+
+body {
+  font-family: "Latin Modern Roman", "Computer Modern", "CMU Serif",
+               "STIX Two Text", "Source Serif Pro", Georgia, "Times New Roman", serif;
+  font-size: 12pt;
+  line-height: 1.45;
+  max-width: 46em;
+  margin: 2.5em auto 4em auto;
+  padding: 0 1.5em;
+  text-align: justify;
+  hyphens: auto;
+}
+
+a { color: var(--link); }
+a:visited { color: var(--link); }
+
+header {
+  text-align: center;
+  margin-bottom: 1.6em;
+}
+header .title {
+  font-size: 1.5em;
+  line-height: 1.3;
+  margin: 0.2em 0;
+}
+header .author, header .date {
+  margin: 0.2em 0;
+  font-size: 0.95em;
+  color: var(--muted);
+}
+
+h1.title { font-size: 1.55em; font-weight: 600; margin: 0.2em 0 0.1em 0; }
+
+h1, h2, h3, h4 {
+  font-family: "Latin Modern Roman", "CMU Serif", Georgia, serif;
+  font-weight: 600;
+  line-height: 1.25;
+}
+h1 { font-size: 1.45em; margin-top: 1.8em; }
+h2 { font-size: 1.25em; margin-top: 1.6em; }
+h3 { font-size: 1.10em; margin-top: 1.3em; }
+h4 { font-size: 1.0em;  margin-top: 1.1em; font-style: italic; }
+
+/* Section headings produced from \section* */
+h1.unnumbered, h2.unnumbered, h3.unnumbered {
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 0.15em;
+}
+
+p { margin: 0.7em 0; }
+
+hr {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: 1.6em 0;
+}
+
+ol, ul { padding-left: 1.6em; }
+li { margin: 0.25em 0; }
+
+/* The \fbox instructions block — pandoc renders it as a plain blockquote */
+blockquote {
+  border: 1px solid var(--frame);
+  background: transparent;
+  margin: 1.2em 0;
+  padding: 0.9em 1.1em;
+  font-size: 0.97em;
+}
+
+/* Tables — booktabs-like rules */
+table {
+  border-collapse: collapse;
+  margin: 1em auto;
+  font-size: 0.95em;
+}
+th, td {
+  padding: 0.35em 0.7em;
+  border: none;
+}
+thead tr {
+  border-top: 1.5px solid var(--fg);
+  border-bottom: 0.8px solid var(--fg);
+}
+tbody tr:last-child {
+  border-bottom: 1.5px solid var(--fg);
+}
+
+/* Code (rare in exams, but possible) */
+code, pre {
+  font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.92em;
+}
+pre {
+  background: rgba(127, 127, 127, 0.08);
+  padding: 0.8em 1em;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+/* MathJax tweaks */
+mjx-container[jax="CHTML"][display="true"] {
+  margin: 0.6em 0;
+}
+
+/* Banner at the top linking back to the PDF / index */
+.exam-banner {
+  font-size: 0.92em;
+  text-align: center;
+  margin: -1em 0 1.6em 0;
+  color: var(--muted);
+}
+.exam-banner a { margin: 0 0.4em; }
+
+/* Marker for places where tikz figures were stripped */
+.figure-omitted {
+  border: 1px dashed var(--note-border);
+  background: var(--note-bg);
+  color: var(--muted);
+  padding: 0.6em 0.9em;
+  margin: 1em 0;
+  font-size: 0.92em;
+  font-style: italic;
+  text-align: center;
+}

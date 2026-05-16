@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Compiled by Claude for Anders Bekkevard Based on the Apr 28 exam-review lecture, the 2023–2025 finals, and the prof’s stated scope rule">
+  <title>Mock Exam 4</title>
+  <link rel="stylesheet" href="exam.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<div class="exam-banner"><a href="/pdfs/mock-exam-4.pdf">PDF</a> · <a href="mock-exam-4-solution.html">Solution (HTML)</a> · <a href="/mock-exams">Index</a></div>
+<header>
+  <h1 class="title">Mock Exam 4</h1>
+  <p class="author">Compiled by Claude for Anders Bekkevard<br />
+Based on the Apr 28 exam-review lecture, the 2023–2025 finals, and the
+prof’s stated scope rule</p>
+  <p class="date">Mock for: May 18, 2026 (real exam date)</p>
+</header>
+<p></p>
+<p><strong>Grade boundaries (NTNU <em>prosentvurderingsmetoden</em>,
+advisory):</strong> A: 89–100 % B: 77–88 % C: 65–76 % D: 53–64 % E:
+41–52 % F: 0–40 %.</p>
+<hr />
+<h1 class="unnumbered"
+id="problem-1-10-fill-in-the-blank-concepts">Problem 1
+<strong>(10 %)</strong> — Fill-in-the-blank concepts</h1>
+<p>Read the passage and pick the best word or short phrase for each
+blank from the choices in parentheses. Each correct fill is worth <span
+class="math inline">\(1\)</span> %.</p>
+<p>In ordinary least squares, the covariance matrix of the fitted
+coefficient vector is <span
+class="math inline">\(\mathrm{Cov}(\hat{\boldsymbol\beta}) = \sigma^2
+(\mathbf X^\top \mathbf X)^{-1}\)</span>. When two predictors are nearly
+linearly related, the matrix <span class="math inline">\(\mathbf X^\top
+\mathbf X\)</span> becomes nearly singular and the standard errors of
+the affected coefficients explode. This phenomenon is called <u></u> (1)
+(<em>heteroscedasticity</em> / <em>collinearity</em> / <em>leverage</em>
+/ <em>double descent</em>). One way to escape this problem without
+dropping a variable is to add a quadratic penalty on the coefficients to
+the OLS objective, a technique known as <u></u> (2) (<em>ridge
+regression</em> / <em>the lasso</em> / <em>partial least squares</em> /
+<em>forward stepwise selection</em>).</p>
+<p>When the goal is to honestly estimate the test error of a model, the
+simplest tool is the validation-set approach; a more reliable variant
+rotates the held-out part through <span class="math inline">\(k\)</span>
+equal-sized folds and averages the <span
+class="math inline">\(k\)</span> resulting errors, a procedure known as
+<u></u> (3) (<em><span class="math inline">\(k\)</span>-fold
+cross-validation</em> / <em>the bootstrap</em> / <em>stratified
+sampling</em> / <em>permutation testing</em>). A common pitfall is to
+use the response <span class="math inline">\(y\)</span> to pre-select
+predictors on the full data and only then run cross-validation on the
+reduced predictor set; this gives an unbiased estimate of test error
+only when the selection step is moved <em>inside</em> each fold, an idea
+known as <u></u> (4) (<em>nested cross-validation</em> / <em>bootstrap
+aggregation</em> / <em>stratified <span
+class="math inline">\(k\)</span>-fold</em> / <em>leave-one-out
+CV</em>).</p>
+<p>In neural networks, the parameters are typically fit by an iterative
+optimizer that, at each step, takes a small step in the direction of the
+negative gradient computed on a random subset of the training data. This
+optimizer is called <u></u> (5) (<em>mini-batch SGD</em> /
+<em>coordinate descent</em> / <em>the Newton-Raphson method</em> /
+<em>conjugate gradient</em>). The gradient itself is computed
+efficiently by repeated application of the chain rule from output back
+toward input, an algorithm called <u></u> (6) (<em>backpropagation</em>
+/ <em>boosting</em> / <em>forward propagation</em> / <em>the EM
+algorithm</em>).</p>
+<p>A neural network with many more parameters than observations must
+always be trained with some form of regularization. One option is to
+randomly zero out a fraction of the hidden-unit outputs at each training
+iteration; this technique is called <u></u> (7) (<em>dropout</em> /
+<em>label smoothing</em> / <em>batch normalization</em> /
+<em>cost-complexity pruning</em>). Another option is to monitor the
+validation error during training and return the parameter values from
+the epoch that minimized it, a technique called <u></u> (8) (<em>early
+stopping</em> / <em>annealing</em> / <em>transfer learning</em> /
+<em>boosting</em>). A third option, especially useful when the recorded
+class labels may themselves contain errors, replaces the one-hot target
+vector <span class="math inline">\((0,\dots,1,\dots,0)\)</span> by a
+softened version such as <span
+class="math inline">\((\varepsilon/(C-1),\dots,1-\varepsilon,\dots,\varepsilon/(C-1))\)</span>;
+this technique is called <u></u> (9) (<em>label smoothing</em> /
+<em>data augmentation</em> / <em>Laplace smoothing</em> / <em>weight
+decay</em>).</p>
+<p>Finally, an ensemble method for trees that fits weak learners
+<em>sequentially</em>, each one to the negative gradient of the loss of
+the running ensemble, is called <u></u> (10) (<em>gradient boosting</em>
+/ <em>bagging</em> / <em>random forests</em> / <em>stacked
+generalization</em>).</p>
+<h1 class="unnumbered"
+id="problem-2-28-multiple-choice-truefalse-and-short-numeric">Problem 2
+<strong>(28 %)</strong> — Multiple choice, true/false, and short
+numeric</h1>
+<p>For each subproblem, write <em>True</em> or <em>False</em> for each
+statement (or the requested numeric answer). You may add a one-sentence
+justification but only if you think it helps; do not write essays.</p>
+<h2 class="unnumbered" id="a-biasvariance-and-double-descent-3">a)
+Bias–variance and double descent <em>(3 %)</em></h2>
+<p>Mark each statement as true or false.</p>
+<ol type="i">
+<li><p>The bias–variance decomposition <span
+class="math inline">\(\mathbb{E}[(y_0-\hat f(x_0))^2] =
+\mathrm{Bias}^2[\hat f(x_0)] + \mathrm{Var}[\hat f(x_0)] +
+\sigma^2\)</span> is an algebraic identity that holds for any fitted
+<span class="math inline">\(\hat f\)</span>, regardless of whether <span
+class="math inline">\(\hat f\)</span> minimizes a squared-error
+loss.</p></li>
+<li><p>In the over-parameterized regime where many fitted models achieve
+zero training error, the bias–variance decomposition no longer holds and
+must be replaced by a separate “double-descent identity”.</p></li>
+<li><p>Reducing the variance of <span class="math inline">\(\hat
+f\)</span> always requires a compensating increase in its bias.</p></li>
+</ol>
+<h2 class="unnumbered"
+id="b-cross-validation-and-the-wrong-way-cv-trap-4">b) Cross-validation
+and the wrong-way CV trap <em>(4 %)</em></h2>
+<p>Mark each statement as true or false.</p>
+<ol type="i">
+<li><p>In ordinary <span class="math inline">\(k\)</span>-fold CV with
+<span class="math inline">\(k=10\)</span>, the procedure fits the model
+<span class="math inline">\(10\)</span> times (not <span
+class="math inline">\(n\)</span> times).</p></li>
+<li><p>Suppose you have <span class="math inline">\(n = 100\)</span>
+observations and <span class="math inline">\(p = 5000\)</span> random
+predictors, and you (a) compute the marginal correlation <span
+class="math inline">\(\hat\rho_j\)</span> between each predictor <span
+class="math inline">\(x_j\)</span> and the response <span
+class="math inline">\(y\)</span> on the full data, (b) keep the <span
+class="math inline">\(25\)</span> predictors with the largest <span
+class="math inline">\(|\hat\rho_j|\)</span>, and (c) run <span
+class="math inline">\(10\)</span>-fold CV on a logistic regression using
+only those <span class="math inline">\(25\)</span>. The resulting CV
+misclassification rate is an unbiased estimator of the test error of
+this procedure.</p></li>
+<li><p>Nested CV uses an <em>inner</em> cross-validation loop to select
+a hyperparameter and an <em>outer</em> cross-validation loop to estimate
+the test error of the <em>procedure that includes the selection
+step</em>.</p></li>
+<li><p>For ordinary least squares, leave-one-out CV can be computed
+without refitting the model <span class="math inline">\(n\)</span>
+times, by exploiting the diagonal <span
+class="math inline">\(h_{ii}\)</span> of the hat matrix <span
+class="math inline">\(\mathbf H = \mathbf X(\mathbf X^\top \mathbf
+X)^{-1}\mathbf X^\top\)</span>.</p></li>
+</ol>
+<h2 class="unnumbered"
+id="c-neural-network-parameters-and-forward-pass-3">c) Neural network
+parameters and forward pass <em>(3 %)</em></h2>
+<p>Consider a fully-connected feed-forward neural network with:</p>
+<ul>
+<li><p><span class="math inline">\(4\)</span> input variables,</p></li>
+<li><p>one hidden layer of <span class="math inline">\(5\)</span>
+neurons (with biases, ReLU activations),</p></li>
+<li><p>one hidden layer of <span class="math inline">\(3\)</span>
+neurons (with biases, ReLU activations),</p></li>
+<li><p>one output neuron (with bias, linear activation).</p></li>
+</ul>
+<ol type="i">
+<li><p><em>(1 %)</em> How many parameters does this network have in
+total, <em>including all bias terms</em>? Show the layer-by-layer
+breakdown.</p></li>
+<li><p><em>(2 %)</em> A neuron in the <em>first</em> hidden layer has
+weights <span class="math inline">\(w =
+(1.0,\,-0.5,\,2.0,\,0.0)\)</span> and bias <span class="math inline">\(b
+= -1.5\)</span>. Its inputs on a given observation are <span
+class="math inline">\(x = (1,\,2,\,-1,\,4)\)</span>. Using ReLU
+activation, compute the output of this neuron.</p></li>
+</ol>
+<h2 class="unnumbered" id="d-backprop-and-mini-batch-sgd-3">d) Backprop
+and mini-batch SGD <em>(3 %)</em></h2>
+<p>Mark each statement as true or false.</p>
+<ol type="i">
+<li><p>Backpropagation is an <em>optimizer</em> that updates a network’s
+weights by stepping in the direction of the negative gradient.</p></li>
+<li><p>In mini-batch SGD with batch size <span class="math inline">\(m
+\ll N\)</span>, the gradient computed on a single batch is an unbiased
+estimator of the full-data gradient <span
+class="math inline">\(\nabla_{\boldsymbol\theta} L\)</span>.</p></li>
+<li><p>Doubling the mini-batch size from <span
+class="math inline">\(m\)</span> to <span
+class="math inline">\(2m\)</span> tends to <em>reduce</em> the variance
+of the per-step gradient estimate, and accordingly <em>reduces</em> the
+implicit regularization that mini-batch SGD provides.</p></li>
+<li><p>For a feed-forward network with squared-error output loss, the
+backward-pass “seed” at the output layer is <span
+class="math inline">\(\delta^{\text{out}}_i = -(y_i - \hat
+f(x_i))\)</span>.</p></li>
+</ol>
+<h2 class="unnumbered" id="e-neural-network-regularization-3">e)
+Neural-network regularization <em>(3 %)</em></h2>
+<p>Mark each statement as true or false.</p>
+<ol type="i">
+<li><p>Dropout in a neural network is active at <em>both</em> training
+and test time.</p></li>
+<li><p>In practice, a dropout rate of <span
+class="math inline">\(50\%\)</span> is the standard recommendation for
+hidden layers in fully connected networks.</p></li>
+<li><p>“Early stopping” means halting training as soon as the
+<em>training</em> loss stops decreasing.</p></li>
+<li><p>Label smoothing replaces hard one-hot targets by softened ones,
+and is motivated in part by the possibility that the recorded class
+labels themselves may contain errors.</p></li>
+</ol>
+<h2 class="unnumbered"
+id="f-boosting-flavors-adaboost-gradient-boosting-xgboost-4">f) Boosting
+flavors: AdaBoost, gradient boosting, XGBoost <em>(4 %)</em></h2>
+<p>Mark each statement as true or false.</p>
+<ol type="i">
+<li><p>AdaBoost re-weights the <em>training observations</em> between
+rounds so that points misclassified by the current ensemble receive
+larger weight on the next round.</p></li>
+<li><p>In gradient boosting with squared-error loss, fitting the next
+tree to the current residuals is mathematically equivalent to fitting a
+tree to the <em>negative gradient</em> of the loss with respect to the
+current ensemble’s predictions.</p></li>
+<li><p>In gradient boosting, decreasing the shrinkage/learning rate
+<span class="math inline">\(\nu\)</span> generally requires
+<em>fewer</em> trees <span class="math inline">\(M\)</span> to achieve a
+given training fit, because each tree contributes more
+strongly.</p></li>
+<li><p>XGBoost differs from vanilla gradient boosting in that it adds
+explicit <span class="math inline">\(L_1\)</span> / <span
+class="math inline">\(L_2\)</span> regularization on the leaf-weight
+values, and also uses second-order (curvature) information about the
+loss when choosing splits.</p></li>
+</ol>
+<h2 class="unnumbered" id="g-collinearity-3">g) Collinearity
+<em>(3 %)</em></h2>
+<p>Mark each statement as true or false.</p>
+<ol type="i">
+<li><p>Strong collinearity among predictors typically <em>inflates</em>
+the standard errors of the affected coefficients, making each one
+individually look statistically insignificant even when the predictors
+jointly explain a large fraction of the variance in <span
+class="math inline">\(y\)</span>.</p></li>
+<li><p>Strong collinearity always degrades the predictive accuracy of
+the model on a held-out test set.</p></li>
+<li><p>Suppose a linear regression model includes both <span
+class="math inline">\(\text{age}\)</span> (in years) and <span
+class="math inline">\(\text{age\_decades} = \text{age}/10\)</span> as
+predictors. The OLS estimates of the two coefficients are well-defined
+but their standard errors are infinite.</p></li>
+</ol>
+<h2 class="unnumbered" id="h-principal-component-analysis-3">h)
+Principal component analysis <em>(3 %)</em></h2>
+<p>You perform PCA on a dataset with seven <strong>standardized</strong>
+variables <span class="math inline">\(X_1,\dots,X_7\)</span> and obtain
+the following eigenvalues of the (centered) sample covariance
+matrix:</p>
+<div class="center">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">PC</th>
+<th style="text-align: center;">1</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">5</th>
+<th style="text-align: center;">6</th>
+<th style="text-align: center;">7</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Eigenvalue</td>
+<td style="text-align: center;">2.5</td>
+<td style="text-align: center;">1.5</td>
+<td style="text-align: center;">1.1</td>
+<td style="text-align: center;">0.8</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">0.4</td>
+<td style="text-align: center;">0.2</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The loading vector of the first principal component (entries rounded
+to two decimals) is <span class="math display">\[\phi_1 = (\,0.50,\;\,
+-0.40,\;\, 0.45,\;\, 0.30,\;\, -0.35,\;\, 0.40,\;\,
+0.15\,)^\top.\]</span></p>
+<p>A new observation has standardized values <span
+class="math inline">\(x^* = (\,2,\;\, 0,\;\, 1,\;\, -1,\;\, 0,\;\,
+1,\;\, 2\,)^\top\)</span>.</p>
+<ol type="i">
+<li><p><em>(1 %)</em> How many principal components must be retained to
+capture at least <span class="math inline">\(80\%\)</span> of the total
+variance? Show the cumulative-variance calculation.</p></li>
+<li><p><em>(1 %)</em> Compute the score <span
+class="math inline">\(z^*_1\)</span> of the new observation on
+PC1.</p></li>
+<li><p><em>(1 %)</em> True or false: “Running PCA on the same dataset
+<em>without</em> first standardizing the variables would generally yield
+the same loading vectors, because PCA is invariant under coordinate
+rescaling.”</p></li>
+</ol>
+<h2 class="unnumbered" id="i-hierarchical-clustering-and-k-means-2">i)
+Hierarchical clustering and <span class="math inline">\(K\)</span>-means
+<em>(2 %)</em></h2>
+<p>Mark each statement as true or false.</p>
+<ol type="i">
+<li><p>In agglomerative hierarchical clustering, replacing
+<em>single</em> linkage with <em>complete</em> linkage on the same
+dissimilarity matrix can never change the identity of the <em>first</em>
+merge, because the first merge is always between the two observations
+with the smallest pairwise dissimilarity.</p></li>
+<li><p>Because the <span class="math inline">\(K\)</span>-means
+algorithm depends on a random initialization of the cluster centroids
+and converges only to a local minimum of the within-cluster sum of
+squares, it is recommended in practice to run it from several different
+random initializations and pick the solution with the smallest
+within-cluster sum of squares.</p></li>
+</ol>
+<h1 class="unnumbered"
+id="problem-3-16-theory-and-hand-calculations">Problem 3
+<strong>(16 %)</strong> — Theory and hand calculations</h1>
+<h2 class="unnumbered"
+id="a-the-mathy-one-the-biasvariance-decomposition-8">a) The mathy one —
+the bias–variance decomposition <em>(8 %)</em></h2>
+<p>Consider a regression problem in which the response is generated as
+<span class="math display">\[y_0 = f(x_0) + \varepsilon,\qquad
+\mathbb{E}[\varepsilon] = 0,\qquad \mathrm{Var}(\varepsilon) =
+\sigma^2,\]</span> where <span class="math inline">\(x_0\)</span> is a
+fixed test point and the noise <span
+class="math inline">\(\varepsilon\)</span> is independent of any random
+training set. Let <span class="math inline">\(\hat f\)</span> be a model
+fit on a random training sample <span
+class="math inline">\(\mathcal{D}\)</span> drawn independently of <span
+class="math inline">\(\varepsilon\)</span>, and write <span
+class="math inline">\(\hat f(x_0)\)</span> for its prediction at the
+test point. Expectations below are taken jointly over <span
+class="math inline">\(\mathcal{D}\)</span> and over <span
+class="math inline">\(\varepsilon\)</span>.</p>
+<ol type="i">
+<li><p><em>(2 %)</em> Show that the expected squared prediction error at
+<span class="math inline">\(x_0\)</span> splits cleanly into a
+“reducible” and an “irreducible” part: <span
+class="math display">\[\mathbb{E}\!\left[(y_0 - \hat f(x_0))^2\right]
+\;=\; \mathbb{E}\!\left[(f(x_0) - \hat f(x_0))^2\right] \;+\;
+\sigma^2.\]</span> Be explicit about <em>which</em> of the cross terms
+vanish and <em>why</em>.</p></li>
+<li><p><em>(3 %)</em> Starting from your answer to (i), show that the
+reducible part further decomposes as <span
+class="math display">\[\mathbb{E}\!\left[(f(x_0) - \hat f(x_0))^2\right]
+\;=\; \underbrace{\big(f(x_0) - \mathbb{E}[\hat
+f(x_0)]\big)^2}_{\mathrm{Bias}^2[\hat f(x_0)]} \;+\;
+\underbrace{\mathbb{E}\!\big[(\hat f(x_0) - \mathbb{E}[\hat
+f(x_0)])^2\big]}_{\mathrm{Var}[\hat f(x_0)]}.\]</span> Be explicit about
+the “add and subtract <span class="math inline">\(\mathbb{E}[\hat
+f(x_0)]\)</span>” step and the vanishing cross term.</p></li>
+<li><p><em>(1 %)</em> Combining (i) and (ii), state the full
+bias–variance decomposition of <span
+class="math inline">\(\mathbb{E}[(y_0 - \hat f(x_0))^2]\)</span>,
+identify the irreducible component by name, and state what kind of
+<em>randomness</em> the expectations <span
+class="math inline">\(\mathbb{E}[\hat f(x_0)]\)</span> and <span
+class="math inline">\(\mathrm{Var}[\hat f(x_0)]\)</span> are taken
+over.</p></li>
+<li><p><em>(1 %)</em> Explain in one or two sentences why the prof in
+this course has urged you to call the result a “<em>decomposition</em>”
+rather than a “<em>trade-off</em>.” (You may, for example, refer to the
+existence of regularizers that reduce variance without increasing bias,
+or to the over-parameterized / benign-overfitting regime.)</p></li>
+<li><p><em>(1 %)</em> Lasso regression at a small positive penalty <span
+class="math inline">\(\lambda\)</span> has, on a particular dataset, a
+test MSE that is <em>lower</em> than ordinary least squares. Using the
+decomposition you derived, write down in one or two short sentences
+which of the three terms changed and in which direction. (No numbers
+required; conceptual answer.)</p></li>
+</ol>
+<h2 class="unnumbered"
+id="b-pseudocode-nested-k-fold-cross-validation-4">b) Pseudocode —
+nested <span class="math inline">\(k\)</span>-fold cross-validation
+<em>(4 %)</em></h2>
+<p>You have a training set <span class="math inline">\((\mathbf X,
+\mathbf y)\)</span> of size <span class="math inline">\(n\)</span>, a
+model class indexed by a hyperparameter <span
+class="math inline">\(\lambda\)</span> taking values in a finite grid
+<span class="math inline">\(\Lambda = \{\lambda_1, \dots,
+\lambda_L\}\)</span>, and you wish to (a) <em>select</em> the best <span
+class="math inline">\(\lambda\)</span> and (b) report an <em>honest</em>
+estimate of the test error of the resulting procedure. You have decided
+to use <span class="math inline">\(K_\text{outer} = 5\)</span> outer
+folds for assessment and <span class="math inline">\(K_\text{inner} =
+5\)</span> inner folds for selection.</p>
+<ol type="i">
+<li><p><em>(3 %)</em> Write <em>pseudocode</em> (math, plain English, or
+programming-language-style is fine) for the nested <span
+class="math inline">\(k\)</span>-fold CV procedure. Your pseudocode
+should make explicit, by the structure of nested loops:</p>
+<ul>
+<li><p>which data are used to <em>fit</em> the model;</p></li>
+<li><p>which data are used to <em>select</em> the
+hyperparameter;</p></li>
+<li><p>which data are used to <em>assess</em> the test error;</p></li>
+<li><p>how the outer-fold scores are aggregated into a single test-error
+estimate.</p></li>
+</ul></li>
+<li><p><em>(1 %)</em> A classmate proposes an alternative “shortcut”:
+run a single (not nested) <span
+class="math inline">\(K_\text{inner}=5\)</span> CV to pick the <span
+class="math inline">\(\lambda\)</span> with the smallest CV error, and
+then <em>report that same CV error as the test-error estimate of the
+procedure</em>. Briefly explain in one sentence why this estimate is
+biased <em>downward</em>.</p></li>
+</ol>
+<h2 class="unnumbered" id="c-bootstrap-standard-error-4">c) Bootstrap
+standard error <em>(4 %)</em></h2>
+<p>You have an i.i.d. sample <span class="math inline">\(X_1, \dots,
+X_n\)</span> from an unknown distribution and you wish to estimate the
+standard error of the sample <em>median</em> <span
+class="math inline">\(\hat\theta = \mathrm{median}(X_1, \dots,
+X_n)\)</span>. No clean closed-form expression for the sampling
+distribution of <span class="math inline">\(\hat\theta\)</span> is
+available.</p>
+<ol type="i">
+<li><p><em>(2 %)</em> Write <em>pseudocode</em> for the bootstrap
+algorithm that returns an estimate <span
+class="math inline">\(\widehat{\mathrm{SE}}_{\mathrm{boot}}(\hat\theta)\)</span>.
+Be explicit about (i) how each bootstrap sample is drawn, (ii) what
+statistic is recomputed on each bootstrap sample, and (iii) how the
+final standard-error estimate is computed from the <span
+class="math inline">\(B\)</span> recomputed values.</p></li>
+<li><p><em>(1 %)</em> For <span class="math inline">\(n = 6\)</span>,
+what is the probability that observation <span
+class="math inline">\(X_1\)</span> is included in a given bootstrap
+sample? (Numeric, three decimals.) What does this probability tend to as
+<span class="math inline">\(n \to \infty\)</span>? (Symbolic plus a
+numeric approximation.)</p></li>
+<li><p><em>(1 %)</em> A second statistician wants a <span
+class="math inline">\(95\%\)</span> bootstrap <em>confidence
+interval</em> for <span class="math inline">\(\hat\theta\)</span> (not
+just a standard error). Briefly describe the <em>percentile</em> method
+in one or two sentences.</p></li>
+</ol>
+<h1 class="unnumbered"
+id="problem-4-22-data-analysis-regression-on-apartment-rents">Problem 4
+<strong>(22 %)</strong> — Data analysis: regression on apartment
+rents</h1>
+<p>A property-management company records <span class="math inline">\(n =
+750\)</span> city apartments. The response is the monthly
+<code>rent</code> (in <span class="math inline">\(1000\)</span> NOK).
+The available predictors are:</p>
+<ul>
+<li><p><code>area</code> — total floor area in m<sup>2</sup>
+(continuous);</p></li>
+<li><p><code>rooms</code> — number of rooms (count, <span
+class="math inline">\(1\)</span>–<span
+class="math inline">\(6\)</span>);</p></li>
+<li><p><code>area_per_room</code> — <span
+class="math inline">\(\texttt{area}/\texttt{rooms}\)</span>, in
+m<sup>2</sup>/room (continuous);</p></li>
+<li><p><code>age</code> — age of the building in years (continuous,
+<span class="math inline">\(0\)</span>–<span
+class="math inline">\(120\)</span>);</p></li>
+<li><p><code>floor</code> — which floor the apartment is on (continuous,
+<span class="math inline">\(0\)</span>–<span
+class="math inline">\(15\)</span>);</p></li>
+<li><p><code>distance</code> — distance to the city centre, in km
+(continuous, <span class="math inline">\(0.2\)</span>–<span
+class="math inline">\(15\)</span>);</p></li>
+<li><p><code>has_balcony</code> — binary <span
+class="math inline">\(0/1\)</span> indicator;</p></li>
+<li><p><code>type</code> — categorical, <span
+class="math inline">\(3\)</span> levels: <em>flat</em> (reference),
+<em>studio</em>, <em>loft</em>.</p></li>
+</ul>
+<p>The data are split <span class="math inline">\(500 / 250\)</span>
+into a training and a test set. The continuous predictors
+<code>area</code>, <code>rooms</code>, <code>area_per_room</code>,
+<code>floor</code>, and <code>distance</code> are standardized to mean
+<span class="math inline">\(0\)</span> and standard deviation <span
+class="math inline">\(1\)</span> <em>before</em> fitting any of the
+models below. The variable <code>age</code> (and consequently <span
+class="math inline">\(\texttt{age}^2\)</span>) is kept on its original
+scale, in years.</p>
+<h2 class="unnumbered"
+id="a-ols-with-collinearity-interaction-and-a-polynomial-term-10">a) OLS
+with collinearity, interaction, and a polynomial term
+<em>(10 %)</em></h2>
+<p>The course staff fits, on the training set, the linear model <span
+class="math display">\[\begin{align*}
+\texttt{rent} \;\sim\; &amp; \texttt{area} + \texttt{rooms} +
+\texttt{area\_per\_room} \\
+&amp; + \texttt{age} + I(\texttt{age}^2) + \texttt{floor} +
+\texttt{distance} \\
+&amp; + \texttt{has\_balcony} + \texttt{type} \\
+&amp; + \texttt{distance}\!:\!\texttt{has\_balcony}.
+\end{align*}\]</span> The fitted output is:</p>
+<div class="center">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;"><strong>Estimate</strong></th>
+<th style="text-align: center;"><strong>Std. Error</strong></th>
+<th style="text-align: center;"><strong>t-value</strong></th>
+<th style="text-align: center;"><strong>Pr(<span
+class="math inline">\(&gt;|t|\)</span>)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: center;"><span
+class="math inline">\(14.50\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.95\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(15.26\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(&lt;0.001\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>area</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(5.80\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(2.10\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(2.76\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.006\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>rooms</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(2.40\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(1.95\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(1.23\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.219\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>area_per_room</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.50\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(1.40\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.36\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.720\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>age</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(-0.080\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.018\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(-4.44\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(&lt;0.001\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(I(\texttt{age}^2)\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.00045\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.00012\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(3.75\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(&lt;0.001\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>floor</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.45\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.18\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(2.50\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.013\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>distance</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(-1.95\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.28\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(-6.96\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(&lt;0.001\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>has_balcony</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.70\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.30\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(2.33\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.020\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>type_studio</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(-2.10\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.45\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(-4.67\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(&lt;0.001\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>type_loft</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(1.40\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.60\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(2.33\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.020\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>distance:has_balcony</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.55\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.22\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(2.50\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.013\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Multiple <span class="math inline">\(R^2 = 0.812\)</span>,Adjusted
+<span class="math inline">\(R^2 = 0.808\)</span>. Residual standard
+error: <span class="math inline">\(1.85\)</span> on <span
+class="math inline">\(488\)</span> d.f.</p>
+<ol type="i">
+<li><p><em>(1 %)</em> How many parameters does this model estimate,
+including the intercept? Verify your count against the printed residual
+degrees of freedom (<span class="math inline">\(n_\text{train} =
+500\)</span>).</p></li>
+<li><p><em>(2 %)</em> Notice that the three predictors
+<code>area</code>, <code>rooms</code>, and <code>area_per_room</code>
+are not algebraically independent: <span
+class="math inline">\(\texttt{area} = \texttt{rooms} \cdot
+\texttt{area\_per\_room}\)</span> (and after standardization, they
+remain nearly so). Look at the estimate / SE / <span
+class="math inline">\(p\)</span>-value pattern in the rows for
+<code>rooms</code> and <code>area_per_room</code>. Identify (in one
+short sentence) the statistical phenomenon at work, and state what would
+happen to the standard errors of these three predictors if you dropped
+<code>area_per_room</code> from the model.</p></li>
+<li><p><em>(1 %)</em> A classmate concludes: “Since the <span
+class="math inline">\(p\)</span>-value of <code>rooms</code> is <span
+class="math inline">\(0.219\)</span> and that of
+<code>area_per_room</code> is <span
+class="math inline">\(0.720\)</span>, neither variable is associated
+with rent, so the model captures no information about apartment size
+beyond <code>area</code>.” Briefly say in one sentence why this reading
+is <em>wrong</em> given the diagnostic you identified in (ii).</p></li>
+<li><p><em>(2 %)</em> The model includes a quadratic term <span
+class="math inline">\(I(\texttt{age}^2)\)</span>. Treating <span
+class="math inline">\(\hat\beta_{\texttt{age}}\)</span> and <span
+class="math inline">\(\hat\beta_{\texttt{age}^2}\)</span> jointly, find
+the value of <span class="math inline">\(\texttt{age}\)</span> (in
+years) at which the model’s predicted partial effect of <em>age</em> on
+<code>rent</code> is <em>minimized</em>, holding all other predictors
+fixed. Show your work; one decimal is fine.</p></li>
+<li><p><em>(2 %)</em> The interaction
+<code>distance</code>:<code>has_balcony</code> is included. <em>State
+your standardization convention for</em> <code>distance</code>
+<em>explicitly</em> (recall that all continuous predictors have been
+centred to mean <span class="math inline">\(0\)</span> and scaled to
+standard deviation <span class="math inline">\(1\)</span> before
+fitting, so a one-unit change in the predictor as it enters the model
+corresponds to a one-standard-deviation change on the original scale),
+then compute, in this model, the predicted change in <code>rent</code>
+(in <span class="math inline">\(1000\)</span> NOK) when
+<code>distance</code> is increased by one standard deviation, separately
+(a) for an apartment with no balcony and (b) for an apartment with a
+balcony. Briefly comment in one sentence on why the two answers
+differ.</p></li>
+<li><p><em>(1 %)</em> The model reports adjusted <span
+class="math inline">\(R^2 = 0.808\)</span>. The course staff considers
+adding a second polynomial term <span
+class="math inline">\(I(\texttt{age}^3)\)</span> to the model. State,
+with one short justification, whether you would expect the
+<em>training</em> <span class="math inline">\(R^2\)</span> to increase,
+decrease, or stay the same, and what about <em>adjusted</em> <span
+class="math inline">\(R^2\)</span>.</p></li>
+<li><p><em>(1 %)</em> Suppose you would like to test whether
+<code>type</code> (a <span class="math inline">\(3\)</span>-level
+categorical) is <em>jointly</em> relevant after controlling for the
+other predictors. State (briefly) which test you would use and write the
+null hypothesis. You do <em>not</em> need to compute the test
+statistic.</p></li>
+</ol>
+<h2 class="unnumbered" id="b-lasso-with-10-fold-cross-validation-5">b)
+Lasso with <span class="math inline">\(10\)</span>-fold cross-validation
+<em>(5 %)</em></h2>
+<p>To attack the collinearity flagged in (a), the staff re-fits the same
+predictors (now without the redundant <code>area_per_room</code>; <span
+class="math inline">\(p = 10\)</span> predictors after dummy coding)
+with a lasso. The penalty parameter <span
+class="math inline">\(\lambda\)</span> is chosen by <span
+class="math inline">\(10\)</span>-fold cross-validation:</p>
+<div class="center">
+<div class="figure-omitted">Figure (TikZ) — rendered in the PDF version only.</div>
+</div>
+<p>The test-MSE values, evaluated on the held-out <span
+class="math inline">\(250\)</span> apartments, are:</p>
+<div class="center">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;"><strong>Test MSE</strong></th>
+<th style="text-align: center;"><strong>Nonzero coefs</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">OLS (full model from part (a))</td>
+<td style="text-align: center;"><span
+class="math inline">\(3.85\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(11\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Lasso at <span
+class="math inline">\(\hat\lambda_{\min}\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(3.40\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(8\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Lasso at <span
+class="math inline">\(\hat\lambda_{1\text{SE}}\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(3.50\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(5\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<ol type="i">
+<li><p><em>(1 %)</em> Write down the lasso objective function (math or
+pseudocode), being explicit about whether the intercept is
+penalized.</p></li>
+<li><p><em>(1 %)</em> Briefly explain why the lasso reduces the number
+of nonzero coefficients as <span class="math inline">\(\lambda\)</span>
+increases, whereas ridge regression does not.</p></li>
+<li><p><em>(2 %)</em> Compare lasso-at-<span
+class="math inline">\(\hat\lambda_{\min}\)</span> (test MSE <span
+class="math inline">\(3.40\)</span>, <span
+class="math inline">\(8\)</span> nonzero) to OLS (test MSE <span
+class="math inline">\(3.85\)</span>, <span
+class="math inline">\(11\)</span> nonzero). Interpret the comparison in
+bias–variance terms, and connect to your diagnosis in part
+(a)(ii).</p></li>
+<li><p><em>(1 %)</em> A practitioner argues: “I’m just going to use
+<span class="math inline">\(\hat\lambda_{1\mathrm{SE}}\)</span> because
+it gives a simpler model.” Briefly state the <em>one-standard-error
+rule</em> and give one short reason why this practitioner’s preference
+is reasonable.</p></li>
+</ol>
+<h2 class="unnumbered" id="c-gradient-boosting-4">c) Gradient boosting
+<em>(4 %)</em></h2>
+<p>A gradient-boosted regression-tree model is fit on the same training
+set with parameters <span class="math inline">\(M = 800\)</span> trees,
+interaction depth <span class="math inline">\(d = 4\)</span>, and
+shrinkage <span class="math inline">\(\nu = 0.05\)</span>. The test MSE
+is <span class="math inline">\(2.20\)</span>, lower than every method
+tried above.</p>
+<ol type="i">
+<li><p><em>(2 %)</em> Write <em>pseudocode</em> for a single round of
+gradient boosting in the regression case (squared-error loss). Be
+explicit about (i) what quantity the new tree is fit to, (ii) what role
+<span class="math inline">\(\nu\)</span> plays in the update, (iii) how
+the running ensemble is updated. You do not need to spell out the
+tree-fitting routine internally.</p></li>
+<li><p><em>(1 %)</em> The prof has said: “<em>by updating according to
+the residuals, what we were really doing is fitting the gradient of the
+function we’re optimizing</em>.” Briefly verify this by computing the
+(negative) gradient of <span class="math inline">\(L(y, f) =
+\tfrac{1}{2}(y - f)^2\)</span> with respect to <span
+class="math inline">\(f\)</span>, and identifying it.</p></li>
+<li><p><em>(1 %)</em> Comparing the test MSEs (boosting <span
+class="math inline">\(2.20\)</span>, lasso <span
+class="math inline">\(3.40\)</span>, OLS <span
+class="math inline">\(3.85\)</span>), what does the ranking suggest
+about the structure of the relationship between the predictors and
+<code>rent</code>? Name one diagnostic plot you would produce from the
+boosted ensemble to recover some interpretability about <em>which</em>
+predictors matter.</p></li>
+</ol>
+<h2 class="unnumbered" id="d-gam-degrees-of-freedom-3">d) GAM degrees of
+freedom <em>(3 %)</em></h2>
+<p>Finally, a generalized additive model (GAM) is fit on the same
+training set: <span class="math display">\[\texttt{rent} = \beta_0 +
+s(\texttt{area},\mathrm{df}=4) + s(\texttt{age},\mathrm{df}=5) +
+\mathrm{bs}(\texttt{distance},\mathrm{knots}=\{2, 4, 7\}) +
+\beta_{\texttt{floor}}\cdot\texttt{floor} +
+\beta_{\texttt{bal}}\cdot\texttt{has\_balcony} + g(\texttt{type}) +
+\varepsilon,\]</span> where <span
+class="math inline">\(s(\cdot,\mathrm{df}=k)\)</span> is a smoothing
+spline with <span class="math inline">\(k\)</span> effective degrees of
+freedom (intercept removed), <span
+class="math inline">\(\mathrm{bs}(\cdot,\mathrm{knots}=\dots)\)</span>
+is a cubic regression spline with the specified interior knots
+(intercept removed), and <span
+class="math inline">\(g(\texttt{type})\)</span> uses dummy coding as in
+part (a).</p>
+<ol type="i">
+<li><p><em>(1 %)</em> How many degrees of freedom does the cubic
+regression spline <span
+class="math inline">\(\mathrm{bs}(\texttt{distance},\mathrm{knots}=\{2,4,7\})\)</span>
+alone consume? (Count basis functions, excluding the global
+intercept.)</p></li>
+<li><p><em>(1 %)</em> How many total degrees of freedom does this GAM
+consume, including the global intercept?</p></li>
+<li><p><em>(1 %)</em> In one sentence, state one <em>structural
+limitation</em> of this GAM compared to the gradient-boosted ensemble of
+part (c). (Hint: think about interactions.)</p></li>
+</ol>
+<h1 class="unnumbered"
+id="problem-5-24-data-analysis-image-classification-of-skin-lesions">Problem
+5 <strong>(24 %)</strong> — Data analysis: image classification of skin
+lesions</h1>
+<p>A teaching dermatology clinic has <span class="math inline">\(n =
+6{,}000\)</span> images of skin lesions, each labelled by a panel of
+physicians as <code>lesion_type</code> <span class="math inline">\(\in
+\{\text{benign}, \text{malignant}\}\)</span>. The data are split <span
+class="math inline">\(4{,}500 / 1{,}500\)</span> into a training set and
+a test set. The available features are tabular “hand-crafted” summaries
+of each image:</p>
+<ul>
+<li><p><code>size_mm</code> — maximum diameter of the lesion, in mm
+(continuous);</p></li>
+<li><p><code>asymmetry</code> — a continuous asymmetry score in <span
+class="math inline">\([0, 1]\)</span>;</p></li>
+<li><p><code>darkness</code> — mean pixel intensity of the lesion
+(continuous);</p></li>
+<li><p><code>age</code> — patient age in years;</p></li>
+<li><p><code>sex</code> — categorical: <em>female</em> (reference),
+<em>male</em>;</p></li>
+<li><p><code>family_history</code> — binary <span
+class="math inline">\(0/1\)</span> indicator.</p></li>
+</ul>
+<p>Among the <span class="math inline">\(1{,}500\)</span> test images,
+<span class="math inline">\(300\)</span> are truly malignant and <span
+class="math inline">\(1{,}200\)</span> are truly benign.</p>
+<h2 class="unnumbered"
+id="a-logistic-regression-with-an-interaction-9">a) Logistic regression
+with an interaction <em>(9 %)</em></h2>
+<p>The clinic fits the model <span class="math display">\[\begin{align*}
+\text{logit}\bigl(\Pr(\texttt{lesion\_type}=\text{malignant} \mid
+X)\bigr) \;=\; &amp; \beta_0 + \beta_1 \texttt{size\_mm} + \beta_2
+\texttt{asymmetry} + \beta_3 \texttt{darkness} \\
+&amp; + \beta_4 \texttt{age} + \beta_5 \texttt{sex} + \beta_6
+\texttt{family\_history} \\
+&amp; + \beta_7 (\texttt{size\_mm}\!:\!\texttt{age}).
+\end{align*}\]</span></p>
+<p>The fitted output is:</p>
+<div class="center">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;"><strong>Estimate</strong></th>
+<th style="text-align: center;"><strong>Std. Error</strong></th>
+<th style="text-align: center;"><strong>z-value</strong></th>
+<th style="text-align: center;"><strong>Pr(<span
+class="math inline">\(&gt;|z|\)</span>)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: center;"><span
+class="math inline">\(-6.20\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.55\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(-11.27\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(&lt;0.001\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>size_mm</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.20\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.04\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(5.00\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(&lt;0.001\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>asymmetry</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(2.50\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.70\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(3.57\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(&lt;0.001\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>darkness</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(-0.012\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.005\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(-2.40\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.016\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>age</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.030\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.006\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(5.00\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(&lt;0.001\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>sex_male</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.18\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.15\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(1.20\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.230\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>family_history</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.55\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.18\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(3.06\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.002\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>size_mm:age</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.0020\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.0008\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(2.50\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.012\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>(<code>size_mm</code> is in millimetres; <code>age</code> is in
+years.)</p>
+<ol type="i">
+<li><p><em>(2 %)</em> For a patient of age <span
+class="math inline">\(\texttt{age} = 30\)</span>, by what factor do the
+odds of a malignant lesion change for each additional millimetre of
+<code>size_mm</code>, holding all other predictors fixed? Repeat the
+calculation for a patient of age <span
+class="math inline">\(\texttt{age} = 70\)</span>. Two numeric factors,
+to three decimals.</p></li>
+<li><p><em>(1 %)</em> Briefly explain (one or two sentences) why the
+answer to (i) is <em>not</em> the same at <span
+class="math inline">\(\texttt{age}=30\)</span> and <span
+class="math inline">\(\texttt{age}=70\)</span>, and why the main-effect
+coefficient <span class="math inline">\(\hat\beta_{\texttt{size\_mm}} =
+0.20\)</span> alone is therefore not a useful summary of the size
+effect.</p></li>
+<li><p><em>(3 %)</em> Consider a patient with <span
+class="math inline">\(\texttt{size\_mm}=8\)</span>, <span
+class="math inline">\(\texttt{asymmetry}=0.6\)</span>, <span
+class="math inline">\(\texttt{darkness}=120\)</span>, <span
+class="math inline">\(\texttt{age}=60\)</span>, <span
+class="math inline">\(\texttt{sex}=\)</span><em>male</em>, <span
+class="math inline">\(\texttt{family\_history}=1\)</span>. Compute the
+linear predictor <span class="math inline">\(\hat\eta\)</span> and the
+fitted probability <span class="math inline">\(\hat p\)</span> of a
+malignant lesion. Show the linear-predictor sum and the sigmoid step
+explicitly.</p></li>
+<li><p><em>(1 %)</em> At the default threshold <span
+class="math inline">\(\hat p = 0.5\)</span>, would this patient be
+flagged as “malignant”? Justify in one sentence.</p></li>
+<li><p><em>(2 %)</em> Define, <em>in words appropriate to this specific
+dermatology problem</em>, what <em>sensitivity</em> and
+<em>specificity</em> mean. Then state, with one short clinical
+justification, which of the two you would weigh more heavily when
+choosing a threshold for this screening task.</p></li>
+</ol>
+<h2 class="unnumbered"
+id="b-a-neural-network-classifier-with-regularization-7">b) A
+neural-network classifier with regularization <em>(7 %)</em></h2>
+<p>A small fully-connected feed-forward neural network is fit on the
+same training set with the same <span class="math inline">\(6\)</span>
+features as input (after standardizing the continuous ones). The
+architecture is: <span class="math inline">\(6\)</span> inputs <span
+class="math inline">\(\to\)</span> <span
+class="math inline">\(32\)</span> hidden ReLU units <span
+class="math inline">\(\to\)</span> <span
+class="math inline">\(16\)</span> hidden ReLU units <span
+class="math inline">\(\to\)</span> <span
+class="math inline">\(1\)</span> sigmoid output. The network is trained
+with mini-batch SGD using cross-entropy loss.</p>
+<ol type="i">
+<li><p><em>(1 %)</em> How many parameters does this network have in
+total, including all bias terms? Show the layer-by-layer
+breakdown.</p></li>
+<li><p><em>(2 %)</em> The student who fits the network first tries it
+<em>without any explicit regularization</em>, with batch size <span
+class="math inline">\(32\)</span>. The training accuracy quickly reaches
+<span class="math inline">\(100\%\)</span>, while the test accuracy is
+<span class="math inline">\(0.78\)</span> — worse than the logistic
+regression of part (a). Briefly explain in two short sentences (a) why
+this outcome is consistent with the prof’s iron rule that “you should
+never train a neural network without regularization” and (b) why,
+somewhat surprisingly, mini-batch SGD itself already provides
+<em>some</em> regularization on top of the explicit one she ultimately
+adds.</p></li>
+<li><p><em>(2 %)</em> The student then adds (a) dropout at rate <span
+class="math inline">\(0.2\)</span> on each hidden layer, (b) early
+stopping on a held-out validation slice, and (c) label smoothing with
+<span class="math inline">\(\varepsilon = 0.05\)</span>. Briefly
+describe what each of these three regularizers does at training time
+(one sentence each). For dropout, also state what changes between
+training time and test time.</p></li>
+<li><p><em>(1 %)</em> A junior data scientist proposes increasing the
+dropout rate from <span class="math inline">\(0.2\)</span> to <span
+class="math inline">\(0.5\)</span> to “regularize even more
+aggressively.” Briefly state, in one sentence, why this is not the
+standard recommendation in this course.</p></li>
+<li><p><em>(1 %)</em> After all three regularizers are added, the
+network achieves a test accuracy of <span
+class="math inline">\(0.86\)</span>, beating the logistic regression.
+Frame this improvement in one short sentence using the bias–variance
+lens you derived in Problem 3(a).</p></li>
+</ol>
+<h2 class="unnumbered" id="c-adaboost-5">c) AdaBoost <em>(5 %)</em></h2>
+<p>The clinic also fits an AdaBoost classifier on the same training set,
+using <span class="math inline">\(M = 200\)</span> rounds of
+<em>stumps</em> (depth-<span class="math inline">\(1\)</span> trees) as
+the weak learner. Labels are encoded as <span class="math inline">\(y
+\in \{-1, +1\}\)</span> with <span class="math inline">\(+1 =\)</span>
+malignant. Recall the AdaBoost recipe: initialize weights <span
+class="math inline">\(w_i = 1/N\)</span>; for <span
+class="math inline">\(m = 1, \dots, M\)</span>, fit <span
+class="math inline">\(G_m\)</span> to the weighted data, compute <span
+class="math inline">\(\mathrm{err}_m\)</span>, set <span
+class="math inline">\(\alpha_m =
+\log\big((1-\mathrm{err}_m)/\mathrm{err}_m\big)\)</span>, and update
+<span class="math inline">\(w_i \leftarrow w_i \exp\!\big(\alpha_m
+\mathbb{1}[y_i \neq G_m(x_i)]\big)\)</span>. The final classifier is
+<span class="math inline">\(G(x) = \mathrm{sign}\!\big(\sum_m \alpha_m
+G_m(x)\big)\)</span>.</p>
+<ol type="i">
+<li><p><em>(2 %)</em> Briefly explain (one or two sentences) what the
+weight-update rule does to observations that are repeatedly
+misclassified across rounds, and why this re-weighting mechanism is
+fundamentally different from the row-resampling mechanism used by
+bagging / random forests.</p></li>
+<li><p><em>(1 %)</em> Suppose at some round <span
+class="math inline">\(m^*\)</span> the chosen weak learner <span
+class="math inline">\(G_{m^*}\)</span> happens to have weighted error
+<span class="math inline">\(\mathrm{err}_{m^*} = 0.5\)</span>. What
+value does <span class="math inline">\(\alpha_{m^*}\)</span> take, and
+what is its effect on the final ensemble’s predictions? (One short
+sentence each.)</p></li>
+<li><p><em>(1 %)</em> A second researcher reports the same AdaBoost run
+achieves test sensitivity <span class="math inline">\(0.84\)</span>,
+specificity <span class="math inline">\(0.91\)</span>, and accuracy
+<span class="math inline">\(0.90\)</span>, vs. the logistic regression
+at threshold <span class="math inline">\(0.5\)</span> which reports test
+sensitivity <span class="math inline">\(0.55\)</span>, specificity <span
+class="math inline">\(0.95\)</span>, and accuracy <span
+class="math inline">\(0.87\)</span>. State, with one short clinical
+justification, which classifier you would deploy as a screening
+tool.</p></li>
+<li><p><em>(1 %)</em> AdaBoost can be shown to be a special case of
+gradient boosting under a particular choice of loss function. State the
+name of that loss function. (One word / one formula.)</p></li>
+</ol>
+<h2 class="unnumbered" id="d-class-imbalance-and-threshold-tuning-3">d)
+Class imbalance and threshold tuning <em>(3 %)</em></h2>
+<p>In the full skin-lesion dataset, roughly <span
+class="math inline">\(20\%\)</span> of images are malignant.</p>
+<ol type="i">
+<li><p><em>(1 %)</em> A naive classifier that always predicts “benign”
+would achieve a test accuracy of approximately what value? Justify in
+one sentence.</p></li>
+<li><p><em>(1 %)</em> The logistic regression of part (a) at threshold
+<span class="math inline">\(\hat p = 0.5\)</span> has test accuracy
+<span class="math inline">\(0.87\)</span>, only slightly above (i).
+Briefly explain (one or two sentences) in what sense its sensitivity /
+specificity behaviour is nevertheless much better than the naive
+classifier’s.</p></li>
+<li><p><em>(1 %)</em> A clinician proposes lowering the threshold from
+<span class="math inline">\(0.5\)</span> to <span
+class="math inline">\(0.3\)</span>. State the direction of the effect on
+<em>sensitivity</em> and on <em>specificity</em>, and in which direction
+the operating point of the classifier moves along the ROC
+curve.</p></li>
+</ol>
+<hr />
+<p><strong>End of exam.</strong> Total: <span class="math inline">\(10 +
+28 + 16 + 22 + 24 = 100\)</span> points.</p>
+</body>
+</html>

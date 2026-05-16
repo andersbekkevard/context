@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Compiled by Claude for Anders Bekkevard Based on the Apr 28 exam-review lecture, the 2023–2025 finals, and the prof’s stated scope rule">
+  <title>Mock Exam 1</title>
+  <link rel="stylesheet" href="exam.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<div class="exam-banner"><a href="/pdfs/mock-exam-1.pdf">PDF</a> · <a href="mock-exam-1-solution.html">Solution (HTML)</a> · <a href="/mock-exams">Index</a></div>
+<header>
+  <h1 class="title">Mock Exam 1</h1>
+  <p class="author">Compiled by Claude for Anders Bekkevard<br />
+Based on the Apr 28 exam-review lecture, the 2023–2025 finals, and the
+prof’s stated scope rule</p>
+  <p class="date">Mock for: May 18, 2026 (real exam date)</p>
+</header>
+<p></p>
+<p><strong>Grade boundaries (NTNU <em>prosentvurderingsmetoden</em>,
+advisory):</strong> A: 89–100 % B: 77–88 % C: 65–76 % D: 53–64 % E:
+41–52 % F: 0–40 %.</p>
+<hr />
+<h1 class="unnumbered"
+id="problem-1-10-fill-in-the-blank-concepts">Problem 1
+<strong>(10 %)</strong> — Fill-in-the-blank concepts</h1>
+<p>Read the passage and pick the best word for each blank from the
+choices in parentheses. Each correct fill is worth <span
+class="math inline">\(1\)</span> %.</p>
+<p>In this course we studied methods that learn from data. Our methods
+were broadly divided into <u></u> (1) (<em>supervised</em> /
+<em>unsupervised</em> / <em>parametric</em> / <em>deterministic</em>)
+and unsupervised learning. In the supervised setting we distinguished
+problems with a quantitative response (regression) from problems with a
+qualitative response (<u></u> (2) (<em>clustering</em> /
+<em>classification</em> / <em>dimensionality reduction</em>)).</p>
+<p>We also separated two motivations: when we care mostly about the
+actual coefficients of the fitted model and what they mean, we are doing
+<u></u> (3) (<em>prediction</em> / <em>inference</em> /
+<em>interpolation</em> / <em>regularization</em>). When we instead only
+care about <span class="math inline">\(\hat y\)</span> being close to
+the true <span class="math inline">\(y\)</span> on unseen data, we are
+doing <u></u> (4) (<em>prediction</em> / <em>inference</em> /
+<em>cross-validation</em> / <em>shrinkage</em>).</p>
+<p>A central theme of the course was the bias–variance decomposition.
+The expected squared test error at a fixed point <span
+class="math inline">\(x_0\)</span> splits into three pieces: a
+squared-bias term, a variance term, and an <u></u> (5)
+(<em>irreducible</em> / <em>reducible</em> / <em>biased</em> /
+<em>averaged</em>) error. Methods that explicitly trade a little extra
+bias for a large reduction in variance are called <u></u> (6)
+(<em>regularization methods</em> / <em>boosted methods</em> /
+<em>generative methods</em> / <em>bootstrap methods</em>).</p>
+<p>For classification we discussed both <em>generative</em> approaches
+(which model <span class="math inline">\(P(X \mid Y\!=\!k)\)</span> and
+the class priors) and <em>discriminative</em> approaches (which model
+<span class="math inline">\(P(Y \mid X)\)</span> directly). Among the
+methods we studied, <u></u> (7) (<em>logistic regression</em> /
+<em>LDA</em> / <em>KNN</em> / <em>ridge regression</em>) belongs to the
+discriminative family, while LDA and QDA are <u></u> (8)
+(<em>generative</em> / <em>nonparametric</em> /
+<em>distance-based</em>).</p>
+<p>Finally, in unsupervised learning we studied <u></u> (9)
+(<em>principal component analysis</em> / <em>ridge regression</em> /
+<em>the bootstrap</em>) as a linear dimensionality-reduction tool, and
+clustering methods such as <span class="math inline">\(K\)</span>-means
+and <u></u> (10) (<em>hierarchical clustering</em> / <em>logistic
+clustering</em> / <em>kernel PCA</em>).</p>
+<h1 class="unnumbered"
+id="problem-2-28-multiple-choice-truefalse-and-short-numeric">Problem 2
+<strong>(28 %)</strong> — Multiple choice, true/false, and short
+numeric</h1>
+<p>For each subproblem, write <em>True/False</em> for each statement (or
+the requested numeric answer). For true/false subproblems, you may add a
+one-sentence justification but only if you think it helps; do not write
+essays.</p>
+<h2 class="unnumbered" id="a-biasvariance-reasoning-3">a) Bias–variance
+reasoning <em>(3 %)</em></h2>
+<p>Which of the following statements are true?</p>
+<ol type="i">
+<li><p>As the flexibility of a fitted model increases, its squared bias
+generally decreases.</p></li>
+<li><p>As the flexibility of a fitted model increases, its variance
+generally decreases.</p></li>
+<li><p>In a high-noise (large <span
+class="math inline">\(\sigma^2\)</span>) setting, a very flexible model
+is generally preferable to a less flexible one.</p></li>
+<li><p>The irreducible error <span
+class="math inline">\(\sigma^2\)</span> can be driven arbitrarily close
+to zero by collecting more training data.</p></li>
+</ol>
+<h2 class="unnumbered" id="b-ridge-vs.-lasso-3">b) Ridge vs. Lasso
+<em>(3 %)</em></h2>
+<p>Which of the following are true?</p>
+<ol type="i">
+<li><p>Increasing the penalty parameter <span
+class="math inline">\(\lambda\)</span> in ridge regression shrinks
+coefficients toward zero but, for any finite <span
+class="math inline">\(\lambda\)</span>, never makes any coefficient
+exactly zero.</p></li>
+<li><p>Lasso can produce sparse models because the <span
+class="math inline">\(\ell_1\)</span> penalty ball has corners on the
+coordinate axes.</p></li>
+<li><p>Ridge regression is more flexible than ordinary least
+squares.</p></li>
+<li><p>Standardizing the predictors before fitting ridge or lasso is
+generally recommended.</p></li>
+</ol>
+<h2 class="unnumbered"
+id="c-neural-network-parameters-and-forward-pass-4">c) Neural network
+parameters and forward pass <em>(4 %)</em></h2>
+<p>Suppose you build a fully-connected feed-forward neural network
+with:</p>
+<ul>
+<li><p><span class="math inline">\(5\)</span> input variables,</p></li>
+<li><p>one hidden layer of <span class="math inline">\(6\)</span>
+neurons (with bias),</p></li>
+<li><p>one output neuron (with bias).</p></li>
+</ul>
+<ol type="i">
+<li><p><em>(2 %)</em> How many weights (parameters) does the network
+have in total, <em>including bias terms</em>?</p></li>
+<li><p><em>(2 %)</em> A neuron in the hidden layer has weights <span
+class="math inline">\(w_1 = 0.5,\, w_2 = -1.0,\, w_3 = 0.0,\, w_4 =
+2.0,\, w_5 = -0.5\)</span> and bias <span class="math inline">\(b =
+0.3\)</span>. Its inputs on a given observation are <span
+class="math inline">\(x_1 = 2,\, x_2 = 1,\, x_3 = -3,\, x_4 = 0.5,\, x_5
+= 4\)</span>. Using a ReLU activation, what is the output of this
+neuron?</p></li>
+</ol>
+<h2 class="unnumbered" id="d-odds-and-probability-3">d) Odds and
+probability <em>(3 %)</em></h2>
+<ol type="i">
+<li><p><em>(1 %)</em> A study reports that the odds of an event are
+<span class="math inline">\(2.5\)</span>. What is the probability of the
+event?</p></li>
+<li><p><em>(1 %)</em> An individual has a <span
+class="math inline">\(30\%\)</span> probability of defaulting on her
+credit card. What are her odds of defaulting?</p></li>
+<li><p><em>(1 %)</em> In a logistic-regression fit, the coefficient on a
+binary predictor <span class="math inline">\(D\)</span> (smoker = <span
+class="math inline">\(1\)</span>, non-smoker = <span
+class="math inline">\(0\)</span>) equals <span
+class="math inline">\(\hat\beta = 0.8\)</span>. By what factor do the
+odds of the response event change for a smoker relative to a non-smoker,
+holding all other predictors fixed? (One numeric value.)</p></li>
+</ol>
+<h2 class="unnumbered"
+id="e-smoothing-splines-and-degrees-of-freedom-3">e) Smoothing splines
+and degrees of freedom <em>(3 %)</em></h2>
+<p>Consider a smoothing spline fit with smoothing parameter <span
+class="math inline">\(\lambda\)</span>.</p>
+<p>Which of the following are true?</p>
+<ol type="i">
+<li><p>As <span class="math inline">\(\lambda \to 0\)</span>, the fit
+approaches the rough interpolating spline that goes through
+(essentially) every training point.</p></li>
+<li><p>As <span class="math inline">\(\lambda \to \infty\)</span>, the
+fit approaches the ordinary-least-squares straight line.</p></li>
+<li><p>Increasing <span class="math inline">\(\lambda\)</span>
+<em>increases</em> the effective degrees of freedom of the fit.</p></li>
+<li><p>The effective degrees of freedom <span
+class="math inline">\(\mathrm{df}_\lambda =
+\mathrm{tr}(S_\lambda)\)</span> of a smoothing spline is, in general,
+not an integer.</p></li>
+</ol>
+<h2 class="unnumbered" id="f-principal-component-analysis-5">f)
+Principal component analysis <em>(5 %)</em></h2>
+<p>You perform PCA on a dataset with six <strong>standardized</strong>
+variables <span class="math inline">\(X_1, \dots, X_6\)</span> and
+obtain:</p>
+<div class="center">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>PC</strong></th>
+<th style="text-align: center;"><strong>Eigenvalue</strong></th>
+<th style="text-align: center;"><strong>PVE</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">PC1</td>
+<td style="text-align: center;">2.4</td>
+<td style="text-align: center;">0.40</td>
+</tr>
+<tr>
+<td style="text-align: left;">PC2</td>
+<td style="text-align: center;">1.5</td>
+<td style="text-align: center;">0.25</td>
+</tr>
+<tr>
+<td style="text-align: left;">PC3</td>
+<td style="text-align: center;">1.2</td>
+<td style="text-align: center;">0.20</td>
+</tr>
+<tr>
+<td style="text-align: left;">PC4</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;"><span
+class="math inline">\(\approx\)</span>0.083</td>
+</tr>
+<tr>
+<td style="text-align: left;">PC5</td>
+<td style="text-align: center;">0.3</td>
+<td style="text-align: center;">0.05</td>
+</tr>
+<tr>
+<td style="text-align: left;">PC6</td>
+<td style="text-align: center;">0.1</td>
+<td style="text-align: center;"><span
+class="math inline">\(\approx\)</span>0.017</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The loading vector of the first principal component (entries rounded
+to two decimal places) is <span class="math display">\[\phi_1 =
+(\,0.60,\; 0.50,\; 0.40,\; 0.30,\; 0.30,\; 0.20\,)^\top.\]</span> A new
+observation has standardized values <span class="math display">\[x^* =
+(\,1,\; -1,\; 0.5,\; 2,\; 0,\; -1\,)^\top.\]</span></p>
+<ol type="i">
+<li><p><em>(1 %)</em> What is the total variance in the standardized
+data?</p></li>
+<li><p><em>(1 %)</em> What proportion of the total variance is explained
+by PC1 and PC2 together?</p></li>
+<li><p><em>(1 %)</em> How many principal components must be kept to
+retain at least <span class="math inline">\(85\%\)</span> of the total
+variance?</p></li>
+<li><p><em>(1 %)</em> Compute the score <span
+class="math inline">\(z^*_1\)</span> of the new observation on
+PC1.</p></li>
+<li><p><em>(1 %)</em> Which one variable contributes <em>most</em> to
+PC1?</p></li>
+</ol>
+<h2 class="unnumbered" id="g-sensitivity-specificity-roc-and-auc-3">g)
+Sensitivity, specificity, ROC, and AUC <em>(3 %)</em></h2>
+<p>A classifier is applied to a test set of <span
+class="math inline">\(1000\)</span> patients, of whom <span
+class="math inline">\(200\)</span> truly have the disease. At a chosen
+threshold the confusion matrix is:</p>
+<div class="center">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"><strong>Predicted: disease</strong></th>
+<th style="text-align: center;"><strong>Predicted: no
+disease</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>Actual: disease</strong></td>
+<td style="text-align: center;">140</td>
+<td style="text-align: center;">60</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Actual: no disease</strong></td>
+<td style="text-align: center;">80</td>
+<td style="text-align: center;">720</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ol type="i">
+<li><p><em>(1 %)</em> Compute the <em>sensitivity</em> of the
+classifier.</p></li>
+<li><p><em>(1 %)</em> Compute the <em>specificity</em> of the
+classifier.</p></li>
+<li><p><em>(1 %)</em> Which of the following is true about the AUC (area
+under the ROC curve)? Mark all that apply.</p>
+<ul>
+<li><p>AUC <span class="math inline">\(= 0.5\)</span> corresponds to a
+classifier no better than random guessing.</p></li>
+<li><p>A classifier with AUC <span class="math inline">\(= 0.95\)</span>
+is necessarily better than one with AUC <span class="math inline">\(=
+0.85\)</span> on every possible threshold.</p></li>
+<li><p>The ROC curve plots true positive rate (TPR) on the <span
+class="math inline">\(y\)</span>-axis against false positive rate (FPR)
+on the <span class="math inline">\(x\)</span>-axis, varying the
+classification threshold.</p></li>
+<li><p>AUC is unaffected by class imbalance in the way raw accuracy
+is.</p></li>
+</ul></li>
+</ol>
+<h2 class="unnumbered"
+id="h-why-are-nonlinear-activations-necessary-2">h) Why are nonlinear
+activations necessary? <em>(2 %)</em></h2>
+<p>Mark all that are true. In a feed-forward neural network, the
+hidden-layer activation function is nonlinear because…</p>
+<ol type="i">
+<li><p>it allows the network to approximate complex, non-linear
+functions of the inputs;</p></li>
+<li><p>without it the entire network collapses to an affine map of the
+input, no matter how many hidden layers are stacked;</p></li>
+<li><p>it reduces the total number of parameters;</p></li>
+<li><p>it forces the network to be fully connected.</p></li>
+</ol>
+<h2 class="unnumbered" id="i-lda-vs.-qda-2">i) LDA vs. QDA
+<em>(2 %)</em></h2>
+<p>Mark all that are true.</p>
+<ol type="i">
+<li><p>LDA assumes a single shared within-class covariance matrix <span
+class="math inline">\(\Sigma\)</span>, whereas QDA allows a separate
+<span class="math inline">\(\Sigma_k\)</span> for each class.</p></li>
+<li><p>Under LDA’s assumption, the resulting Bayes decision boundary is
+<em>linear</em> in the features because the quadratic term <span
+class="math inline">\(\mathbf{x}^\top \Sigma^{-1} \mathbf{x}\)</span> is
+identical for every class and therefore cancels when discriminant
+functions are compared.</p></li>
+<li><p>In a regime with very few training observations per class, QDA
+generally outperforms LDA because QDA is more flexible.</p></li>
+<li><p>LDA and QDA are both <em>generative</em> classifiers: they model
+<span class="math inline">\(P(\mathbf{X}\mid Y\!=\!k)\)</span> and the
+class priors <span class="math inline">\(\pi_k\)</span> and then apply
+Bayes’ rule.</p></li>
+</ol>
+<h1 class="unnumbered"
+id="problem-3-16-theory-and-hand-calculations">Problem 3
+<strong>(16 %)</strong> — Theory and hand calculations</h1>
+<h2 class="unnumbered"
+id="a-the-mathy-one-maximum-likelihood-and-least-squares-8">a) The mathy
+one — maximum likelihood and least squares <em>(8 %)</em></h2>
+<p>Consider a regression setting in which the response is modelled as
+<span class="math display">\[Y_i = f_\theta(X_i) + \varepsilon_i, \qquad
+i = 1,\dots,n,\]</span> where <span
+class="math inline">\(f_\theta\)</span> is a regression function indexed
+by an unknown parameter vector <span
+class="math inline">\(\theta\)</span>, the inputs <span
+class="math inline">\(X_i\)</span> are treated as fixed, and the errors
+<span class="math inline">\(\varepsilon_i\)</span> are independent and
+identically distributed (i.i.d.).</p>
+<ol type="i">
+<li><p><em>(2 %)</em> Write down the optimization problem that defines
+the <em>ordinary least-squares</em> estimator <span
+class="math inline">\(\hat\theta_{\mathrm{LS}}\)</span> of <span
+class="math inline">\(\theta\)</span>. State the minimal assumptions on
+<span class="math inline">\(\varepsilon_i\)</span> needed for this
+estimator to be well-defined.</p></li>
+<li><p><em>(2 %)</em> Now additionally assume <span
+class="math inline">\(\varepsilon_i \sim \mathcal{N}(0,
+\sigma^2)\)</span>. Write down the log-likelihood <span
+class="math inline">\(\ell(\theta, \sigma^2)\)</span> of the sample
+<span class="math inline">\((Y_1,\dots,Y_n)\)</span>.</p></li>
+<li><p><em>(3 %)</em> Show that the maximum-likelihood estimator <span
+class="math inline">\(\hat\theta_{\mathrm{MLE}}\)</span> and the
+least-squares estimator <span
+class="math inline">\(\hat\theta_{\mathrm{LS}}\)</span>
+<em>coincide</em> under the Gaussian-error assumption. Be explicit about
+which terms in your log-likelihood do and do not depend on <span
+class="math inline">\(\theta\)</span>.</p></li>
+<li><p><em>(1 %)</em> Does this equivalence still hold if you replace
+the Gaussian assumption with <span class="math inline">\(\varepsilon_i
+\sim \mathrm{Laplace}(0, b)\)</span>? Briefly justify your answer (one
+or two sentences).</p></li>
+</ol>
+<h2 class="unnumbered" id="b-hierarchical-clustering-by-hand-5">b)
+Hierarchical clustering by hand <em>(5 %)</em></h2>
+<p>Four observations have the following Euclidean dissimilarity matrix:
+<span class="math display">\[D = \begin{pmatrix}
+0 &amp; 4 &amp; 9 &amp; 8 \\
+4 &amp; 0 &amp; 5 &amp; 6 \\
+9 &amp; 5 &amp; 0 &amp; 3 \\
+8 &amp; 6 &amp; 3 &amp; 0 \\
+\end{pmatrix}.\]</span></p>
+<ol type="i">
+<li><p><em>(3 %)</em> Sketch the dendrogram produced by hierarchical
+clustering with <em>complete</em> linkage. Label the leaves <span
+class="math inline">\(1, 2, 3, 4\)</span>, indicate the fusion height of
+each merge on a properly labelled <span
+class="math inline">\(y\)</span>-axis, and show the recomputed
+dissimilarity matrix after the first merge.</p></li>
+<li><p><em>(1 %)</em> If instead you use <em>single</em> linkage on the
+same matrix, what would change about the <em>first</em> merge? Justify
+in one sentence.</p></li>
+<li><p><em>(1 %)</em> Suppose you cut the complete-linkage dendrogram at
+height <span class="math inline">\(7\)</span>. How many clusters do you
+obtain, and which observations are in each cluster?</p></li>
+</ol>
+<h2 class="unnumbered" id="c-the-biasvariance-decomposition-3">c) The
+bias–variance decomposition <em>(3 %)</em></h2>
+<ol type="i">
+<li><p><em>(2 %)</em> Let <span class="math inline">\(y_0 = f(x_0) +
+\varepsilon\)</span> with <span
+class="math inline">\(\mathbb{E}[\varepsilon] = 0\)</span> and <span
+class="math inline">\(\mathrm{Var}(\varepsilon) = \sigma^2\)</span>, and
+let <span class="math inline">\(\hat f\)</span> be a model fit on a
+random training set, with <span class="math inline">\(\hat f\)</span>
+independent of <span class="math inline">\(\varepsilon\)</span>. Write
+down the bias–variance decomposition of the expected squared test error
+<span class="math inline">\(\mathbb{E}\!\left[(y_0 - \hat
+f(x_0))^2\right]\)</span> as a sum of three terms. <em>Identify each
+term by name</em> and <em>state what the expectations are taken
+over</em>.</p></li>
+<li><p><em>(1 %)</em> In one or two sentences, give a reason why one
+might prefer the label <em>bias–variance decomposition</em> over
+<em>bias–variance trade-off</em>. (You may, for example, appeal to the
+squared form of the bias term, the role of a clever model choice such as
+regularization, or the over-parameterized regime in which both bias and
+variance can simultaneously decrease.)</p></li>
+</ol>
+<h1 class="unnumbered"
+id="problem-4-22-data-analysis-regression-on-used-car-prices">Problem 4
+<strong>(22 %)</strong> — Data analysis: regression on used-car
+prices</h1>
+<p>A dealership records <span class="math inline">\(n = 500\)</span>
+used-car transactions. The response is the sale <code>price</code> (in
+<span class="math inline">\(1000\)</span> EUR). The available predictors
+are:</p>
+<ul>
+<li><p><code>mileage</code> — total mileage in <span
+class="math inline">\(1000\)</span> km (continuous);</p></li>
+<li><p><code>age</code> — age of the car in years (continuous);</p></li>
+<li><p><code>horsepower</code> — engine power, hp (continuous);</p></li>
+<li><p><code>engine</code> — engine displacement, litres
+(continuous);</p></li>
+<li><p><code>mpg</code> — combined fuel economy (continuous);</p></li>
+<li><p><code>fuel</code> — categorical: <em>petrol</em> (reference),
+<em>diesel</em>, <em>electric</em>.</p></li>
+</ul>
+<p>The course staff fit the linear model <span
+class="math display">\[\texttt{price} \sim \texttt{mileage} +
+\texttt{age} + I(\texttt{age}^2) + \texttt{horsepower} + \texttt{engine}
++ \texttt{mpg} + \texttt{fuel}\]</span> on a training set (<span
+class="math inline">\(n_\text{train} = 350\)</span>, the remaining <span
+class="math inline">\(150\)</span> cars form the test set). The output
+is:</p>
+<div class="center">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;"><strong>Estimate</strong></th>
+<th style="text-align: center;"><strong>Std. Error</strong></th>
+<th style="text-align: center;"><strong>t-value</strong></th>
+<th style="text-align: center;"><strong>Pr(<span
+class="math inline">\(&gt;|t|\)</span>)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: center;"><span
+class="math inline">\(24.50\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(2.30\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(10.65\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(&lt;0.001\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>mileage</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(-0.085\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.012\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(-7.08\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(&lt;0.001\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>age</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(-1.20\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.40\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(-3.00\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.003\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span
+class="math inline">\(I(\texttt{age}^2)\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.030\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.020\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(1.50\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.135\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>horsepower</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.045\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.011\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(4.09\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(&lt;0.001\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>engine</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(1.80\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.65\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(2.77\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.006\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>mpg</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.12\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.08\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(1.50\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.135\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>fuel_diesel</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(-0.65\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.55\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(-1.18\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.239\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>fuel_electric</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(3.20\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(1.10\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(2.91\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.004\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Residual standard error: <span class="math inline">\(2.10\)</span> on
+<span class="math inline">\(341\)</span> degrees of freedom. Multiple
+<span class="math inline">\(R^2 = 0.621\)</span>, Adjusted <span
+class="math inline">\(R^2 = 0.612\)</span>. <span
+class="math inline">\(F\)</span>-statistic on the categorical
+<code>fuel</code> variable (joint test of both dummies against
+<code>fuel = petrol</code>): <span class="math inline">\(F =
+4.85\)</span> on <span class="math inline">\((2, 341)\)</span> d.f.,
+<span class="math inline">\(p = 0.008\)</span>.</p>
+<h2 class="unnumbered" id="a-reading-the-table-6">a) Reading the table
+<em>(6 %)</em></h2>
+<ol type="i">
+<li><p><em>(1 %)</em> How many parameters does this model estimate?
+(i.e. how many degrees of freedom does the model consume, including the
+intercept?) Justify your count briefly.</p></li>
+<li><p><em>(2 %)</em> An electric car is, on average, how much more or
+less expensive than an otherwise identical petrol car? Quantify both the
+point estimate and an approximate <span
+class="math inline">\(95\%\)</span> confidence interval (you may use
+<span class="math inline">\(1.96\)</span> as the critical
+value).</p></li>
+<li><p><em>(2 %)</em> Is there evidence that the categorical variable
+<code>fuel</code> is <em>jointly</em> associated with
+<code>price</code>, after controlling for the other predictors?
+<strong>Name the test you would use</strong> and state your conclusion
+based on the output above. (You do <em>not</em> need to compute the test
+statistic by hand.)</p></li>
+<li><p><em>(1 %)</em> A friend reads the table and concludes:
+“<code>mpg</code> is irrelevant to the price.” Briefly say in what sense
+she is right and in what sense she may be wrong (one or two
+sentences).</p></li>
+</ol>
+<h2 class="unnumbered" id="b-training-vs.-test-error-the-keyword-3">b)
+Training vs. test error: the keyword <em>(3 %)</em></h2>
+<p>Suppose you fit a second model that uses the same predictors as above
+but <em>also</em> adds the cubic term <span
+class="math inline">\(I(\texttt{age}^3)\)</span> and the redundant term
+<span class="math inline">\(I(\texttt{age}/12)\)</span>
+(i.e. <code>age</code> re-expressed in different units).</p>
+<ol type="i">
+<li><p><em>(1 %)</em> Will the <em>training</em> RSS of the larger model
+be lower than, equal to, or higher than that of the smaller model?
+Justify.</p></li>
+<li><p><em>(1 %)</em> What about the <em>test</em> RSS? Can you be
+certain about the direction? Justify.</p></li>
+<li><p><em>(1 %)</em> What problem does the redundant term <span
+class="math inline">\(I(\texttt{age}/12)\)</span> create at fitting
+time, and what would happen if you added an <span
+class="math inline">\(\ell_2\)</span> penalty?</p></li>
+</ol>
+<h2 class="unnumbered" id="c-lasso-with-10-fold-cross-validation-6">c)
+Lasso with <span class="math inline">\(10\)</span>-fold cross-validation
+<em>(6 %)</em></h2>
+<p>The same predictors are now fed into a lasso regression. A <span
+class="math inline">\(10\)</span>-fold cross-validation gives the
+following profile of CV-MSE against <span class="math inline">\(\log
+\lambda\)</span>:</p>
+<div class="center">
+<div class="figure-omitted">Figure (TikZ) — rendered in the PDF version only.</div>
+</div>
+<p>(You may assume that the prediction-test MSEs you would obtain if you
+fitted the lasso at <span
+class="math inline">\(\hat\lambda_{\min}\)</span> and at <span
+class="math inline">\(\hat\lambda_{1SE}\)</span> are <span
+class="math inline">\(5.20\)</span> and <span
+class="math inline">\(5.55\)</span> respectively. The unregularized OLS
+model from part (a), evaluated on the same test set, gives test MSE
+<span class="math inline">\(5.15\)</span>.)</p>
+<ol type="i">
+<li><p><em>(1 %)</em> Write down, in math or pseudocode, how the <span
+class="math inline">\(10\)</span>-fold CV-MSE estimate at a fixed <span
+class="math inline">\(\lambda\)</span> is computed.</p></li>
+<li><p><em>(1 %)</em> Which value of <span
+class="math inline">\(\lambda\)</span> would you pick from the plot, and
+why? (Either <span class="math inline">\(\hat\lambda_{\min}\)</span> or
+<span class="math inline">\(\hat\lambda_{1SE}\)</span> is acceptable,
+but justify.)</p></li>
+<li><p><em>(2 %)</em> Compare the test MSE of the lasso (at <span
+class="math inline">\(\hat\lambda_{\min}\)</span>) to the test MSE of
+OLS. Interpret the result in bias–variance terms: what does it tell you
+about the predictors in this dataset?</p></li>
+<li><p><em>(2 %)</em> On the plot above, the vertical dashed lines mark
+<span class="math inline">\(\hat\lambda_{\min}\)</span> (the <span
+class="math inline">\(\lambda\)</span> with the smallest CV error) and
+<span class="math inline">\(\hat\lambda_{1\text{SE}}\)</span> (the
+largest <span class="math inline">\(\lambda\)</span> whose CV error is
+within one standard error of the minimum). Briefly state the
+<em>one-standard-error rule</em> and explain when a practitioner might
+prefer <span class="math inline">\(\hat\lambda_{1\text{SE}}\)</span>
+over <span class="math inline">\(\hat\lambda_{\min}\)</span>.</p></li>
+</ol>
+<h2 class="unnumbered" id="d-tree-boosting-5">d) Tree boosting
+<em>(5 %)</em></h2>
+<p>The same training set is now fit with a gradient-boosted tree model,
+evaluated on the same test set. The resulting test MSE is <span
+class="math inline">\(3.85\)</span>, lower than the OLS and lasso test
+MSEs.</p>
+<ol type="i">
+<li><p><em>(2 %)</em> Gradient boosting has three main hyperparameters:
+the number of trees <span class="math inline">\(B\)</span>, the
+interaction depth <span class="math inline">\(d\)</span>, and the
+shrinkage (learning rate) <span class="math inline">\(\eta\)</span>. For
+each, briefly say how you would choose its value and how it affects the
+bias–variance behaviour of the final model.</p></li>
+<li><p><em>(1 %)</em> Why is it incorrect to claim that <span
+class="math inline">\(B\)</span> “does not matter as long as it is large
+enough”? (One sentence.)</p></li>
+<li><p><em>(2 %)</em> What does the lower test MSE of boosting compared
+to OLS suggest about the structure of the relationship between the
+predictors and <code>price</code>? What would you check next if you also
+wanted <em>interpretation</em>, not just prediction?</p></li>
+</ol>
+<h2 class="unnumbered" id="e-gam-degrees-of-freedom-2">e) GAM degrees of
+freedom <em>(2 %)</em></h2>
+<p>Finally, you fit a generalized additive model (GAM) of the form <span
+class="math display">\[\texttt{price} = \beta_0 + f_1(\texttt{mileage})
++ f_2(\texttt{age}) + f_3(\texttt{horsepower}) + \beta_4 \cdot
+\texttt{engine} + \beta_5 \cdot \texttt{mpg} + g(\texttt{fuel}) +
+\varepsilon,\]</span> where <span class="math inline">\(f_1, f_2,
+f_3\)</span> are cubic regression splines, each with <span
+class="math inline">\(4\)</span> internal knots (and an intercept
+absorbed into <span class="math inline">\(\beta_0\)</span>). The
+categorical <code>fuel</code> term <span
+class="math inline">\(g(\texttt{fuel})\)</span> uses dummy coding as in
+part (a).</p>
+<ol type="i">
+<li><p><em>(1 %)</em> How many degrees of freedom does the spline <span
+class="math inline">\(f_1(\texttt{mileage})\)</span> alone consume?
+(Count basis functions, excluding the global intercept.)</p></li>
+<li><p><em>(1 %)</em> How many total degrees of freedom does the GAM
+consume (including the intercept)?</p></li>
+</ol>
+<h1 class="unnumbered"
+id="problem-5-24-data-analysis-classification-of-loan-defaults">Problem
+5 <strong>(24 %)</strong> — Data analysis: classification of loan
+defaults</h1>
+<p>A bank has data on <span class="math inline">\(n = 10{,}000\)</span>
+customers; the response <code>default</code> is binary (<span
+class="math inline">\(1\)</span> if the customer defaulted within the
+year, <span class="math inline">\(0\)</span> otherwise). Predictors
+include:</p>
+<ul>
+<li><p><code>balance</code> — average outstanding monthly balance, in
+<span class="math inline">\(1000\)</span> EUR;</p></li>
+<li><p><code>income</code> — annual income, in <span
+class="math inline">\(1000\)</span> EUR;</p></li>
+<li><p><code>sex</code> — categorical: <em>male</em> (reference),
+<em>female</em>;</p></li>
+<li><p>six payment-history variables <code>pay_0</code>, …,
+<code>pay_5</code>.</p></li>
+</ul>
+<p>The data are split <span class="math inline">\(70/30\)</span> into a
+training set (<span class="math inline">\(7000\)</span>) and a test set
+(<span class="math inline">\(3000\)</span>).</p>
+<h2 class="unnumbered" id="a-logistic-regression-with-interaction-10">a)
+Logistic regression with interaction <em>(10 %)</em></h2>
+<p>A logistic regression model is fit on the training set, using all
+predictors plus the interaction <code>balance:sex</code>. The
+coefficient table for the most important rows is:</p>
+<div class="center">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;"><strong>Estimate</strong></th>
+<th style="text-align: center;"><strong>Std. Error</strong></th>
+<th style="text-align: center;"><strong>z-value</strong></th>
+<th style="text-align: center;"><strong>Pr(<span
+class="math inline">\(&gt;|z|\)</span>)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: center;"><span
+class="math inline">\(-10.80\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.45\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(-24.0\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(&lt;0.001\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>balance</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(1.00\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.05\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(20.0\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(&lt;0.001\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>income</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(-0.010\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.0025\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(-4.0\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(&lt;0.001\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>sex_female</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(-0.18\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.35\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(-0.51\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.610\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>balance:sex_female</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.25\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.08\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(3.13\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.002\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>pay_0</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.55\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.04\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(13.8\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(&lt;0.001\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>pay_1</code></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.20\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.04\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(5.0\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(&lt;0.001\)</span></td>
+</tr>
+<tr>
+<td colspan="5" style="text-align: center;"><span
+class="math inline">\(\cdots\)</span> (other <code>pay_k</code> omitted
+for brevity)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>(Recall: “balance” is measured in <em>thousands of EUR</em>; “income”
+in thousands of EUR.)</p>
+<ol type="i">
+<li><p><em>(3 %)</em> For a <em>male</em> customer, by what factor do
+the odds of default change for each <span
+class="math inline">\(1000\)</span> EUR increase in
+<code>balance</code>, holding all other predictors fixed? Repeat the
+calculation for a <em>female</em> customer. (Two numeric factors, each
+rounded to two decimals.)</p></li>
+<li><p><em>(2 %)</em> <em>State</em> your encoding assumption
+explicitly, then explain why the coefficient on <code>sex_female</code>
+alone (<span class="math inline">\(-0.18\)</span>) is <em>not</em> a
+useful summary of the average gender effect when an interaction is
+present.</p></li>
+<li><p><em>(2 %)</em> Define, <em>in words appropriate to this specific
+problem</em>, what <em>sensitivity</em> and <em>specificity</em> mean
+for the default classifier.</p></li>
+<li><p><em>(3 %)</em> At a threshold of <span class="math inline">\(\hat
+p = 0.5\)</span>, the logistic-regression model produces the following
+confusion matrix on the test set:</p>
+<div class="center">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"><strong>Predicted: default (<span
+class="math inline">\(\hat y = 1\)</span>)</strong></th>
+<th style="text-align: center;"><strong>Predicted: no default (<span
+class="math inline">\(\hat y = 0\)</span>)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>Actual: default</strong></td>
+<td style="text-align: center;">270</td>
+<td style="text-align: center;">330</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Actual: no default</strong></td>
+<td style="text-align: center;">80</td>
+<td style="text-align: center;">2320</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Compute the <em>sensitivity</em>, <em>specificity</em>, and <em>test
+error rate</em>. (Three numbers.)</p></li>
+</ol>
+<h2 class="unnumbered" id="b-roc-and-auc-interpretation-3">b) ROC and
+AUC interpretation <em>(3 %)</em></h2>
+<p>A second researcher complains that the chosen threshold <span
+class="math inline">\(\hat p = 0.5\)</span> “misses too many
+defaulters”. She produces the ROC curve below (schematic):</p>
+<div class="center">
+<div class="figure-omitted">Figure (TikZ) — rendered in the PDF version only.</div>
+</div>
+<ol type="i">
+<li><p><em>(1 %)</em> What is plotted on the two axes of the ROC
+curve?</p></li>
+<li><p><em>(1 %)</em> Define the AUC and state what AUC <span
+class="math inline">\(= 0.5\)</span> corresponds to.</p></li>
+<li><p><em>(1 %)</em> The researcher proposes lowering the threshold
+from <span class="math inline">\(0.5\)</span> to <span
+class="math inline">\(0.3\)</span>. How would you expect this to affect
+sensitivity and specificity, and where on the ROC curve does the
+operating point move?</p></li>
+</ol>
+<h2 class="unnumbered" id="c-k-nearest-neighbours-4">c) <span
+class="math inline">\(K\)</span>-nearest neighbours <em>(4 %)</em></h2>
+<p>A classmate fits a <span class="math inline">\(K\)</span>-NN
+classifier with <span class="math inline">\(K = 35\)</span> on the same
+training data, using the predictors above (standardized). He produces
+the following test-set confusion matrix:</p>
+<div class="center">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"></th>
+<th style="text-align: center;"><strong>Predicted: default</strong></th>
+<th style="text-align: center;"><strong>Predicted: no
+default</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>Actual: default</strong></td>
+<td style="text-align: center;">200</td>
+<td style="text-align: center;">400</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Actual: no default</strong></td>
+<td style="text-align: center;">120</td>
+<td style="text-align: center;">2280</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ol type="i">
+<li><p><em>(1 %)</em> Briefly describe how a <span
+class="math inline">\(K\)</span>-NN classifier produces a predicted
+class label for a new observation. (Two or three sentences.)</p></li>
+<li><p><em>(2 %)</em> Compute the sensitivity, specificity, and test
+error rate of this KNN classifier.</p></li>
+<li><p><em>(1 %)</em> The classmate did not standardize
+<code>balance</code> (measured in thousands) together with
+<code>pay_0</code> (measured on a small integer scale). Why is this a
+problem for KNN, in particular?</p></li>
+</ol>
+<h2 class="unnumbered" id="d-a-tree-based-competitor-5">d) A tree-based
+competitor <em>(5 %)</em></h2>
+<p>You want to fit a tree-based method to compete with the logistic
+regression. Choose one method we discussed in the course, and justify
+your choice.</p>
+<ol type="i">
+<li><p><em>(2 %)</em> State which tree-based method you would use
+(e.g. bagging, random forest, gradient boosting) and give a <em>concrete
+numeric value</em> for each of its main tuning parameters (for a random
+forest, for instance: <code>mtry</code>, <code>ntree</code>, and the
+terminal-node size). <strong>Justify each numeric choice</strong> with
+one short sentence; a vague phrase like “sufficiently many trees” will
+not earn full credit.</p></li>
+<li><p><em>(2 %)</em> Suppose your chosen method gives test sensitivity
+<span class="math inline">\(0.42\)</span>, test specificity <span
+class="math inline">\(0.96\)</span>, and test error rate <span
+class="math inline">\(0.14\)</span>. Compare to the logistic regression
+results from part (a). Which model would you prefer, and why? Make
+explicit which criterion drives your choice.</p></li>
+<li><p><em>(1 %)</em> Briefly describe what a <em>variable-importance
+plot</em> from a random forest shows, and what kind of question it can
+(and cannot) answer.</p></li>
+</ol>
+<h2 class="unnumbered" id="e-class-imbalance-2">e) Class imbalance
+<em>(2 %)</em></h2>
+<p>The marginal distribution of <code>default</code> on the full dataset
+is approximately <span class="math display">\[P(\texttt{default} = 1)
+\approx 0.20, \qquad P(\texttt{default} = 0) \approx 0.80.\]</span></p>
+<ol type="i">
+<li><p><em>(1 %)</em> A naive classifier that always predicts “no
+default” would already achieve a test error rate of approximately what
+value? Justify in one sentence.</p></li>
+<li><p><em>(1 %)</em> In light of (i), comment on whether <em>test error
+rate</em> is the most appropriate metric for choosing between
+classifiers on this dataset. What metric or pair of metrics would you
+privilege instead, and why?</p></li>
+</ol>
+<hr />
+<p><strong>End of exam.</strong> Total: <span class="math inline">\(10 +
+28 + 16 + 22 + 24 = 100\)</span> points.</p>
+</body>
+</html>

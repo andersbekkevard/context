@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Compiled for Anders Bekkevard Companion to mock-exam-3.tex (same directory).">
+  <title>Mock Exam 3 — Solution</title>
+  <link rel="stylesheet" href="exam.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<div class="exam-banner"><a href="/pdfs/mock-exam-3-solution.pdf">PDF</a> · <a href="mock-exam-3.html">Exam (HTML)</a> · <a href="/mock-exams">Index</a></div>
+<header>
+  <h1 class="title">Mock Exam 3 — Solution</h1>
+  <p class="author">Compiled for Anders Bekkevard<br />
+Companion to <code>mock-exam-3.tex</code> (same directory).</p>
+  <p class="date">Mock for: May 18, 2026</p>
+</header>
+<p><em>This document is a worked-solution proposal in the style of the
+official Stefanie/Sara solutions to the 2024 and 2025 finals. Point
+values are quoted in the heading of each solved sub-part. Partial-credit
+hints are inline. Refer back to <code>mock-exam-3.tex</code> for the
+problem statements.</em></p>
+<hr />
+<h1 class="unnumbered"
+id="problem-1-10-fill-in-the-blank-concepts">Problem 1
+<strong>(10 %)</strong> — Fill-in-the-blank concepts</h1>
+<p><strong>Solution</strong> <em>(1 P per blank.)</em></p>
+<ol type="1">
+<li><p><strong>parametric</strong></p></li>
+<li><p><strong>nonparametric</strong></p></li>
+<li><p><strong>irreducible</strong></p></li>
+<li><p><strong>shrinkage</strong></p></li>
+<li><p><strong>lasso</strong></p></li>
+<li><p><strong>k-fold cross-validation</strong></p></li>
+<li><p><strong>distributional assumptions</strong></p></li>
+<li><p><strong>generalized additive models</strong></p></li>
+<li><p><strong>principal component analysis</strong></p></li>
+<li><p><strong>dendrogram</strong></p></li>
+</ol>
+<p><em>Grading: 1 P per correct blank. No partial credit for “close”
+alternatives. For (5), “ridge” is a hard zero — ridge shrinks but does
+not zero out (the prof flagged this as a classic exam trap). For (7),
+“cross-validation” loops back on itself and is wrong; “shrinkage” /
+“regularization” are about lasso/ridge, not AIC.</em></p>
+<hr />
+<h1 class="unnumbered"
+id="problem-2-28-multiple-choice-tf-short-numeric">Problem 2
+<strong>(28 %)</strong> — Multiple choice, T/F, short numeric</h1>
+<h2 class="unnumbered" id="a-biasvariance-and-double-descent-3">a)
+Bias–variance and double descent <em>(3 %)</em></h2>
+<p><strong>Solution</strong> <em>(0.75 P per statement.)</em></p>
+<ol type="i">
+<li><p><strong>True</strong>. The classical bias–variance trade-off:
+more flexible classes capture more of <span
+class="math inline">\(f\)</span> (lower squared bias) but track training
+noise harder (higher variance).</p></li>
+<li><p><strong>True</strong>. The decomposition <span
+class="math inline">\(\mathbb{E}[(y_0-\hat
+f(x_0))^2]=\mathrm{Bias}^2+\mathrm{Var}+\sigma^2\)</span> is an
+algebraic identity (the cross-term vanishes by independence of <span
+class="math inline">\(\varepsilon\)</span> and the training set). It
+holds for <em>any</em> estimator <span class="math inline">\(\hat
+f\)</span>, including over-parameterized ones.</p></li>
+<li><p><strong>False</strong>. This is the <em>double-descent /
+benign-overfitting</em> regime: when <span class="math inline">\(p \gg
+n\)</span>, an interpolating model can still generalize, because the
+optimization implicitly picks the minimum-norm interpolator from the
+infinite family of zero-training-error solutions. (Prof’s hobbyhorse,
+hammered five times across the course.)</p></li>
+<li><p><strong>False</strong>. With large <span
+class="math inline">\(\sigma^2\)</span> a flexible model spends extra
+variance “chasing noise” that is irreducible by definition, so test
+error <em>rises</em>. Less-flexible models win when noise
+dominates.</p></li>
+</ol>
+<h2 class="unnumbered" id="b-cross-validation-variants-3">b)
+Cross-validation variants <em>(3 %)</em></h2>
+<p><strong>Solution</strong> <em>(0.75 P per statement.)</em></p>
+<ol type="i">
+<li><p><strong>True</strong>. Each LOOCV training set has <span
+class="math inline">\(n-1\)</span> points (low bias as an estimator of
+test error trained on <span class="math inline">\(n\)</span>), but the
+<span class="math inline">\(n\)</span> training sets overlap almost
+completely, so the <span class="math inline">\(n\)</span> fold errors
+are highly correlated and their average has higher variance than the
+<span class="math inline">\(5\)</span>-fold average.</p></li>
+<li><p><strong>False</strong>. The validation-set approach uses a
+<em>single</em> train/test split. Two-fold CV would average over both
+possible splits (<span class="math inline">\(\mathcal{F}_1\)</span> as
+training and as test); the validation-set approach does not.</p></li>
+<li><p><strong>True</strong>. The PRESS shortcut for OLS: <span
+class="math inline">\(\mathrm{LOOCV} = \frac{1}{n}\sum_i
+\bigl(\frac{y_i-\hat y_i}{1-h_{ii}}\bigr)^2\)</span>, where <span
+class="math inline">\(h_{ii}\)</span> are the leverages from the hat
+matrix <span class="math inline">\(H = X(X^\top X)^{-1}X^\top\)</span>.
+No re-fitting required.</p></li>
+<li><p><strong>False</strong>. This is the canonical CV pitfall.
+Filtering predictors using <span class="math inline">\(y\)</span>
+<em>before</em> any CV leaks information from the held-out folds into
+the variable-selection step, which biases the CV estimate of test error
+<em>downward</em>. The selection step must be inside every CV
+iteration.</p></li>
+</ol>
+<h2 class="unnumbered"
+id="c-neural-network-parameters-and-forward-pass-4">c) Neural network
+parameters and forward pass <em>(4 %)</em></h2>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(i)</strong> Each
+layer contributes <span
+class="math inline">\((\text{\#inputs}+1)\cdot(\text{\#outputs})\)</span>
+parameters; the <span class="math inline">\(+1\)</span> counts the bias.
+<span class="math display">\[\begin{align*}
+\text{input}\to\text{hidden}_1: &amp; \quad (6+1)\cdot 8 = 56 \\
+\text{hidden}_1\to\text{hidden}_2: &amp; \quad (8+1)\cdot 4 = 36 \\
+\text{hidden}_2\to\text{output}: &amp; \quad (4+1)\cdot 2 = 10 \\
+\text{Total:} &amp; \quad \boxed{56+36+10 = 102} \text{ parameters.}
+\end{align*}\]</span></p>
+<p><em>Grading: 1 P for the layer-by-layer breakdown, 1 P for the
+correct total. Deduct 0.5 if biases are forgotten (common slip <span
+class="math inline">\(\Rightarrow 6\cdot 8 + 8\cdot 4 + 4\cdot 2 =
+88\)</span>). The softmax on the output adds no parameters — it is a
+deterministic normalization.</em></p>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(ii)</strong>
+Pre-activation: <span class="math display">\[\begin{align*}
+z &amp;= b + \sum_{j=1}^{6} w_j x_j \\
+  &amp;= -0.1 + 0.5\cdot 1 + (-1.0)\cdot 0 + 0.2\cdot 2 + 1.0\cdot(-1) +
+(-0.5)\cdot 1 + 0.3\cdot 3 \\
+  &amp;= -0.1 + 0.5 + 0 + 0.4 - 1.0 - 0.5 + 0.9 \\
+  &amp;= 0.2.
+\end{align*}\]</span> Sigmoid: <span class="math display">\[\sigma(0.2)
+= \frac{1}{1+e^{-0.2}} = \frac{1}{1+0.8187} = \frac{1}{1.8187} \approx
+\boxed{0.550}.\]</span></p>
+<p><em>Grading: 1 P for the correct pre-activation <span
+class="math inline">\(z=0.2\)</span>, 1 P for the sigmoid step. Accept
+any answer in <span class="math inline">\([0.549, 0.551]\)</span>. If
+the question were asked with ReLU instead, the answer would be <span
+class="math inline">\(\max(0,0.2)=0.2\)</span>.</em></p>
+<h2 class="unnumbered" id="d-odds-log-odds-interaction-3">d) Odds,
+log-odds, interaction <em>(3 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(i)</strong> <span
+class="math inline">\(p=0.05\;\Rightarrow\;\text{odds}=\dfrac{p}{1-p}=\dfrac{0.05}{0.95}=\dfrac{1}{19}\approx
+\boxed{0.0526}\)</span>.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong> <span
+class="math inline">\(\text{odds}=4\;\Rightarrow\;p=\dfrac{\text{odds}}{1+\text{odds}}=\dfrac{4}{5}=\boxed{0.80}\)</span>.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iii)</strong> For a
+<em>smoker</em>, a unit increase in <code>bmi</code> changes the
+log-odds by <span
+class="math inline">\(\hat\beta_{\texttt{bmi}}+\hat\beta_{\texttt{bmi:smokerYes}}=0.02+0.10=0.12\)</span>,
+so the odds multiply by <span class="math display">\[e^{0.12}\approx
+\boxed{1.13}.\]</span></p>
+<p><em>Grading: full credit for the smoker-specific factor <span
+class="math inline">\(e^{0.12}\approx 1.13\)</span>. Half credit for
+<span class="math inline">\(e^{0.02}\approx 1.02\)</span> (ignoring the
+interaction — the standard trap).</em></p>
+<h2 class="unnumbered" id="e-splines-and-degrees-of-freedom-3">e)
+Splines and degrees of freedom <em>(3 %)</em></h2>
+<p><strong>Solution</strong> <em>(0.75 P per statement.)</em></p>
+<ol type="i">
+<li><p><strong>True</strong>. A cubic spline with <span
+class="math inline">\(K\)</span> interior knots has <span
+class="math inline">\(K+4\)</span> basis functions (the cubic part
+contributes <span class="math inline">\(4\)</span>, and each knot adds
+one truncated-power basis); equivalently <span
+class="math inline">\(K+3\)</span> basis functions plus the global
+intercept.</p></li>
+<li><p><strong>True</strong>. The natural cubic spline imposes
+<em>four</em> extra linearity constraints (the second and third
+derivatives must vanish at each boundary), reducing the parameter count
+from <span class="math inline">\(K+4\)</span> to <span
+class="math inline">\(K\)</span> (or <span
+class="math inline">\(K+2\)</span> if you also count the two boundary
+slopes/intercepts that remain free, depending on the textbook
+convention). In ISLP’s count it is <span
+class="math inline">\(K+2\)</span> vs <span
+class="math inline">\(K+4\)</span>, so two fewer.</p></li>
+<li><p><strong>False</strong>. A cubic regression spline is constructed
+to be continuous in the function and its first <em>and second</em>
+derivatives at every knot; the <em>third</em> derivative is generally
+discontinuous (it is the lowest derivative the construction is allowed
+to “break”). A function whose third derivative were continuous
+everywhere would be a single global cubic.</p></li>
+<li><p><strong>False</strong>. More knots = more basis functions =
+<em>more</em> flexible fit. The whole point of adding knots is to give
+the spline more local adaptivity.</p></li>
+</ol>
+<h2 class="unnumbered" id="f-principal-component-analysis-5">f)
+Principal component analysis <em>(5 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(i)</strong> For
+<em>standardized</em> variables each has variance <span
+class="math inline">\(1\)</span>, so the total variance equals the
+number of variables: <span class="math inline">\(\sum_j \lambda_j = p =
+\boxed{5}\)</span>. (Sanity: <span
+class="math inline">\(2.1+1.4+0.8+0.5+0.2 = 5.0\)</span>. )</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong>
+PVE<span class="math inline">\(_1\)</span> + PVE<span
+class="math inline">\(_2 = 0.42 + 0.28 =
+\boxed{0.70}\;(70\%)\)</span>.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iii)</strong>
+Cumulative PVE: <span
+class="math inline">\(\mathrm{PC1}=0.42,\;\mathrm{PC1\!+\!PC2}=0.70,\;\mathrm{through\;PC3}=0.86,\;\mathrm{through\;PC4}=0.96\)</span>.
+We first cross <span class="math inline">\(0.95\)</span> at PC4, so
+<span class="math inline">\(\boxed{4}\)</span> components are
+needed.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iv)</strong> The
+score of <span class="math inline">\(x^*\)</span> on PC1 is the inner
+product <span class="math inline">\(z^*_1 = \phi_1^\top x^*\)</span>:
+<span class="math display">\[\begin{align*}
+z^*_1 &amp;= 0.55\cdot 1.5 + 0.45\cdot(-1) + (-0.40)\cdot 0.5 +
+0.30\cdot 2 + (-0.50)\cdot(-0.5) \\
+      &amp;= 0.825 - 0.45 - 0.20 + 0.60 + 0.25 \\
+      &amp;= \boxed{1.025}.
+\end{align*}\]</span></p>
+<p><em>Grading: 1 P for the right linear combination. Accept any answer
+in <span class="math inline">\([1.02, 1.03]\)</span>. The loadings as
+stated have <span class="math inline">\(\|\phi_1\|^2 =
+0.3025+0.2025+0.16+0.09+0.25 = 1.0050\)</span>, slightly off unit-norm
+(rounding); do not penalise students for noticing.</em></p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(v)</strong> The
+loading with largest absolute value is <span
+class="math inline">\(|0.55|\)</span> on <span
+class="math inline">\(\boxed{X_1}\)</span>, so <span
+class="math inline">\(X_1\)</span> contributes most to PC1 in absolute
+terms.</p>
+<h2 class="unnumbered" id="g-bootstrap-3">g) Bootstrap
+<em>(3 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(i)</strong> For
+<span class="math inline">\(n=8\)</span>, the probability that a
+particular original observation is <em>not</em> drawn in any of the
+<span class="math inline">\(n\)</span> resamples is <span
+class="math inline">\((1-1/n)^n = (7/8)^8\)</span>. So <span
+class="math display">\[P(\text{included}) = 1 -
+\left(\tfrac{7}{8}\right)^{8} = 1 - 0.3436\ldots \approx
+\boxed{0.656}.\]</span></p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong> As
+<span class="math inline">\(n\to\infty\)</span>, <span
+class="math inline">\(\bigl(1-\tfrac{1}{n}\bigr)^n \to e^{-1}\)</span>,
+so <span class="math display">\[P(\text{included}) \to 1 - e^{-1}
+\approx \boxed{0.632}.\]</span> This is exactly the <span
+class="math inline">\(\sim 1/3\)</span> “out-of-bag” fraction underlying
+random-forest OOB error estimation.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iii)</strong>
+<strong>(A) True</strong> — bootstrap is <em>with replacement</em>, so
+the same row can appear multiple times in one resample. Without
+replacement at the same size <span class="math inline">\(n\)</span> you
+would just permute the data and learn nothing. <strong>(B)
+False</strong> — the bootstrap quantifies the <em>variability</em> of
+<span class="math inline">\(\hat\theta\)</span> (its sampling
+distribution / standard error / confidence interval); it does
+<em>not</em> correct for bias. The bootstrap distribution is centered
+around the original <span class="math inline">\(\hat\theta\)</span>, not
+around the unknown true <span class="math inline">\(\theta\)</span>, so
+a biased estimator stays biased. <strong>(C) False</strong> — a
+<em>single</em> bootstrap sample yields one realisation <span
+class="math inline">\(\hat\theta^*\)</span> and says essentially nothing
+about the sampling distribution. The whole point of the bootstrap is to
+draw <span class="math inline">\(B\)</span> resamples (<span
+class="math inline">\(B\)</span> typically in the hundreds or thousands)
+and look at the spread.</p>
+<p><em>Grading: 1 P all-or-nothing for the correct <span
+class="math inline">\((\mathrm{T}, \mathrm{F}, \mathrm{F})\)</span>
+pattern; deduct <span class="math inline">\(0.5\)</span> if (B) is
+marked True (the canonical confusion: bootstrap quantifies variance, not
+bias).</em></p>
+<h2 class="unnumbered" id="h-random-forests-and-out-of-bag-error-2">h)
+Random forests and out-of-bag error <em>(2 %)</em></h2>
+<p><strong>Solution</strong> <em>(0.5 P per statement.)</em></p>
+<ol type="i">
+<li><p><strong>True</strong>. Standard ISLR/sklearn defaults: <span
+class="math inline">\(m=\sqrt{p}\)</span> for classification, <span
+class="math inline">\(m=p/3\)</span> for regression.</p></li>
+<li><p><strong>False</strong>. <span class="math inline">\(B\)</span> is
+<em>not</em> tuned by CV. Random forest test error is monotonically
+non-increasing in <span class="math inline">\(B\)</span> (averaging only
+reduces variance), so one just picks “enough” trees — typically <span
+class="math inline">\(500\)</span>–<span
+class="math inline">\(1000\)</span>. (Contrast: in <em>boosting</em>,
+<span class="math inline">\(B\)</span> is a real tuning parameter
+because boosting can overfit.)</p></li>
+<li><p><strong>True</strong>. Each tree is fit on a bootstrap sample,
+leaving roughly <span class="math inline">\(1-1/e\approx 1/3\)</span> of
+observations untouched. Predicting each <span
+class="math inline">\(i\)</span> from only the trees that did not see it
+yields the OOB prediction; averaging the resulting losses gives the OOB
+error, an essentially-free test-error estimate.</p></li>
+<li><p><strong>True</strong>. In a random forest the per-tree pruning is
+<em>not</em> done; trees are grown deep (high variance, low bias
+individually). Averaging across many decorrelated trees is what reduces
+variance — pruning would just inflate bias.</p></li>
+</ol>
+<h2 class="unnumbered" id="i-k-means-clustering-2">i) <span
+class="math inline">\(K\)</span>-means clustering <em>(2 %)</em></h2>
+<p><strong>Solution</strong> <em>(0.5 P per statement.)</em></p>
+<ol type="i">
+<li><p><strong>True</strong>. The <span
+class="math inline">\(K\)</span>-means objective is the within-cluster
+sum of squares (WCSS): <span
+class="math inline">\(\sum_{k=1}^K\sum_{i\in C_k}\|x_i - \bar
+x_k\|^2\)</span>.</p></li>
+<li><p><strong>False</strong>. <span class="math inline">\(K\)</span> is
+a <em>user-chosen</em> hyperparameter; the algorithm itself does not
+select it (one usually picks <span class="math inline">\(K\)</span> via
+the elbow on the WCSS-vs-<span class="math inline">\(K\)</span> curve,
+the silhouette, or domain knowledge).</p></li>
+<li><p><strong>True</strong>. The Lloyd algorithm is only guaranteed to
+reach a <em>local</em> minimum of WCSS; multiple random restarts and
+picking the lowest WCSS is the standard remedy.</p></li>
+<li><p><strong>False</strong>. A <em>hierarchy</em> cuttable at any
+level is what <em>hierarchical</em> clustering produces (the
+dendrogram). <span class="math inline">\(K\)</span>-means returns one
+flat partition for each chosen <span
+class="math inline">\(K\)</span>.</p></li>
+</ol>
+<hr />
+<h1 class="unnumbered"
+id="problem-3-16-theory-and-hand-calculations">Problem 3
+<strong>(16 %)</strong> — Theory and hand calculations</h1>
+<h2 class="unnumbered" id="a-the-mathy-one-lda-decision-boundary-8">a)
+The mathy one — LDA decision boundary <em>(8 %)</em></h2>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(i)</strong> The two
+key LDA modelling assumptions:</p>
+<ol>
+<li><p><strong>Gaussian class-conditional densities.</strong> Within
+each class, the predictor vector is multivariate normal: <span
+class="math inline">\(\mathbf{X}\mid
+Y=k\sim\mathcal{N}_p(\boldsymbol\mu_k,\boldsymbol\Sigma)\)</span>.</p></li>
+<li><p><strong>Common (pooled) covariance matrix.</strong> All classes
+share the <em>same</em> <span
+class="math inline">\(\boldsymbol\Sigma\)</span>; only the means
+differ.</p></li>
+</ol>
+<p><strong>Why prefer LDA to QDA in the small-<span
+class="math inline">\(n_k\)</span> regime:</strong> QDA estimates a
+separate <span class="math inline">\(\boldsymbol\Sigma_k\)</span> per
+class (<span class="math inline">\(K\cdot p(p+1)/2\)</span> extra
+covariance parameters); when each class has few observations these
+estimates have large variance and dominate the test error. LDA pools all
+training data into a single <span
+class="math inline">\(\boldsymbol\Sigma\)</span>, drastically reducing
+variance at the price of some bias. When <span
+class="math inline">\(n_k\)</span> is small, the variance saving
+dominates.</p>
+<p><strong>Solution</strong> <em>(3 %)</em> <strong>(ii)</strong>
+Starting from the log of the Bayes numerator: <span
+class="math display">\[\log\bigl(\pi_k f_k(\mathbf{x})\bigr) = \log\pi_k
++ \log f_k(\mathbf{x}).\]</span> For a multivariate normal with shared
+<span class="math inline">\(\boldsymbol\Sigma\)</span>, <span
+class="math display">\[\log f_k(\mathbf{x})
+   = -\tfrac{p}{2}\log(2\pi) - \tfrac{1}{2}\log|\boldsymbol\Sigma|
+     - \tfrac{1}{2}(\mathbf{x}-\boldsymbol\mu_k)^\top
+\boldsymbol\Sigma^{-1}(\mathbf{x}-\boldsymbol\mu_k).\]</span> Expand the
+quadratic form: <span
+class="math display">\[(\mathbf{x}-\boldsymbol\mu_k)^\top\boldsymbol\Sigma^{-1}(\mathbf{x}-\boldsymbol\mu_k)
+  = \mathbf{x}^\top\boldsymbol\Sigma^{-1}\mathbf{x}
+  - 2\,\mathbf{x}^\top\boldsymbol\Sigma^{-1}\boldsymbol\mu_k
+  +
+\boldsymbol\mu_k^\top\boldsymbol\Sigma^{-1}\boldsymbol\mu_k.\]</span>
+<strong>Drop terms that do not depend on <span
+class="math inline">\(k\)</span>.</strong> The constants <span
+class="math inline">\(-\tfrac{p}{2}\log(2\pi)\)</span>, <span
+class="math inline">\(-\tfrac{1}{2}\log|\boldsymbol\Sigma|\)</span>, and
+the term <span
+class="math inline">\(-\tfrac{1}{2}\mathbf{x}^\top\boldsymbol\Sigma^{-1}\mathbf{x}\)</span>
+are the same for every <span class="math inline">\(k\)</span> (this is
+the crucial step — the quadratic-in-<span
+class="math inline">\(\mathbf{x}\)</span> part survives only because
+<span class="math inline">\(\boldsymbol\Sigma\)</span> is shared, and so
+it cancels in pairwise comparisons of classes). What remains is <span
+class="math display">\[\delta_k(\mathbf{x}) \;=\; \mathbf{x}^\top
+\boldsymbol\Sigma^{-1}\boldsymbol\mu_k
+   \;-\; \tfrac{1}{2}\boldsymbol\mu_k^\top
+\boldsymbol\Sigma^{-1}\boldsymbol\mu_k
+   \;+\; \log\pi_k.\;\square\]</span> <strong>Why linear in <span
+class="math inline">\(\mathbf{x}\)</span>:</strong> only the first term
+involves <span class="math inline">\(\mathbf{x}\)</span>, and it is a
+linear function <span class="math inline">\(\mathbf{x}\mapsto
+(\boldsymbol\Sigma^{-1}\boldsymbol\mu_k)^\top \mathbf{x}\)</span>. The
+other two terms depend only on <span class="math inline">\(k\)</span>.
+Hence <span class="math inline">\(\delta_k(\mathbf{x})=\mathbf{a}_k^\top
+\mathbf{x} + c_k\)</span> with <span
+class="math inline">\(\mathbf{a}_k=\boldsymbol\Sigma^{-1}\boldsymbol\mu_k\)</span>,
+and the boundary <span
+class="math inline">\(\delta_k(\mathbf{x})=\delta_\ell(\mathbf{x})\)</span>
+is therefore a hyperplane.</p>
+<p><em>Grading: 1 P for setting up <span
+class="math inline">\(\log\pi_k+\log f_k(\mathbf{x})\)</span> and
+expanding the Mahalanobis quadratic form; 1 P for explicitly identifying
+which terms drop out (the <span
+class="math inline">\(\mathbf{x}^\top\boldsymbol\Sigma^{-1}\mathbf{x}\)</span>
+cancellation is the punchline); 1 P for the linearity argument. Half
+credit is reasonable if the student writes the formula but does not
+explain why the <span
+class="math inline">\(\mathbf{x}^\top\boldsymbol\Sigma^{-1}\mathbf{x}\)</span>
+piece cancels — this is the exact step where LDA differs from
+QDA.</em></p>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(iii)</strong> Set
+<span
+class="math inline">\(\delta_0(\mathbf{x})=\delta_1(\mathbf{x})\)</span>.
+With <span class="math inline">\(\pi_0=\pi_1\)</span> the <span
+class="math inline">\(\log\pi_k\)</span> terms cancel, leaving <span
+class="math display">\[\mathbf{x}^\top\boldsymbol\Sigma^{-1}(\boldsymbol\mu_1-\boldsymbol\mu_0)
+   =
+\tfrac{1}{2}\bigl(\boldsymbol\mu_1^\top\boldsymbol\Sigma^{-1}\boldsymbol\mu_1
+                       -
+\boldsymbol\mu_0^\top\boldsymbol\Sigma^{-1}\boldsymbol\mu_0\bigr).\]</span></p>
+<p><strong>Compute the LHS direction.</strong> <span
+class="math inline">\(\boldsymbol\mu_1-\boldsymbol\mu_0 =
+\begin{pmatrix}3\\5\end{pmatrix} - \begin{pmatrix}1\\1\end{pmatrix}
+   = \begin{pmatrix}2\\4\end{pmatrix}\)</span>, so <span
+class="math display">\[\boldsymbol\Sigma^{-1}(\boldsymbol\mu_1-\boldsymbol\mu_0)
+   = \frac{1}{15}\begin{pmatrix}4 &amp; -1\\-1 &amp;
+4\end{pmatrix}\begin{pmatrix}2\\4\end{pmatrix}
+   = \frac{1}{15}\begin{pmatrix}4\cdot 2 + (-1)\cdot 4\\(-1)\cdot 2 +
+4\cdot 4\end{pmatrix}
+   = \frac{1}{15}\begin{pmatrix}4\\14\end{pmatrix}.\]</span> Therefore
+<span
+class="math display">\[\mathbf{x}^\top\boldsymbol\Sigma^{-1}(\boldsymbol\mu_1-\boldsymbol\mu_0)
+   = \tfrac{1}{15}(4 x_1 + 14 x_2).\]</span></p>
+<p><strong>Compute the RHS scalar.</strong> <span
+class="math inline">\(\boldsymbol\Sigma^{-1}\boldsymbol\mu_0
+   = \tfrac{1}{15}\begin{pmatrix}4-1\\-1+4\end{pmatrix} =
+\tfrac{1}{15}\begin{pmatrix}3\\3\end{pmatrix}\)</span>, so <span
+class="math inline">\(\boldsymbol\mu_0^\top\boldsymbol\Sigma^{-1}\boldsymbol\mu_0
+= \tfrac{1}{15}(1\cdot 3 + 1\cdot 3) = 6/15\)</span>. Similarly <span
+class="math inline">\(\boldsymbol\Sigma^{-1}\boldsymbol\mu_1
+   = \tfrac{1}{15}\begin{pmatrix}4\cdot 3 - 5\\-3 + 4\cdot
+5\end{pmatrix} =
+\tfrac{1}{15}\begin{pmatrix}7\\17\end{pmatrix}\)</span>, so <span
+class="math inline">\(\boldsymbol\mu_1^\top\boldsymbol\Sigma^{-1}\boldsymbol\mu_1
+= \tfrac{1}{15}(3\cdot 7 + 5\cdot 17) = (21+85)/15 = 106/15\)</span>.
+Hence <span class="math display">\[\text{RHS} = \tfrac{1}{2}\bigl(106/15
+- 6/15\bigr) = \tfrac{1}{2}\cdot\tfrac{100}{15} =
+\tfrac{50}{15}.\]</span></p>
+<p><strong>Combine.</strong> Multiply both sides by <span
+class="math inline">\(15\)</span>: <span class="math display">\[4 x_1 +
+14 x_2 = 50, \qquad\text{or, dividing by 2,}\qquad
+   \boxed{\,2 x_1 + 7 x_2 = 25\,}.\]</span></p>
+<p><em>Grading: 1 P for arriving at the correct <span
+class="math inline">\(\boldsymbol\Sigma^{-1}(\boldsymbol\mu_1-\boldsymbol\mu_0)\)</span>
+direction; 1 P for the correct constant on the RHS and the final
+equation in the form <span class="math inline">\(ax_1+bx_2=c\)</span>.
+Accept any equivalent scaling, e.g. <span
+class="math inline">\(4x_1+14x_2=50\)</span> or <span
+class="math inline">\(x_2 = (25-2x_1)/7\)</span>. Sanity check: the
+midpoint <span
+class="math inline">\((\boldsymbol\mu_0+\boldsymbol\mu_1)/2 =
+(2,3)\)</span> should sit on the line: <span
+class="math inline">\(2\cdot 2 + 7\cdot 3 = 4+21 = 25\)</span>.
+</em></p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iv)</strong> With
+class-specific covariance matrices the term <span
+class="math inline">\(-\tfrac{1}{2}\mathbf{x}^\top\boldsymbol\Sigma_k^{-1}\mathbf{x}\)</span>
+no longer cancels (it depends on <span
+class="math inline">\(k\)</span>), so the discriminant is
+<em>quadratic</em> in <span class="math inline">\(\mathbf{x}\)</span>
+and the boundary is a quadratic curve (in 2D: a conic — ellipse,
+parabola, hyperbola, or pair of lines, depending on the covariance
+contrast). The method is <strong>Quadratic Discriminant Analysis
+(QDA)</strong>.</p>
+<h2 class="unnumbered" id="b-hierarchical-clustering-by-hand-5">b)
+Hierarchical clustering by hand <em>(5 %)</em></h2>
+<p><strong>Solution</strong> <em>(3 %)</em> <strong>(i)</strong> The
+starting dissimilarity matrix has off-diagonal entries <span
+class="math display">\[d_{12}=3,\;d_{13}=7,\;d_{14}=8,\;d_{23}=5,\;d_{24}=6,\;d_{34}=4.\]</span></p>
+<h4 id="merge-1-height-3.">Merge 1 (height 3).</h4>
+<p>The smallest dissimilarity is <span
+class="math inline">\(d_{12}=3\)</span>, so we merge <span
+class="math inline">\(\{1\}\)</span> and <span
+class="math inline">\(\{2\}\)</span> into <span
+class="math inline">\(\{1,2\}\)</span> at height <span
+class="math inline">\(\mathbf{h_1=3}\)</span>.</p>
+<p>Under <em>single linkage</em> the new row/column entries are the
+<em>minima</em> of the merged rows: <span
+class="math display">\[\begin{align*}
+d(\{1,2\},\,3) &amp;= \min(d_{13},d_{23}) = \min(7,5) = 5, \\
+d(\{1,2\},\,4) &amp;= \min(d_{14},d_{24}) = \min(8,6) = 6.
+\end{align*}\]</span></p>
+<p>The recomputed (3<span class="math inline">\(\times\)</span>3)
+dissimilarity matrix is therefore <span class="math display">\[D^{(1)} =
+\begin{pmatrix}
+0 &amp; 5 &amp; 6 \\
+5 &amp; 0 &amp; 4 \\
+6 &amp; 4 &amp; 0
+\end{pmatrix}
+\quad\text{(rows/cols: $\{1,2\},\{3\},\{4\}$).}\]</span></p>
+<h4 id="merge-2-height-4.">Merge 2 (height 4).</h4>
+<p>The smallest off-diagonal in <span
+class="math inline">\(D^{(1)}\)</span> is <span
+class="math inline">\(d(\{3\},\{4\})=4\)</span>; merge to get <span
+class="math inline">\(\{3,4\}\)</span> at height <span
+class="math inline">\(\mathbf{h_2=4}\)</span>. Update with single
+linkage: <span class="math display">\[d(\{1,2\},\{3,4\}) =
+\min(d_{13},d_{14},d_{23},d_{24}) = \min(7,8,5,6) = 5.\]</span></p>
+<h4 id="merge-3-height-5.">Merge 3 (height 5).</h4>
+<p>Only two clusters remain; merge them at height <span
+class="math inline">\(\mathbf{h_3=5}\)</span>.</p>
+<h4 id="dendrogram.">Dendrogram.</h4>
+<p>Leaves <span class="math inline">\(1\)</span> and <span
+class="math inline">\(2\)</span> fuse first at height <span
+class="math inline">\(3\)</span>; then leaves <span
+class="math inline">\(3\)</span> and <span
+class="math inline">\(4\)</span> fuse at height <span
+class="math inline">\(4\)</span>; finally the two clusters fuse at
+height <span class="math inline">\(5\)</span>.</p>
+<div class="center">
+<div class="figure-omitted">Figure (TikZ) — rendered in the PDF version only.</div>
+</div>
+<p><em>Grading: 1 P first merge (<span
+class="math inline">\(\{1,2\}\)</span> at height <span
+class="math inline">\(3\)</span>) plus the recomputed <span
+class="math inline">\(3\times 3\)</span> matrix; 1 P second merge (<span
+class="math inline">\(\{3,4\}\)</span> at <span
+class="math inline">\(4\)</span>) with correct single-linkage update;
+1 P final merge at height <span class="math inline">\(5\)</span> and a
+dendrogram with all three heights labelled on the vertical axis. Deduct
+0.5 for an upside-down or unlabelled dendrogram.</em></p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong> Under
+<em>complete linkage</em> the first two merges are identical (the
+smallest pair is still <span class="math inline">\(\{1,2\}\)</span> at
+<span class="math inline">\(3\)</span>, then <span
+class="math inline">\(\{3,4\}\)</span> at <span
+class="math inline">\(4\)</span> — both merges involve only singletons,
+where linkage has no effect). The final fusion height changes: <span
+class="math display">\[d(\{1,2\},\{3,4\}) =
+\max(d_{13},d_{14},d_{23},d_{24}) = \max(7,8,5,6) = \boxed{8}.\]</span>
+It differs because complete linkage uses the <em>maximum</em> pairwise
+distance between the two clusters, while single linkage uses the
+<em>minimum</em>; whenever a cluster has more than one member the two
+rules disagree.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iii)</strong>
+Cutting the single-linkage dendrogram at height <span
+class="math inline">\(4.5\)</span> slices <em>above</em> the two bottom
+fusions (heights <span class="math inline">\(3\)</span> and <span
+class="math inline">\(4\)</span>) but <em>below</em> the top fusion
+(height <span class="math inline">\(5\)</span>). We therefore obtain
+<span class="math inline">\(\boxed{2}\)</span> clusters: <span
+class="math inline">\(\boxed{\{1,2\}}\)</span> and <span
+class="math inline">\(\boxed{\{3,4\}}\)</span>.</p>
+<h2 class="unnumbered"
+id="c-the-biasvariance-decomposition-and-double-descent-3">c) The
+bias–variance decomposition and double descent <em>(3 %)</em></h2>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(i)</strong> The
+expected squared test error at the fixed test point <span
+class="math inline">\(x_0\)</span> decomposes <em>exactly</em> as <span
+class="math display">\[\mathbb{E}\bigl[(y_0-\hat f(x_0))^2\bigr]
+   = \underbrace{\bigl(f(x_0)-\mathbb{E}[\hat
+f(x_0)]\bigr)^2}_{\mathrm{Bias}^2[\hat f(x_0)]}
+   \;+\; \underbrace{\mathrm{Var}(\hat f(x_0))}_{\text{variance}}
+   \;+\; \underbrace{\sigma^2}_{\text{irreducible}}.\]</span>
+<strong>What each term is.</strong> The squared bias measures the
+systematic discrepancy between the truth <span
+class="math inline">\(f(x_0)\)</span> and the <em>average</em>
+prediction at <span class="math inline">\(x_0\)</span> across training
+sets; it captures error from using the wrong model class. The variance
+measures how much the prediction at <span
+class="math inline">\(x_0\)</span> jitters across re-draws of the
+training set; it captures error from chasing noise. The irreducible
+<span class="math inline">\(\sigma^2\)</span> is the variance of the
+observation noise <span class="math inline">\(\varepsilon\)</span> and
+is independent of the estimator.</p>
+<p><strong>Expectations.</strong> The outer <span
+class="math inline">\(\mathbb{E}[\cdot]\)</span> in <span
+class="math inline">\(\mathbb{E}[(y_0-\hat f(x_0))^2]\)</span> is taken
+<em>jointly</em> over (a) the random training sample used to fit <span
+class="math inline">\(\hat f\)</span>, and (b) the noise <span
+class="math inline">\(\varepsilon\)</span> in the new test point <span
+class="math inline">\(y_0=f(x_0)+\varepsilon\)</span>. The inner <span
+class="math inline">\(\mathbb{E}[\hat f(x_0)]\)</span> and <span
+class="math inline">\(\mathrm{Var}(\hat f(x_0))\)</span> in the formula
+above are over the training-set distribution only.</p>
+<p><em>Grading: 1 P for the correct three-term formula with each term
+named; 1 P for stating what the expectations are over. Deduct 0.5 if
+<span class="math inline">\(\sigma^2\)</span> is omitted, and 0.5 if the
+bias is written without the square.</em></p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong>
+Profile B is <strong>double descent</strong> (also called <em>benign
+overfitting</em> — the prof’s hobbyhorse, returned to in modules 2, 5,
+6, and 11). Both profiles are consistent with the same algebraic
+decomposition because that identity is <em>exact</em> for every
+estimator; it merely says that test-MSE <span
+class="math inline">\(-\sigma^2\)</span> splits into bias<span
+class="math inline">\(^2\)</span> and variance, not that variance must
+be U-shaped in flexibility. Past the interpolation point (<span
+class="math inline">\(p\approx n\)</span>) the optimization changes
+character: there are infinitely many zero-training-error solutions and
+the algorithm (pseudoinverse, SGD, etc.) implicitly picks the
+<em>minimum-norm interpolator</em>. That implicit regularization is what
+causes variance to <em>decrease</em> again as <span
+class="math inline">\(p\)</span> keeps growing, producing the second
+descent. Bias and variance still sum exactly to test MSE <span
+class="math inline">\(-\sigma^2\)</span> at every flexibility level.
+<em>Either of (a) “the identity is exact, only the variance shape
+changes” or (b) “implicit norm-minimization in the over-parameterized
+regime” earns the 1 P.</em></p>
+<hr />
+<h1 class="unnumbered" id="problem-4-22-insurance-premiums">Problem 4
+<strong>(22 %)</strong> — Insurance premiums</h1>
+<h2 class="unnumbered" id="a-linear-regression-with-interaction-7">a)
+Linear regression with interaction <em>(7 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(i)</strong> Count
+the rows of the coefficient table: intercept, <code>age</code>, <span
+class="math inline">\(I(\texttt{age}^2)\)</span>, <code>bmi</code>,
+<code>smoker_yes</code>, <code>bmi:smoker_yes</code>,
+<code>sex_male</code>, three <code>region</code> dummies
+(<code>NW, SE, SW</code>; <code>NE</code> is the reference),
+<code>children</code> = <span class="math inline">\(\boxed{11}\)</span>
+parameters. Sanity: residual d.f. <span class="math inline">\(=
+n_{\text{train}} - p
+= 600 - 11 = 589\)</span>, which matches the printout. </p>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(ii)</strong>
+<code>charges</code> is in <span
+class="math inline">\(1000\)</span> EUR. For a one-unit increase in
+<code>bmi</code>, holding everything else fixed: <span
+class="math display">\[\begin{align*}
+\text{Non-smoker (\texttt{smoker}=0):}\quad
+   \Delta\widehat{\texttt{charges}} &amp;= \hat\beta_{\texttt{bmi}} =
+0.10 \;(1000\,\text{EUR})
+   = \boxed{+100\;\text{EUR}}, \\
+\text{Smoker (\texttt{smoker}=1):}\quad
+   \Delta\widehat{\texttt{charges}} &amp;=
+\hat\beta_{\texttt{bmi}}+\hat\beta_{\texttt{bmi:smoker\_yes}}
+   = 0.10 + 1.45 = 1.55 \;(1000\,\text{EUR})
+   = \boxed{+1{,}550\;\text{EUR}}.
+\end{align*}\]</span></p>
+<p><em>Grading: 1 P each. Half credit if the EUR/<span
+class="math inline">\(1000\)</span> EUR conversion is forgotten. Deduct
+1 P if the smoker effect is reported as <span
+class="math inline">\(1.45\)</span> alone (forgetting the main
+<code>bmi</code> effect) — the standard interaction trap.</em></p>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(iii)</strong> The
+main-effect coefficient <span
+class="math inline">\(\hat\beta_{\texttt{smoker\_yes}}=-22.50\)</span>
+is the smoker–non-smoker contrast <em>at</em> <span
+class="math inline">\(\texttt{bmi}=0\)</span>, holding everything else
+fixed. <span class="math inline">\(\texttt{bmi}=0\)</span> is
+biologically impossible (BMI is in <span
+class="math inline">\(\mathrm{kg}/\mathrm{m}^2\)</span> with empirical
+range <span class="math inline">\(16\)</span>–<span
+class="math inline">\(50\)</span>), so the coefficient is an
+<em>out-of-support extrapolation</em> with no real-world interpretation.
+The actual effect of smoking on charges depends strongly on
+<code>bmi</code> through the interaction <span
+class="math inline">\(\hat\beta_{\texttt{bmi:smoker\_yes}}=1.45\)</span>:
+at e.g. <span class="math inline">\(\texttt{bmi}=30\)</span> the
+smoker–non-smoker contrast is <span class="math inline">\(-22.50 +
+1.45\cdot 30 = +21.0\)</span> (i.e. smokers pay <span
+class="math inline">\(\sim 21{,}000\)</span> EUR more), the opposite
+sign of the main effect alone. Whenever an interaction term is in the
+model, the main effects are conditional contrasts at zero of the
+interacting variable, not “average” effects.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iv)</strong> An
+<strong><span class="math inline">\(F\)</span>-test</strong> (a
+partial-<span class="math inline">\(F\)</span> / ANOVA comparison of the
+full model to the reduced model with <code>region</code> dropped) on the
+<em>three</em> <code>region</code> dummies jointly. The null is <span
+class="math display">\[H_0:\;\beta_{\texttt{region\_NW}} =
+\beta_{\texttt{region\_SE}} = \beta_{\texttt{region\_SW}} = 0,\]</span>
+i.e. region has no effect on <code>charges</code> after controlling for
+the other predictors. (<em>Marginal <span
+class="math inline">\(t\)</span>-tests on the individual dummies are not
+enough — they ignore the joint pattern, and individual dummies can be
+insignificant while the group is.</em>)</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(v)</strong> The
+closeness of <span class="math inline">\(R^2 = 0.78\)</span> and
+adjusted <span class="math inline">\(R^2 = 0.776\)</span> (gap <span
+class="math inline">\(\approx 0.004\)</span>) indicates that essentially
+no predictor in the model is “free” — the few parameters added beyond
+the intercept all earn their keep, and there is no large penalty for
+over-parameterization at <span
+class="math inline">\(p=11,n=600\)</span>. Equivalently, dropping any
+one predictor would change <span class="math inline">\(R^2\)</span> by
+only a small amount.</p>
+<h2 class="unnumbered"
+id="b-ridge-regression-with-10-fold-cross-validation-5">b) Ridge
+regression with <span class="math inline">\(10\)</span>-fold
+cross-validation <em>(5 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(i)</strong> The
+ridge penalty <span
+class="math inline">\(\lambda\sum_j\beta_j^2\)</span> is
+<em>scale-dependent</em>: a predictor measured in large units has small
+coefficients and is barely penalized, while a predictor in small units
+has large coefficients and is heavily penalized. Standardising every
+predictor to mean <span class="math inline">\(0\)</span> and variance
+<span class="math inline">\(1\)</span> ensures the penalty acts on every
+predictor on the same footing, so shrinkage is determined by signal
+strength rather than units.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong> Ridge
+minimises <span class="math display">\[\hat\beta^R_\lambda =
+\arg\min_\beta\;\sum_{i=1}^n(y_i - \beta_0 - x_i^\top\beta)^2
+   + \lambda\sum_{j=1}^p\beta_j^2.\]</span> As <span
+class="math inline">\(\lambda\to 0\)</span> the penalty vanishes and
+<span
+class="math inline">\(\hat\beta^R_\lambda\to\hat\beta^{\mathrm{OLS}}\)</span>
+(the OLS estimate, when it exists). As <span
+class="math inline">\(\lambda\to\infty\)</span> the penalty dominates
+and <span class="math inline">\(\hat\beta^R_\lambda\to 0\)</span> —
+every coefficient is shrunk to zero (the intercept is conventionally
+left unpenalised, so the fit collapses to <span
+class="math inline">\(\bar y\)</span>).</p>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(iii)</strong>
+<strong>One-standard-error rule.</strong> Among all values of <span
+class="math inline">\(\lambda\)</span> whose CV-MSE is within one
+standard error (across the <span class="math inline">\(K\)</span> folds)
+of the minimum CV-MSE, choose the <em>largest</em> (= most-regularized,
+simplest) one. Formally, with <span
+class="math inline">\(\hat\lambda_{\min}=\arg\min_\lambda\mathrm{CV}(\lambda)\)</span>
+achieving CV-MSE <span class="math inline">\(m^\star\)</span> and
+standard error <span class="math inline">\(\mathrm{SE}^\star\)</span>,
+<span class="math display">\[\hat\lambda_{1\mathrm{SE}} =
+\max\bigl\{\lambda:\mathrm{CV}(\lambda)\leq
+m^\star+\mathrm{SE}^\star\bigr\}.\]</span> <strong>Why prefer
+it:</strong> the CV minimum is itself a noisy estimate of test error, so
+picking the exact argmin tends to slightly <em>overfit the validation
+folds</em>. The 1-SE choice yields a sparser, more interpretable, more
+stable model whose test performance is, within noise, indistinguishable
+from the best.</p>
+<p><em>Grading: 1 P for stating the rule precisely (mention the “within
+one standard error” <em>and</em> “simplest/largest <span
+class="math inline">\(\lambda\)</span>” parts); 1 P for at least one
+defensible reason to prefer it (overfitting-of-CV / parsimony /
+stability).</em></p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iv)</strong> Ridge
+introduces bias to reduce variance; if the variance saving exceeds the
+bias introduced, ridge wins, otherwise OLS wins. Here ridge does
+<em>worse</em> (<span class="math inline">\(38.4 &gt; 38.0\)</span>),
+which suggests the bias from shrinkage exceeds whatever variance OLS
+suffers — i.e. at <span
+class="math inline">\(n_{\text{train}}=600\)</span> and only <span
+class="math inline">\(11\)</span> parameters the predictors carry real
+signal, <span class="math inline">\(X^\top X\)</span> is
+well-conditioned, and OLS is not over-fitting in the first place. There
+is little variance for ridge to remove.</p>
+<h2 class="unnumbered" id="c-gam-with-splines-5">c) GAM with splines
+<em>(5 %)</em></h2>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(i)</strong>
+Term-by-term breakdown of consumed degrees of freedom:</p>
+<ul>
+<li><p>global intercept: <span
+class="math inline">\(1\)</span>,</p></li>
+<li><p><span
+class="math inline">\(s(\texttt{age},\,\mathrm{df}=4)\)</span>: <span
+class="math inline">\(4\)</span> (smoothing spline, intercept
+removed),</p></li>
+<li><p><span class="math inline">\(\mathrm{bs}(\texttt{bmi})\)</span>
+with <span class="math inline">\(K=3\)</span> knots <span
+class="math inline">\(\{25,30,35\}\)</span>: cubic regression spline
+contributes <span class="math inline">\(K+3 = 6\)</span> basis functions
+(intercept removed),</p></li>
+<li><p><span
+class="math inline">\(\beta_{\texttt{smoker}}\cdot\texttt{smoker}\)</span>:
+<span class="math inline">\(1\)</span> (one binary dummy),</p></li>
+<li><p><span class="math inline">\(g(\texttt{region})\)</span>: <span
+class="math inline">\(3\)</span> (region has <span
+class="math inline">\(4\)</span> levels coded by <span
+class="math inline">\(3\)</span> dummies against the <code>NE</code>
+reference),</p></li>
+<li><p><span
+class="math inline">\(\beta_{\texttt{kids}}\cdot\texttt{children}\)</span>:
+<span class="math inline">\(1\)</span>.</p></li>
+</ul>
+<p>Total: <span class="math inline">\(1 + 4 + 6 + 1 + 3 + 1 =
+\boxed{16}\)</span> degrees of freedom.</p>
+<p><em>Grading: 1 P for the per-term breakdown, 1 P for the correct
+total. Accept <span class="math inline">\(K+4=7\)</span> for the BMI
+spline if the student counts the (suppressed) intercept; the global
+total shifts to <span class="math inline">\(17\)</span> but the
+principle is the same. Deduct 0.5 for forgetting the categorical
+encoding on <code>region</code>.</em></p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong> The
+GAM is <em>additive</em>: each predictor enters through its own
+univariate function <span class="math inline">\(f_j(x_j)\)</span> and
+the contributions are summed. This rules out <em>interactions</em>
+unless they are added by hand — the model cannot, for example, learn
+that the effect of <code>age</code> on <code>charges</code> is different
+at low and high <code>bmi</code>. A regression tree, by contrast, can
+capture such interactions for free, because every split below the root
+is conditional on the splits above it.</p>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(iii)</strong> Test
+MSE drops from <span class="math inline">\(38.0\)</span> (OLS) to <span
+class="math inline">\(32.5\)</span> (GAM), a substantial reduction of
+about <span class="math inline">\(14\%\)</span>, which suggests genuine
+<em>nonlinearity in the continuous predictors</em>. The GAM is still
+additive, so the gain comes from non-linear shapes per predictor, not
+from interactions. Looking back at part (a): <code>age</code> entered
+only as <span
+class="math inline">\(\texttt{age}+I(\texttt{age}^2)\)</span> (the prof
+allowed only a polynomial of degree <span
+class="math inline">\(2\)</span>), but the GAM gives <code>age</code>
+four df — if the true age–charges relationship has more curvature than a
+parabola (e.g. a flat plateau in middle age followed by a steep climb
+after <span class="math inline">\(50\)</span>), the GAM captures it.
+<code>bmi</code> also gains substantially from the cubic spline. So I
+would suspect the <code>age</code> (and possibly <code>bmi</code>)
+smooths to be the main contributors to the improvement.</p>
+<h2 class="unnumbered" id="d-tree-boosting-5">d) Tree boosting
+<em>(5 %)</em></h2>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(i)</strong></p>
+<ul>
+<li><p><span class="math inline">\(\bm B\)</span> <em>(number of
+trees)</em>: chosen by CV (or a validation set). <em>Too small</em>
+<span class="math inline">\(\Rightarrow\)</span> high bias (under-fit).
+<em>Too large</em> <span class="math inline">\(\Rightarrow\)</span>
+boosting can <em>overfit</em>, unlike random forests. So <span
+class="math inline">\(B\)</span> trades bias for variance, but the
+variance penalty is mild if <span class="math inline">\(\nu\)</span> is
+small.</p></li>
+<li><p><span class="math inline">\(\bm d\)</span> <em>(interaction
+depth, “tree size”</em>): each tree captures interactions up to order
+<span class="math inline">\(d\)</span>. Small <span
+class="math inline">\(d=1\)</span> (stump) means the ensemble is
+additive in inputs (lowest variance); larger <span
+class="math inline">\(d\)</span> enables higher-order interactions but
+with more variance per tree. Chosen by CV; typical defaults <span
+class="math inline">\(d\in\{1,2,4\}\)</span>.</p></li>
+<li><p><span class="math inline">\(\bm\nu\)</span> <em>(shrinkage /
+learning rate)</em>: each tree’s contribution is multiplied by <span
+class="math inline">\(\nu\)</span>. Small <span
+class="math inline">\(\nu\)</span> slows learning and forces a larger
+<span class="math inline">\(B\)</span> to converge, but generally
+improves generalisation. Trades training-time for variance. Typical
+values <span class="math inline">\(\nu\in[0.001,0.1]\)</span>. The pair
+<span class="math inline">\((B,\nu)\)</span> is tuned jointly — halving
+<span class="math inline">\(\nu\)</span> approximately doubles the
+required <span class="math inline">\(B\)</span>.</p></li>
+</ul>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong> A
+random forest averages <span class="math inline">\(B\)</span>
+<em>independently grown</em> bootstrap trees; averaging only <em>reduces
+variance</em> and never inflates bias, so test error is monotonically
+non-increasing in <span class="math inline">\(B\)</span> (it plateaus).
+One simply picks “enough” (say <span
+class="math inline">\(500\)</span>). Boosting, by contrast, is
+<em>sequential</em>: tree <span class="math inline">\(b\)</span> is fit
+to the residuals of trees <span class="math inline">\(1\ldots
+b-1\)</span>. With enough trees the residuals become pure noise, and
+additional trees fit it — so boosting <em>can overfit</em> as <span
+class="math inline">\(B\)</span> grows, and <span
+class="math inline">\(B\)</span> must be tuned by CV.</p>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(iii)</strong> The
+ranking <span class="math inline">\(\text{boosting}=26.8 &lt;
+\text{GAM}=32.5 &lt; \text{OLS}=38.0\)</span> suggests both
+<em>nonlinear shapes</em> (already captured by the GAM, which beats OLS)
+<em>and interactions among predictors</em> (which the GAM cannot capture
+but boosting can) — e.g. between <code>age</code> and <code>bmi</code>,
+or between <code>smoker</code> and <code>bmi</code>, the latter strongly
+flagged by part (a)’s significant interaction term. For interpretation
+from a black-box boosted model you would compute (i) a
+<em>variable-importance plot</em> (mean decrease in node impurity across
+all trees, or permutation importance) to rank predictors by total
+contribution, and (ii) <em>partial dependence plots</em> for the top
+variables to recover the direction and rough shape of each effect on
+<code>charges</code>.</p>
+<hr />
+<h1 class="unnumbered"
+id="problem-5-24-stroke-risk-classification">Problem 5
+<strong>(24 %)</strong> — Stroke risk classification</h1>
+<h2 class="unnumbered" id="a-logistic-regression-8">a) Logistic
+regression <em>(8 %)</em></h2>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(i)</strong> A unit
+increase in any continuous predictor multiplies the odds of the response
+by <span class="math inline">\(\exp(\hat\beta)\)</span>. For
+<code>age</code>: <span class="math display">\[\exp(0.073) \approx
+\boxed{1.076}.\]</span> <strong>Interpretation:</strong> each additional
+year of age multiplies the odds of stroke by about <span
+class="math inline">\(1.076\)</span>, i.e. roughly a <span
+class="math inline">\(7.6\%\)</span> increase in the odds, holding all
+other predictors fixed. The effect compounds multiplicatively: a <span
+class="math inline">\(10\)</span>-year age difference raises the odds by
+a factor of <span class="math inline">\(\exp(0.073\cdot 10)\approx
+2.08\)</span>.</p>
+<p><strong>Solution</strong> <em>(3 %)</em> <strong>(ii)</strong> The
+linear predictor is the dot product of the coefficient vector with the
+patient’s covariates, including the intercept and the appropriate
+smoking dummy (<span
+class="math inline">\(\texttt{smoking\_current}=1\)</span>, the other
+smoking dummies <span class="math inline">\(=0\)</span>): <span
+class="math display">\[\begin{align*}
+\hat\eta &amp;= -8.50
+   + 0.073\cdot 68
+   + 0.005\cdot 180
+   + (-0.005)\cdot 28
+   + 0.45\cdot 1
+   + 0.50\cdot 0
+   + 0.32\cdot 1 \\[2pt]
+&amp;= -8.50 + 4.964 + 0.900 - 0.140 + 0.450 + 0 + 0.320 \\[2pt]
+&amp;= \boxed{-2.006}.
+\end{align*}\]</span> Sigmoid step: <span class="math display">\[\hat p
+= \sigma(\hat\eta) = \frac{1}{1+e^{-\hat\eta}} = \frac{1}{1+e^{2.006}}
+   = \frac{1}{1+7.434} = \frac{1}{8.434} \approx
+\boxed{0.119}.\]</span></p>
+<p><em>Grading: 1 P each for the per-term contributions / correctly
+assembled <span class="math inline">\(\hat\eta\)</span>, the value of
+<span class="math inline">\(\hat\eta\approx -2.0\)</span>, and the
+sigmoid step / final <span class="math inline">\(\hat p\approx
+0.12\)</span>. Accept any answer in <span class="math inline">\([0.115,
+0.125]\)</span>. Deduct 0.5 if the patient’s <span
+class="math inline">\(\texttt{heart\_disease}=0\)</span> is incorrectly
+treated as <span class="math inline">\(1\)</span> (a common slip when
+reading the problem). Deduct 0.5 if the wrong smoking dummy is
+used.</em></p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iii)</strong> <span
+class="math inline">\(\hat p \approx 0.119 &lt; 0.5\)</span>, so at the
+default threshold the patient is classified as <span
+class="math inline">\(\widehat{\texttt{stroke}}=0\)</span> (<strong>no
+stroke</strong>) — despite the patient being elderly, hypertensive,
+hyperglycaemic, and a current smoker. (The base rate of stroke is so low
+that even a fairly bad covariate profile does not cross <span
+class="math inline">\(50\%\)</span>; see part (e) for why <span
+class="math inline">\(0.5\)</span> is a poor threshold here.)</p>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(iv)</strong> In
+this classification problem:</p>
+<ul>
+<li><p><strong>Sensitivity</strong> = <span class="math inline">\(P(\hat
+Y = 1 \mid Y = 1)\)</span> = the proportion of <em>actual stroke
+cases</em> the classifier correctly flags. (“Of all the patients who
+actually had a stroke, what fraction did we catch?”)</p></li>
+<li><p><strong>Specificity</strong> = <span class="math inline">\(P(\hat
+Y = 0 \mid Y = 0)\)</span> = the proportion of <em>actual non-stroke
+cases</em> correctly cleared. (“Of all the patients who did not have a
+stroke, what fraction did we correctly leave alone?”)</p></li>
+</ul>
+<p><strong>Clinically, high sensitivity + low specificity</strong> means
+the screening tool catches almost every patient who would have a stroke
+(very few missed strokes — few false negatives), at the cost of also
+flagging many patients who would not (many false alarms — many false
+positives). For a screening tool this is often the <em>right</em>
+trade-off: a missed stroke can be lethal, while a false alarm leads only
+to a follow-up test or unnecessary worry.</p>
+<h2 class="unnumbered" id="b-lda-vs.-qda-6">b) LDA vs. QDA
+<em>(6 %)</em></h2>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(i)</strong> LDA
+confusion matrix totals: <span class="math inline">\(50+70=120\)</span>
+true strokes, <span class="math inline">\(100+980=1080\)</span> true
+non-strokes, <span class="math inline">\(n=1200\)</span>. <span
+class="math display">\[\begin{align*}
+\text{Sensitivity}_{\mathrm{LDA}} &amp;=
+\frac{\text{TP}}{\text{TP}+\text{FN}}
+   = \frac{50}{120} \approx \boxed{0.417}, \\
+\text{Specificity}_{\mathrm{LDA}} &amp;=
+\frac{\text{TN}}{\text{TN}+\text{FP}}
+   = \frac{980}{1080} \approx \boxed{0.907}, \\
+\text{Error rate}_{\mathrm{LDA}} &amp;= \frac{\text{FP}+\text{FN}}{n}
+   = \frac{100+70}{1200} = \frac{170}{1200} \approx \boxed{0.142}.
+\end{align*}\]</span></p>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(ii)</strong> QDA
+confusion matrix totals: still <span class="math inline">\(120\)</span>
+strokes, <span class="math inline">\(1080\)</span> non-strokes, <span
+class="math inline">\(n=1200\)</span>. <span
+class="math display">\[\begin{align*}
+\text{Sensitivity}_{\mathrm{QDA}} &amp;= \frac{75}{120} = \boxed{0.625},
+\\
+\text{Specificity}_{\mathrm{QDA}} &amp;= \frac{830}{1080} \approx
+\boxed{0.769}, \\
+\text{Error rate}_{\mathrm{QDA}} &amp;= \frac{250+45}{1200} =
+\frac{295}{1200} \approx \boxed{0.246}.
+\end{align*}\]</span></p>
+<p><em>Grading: 1 P each for sensitivity &amp; specificity, 1 P for the
+overall error rate, in each of (i) and (ii). Accept any reasonable
+rounding.</em></p>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(iii)</strong>
+<strong>Comparison.</strong> LDA has a much lower overall error rate
+(<span class="math inline">\(0.142\)</span> vs. <span
+class="math inline">\(0.246\)</span>) and higher specificity (<span
+class="math inline">\(0.907\)</span> vs. <span
+class="math inline">\(0.769\)</span>), but QDA has substantially higher
+sensitivity (<span class="math inline">\(0.625\)</span> vs. <span
+class="math inline">\(0.417\)</span>).</p>
+<ul>
+<li><p><strong>Modelling difference:</strong> LDA assumes a single
+shared covariance matrix while QDA estimates a separate covariance per
+class. With <span class="math inline">\(K=2\)</span> classes and
+continuous + binary predictors, the binary predictors
+(<code>hypertension</code>, <code>heart_disease</code>) are Bernoulli,
+so the multivariate-normal assumption is questionable for both. With
+only <span class="math inline">\(\sim 140\)</span> stroke cases in the
+training set (<span class="math inline">\(5\%\cdot 2800\)</span>), QDA’s
+stroke covariance is poorly estimated (high variance), which inflates
+QDA’s false-positive rate.</p></li>
+<li><p><strong>Medical context:</strong> a missed stroke (false
+negative) is a much more serious clinical error than a false alarm
+(false positive — which leads only to a follow-up test). QDA’s higher
+sensitivity — catching <span class="math inline">\(63\%\)</span>
+vs. <span class="math inline">\(42\%\)</span> of strokes — is therefore
+clinically valuable, even at the cost of more false alarms.</p></li>
+<li><p><strong>Preferred:</strong> <strong>QDA on sensitivity</strong>
+(the medically dominant criterion); <strong>LDA on overall error
+rate</strong> (the conventional but here misleading criterion). I would
+pick QDA for clinical deployment, but would also re-examine the
+threshold of <em>either</em> classifier (lowering it on LDA can recover
+sensitivity at the same modelling cost).</p></li>
+</ul>
+<h2 class="unnumbered" id="c-a-tree-based-competitor-random-forest-5">c)
+A tree-based competitor: random forest <em>(5 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(i)</strong> For a
+classification random forest the standard default is <span
+class="math inline">\(m=\sqrt{p}\)</span>. With <span
+class="math inline">\(p=6\)</span> predictors we have <span
+class="math inline">\(\sqrt{6}\approx 2.45\)</span>, and rounding up
+gives <span class="math inline">\(\boxed{m=3}\)</span>, which is exactly
+<code>mtry</code>. (Some implementations use <span
+class="math inline">\(\lfloor\sqrt{p}\rfloor=2\)</span>; <span
+class="math inline">\(3\)</span> is the typical sklearn / R
+<code>randomForest</code> default.) The randomness decorrelates the
+trees and lowers ensemble variance compared to bagging.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong> RF
+confusion matrix: <span class="math inline">\(120\)</span> strokes,
+<span class="math inline">\(1080\)</span> non-strokes, <span
+class="math inline">\(n=1200\)</span>. <span
+class="math display">\[\begin{align*}
+\text{Sensitivity}_{\mathrm{RF}} &amp;= \frac{65}{120} \approx
+\boxed{0.542}, \\
+\text{Specificity}_{\mathrm{RF}} &amp;= \frac{950}{1080} \approx
+\boxed{0.880}, \\
+\text{Error rate}_{\mathrm{RF}} &amp;= \frac{130+55}{1200} =
+\frac{185}{1200} \approx \boxed{0.154}.
+\end{align*}\]</span> The forest sits between LDA and QDA on every
+metric — moderately better sensitivity than LDA without LDA’s
+specificity collapse.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iii)</strong> The
+<strong>out-of-bag (OOB) error</strong> exploits the fact that each
+bootstrap sample omits <span class="math inline">\(\approx 1-1/e\approx
+37\%\)</span> of the training observations (part 2g). For each training
+observation <span class="math inline">\(i\)</span>, the OOB prediction
+is the majority vote (classification) or the mean (regression) of
+<em>only</em> those trees in whose bootstrap sample <span
+class="math inline">\(i\)</span> did <em>not</em> appear. Averaging the
+resulting losses over all <span class="math inline">\(n\)</span>
+training points gives an estimate of test error that is essentially free
+— no separate validation set, no CV refits. For random forests OOB error
+is known to be a near-unbiased proxy for test error.</p>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(iv)</strong></p>
+<ul>
+<li><p><strong>What a variable-importance plot shows:</strong> for each
+predictor it reports a scalar summary of how much that predictor
+contributes to the forest’s predictions. The two common variants are (a)
+the <em>mean decrease in node impurity</em> (Gini for classification,
+RSS for regression) summed over all splits on that variable across all
+trees, and (b) the <em>permutation importance</em> — the increase in OOB
+error when the values of that predictor are randomly permuted in the OOB
+sample.</p></li>
+<li><p><strong>What it cannot answer:</strong> it does not tell you the
+<em>direction</em> or <em>shape</em> of each predictor’s effect on the
+predicted probability — only the total magnitude of contribution. To
+recover direction you need partial-dependence plots, ICE plots, or a
+parametric model (e.g. logistic regression) for comparison. It also says
+nothing about <em>causality</em> — a predictor that is downstream of the
+outcome via a confounder can have very high importance while having no
+causal effect.</p></li>
+</ul>
+<h2 class="unnumbered" id="d-roc-and-auc-3">d) ROC and AUC
+<em>(3 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(i)</strong> AUC
+<span class="math inline">\(= 0.84\)</span> means: if you draw one true
+stroke patient and one true non-stroke patient at random and look at
+their predicted probabilities <span class="math inline">\(\hat
+p\)</span> from the model, the stroke patient gets a higher <span
+class="math inline">\(\hat p\)</span> than the non-stroke patient about
+<span class="math inline">\(84\%\)</span> of the time. AUC <span
+class="math inline">\(= 0.5\)</span> would be coin-flip ranking; AUC
+<span class="math inline">\(= 1\)</span> would be perfect ranking.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong>
+Lowering the threshold from <span class="math inline">\(0.5\)</span> to
+<span class="math inline">\(0.3\)</span> classifies <em>more</em>
+patients as positive. Therefore <strong>sensitivity increases</strong>
+(more true strokes crossed the lower threshold and were caught) and
+<strong>specificity decreases</strong> (more true non-strokes are now
+incorrectly flagged).</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iii)</strong> On
+the ROC curve (TPR vs. FPR), lowering the threshold moves the operating
+point <strong>up and to the right</strong> — TPR (= sensitivity)
+increases, FPR (<span class="math inline">\(= 1-\)</span>specificity)
+increases.</p>
+<h2 class="unnumbered" id="e-class-imbalance-2">e) Class imbalance
+<em>(2 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(i)</strong> If the
+classifier always predicts “no stroke,” it misclassifies exactly the
+<span class="math inline">\(5\%\)</span> true strokes and correctly
+classifies the <span class="math inline">\(95\%\)</span> non-strokes.
+The error rate is therefore <span
+class="math inline">\(\boxed{0.05}\)</span> (<span
+class="math inline">\(5\%\)</span>). This is already <em>lower</em> than
+every test error in parts (b)–(c) above (<span
+class="math inline">\(0.142\)</span> for LDA, <span
+class="math inline">\(0.154\)</span> for RF, <span
+class="math inline">\(0.246\)</span> for QDA), which illustrates the
+failure of the metric.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong> Test
+error rate is misleading on this dataset: a trivial “always no”
+classifier scores <span class="math inline">\(0.05\)</span> and beats
+every model in part (b), simply because the class is so imbalanced that
+getting non-strokes right is cheap. Better metrics:</p>
+<ul>
+<li><p>the <em>pair</em> (<strong>sensitivity, specificity</strong>),
+which separately measures per-class performance;</p></li>
+<li><p>a threshold-independent summary such as <strong>AUC</strong> (or
+<em>precision-recall AUC</em>, which is more sensitive to
+imbalance);</p></li>
+<li><p>in a cost-sensitive clinical setting, <strong>sensitivity at a
+fixed acceptable specificity</strong> (or vice versa) directly encodes
+the medical trade-off that a missed stroke costs much more than a false
+alarm.</p></li>
+</ul>
+<hr />
+<p><strong>End of solution proposal.</strong>Total awarded: <span
+class="math inline">\(10+28+16+22+24=100\)</span> points.</p>
+</body>
+</html>

@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Compiled for Anders Bekkevard Companion to mock-exam-5.tex (same directory).">
+  <title>Mock Exam 5 — Solution</title>
+  <link rel="stylesheet" href="exam.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<div class="exam-banner"><a href="/pdfs/mock-exam-5-solution.pdf">PDF</a> · <a href="mock-exam-5.html">Exam (HTML)</a> · <a href="/mock-exams">Index</a></div>
+<header>
+  <h1 class="title">Mock Exam 5 — Solution</h1>
+  <p class="author">Compiled for Anders Bekkevard<br />
+Companion to <code>mock-exam-5.tex</code> (same directory).</p>
+  <p class="date">Mock for: May 18, 2026</p>
+</header>
+<p><em>This document is a worked-solution proposal in the style of the
+official Stefanie/Sara solutions to the 2024 and 2025 finals. Point
+values are quoted in the heading of each solved sub-part. Partial-credit
+hints are inline. Refer back to <code>mock-exam-5.tex</code> for the
+problem statements.</em></p>
+<hr />
+<h1 class="unnumbered"
+id="problem-1-10-fill-in-the-blank-concepts">Problem 1
+<strong>(10 %)</strong> — Fill-in-the-blank concepts</h1>
+<p><strong>Solution</strong> <em>(1 P per blank.)</em></p>
+<ol type="1">
+<li><p><strong>collinearity</strong></p></li>
+<li><p><strong>shrinkage</strong></p></li>
+<li><p><strong>principal components</strong></p></li>
+<li><p><strong>dropout</strong></p></li>
+<li><p><strong>early stopping</strong></p></li>
+<li><p><strong>label smoothing</strong></p></li>
+<li><p><strong>mini-batches</strong></p></li>
+<li><p><strong>nested cross-validation</strong></p></li>
+<li><p><strong>AdaBoost</strong></p></li>
+<li><p><strong>gradient boosting</strong></p></li>
+</ol>
+<p><em>Grading: 1 P per correct blank. For (1) “heteroscedasticity” is a
+hard zero (different diagnostic). For (2) “bagging” is wrong (bagging
+averages models, it does not shrink coefficients). For (9) “random
+forests” is wrong — random forests are parallel/independent bagged
+trees, not the re-weighting sequential scheme. The pairing AdaBoost
+(re-weighting) + gradient boosting (negative gradient) is the canonical
+contrast the prof drew in Module 9.</em></p>
+<hr />
+<h1 class="unnumbered"
+id="problem-2-28-multiple-choice-tf-short-numeric">Problem 2
+<strong>(28 %)</strong> — Multiple choice, T/F, short numeric</h1>
+<h2 class="unnumbered" id="a-biasvariance-and-double-descent-3">a)
+Bias–variance and double descent <em>(3 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 P per statement.)</em></p>
+<ol type="i">
+<li><p><strong>False</strong>. <span class="math inline">\(\sigma^2 =
+\mathrm{Var}(\varepsilon)\)</span> is a property of the data-generating
+noise; no amount of training data shrinks it. That is exactly why it is
+called the <em>irreducible</em> error.</p></li>
+<li><p><strong>False</strong>. The decomposition is an algebraic
+identity (the cross term vanishes by independence of <span
+class="math inline">\(\varepsilon\)</span> and the training set — see
+Problem 3a) and holds for <em>any</em> estimator <span
+class="math inline">\(\hat f\)</span>, including over-parameterized
+ones. Double descent reflects that the <em>variance term itself</em> can
+be non-monotone past the interpolation peak, not that the identity
+breaks.</p></li>
+<li><p><strong>True</strong>. That is the operational definition of
+“well-tuned”: the regularizer is chosen (e.g. by CV) precisely so that
+the variance reduction exceeds the bias it introduces. If it did not,
+you would not use that <span
+class="math inline">\(\lambda\)</span>.</p></li>
+</ol>
+<h2 class="unnumbered" id="b-cross-validation-and-its-pitfalls-3">b)
+Cross-validation and its pitfalls <em>(3 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 P per statement.)</em></p>
+<ol type="i">
+<li><p><strong>True</strong>. Each LOOCV training set has <span
+class="math inline">\(n-1\)</span> observations versus <span
+class="math inline">\(\sim 0.9 n\)</span> for <span
+class="math inline">\(10\)</span>-fold; the estimator on <span
+class="math inline">\(n-1\)</span> training observations is a closer
+proxy for the estimator fit on <span class="math inline">\(n\)</span>,
+so LOOCV has lower bias. (It pays for that with higher variance, since
+the <span class="math inline">\(n\)</span> fold errors are highly
+correlated.)</p></li>
+<li><p><strong>True</strong>. This is the textbook definition of nested
+CV: inner folds tune, outer folds evaluate. The inner-fold winner is
+refit on the outer training data and scored on the outer held-out fold;
+the average across outer folds is the honest test-error estimate of the
+full <em>procedure</em> (tuning included).</p></li>
+<li><p><strong>False</strong>. Random folds shuffle the temporal order
+and put future and past observations in the same fold, leaking
+information across the time axis. The honest protocol is
+forward-chaining / rolling-window CV, where each training fold contains
+only observations earlier than its test fold; <span
+class="math inline">\(k=10\)</span> does not fix the structural
+leak.</p></li>
+</ol>
+<h2 class="unnumbered" id="c-bootstrap-standard-errors-and-cis-3">c)
+Bootstrap, standard errors and CIs <em>(3 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(i)</strong> For
+<span class="math inline">\(n=10\)</span>, the probability that a
+particular original observation is <em>not</em> drawn in any of the
+<span class="math inline">\(n\)</span> resamples is <span
+class="math inline">\((1-1/n)^n = (9/10)^{10}\)</span>. So <span
+class="math display">\[P(\text{included}) = 1 -
+\left(\tfrac{9}{10}\right)^{10} = 1 - 0.3487 \approx
+\boxed{0.651}.\]</span></p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong> The
+percentile <span class="math inline">\(95\%\)</span> CI is the interval
+between the <span class="math inline">\(\mathbf{2.5\%}\)</span> and
+<span class="math inline">\(\mathbf{97.5\%}\)</span> quantiles of the
+bootstrap distribution: <span
+class="math display">\[\bigl[\,\hat\theta^*_{(0.025)},\;\hat\theta^*_{(0.975)}\,\bigr]
+   \;=\;
+\bigl[\,\hat\theta^*_{(25)},\;\hat\theta^*_{(975)}\,\bigr]\quad\text{when
+}B=1000,\]</span> i.e. the <span class="math inline">\(25\)</span>th and
+<span class="math inline">\(975\)</span>th order statistics of the
+sorted <span
+class="math inline">\(\{\hat\theta^*_b\}_{b=1}^{1000}\)</span>.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iii)</strong>
+<strong>(A) True</strong> — this is the bootstrap standard error by
+definition: <span
+class="math inline">\(\widehat{\mathrm{SE}}_{\mathrm{boot}}(\hat\theta)
+= \sqrt{\tfrac{1}{B-1}\sum_b(\hat\theta^*_b -
+\bar{\hat\theta}^*)^2}\)</span>. <strong>(B) False</strong> — the
+bootstrap quantifies the <em>variability</em> of <span
+class="math inline">\(\hat\theta\)</span> (its sampling distribution /
+standard error / confidence interval); it does <em>not</em> correct for
+bias. The bootstrap distribution is centered around the original <span
+class="math inline">\(\hat\theta\)</span>, not around the unknown true
+<span class="math inline">\(\theta\)</span>, so a biased estimator stays
+biased. <strong>(C) False</strong> — bootstrap is <em>with
+replacement</em> by definition. Drawing <span
+class="math inline">\(n\)</span> observations without replacement from a
+size-<span class="math inline">\(n\)</span> sample is just a permutation
+and yields no resampling variability.</p>
+<p><em>Grading: 1 P all-or-nothing for the correct <span
+class="math inline">\((\mathrm{T}, \mathrm{F}, \mathrm{F})\)</span>
+pattern; deduct <span class="math inline">\(0.5\)</span> if (B) is
+marked True (the canonical confusion: bootstrap quantifies variance, not
+bias).</em></p>
+<h2 class="unnumbered" id="d-neural-network-regularization-3">d) Neural
+network regularization <em>(3 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 P per statement.)</em></p>
+<ol type="i">
+<li><p><strong>False</strong>. Dropout is active <em>only at training
+time</em>; at test time the full network is used and the weights are
+scaled by the keep-probability (or, equivalently, the “inverted” dropout
+convention divides by the keep-probability during training so that no
+rescaling is needed at inference). Always-on dropout would introduce
+stochasticity into predictions.</p></li>
+<li><p><strong>True</strong>. Label smoothing softens the targets so the
+network is penalized for assigning probability <span
+class="math inline">\(\to 1\)</span> on the training labels; the
+cross-entropy gradient never vanishes and the network is less prone to
+over-confident, badly calibrated predictions on unseen data.</p></li>
+<li><p><strong>False</strong>. L2 weight decay penalizes large weights,
+which forces the optimizer toward a less expressive solution and
+generally <em>increases</em> training error. Its purpose is to reduce
+<em>test</em> error (variance reduction at the cost of some
+bias).</p></li>
+</ol>
+<h2 class="unnumbered" id="e-mini-batch-sgd-and-backpropagation-3">e)
+Mini-batch SGD and backpropagation <em>(3 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 P per statement.)</em></p>
+<ol type="i">
+<li><p><strong>True</strong>. Backpropagation is exactly the chain-rule
+application: the forward pass stores intermediate activations, and the
+backward pass uses them to compute <span class="math inline">\(\partial
+L/\partial \theta\)</span> for every parameter <span
+class="math inline">\(\theta\)</span> in time proportional to the
+forward pass. It does not <em>do</em> the gradient step; that is the
+optimizer’s job.</p></li>
+<li><p><strong>True</strong>. The mini-batch gradient <span
+class="math inline">\(\tfrac{1}{|\mathcal B|}\sum_{i\in\mathcal B}\nabla
+L_i\)</span> has expectation <span
+class="math inline">\(\tfrac{1}{n}\sum_{i=1}^n \nabla L_i\)</span> (the
+full-data gradient), provided the mini-batch is drawn uniformly at
+random; hence it is unbiased.</p></li>
+<li><p><strong>True</strong>. Powers of two align well with GPU memory
+architecture / warp sizes; the choice is a hardware/throughput
+convention, not a statistical one (within reason the statistical
+properties of SGD are largely insensitive to whether the batch is <span
+class="math inline">\(128\)</span> or <span
+class="math inline">\(130\)</span>).</p></li>
+</ol>
+<h2 class="unnumbered"
+id="f-boosting-adaboost-gradient-boosting-xgboost-4">f) Boosting:
+AdaBoost, gradient boosting, XGBoost <em>(4 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(i)</strong> With
+<span class="math inline">\(\mathrm{err}_m = 0.20\)</span>: <span
+class="math display">\[\alpha_m = \log\frac{1-0.20}{0.20} =
+\log\frac{0.80}{0.20} = \log 4 \approx \boxed{1.39}.\]</span> A
+correctly-classified weak learner (<span
+class="math inline">\(\mathrm{err}&lt;0.5\)</span>) gets a positive
+vote-weight; a coin-flip (<span
+class="math inline">\(\mathrm{err}=0.5\)</span>) gets weight <span
+class="math inline">\(0\)</span>; an anti-correlated one (<span
+class="math inline">\(\mathrm{err}&gt;0.5\)</span>) would get a negative
+weight (its votes are flipped).</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong> With
+<span class="math inline">\(L(y,f) = \tfrac{1}{2}(y-f)^2\)</span>, <span
+class="math display">\[-\frac{\partial L}{\partial f}\bigg|_{f=\hat
+f^{(m-1)}(x_i)} = (y - f)\big|_{\hat f^{(m-1)}(x_i)} = y_i - \hat
+f^{(m-1)}(x_i) \;=\; r_i^{(m)}.\]</span> The negative gradient
+<em>is</em> the current <strong>residual</strong>. This is why gradient
+boosting with squared-error loss reduces to “fit a tree to the residuals
+at each round.”</p>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(iii)</strong>
+<em>(0.5 P per statement.)</em></p>
+<ul>
+<li><p><strong>(A) True</strong>. Unlike random forests, boosting is
+sequential and each tree fits residual structure; with too many trees it
+starts fitting noise. <span class="math inline">\(M\)</span> is a real
+tuning parameter chosen by CV (or a validation set).</p></li>
+<li><p><strong>(B) True</strong>. RF averages independent bootstrap
+trees; averaging only reduces variance and never inflates bias, so test
+error is monotonically non-increasing in <span
+class="math inline">\(B\)</span>. One simply picks “enough” (typically
+<span class="math inline">\(500\)</span>–<span
+class="math inline">\(1000\)</span>).</p></li>
+<li><p><strong>(C) False</strong>. Smaller learning rate <span
+class="math inline">\(\nu\)</span> means each tree contributes less, so
+you need <em>more</em> trees (<span class="math inline">\(M\)</span>) to
+reach the same level of fit. The pair <span
+class="math inline">\((M,\nu)\)</span> is tuned jointly — halving <span
+class="math inline">\(\nu\)</span> approximately doubles the required
+<span class="math inline">\(M\)</span>.</p></li>
+<li><p><strong>(D) True</strong>. XGBoost (Chen &amp; Guestrin, 2016)
+adds Newton-style second-order information (uses both gradient and
+Hessian of the loss), L1/L2 penalties on the leaf weights, plus
+engineering tricks (column subsampling, sparsity-aware splits,
+parallelism).</p></li>
+</ul>
+<h2 class="unnumbered"
+id="g-logistic-regression-odds-log-odds-interaction-3">g) Logistic
+regression: odds, log-odds, interaction <em>(3 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(i)</strong> A
+change of <span class="math inline">\(+2\)</span> mmol/L in
+<code>ldl</code> multiplies the odds by <span
+class="math display">\[\exp(0.30\cdot 2) = e^{0.60} \approx
+\boxed{1.82}.\]</span> <em>Equivalently, an <span
+class="math inline">\(82\%\)</span> increase in the odds of CHD per
+<span class="math inline">\(2\)</span> mmol/L of LDL.</em></p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong> For a
+<em>smoker</em>, a one-year increase in <code>age</code> changes the
+log-odds by <span class="math inline">\(\hat\beta_{\text{age}} +
+\hat\beta_{\text{age:smoker}} = 0.04 + 0.03 = 0.07\)</span>, so the odds
+multiply by <span class="math display">\[e^{0.07} \approx
+\boxed{1.07}.\]</span> <em>For a non-smoker the factor would be <span
+class="math inline">\(e^{0.04}\approx 1.04\)</span>. The standard
+interaction trap is to forget the main effect and quote <span
+class="math inline">\(e^{0.03}\approx 1.03\)</span> for the smoker
+increment, which is wrong — the smoker’s per-year effect is the
+<em>sum</em> of the main and interaction coefficients.</em></p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iii)</strong>
+<strong>False</strong>. The relationship between <span
+class="math inline">\(\hat\beta_j\)</span> and <span
+class="math inline">\(\Pr(Y=1)\)</span> is multiplicative-on-the-odds,
+not additive-on-the-probability. The local probability derivative is
+<span class="math inline">\(\partial p/\partial x_j = \hat\beta_j\,
+p(1-p)\)</span>, which depends on the current <span
+class="math inline">\(p\)</span>; near <span class="math inline">\(p =
+0.5\)</span> it is <span class="math inline">\(\approx
+0.25\hat\beta_j\)</span> (smaller than <span
+class="math inline">\(\hat\beta_j\)</span>), and near <span
+class="math inline">\(p=0\)</span> or <span
+class="math inline">\(p=1\)</span> it is essentially zero (the sigmoid
+saturates).</p>
+<h2 class="unnumbered" id="h-pca-explained-variance-and-loadings-3">h)
+PCA: explained variance and loadings <em>(3 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(i)</strong> For
+<em>standardized</em> variables each has variance <span
+class="math inline">\(1\)</span>, so the total variance equals the
+number of variables: <span class="math inline">\(\sum_j \lambda_j = p =
+\boxed{6}\)</span>. <em>Sanity:</em> <span
+class="math inline">\(2.7+1.5+0.9+0.5+0.3+0.1 = 6.0\)</span>. <span
+class="math display">\[\mathrm{PVE}_{1+2} = \frac{2.7 + 1.5}{6} =
+\frac{4.2}{6} = \boxed{0.70}\;(70\%).\]</span></p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong>
+Cumulative sums of <span class="math inline">\(\lambda_k/6\)</span>:
+<span class="math display">\[\begin{align*}
+\mathrm{PC1}\!:\; &amp; 2.7/6 = 0.450, \\
+\mathrm{PC1\!+\!PC2}\!:\; &amp; 4.2/6 = 0.700, \\
+\mathrm{through\;PC3}\!:\; &amp; 5.1/6 = 0.850, \\
+\mathrm{through\;PC4}\!:\; &amp; 5.6/6 \approx 0.933, \\
+\mathrm{through\;PC5}\!:\; &amp; 5.9/6 \approx 0.983.
+\end{align*}\]</span> We first cross <span
+class="math inline">\(0.90\)</span> at PC4, so <span
+class="math inline">\(\boxed{4}\)</span> components are needed.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iii)</strong>
+<strong>True</strong>. PCA is unsupervised: the loadings are the
+eigenvectors of <span class="math inline">\(\tfrac{1}{n}\mathbf X^\top
+\mathbf X\)</span> (or the SVD of <span class="math inline">\(\mathbf
+X\)</span>), computed without reference to <span
+class="math inline">\(y\)</span>. (This is precisely why PCA
+<em>can</em> discard directions correlated with the response if those
+directions happen to be low-variance — a known limitation; PLS is the
+supervised alternative that does look at <span
+class="math inline">\(y\)</span>.)</p>
+<h2 class="unnumbered" id="i-discriminant-analysis-and-splines-3">i)
+Discriminant analysis and splines <em>(3 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(i)</strong>
+<strong>True</strong>. With a shared <span
+class="math inline">\(\boldsymbol\Sigma\)</span> the quadratic term
+<span class="math inline">\(\mathbf x^\top \boldsymbol\Sigma^{-1}\mathbf
+x\)</span> cancels across classes, leaving a discriminant <span
+class="math inline">\(\delta_k(\mathbf x) = \mathbf a_k^\top\mathbf x +
+c_k\)</span> that is linear in <span class="math inline">\(\mathbf
+x\)</span>; hence boundaries <span class="math inline">\(\delta_k =
+\delta_\ell\)</span> are hyperplanes.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong>
+<strong>True</strong>. Class-specific <span
+class="math inline">\(\boldsymbol\Sigma_k\)</span> means <span
+class="math inline">\(\mathbf x^\top\boldsymbol\Sigma_k^{-1}\mathbf
+x\)</span> depends on <span class="math inline">\(k\)</span> and no
+longer cancels; the discriminant picks up a quadratic-in-<span
+class="math inline">\(\mathbf x\)</span> term, so the boundary <span
+class="math inline">\(\delta_k(\mathbf x) = \delta_\ell(\mathbf
+x)\)</span> is a quadratic surface (conic in 2D).</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iii)</strong> A
+cubic regression spline with <span class="math inline">\(K\)</span>
+interior knots has <span class="math inline">\(K+3\)</span> spline basis
+terms (the truncated-power basis <span class="math inline">\(1, x, x^2,
+x^3\)</span> contributes <span class="math inline">\(3\)</span>
+non-constant columns, and each interior knot adds one <span
+class="math inline">\((x-\xi_j)_+^3\)</span> term). Including the global
+intercept this gives <span class="math inline">\(K + 3 + 1 =
+\boxed{K+4}\)</span> parameters.</p>
+<p><em>Equivalent route: the cubic polynomial uses <span
+class="math inline">\(4\)</span> basis functions <span
+class="math inline">\(\{1, x, x^2, x^3\}\)</span>, then each of the
+<span class="math inline">\(K\)</span> interior knots adds one more,
+giving <span class="math inline">\(K+4\)</span> in total. The course
+convention used in Mock 2 follows this count.</em></p>
+<hr />
+<h1 class="unnumbered" id="problem-3-16-theory-and-pseudocode">Problem 3
+<strong>(16 %)</strong> — Theory and pseudocode</h1>
+<h2 class="unnumbered"
+id="a-the-mathy-one-biasvariance-decomposition-7">a) The mathy one —
+bias–variance decomposition <em>(7 %)</em></h2>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(i)</strong>
+Substitute <span class="math inline">\(y_0 = f(x_0) +
+\varepsilon\)</span>: <span class="math display">\[\begin{align*}
+\mathbb{E}\bigl[(y_0 - \hat f(x_0))^2\bigr]
+   &amp;= \mathbb{E}\bigl[(f(x_0) + \varepsilon - \hat f(x_0))^2\bigr]
+\\
+   &amp;= \mathbb{E}\bigl[(f(x_0) - \hat f(x_0))^2\bigr]
+       + 2\,\mathbb{E}\bigl[\varepsilon\,(f(x_0) - \hat f(x_0))\bigr]
+       + \mathbb{E}[\varepsilon^2].
+\end{align*}\]</span> The third term is <span
+class="math inline">\(\mathbb{E}[\varepsilon^2] =
+\mathrm{Var}(\varepsilon) + (\mathbb{E}[\varepsilon])^2 = \sigma^2 + 0 =
+\sigma^2\)</span>. For the cross term, note that <span
+class="math inline">\(f(x_0)\)</span> is deterministic and <span
+class="math inline">\(\hat f(x_0)\)</span> is a function of the training
+set <span class="math inline">\(\mathcal D\)</span>, which is
+<em>independent</em> of the test-point noise <span
+class="math inline">\(\varepsilon\)</span>. By independence and <span
+class="math inline">\(\mathbb{E}[\varepsilon] = 0\)</span>: <span
+class="math display">\[\mathbb{E}\bigl[\varepsilon\,(f(x_0) - \hat
+f(x_0))\bigr]
+   = \mathbb{E}[\varepsilon]\cdot \mathbb{E}\bigl[f(x_0) - \hat
+f(x_0)\bigr]
+   = 0\cdot (\cdots) = 0. \quad\square\]</span> Hence <span
+class="math display">\[\mathbb{E}\bigl[(y_0 - \hat f(x_0))^2\bigr] =
+\mathbb{E}\bigl[(f(x_0) - \hat f(x_0))^2\bigr] + \sigma^2.\]</span></p>
+<p><em>Grading: 1 P for expanding the square; 1 P for the explicit
+independence / zero-mean argument that kills the cross term. Half credit
+if the student writes <span class="math inline">\(\sigma^2\)</span>
+appearing “by the variance of <span
+class="math inline">\(\varepsilon\)</span>” without the cross-term
+step.</em></p>
+<p><strong>Solution</strong> <em>(3 %)</em> <strong>(ii)</strong> Add
+and subtract <span class="math inline">\(\mathbb{E}[\hat
+f(x_0)]\)</span> inside the squared difference: <span
+class="math display">\[\begin{align*}
+\mathbb{E}\bigl[(f(x_0) - \hat f(x_0))^2\bigr]
+   &amp;= \mathbb{E}\bigl[\bigl((f(x_0) - \mathbb{E}[\hat f(x_0)]) +
+(\mathbb{E}[\hat f(x_0)] - \hat f(x_0))\bigr)^2\bigr] \\
+   &amp;= \underbrace{(f(x_0) - \mathbb{E}[\hat
+f(x_0)])^2}_{=\,\mathrm{Bias}^2[\hat f(x_0)]}
+       + 2\,\underbrace{\mathbb{E}\bigl[(f(x_0) - \mathbb{E}[\hat
+f(x_0)])\cdot(\mathbb{E}[\hat f(x_0)] - \hat f(x_0))\bigr]}_{(\star)}
+       + \underbrace{\mathbb{E}\bigl[(\hat f(x_0) - \mathbb{E}[\hat
+f(x_0)])^2\bigr]}_{=\,\mathrm{Var}(\hat f(x_0))}.
+\end{align*}\]</span> The first term has no randomness (<span
+class="math inline">\(f(x_0)\)</span> is fixed and <span
+class="math inline">\(\mathbb{E}[\hat f(x_0)]\)</span> is a number) and
+is by definition <span class="math inline">\(\mathrm{Bias}^2[\hat
+f(x_0)]\)</span>. The third is, by definition, <span
+class="math inline">\(\mathrm{Var}(\hat f(x_0))\)</span>.</p>
+<p>The cross term <span class="math inline">\((\star)\)</span> vanishes:
+the factor <span class="math inline">\((f(x_0) - \mathbb{E}[\hat
+f(x_0)])\)</span> is deterministic and pulls out, leaving <span
+class="math display">\[(\star) = (f(x_0) - \mathbb{E}[\hat f(x_0)])\cdot
+\mathbb{E}\bigl[\mathbb{E}[\hat f(x_0)] - \hat f(x_0)\bigr]
+   = (f(x_0) - \mathbb{E}[\hat f(x_0)])\cdot 0 \;=\; 0,\]</span> since
+<span class="math inline">\(\mathbb{E}[\hat f(x_0) - \mathbb{E}[\hat
+f(x_0)]] = 0\)</span>. Adding back the <span
+class="math inline">\(\sigma^2\)</span> from part (i): <span
+class="math display">\[\boxed{\;\mathbb{E}\bigl[(y_0 - \hat
+f(x_0))^2\bigr]
+   = \underbrace{(f(x_0) - \mathbb{E}[\hat f(x_0)])^2}_{\text{Bias}^2}
+   + \underbrace{\mathrm{Var}(\hat f(x_0))}_{\text{Variance}}
+   + \underbrace{\sigma^2}_{\text{Irreducible}}.\;}\]</span></p>
+<p><strong>What each term captures:</strong></p>
+<ul>
+<li><p><strong>Bias</strong><span class="math inline">\(^2\)</span>:
+systematic error from the model class. Captures the gap between the
+truth <span class="math inline">\(f(x_0)\)</span> and the
+<em>average</em> prediction at <span class="math inline">\(x_0\)</span>
+across training sets. Large for too-rigid models (e.g. linear fit to a
+non-linear <span class="math inline">\(f\)</span>).</p></li>
+<li><p><strong>Variance</strong>: how much <span
+class="math inline">\(\hat f(x_0)\)</span> jitters across re-draws of
+the training set <span class="math inline">\(\mathcal D\)</span>. Large
+for too-flexible models (they chase noise).</p></li>
+<li><p><strong>Irreducible</strong> <span
+class="math inline">\(\sigma^2\)</span>: the variance of the test-point
+noise <span class="math inline">\(\varepsilon\)</span>, a property of
+the data, untouched by any estimator.</p></li>
+</ul>
+<p><em>Grading: 1 P for the correct algebraic add-and-subtract setup;
+1 P for explicitly showing the cross term has expectation zero (using
+<span class="math inline">\(\mathbb{E}[\hat f - \mathbb{E}[\hat f]] =
+0\)</span>); 1 P for naming and explaining the three terms.</em></p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iii)</strong>
+<strong>(a) Bias higher under lasso:</strong> the L1 penalty <span
+class="math inline">\(\lambda\|\beta\|_1\)</span> shrinks every
+coefficient toward zero and sets many exactly to zero, so the fitted
+function is on average further from the truth than OLS (which is
+unbiased for the true <span class="math inline">\(\beta\)</span>).
+<strong>(b) Variance lower under lasso:</strong> shrunk / zeroed
+coefficients have less room to react to training-set noise, so <span
+class="math inline">\(\hat\beta\)</span> (and hence <span
+class="math inline">\(\hat f(x_0)\)</span>) is less variable across
+re-draws of <span class="math inline">\(\mathcal D\)</span>. By picking
+<span class="math inline">\(\lambda\)</span> via CV we choose the sweet
+spot where the variance saving exceeds the bias introduced.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iv)</strong>
+Regularization can lower variance much more than it raises bias (part
+(iii)), and in the over-parameterized / double-descent regime the
+implicit min-norm regularization shrinks variance <em>back down</em>
+past the interpolation peak — so the bias and variance can both fall as
+flexibility grows there. “Trade-off” describes the classical U-shape but
+is not a universal law.</p>
+<h2 class="unnumbered"
+id="b-cross-validation-pseudocode-and-nested-cv-4">b) Cross-validation:
+pseudocode and nested CV <em>(4 %)</em></h2>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(i)</strong> <span
+class="math inline">\(k\)</span>-fold CV at a fixed hyperparameter <span
+class="math inline">\(\theta\)</span>:</p>
+<blockquote>
+
+</blockquote>
+<p><em>Notes:</em> (a) partitioning is random and disjoint (every
+observation appears in exactly one held-out fold); (b) at iteration
+<span class="math inline">\(j\)</span> the model is fit on <span
+class="math inline">\(\mathcal D_{-j}\)</span> only and scored on <span
+class="math inline">\(\mathcal D_j\)</span> — no leakage; (c)
+aggregation is a simple average of the <span
+class="math inline">\(k\)</span> per-fold MSEs.</p>
+<p><em>Grading: 1 P for partition + the fit-on-train, score-on-held-out
+logic; 1 P for correct aggregation. Deduct 0.5 for any leakage
+(e.g. standardizing using <span class="math inline">\(\mathcal
+D\)</span> rather than <span class="math inline">\(\mathcal
+D_{-j}\)</span> inside the fold).</em></p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong>
+Hyperparameter selection from a grid:</p>
+<ol>
+<li><p>For each <span class="math inline">\(\theta_g \in \{\theta_1,
+\ldots, \theta_G\}\)</span>, compute <span
+class="math inline">\(\widehat{\mathrm{CV}}_k(\theta_g)\)</span> using
+the primitive in (i).</p></li>
+<li><p>Set <span class="math inline">\(\hat\theta = \arg\min_g
+\widehat{\mathrm{CV}}_k(\theta_g)\)</span> (or use the 1-SE rule, see
+Problem 4c).</p></li>
+<li><p>Refit <span class="math inline">\(\mathcal M\)</span> on the
+<em>full</em> training set <span class="math inline">\(\mathcal
+D\)</span> at <span class="math inline">\(\theta = \hat\theta\)</span>;
+this is the deployed model.</p></li>
+</ol>
+<p>For an honest test-error estimate of <em>the entire procedure</em>
+(including the tuning), wrap the above inside an outer CV loop — nested
+CV (Problem 2b(ii)).</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iii)</strong> The
+proposed pipeline is biased <em>downward</em> because the top-<span
+class="math inline">\(25\)</span> predictor selection in Step 1 was done
+on the <em>full</em> training data using <span
+class="math inline">\(y\)</span>, so the held-out folds in Step 2 are
+not actually held-out — their <span class="math inline">\(y\)</span>
+values were used to choose the predictors that the inner CV will see.
+This is the canonical CV leak.</p>
+<p><strong>Corrected procedure:</strong> put the predictor-screening
+step <em>inside</em> every CV fold. Within each of the <span
+class="math inline">\(10\)</span> folds: compute marginal correlations
+using <em>only</em> the training portion of that fold, choose the top
+<span class="math inline">\(25\)</span> predictors, fit logistic
+regression on those, predict on the held-out fold. The fold errors are
+then honest.</p>
+<h2 class="unnumbered" id="c-bootstrap-by-hand-3">c) Bootstrap by hand
+<em>(3 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(i)</strong> A
+bootstrap sample of size <span class="math inline">\(n\)</span> draws
+<span class="math inline">\(n\)</span> observations independently and
+uniformly with replacement. The probability that a particular
+observation <span class="math inline">\(i\)</span> is <em>not</em> drawn
+at a single draw is <span class="math inline">\(1 - 1/n\)</span>; over
+<span class="math inline">\(n\)</span> independent draws, <span
+class="math display">\[P(i\text{ not in sample}) = \left(1 -
+\tfrac{1}{n}\right)^n \;\xrightarrow[n\to\infty]{}\; e^{-1} \approx
+0.368,\]</span> by the standard limit <span
+class="math inline">\((1-1/n)^n\to e^{-1}\)</span>.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong>
+Bootstrap estimate of <span
+class="math inline">\(\widehat{\mathrm{SE}}(\hat\theta)\)</span> for
+<span class="math inline">\(\hat\theta\)</span> = sample median:</p>
+<blockquote>
+
+</blockquote>
+<p>Typical <span class="math inline">\(B\)</span> is <span
+class="math inline">\(1000\)</span>–<span
+class="math inline">\(10{,}000\)</span>. The procedure works because the
+bootstrap distribution of <span
+class="math inline">\(\hat\theta^*_b\)</span> around <span
+class="math inline">\(\hat\theta\)</span> mimics the sampling
+distribution of <span class="math inline">\(\hat\theta\)</span> around
+<span class="math inline">\(\theta\)</span>.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iii)</strong> The
+closed-form SE comes from the inverse Fisher information at the MLE,
+which assumes (a) the logistic model is correctly specified (linear
+log-odds, independent observations) and (b) we are in the large-sample
+regime where the normal approximation is good. The bootstrap is
+non-parametric: it samples actual rows of the data, so it captures real
+departures from those assumptions — e.g. <em>model
+mis-specification</em> (the true log-odds are non-linear in
+<code>balance</code>) or <em>dependence/heterogeneity</em> not encoded
+in the likelihood. The bootstrap SE being <span
+class="math inline">\(2.5\times\)</span> larger suggests the Fisher SE
+is over-optimistic; the bootstrap is the more trustworthy of the two
+here.</p>
+<h2 class="unnumbered" id="d-hierarchical-clustering-by-hand-2">d)
+Hierarchical clustering by hand <em>(2 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(i)</strong> The
+starting off-diagonal entries: <span
+class="math display">\[d_{12}=2,\;d_{13}=8,\;d_{14}=7,\;d_{23}=9,\;d_{24}=6,\;d_{34}=3.\]</span></p>
+<h4 id="merge-1-height-2.">Merge 1 (height 2).</h4>
+<p>The smallest dissimilarity is <span
+class="math inline">\(d_{12}=2\)</span>, so we merge <span
+class="math inline">\(\{1\}\)</span> and <span
+class="math inline">\(\{2\}\)</span> into <span
+class="math inline">\(\{1,2\}\)</span> at height <span
+class="math inline">\(\mathbf{h_1 = 2}\)</span>. Under <em>complete
+linkage</em> the new row/column entries are the <em>maxima</em> of the
+merged rows: <span class="math display">\[\begin{align*}
+d(\{1,2\},\,3) &amp;= \max(d_{13},d_{23}) = \max(8,9) = 9, \\
+d(\{1,2\},\,4) &amp;= \max(d_{14},d_{24}) = \max(7,6) = 7.
+\end{align*}\]</span> The recomputed (3<span
+class="math inline">\(\times\)</span>3) dissimilarity matrix is <span
+class="math display">\[D^{(1)} = \begin{pmatrix}
+0 &amp; 9 &amp; 7 \\
+9 &amp; 0 &amp; 3 \\
+7 &amp; 3 &amp; 0
+\end{pmatrix}
+\quad\text{(rows/cols: $\{1,2\},\{3\},\{4\}$).}\]</span></p>
+<h4 id="merge-2-height-3.">Merge 2 (height 3).</h4>
+<p>The smallest off-diagonal in <span
+class="math inline">\(D^{(1)}\)</span> is <span
+class="math inline">\(d(\{3\},\{4\}) = 3\)</span>; merge to get <span
+class="math inline">\(\{3,4\}\)</span> at height <span
+class="math inline">\(\mathbf{h_2 = 3}\)</span>.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong> Only
+two clusters remain after Merge 2: <span
+class="math inline">\(\{1,2\}\)</span> and <span
+class="math inline">\(\{3,4\}\)</span>. Under complete linkage the
+inter-cluster distance is the <em>maximum</em> pairwise distance: <span
+class="math display">\[d(\{1,2\},\{3,4\}) = \max(d_{13}, d_{14}, d_{23},
+d_{24}) = \max(8,7,9,6) = \boxed{9}.\]</span> The final fusion therefore
+occurs at height <span class="math inline">\(\mathbf{h_3 =
+9}\)</span>.</p>
+<h4 id="dendrogram-for-orientation.">Dendrogram (for orientation).</h4>
+<div class="center">
+<div class="figure-omitted">Figure (TikZ) — rendered in the PDF version only.</div>
+</div>
+<p><em>Grading: 1 P for the two correct early fusions and heights; 1 P
+for the correct final fusion height (<span
+class="math inline">\(9\)</span>, the max over the four cross-cluster
+pairs). Deduct 0.5 if the linkage update is taken as a min (single
+linkage) by mistake.</em></p>
+<hr />
+<h1 class="unnumbered" id="problem-4-22-energy-use-of-homes">Problem 4
+<strong>(22 %)</strong> — Energy use of homes</h1>
+<h2 class="unnumbered"
+id="a-linear-regression-with-a-polynomial-and-an-interaction-7">a)
+Linear regression with a polynomial and an interaction
+<em>(7 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(i)</strong> Count
+the rows of the coefficient table: intercept, <span
+class="math inline">\(\widetilde{\texttt{area}}\)</span>, <span
+class="math inline">\(\widetilde{\texttt{age}}\)</span>, <span
+class="math inline">\(\widetilde{\texttt{age}}^2\)</span>,
+<code>insulation_standard</code>, <code>insulation_premium</code>,
+<code>heatpump</code>, <span
+class="math inline">\(\widetilde{\texttt{area}}{:}\texttt{heatpump}\)</span>,
+<span class="math inline">\(\widetilde{\texttt{rooms}}\)</span> <span
+class="math inline">\(= \boxed{9}\)</span> parameters. Sanity: residual
+d.f. <span class="math inline">\(= n_{\text{train}} - p = 600 - 9 =
+591\)</span>, which matches the printout. </p>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(ii)</strong>
+<code>cost</code> is in <span class="math inline">\(1000\)</span> EUR.
+For an increase of <span class="math inline">\(+1\)</span> SD in <span
+class="math inline">\(\widetilde{\texttt{area}}\)</span>, holding
+everything else fixed: <span class="math display">\[\begin{align*}
+\text{No heat pump (}\texttt{heatpump}=0\text{):}\quad
+   \Delta\widehat{\texttt{cost}} &amp;=
+\hat\beta_{\widetilde{\text{area}}} = 0.80 \;(1000\,\text{EUR})
+   = \boxed{+800\;\text{EUR}}, \\
+\text{Heat pump (}\texttt{heatpump}=1\text{):}\quad
+   \Delta\widehat{\texttt{cost}} &amp;=
+\hat\beta_{\widetilde{\text{area}}}+\hat\beta_{\widetilde{\text{area}}:\text{heatpump}}
+   = 0.80 + (-0.50) = 0.30 \;(1000\,\text{EUR})
+   = \boxed{+300\;\text{EUR}}.
+\end{align*}\]</span> <strong>Sign of the difference.</strong> The
+marginal cost per extra unit of area is <em>smaller</em> for heat-pump
+houses: heat pumps mitigate the area-driven growth in heating cost,
+exactly what you would expect of an efficient heat source whose
+efficiency does not degrade much in larger volumes.</p>
+<p><em>Grading: 1 P each. Half credit if the EUR/<span
+class="math inline">\(1000\)</span> EUR conversion is forgotten. Deduct
+1 P if the heat-pump effect is reported as <span
+class="math inline">\(-0.50\)</span> alone (forgetting the main <span
+class="math inline">\(\widetilde{\texttt{area}}\)</span> effect) — the
+standard interaction trap.</em></p>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(iii)</strong> The
+two houses both have <span
+class="math inline">\(\widetilde{\texttt{area}}=0\)</span>, <span
+class="math inline">\(\widetilde{\texttt{rooms}}=0\)</span>,
+<code>insulation</code>=poor (reference, so both insulation dummies
+<span class="math inline">\(=0\)</span>), <span
+class="math inline">\(\texttt{heatpump}=0\)</span>. The fitted equation
+reduces to <span class="math display">\[\widehat{\texttt{cost}} = 2.80 +
+(-0.05)\,\widetilde{\texttt{age}} +
+0.30\,\widetilde{\texttt{age}}^2.\]</span> House <span
+class="math inline">\(A\)</span> (<span
+class="math inline">\(\widetilde{\texttt{age}} = -1\)</span>): <span
+class="math display">\[\begin{align*}
+\widehat{\texttt{cost}}_A &amp;= 2.80 + (-0.05)(-1) + 0.30(1) = 2.80 +
+0.05 + 0.30 = 3.15
+\quad\Rightarrow\;\boxed{\mathrm{EUR}\,3{,}150\text{/yr}}.
+\end{align*}\]</span> House <span class="math inline">\(B\)</span>
+(<span class="math inline">\(\widetilde{\texttt{age}} = +2\)</span>):
+<span class="math display">\[\begin{align*}
+\widehat{\texttt{cost}}_B &amp;= 2.80 + (-0.05)(2) + 0.30(4) = 2.80 -
+0.10 + 1.20 = 3.90
+\quad\Rightarrow\;\boxed{\mathrm{EUR}\,3{,}900\text{/yr}}.
+\end{align*}\]</span> <strong>What the <span
+class="math inline">\(\widetilde{\texttt{age}}^2\)</span> term
+implies.</strong> The marginal effect of age is <span
+class="math inline">\(\partial\widehat{\texttt{cost}}/\partial\widetilde{\texttt{age}}
+= -0.05 + 0.60\,\widetilde{\texttt{age}}\)</span>; at the average house
+(<span class="math inline">\(\widetilde{\texttt{age}}=0\)</span>) age
+has essentially no effect (<span class="math inline">\(-0.05\)</span>),
+but at older houses the marginal cost of an extra year grows linearly
+with age (since the derivative itself grows with <span
+class="math inline">\(\widetilde{\texttt{age}}\)</span>). Cost
+<em>accelerates</em> at older ages — a U-shape in age, minimised near
+<span class="math inline">\(\widetilde{\texttt{age}} \approx
+0.083\)</span>.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iv)</strong> The
+high <span class="math inline">\(p\)</span>-value of the <em>main</em>
+<span class="math inline">\(\widetilde{\texttt{age}}\)</span> effect is
+not evidence that <code>age</code> is irrelevant: the model also
+contains <span class="math inline">\(\widetilde{\texttt{age}}^2\)</span>
+with a highly significant <span class="math inline">\(\hat\beta =
+0.30\)</span> (<span class="math inline">\(p&lt;0.001\)</span>). The
+total marginal effect of age is <span class="math inline">\(-0.05 +
+0.60\,\widetilde{\texttt{age}}\)</span>, which is non-zero everywhere
+except <span class="math inline">\(\widetilde{\texttt{age}}\approx
+0.083\)</span>. Under the <em>hierarchical principle</em> the course
+follows, if a higher-order term is kept then its lower-order siblings
+must be kept too; dropping <span
+class="math inline">\(\widetilde{\texttt{age}}\)</span> alone would
+force the parabola to pass through the origin in its derivative, which
+is a strong unjustified constraint.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(v)</strong> The
+classmate’s interpretation ignores the <span
+class="math inline">\(\widetilde{\texttt{area}}{:}\texttt{heatpump}\)</span>
+interaction: <span
+class="math inline">\(\hat\beta_{\texttt{heatpump}}=-0.60\)</span> is
+the heat-pump effect <em>at</em> <span
+class="math inline">\(\widetilde{\texttt{area}}=0\)</span>, not on
+average over all houses. The actual change in predicted cost from
+installing a heat pump at standardized area <span
+class="math inline">\(\widetilde{\texttt{area}} = +1\)</span> is <span
+class="math display">\[\Delta\widehat{\texttt{cost}} =
+\hat\beta_{\text{heatpump}} +
+\hat\beta_{\widetilde{\text{area}}:\text{heatpump}}\cdot 1
+   = -0.60 + (-0.50) = -1.10\;(1000\,\text{EUR}) =
+\boxed{-\mathrm{EUR}\,1{,}100/\text{yr}},\]</span> so a heat pump in a
+one-SD-larger-than-average house saves about <span
+class="math inline">\(\mathrm{EUR}\,1{,}100\)</span>/year, not <span
+class="math inline">\(\mathrm{EUR}\,600\)</span>. The saving <em>grows
+with house size</em> — which is exactly why heat pumps are even more
+cost-effective in larger homes.</p>
+<h2 class="unnumbered" id="b-collinearity-diagnosis-4">b) Collinearity
+diagnosis <em>(4 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(i)</strong> The two
+numerical symptoms in the second row:</p>
+<ul>
+<li><p>The point estimate of <span
+class="math inline">\(\hat\beta_{\widetilde{\text{area}}}\)</span>
+collapsed dramatically (from <span class="math inline">\(0.90\)</span>
+alone to <span class="math inline">\(0.55\)</span> in the joint model) —
+and a new coefficient <span
+class="math inline">\(\hat\beta_{\widetilde{\text{rooms}}} =
+0.42\)</span> “took” the rest. The two estimates are not identified
+separately; the data only constrains their sum.</p></li>
+<li><p>The standard errors <em>ballooned</em>: <span
+class="math inline">\(\mathrm{SE}(\hat\beta_{\widetilde{\text{area}}})\)</span>
+went from <span class="math inline">\(0.06\)</span> to <span
+class="math inline">\(0.15\)</span> (a <span
+class="math inline">\(2.5\times\)</span> increase); similarly for <span
+class="math inline">\(\widetilde{\texttt{rooms}}\)</span>.</p></li>
+<li><p><em>Bonus tell:</em> adjusted <span
+class="math inline">\(R^2\)</span> barely budged (<span
+class="math inline">\(0.43\to 0.44\)</span>) despite adding a “new”
+predictor — the two predictors carry essentially the same
+information.</p></li>
+</ul>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong> With
+<span class="math inline">\(r = 0.92\)</span> the columns of <span
+class="math inline">\(\mathbf X\)</span> are nearly linearly dependent,
+so <span class="math inline">\(\mathbf X^\top \mathbf X\)</span> has a
+near-zero eigenvalue and <span class="math inline">\((\mathbf X^\top
+\mathbf X)^{-1}\)</span> has a near-infinite eigenvalue. Since <span
+class="math inline">\(\mathrm{Var}(\hat\beta) = \sigma^2 (\mathbf X^\top
+\mathbf X)^{-1}\)</span>, the coefficient variances inflate;
+equivalently, the variance-inflation factor (VIF) for each of the two
+collinear predictors is approximately <span
+class="math inline">\(1/(1-r^2) = 1/(1-0.846) \approx 6.5\)</span>.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iii)</strong>
+<strong>No, predictions are not unstable.</strong> While the two
+<em>individual</em> coefficients are poorly identified, the <em>sum</em>
+<span
+class="math inline">\(\hat\beta_{\widetilde{\text{area}}}\widetilde{\texttt{area}}
++
+\hat\beta_{\widetilde{\text{rooms}}}\widetilde{\texttt{rooms}}\)</span>
+is well-determined — that is exactly what the data identifies. So <span
+class="math inline">\(\hat y\)</span> is fine; only the
+<em>interpretation</em> of which predictor “causes” the change is
+muddled. Collinearity is an interpretation problem, not a prediction
+problem (assuming the test-time predictors stay in the same collinear
+region).</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iv)</strong> Two
+methods (1 SD between trade-offs each):</p>
+<ul>
+<li><p><strong>Ridge regression.</strong> Adds a penalty <span
+class="math inline">\(\lambda\sum_j\beta_j^2\)</span> that stabilizes
+<span class="math inline">\((\mathbf X^\top \mathbf X + \lambda
+I)^{-1}\)</span>, distributing the shared signal evenly across collinear
+predictors. <em>Trade-off:</em> introduces bias (shrinkage toward zero)
+but reduces coefficient variance dramatically — and is the canonical
+remedy for collinearity in this course.</p></li>
+<li><p><strong>Principal components regression (PCR)</strong>. Replace
+the correlated predictors with their orthogonal principal components,
+then regress on the leading ones. <em>Trade-off:</em> the PCs are
+perfectly uncorrelated by construction (so OLS on them is
+well-conditioned), but interpretation in terms of the original
+predictors is lost — each PC is a linear combination.</p></li>
+</ul>
+<p><em>Other defensible answers:</em> the lasso (gives sparsity, can
+arbitrarily “pick” one of two near-identical predictors — not always
+desirable); partial least squares (supervised PCR); combining the two
+predictors into a derived variable like “area per room”.</p>
+<h2 class="unnumbered" id="c-lasso-with-10-fold-cv-5">c) Lasso with
+<span class="math inline">\(10\)</span>-fold CV <em>(5 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(i)</strong> The L1
+penalty applies separately to each dummy column, but the columns of an
+indicator encoding depend on which level is the reference. Changing the
+reference level reparameterizes the dummies (e.g. what used to encode
+“standard vs poor” now encodes “standard vs premium”), with different
+coefficient magnitudes and hence different penalties — so the lasso path
+is <em>not</em> invariant.</p>
+<p><strong>Practical consequence.</strong> If the lasso shrinks one
+dummy to exactly zero, the interpretation is “no effect of <em>that</em>
+level relative to the chosen reference,” not “no effect of that level in
+absolute terms.” One can have <code>insulation_premium</code> dropped
+while <code>insulation_standard</code> stays in, and that just says
+“premium and the reference are indistinguishable on this <span
+class="math inline">\(\lambda\)</span>”; changing the reference can give
+a quite different sparsity pattern. (The cleaner alternative is a
+<em>group lasso</em>, which keeps all dummies of a factor in or out
+together.)</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong>
+<strong>One-standard-error rule.</strong> Among all values of <span
+class="math inline">\(\lambda\)</span> whose CV-MSE is within one
+standard error (across the <span class="math inline">\(k\)</span> folds)
+of the minimum CV-MSE, choose the <em>largest</em> (= most-regularized,
+simplest) one. Formally, with <span
+class="math inline">\(\hat\lambda_{\min}=\arg\min_\lambda\mathrm{CV}(\lambda)\)</span>
+achieving CV-MSE <span class="math inline">\(m^\star\)</span> and
+standard error <span class="math inline">\(\mathrm{SE}^\star\)</span>,
+<span class="math display">\[\hat\lambda_{1\mathrm{SE}} =
+\max\bigl\{\lambda:\mathrm{CV}(\lambda)\leq
+m^\star+\mathrm{SE}^\star\bigr\}.\]</span> <strong>Why prefer
+it:</strong> the CV minimum is itself a noisy estimate of test error, so
+picking the exact argmin tends to slightly overfit the validation folds.
+The 1-SE choice yields a sparser, more interpretable, more stable model
+whose test performance is, within noise, indistinguishable from the
+best.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iii)</strong> The
+small improvement (test MSE <span class="math inline">\(0.205 \to
+0.196\)</span>, <span class="math inline">\(\approx 4.4\%\)</span>
+reduction) together with two coefficients dropped suggests that the two
+dropped predictors carry <em>little signal</em> given the others — their
+OLS estimates were noisy and shrinking them to zero removed more
+variance than the bias it introduced, hence the modest gain. But the
+gain is small, which means the two predictors were not zero either;
+their contribution to test MSE is real but minor. Likely candidates
+given the part (a) table: <span
+class="math inline">\(\widetilde{\texttt{age}}\)</span> main effect
+(insignificant in OLS, <span class="math inline">\(p=0.617\)</span>) and
+<span class="math inline">\(\widetilde{\texttt{rooms}}\)</span> (<span
+class="math inline">\(p=0.268\)</span>).</p>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(iv)</strong>
+<strong>Recommend <span
+class="math inline">\(\hat\lambda_{1\mathrm{SE}}\)</span></strong> for
+interpretability. The 1-SE choice gives a <span
+class="math inline">\(4\)</span>-variable model versus the <span
+class="math inline">\(6\)</span>-variable model at <span
+class="math inline">\(\hat\lambda_{\min}\)</span> — two fewer effects to
+explain to stakeholders.</p>
+<p><strong>Concrete trade-off in test MSE:</strong> test MSE rises from
+<span class="math inline">\(0.196\)</span> at <span
+class="math inline">\(\hat\lambda_{\min}\)</span> to <span
+class="math inline">\(0.203\)</span> at <span
+class="math inline">\(\hat\lambda_{1\mathrm{SE}}\)</span>, a difference
+of <span class="math inline">\(0.007\)</span> (about <span
+class="math inline">\(3.5\%\)</span>). For the practitioner, that is a
+small predictive cost for a halved model size and a model whose CV
+performance is statistically indistinguishable from the optimum (that is
+exactly what the 1-SE rule guarantees). The <span
+class="math inline">\(\hat\lambda_{1\mathrm{SE}}\)</span> model is also
+still below the OLS test MSE (<span
+class="math inline">\(0.205\)</span>), so simplification did not push us
+past where we started.</p>
+<p><em>Grading: 1 P for the recommendation with rationale; 1 P for the
+concrete numeric trade-off (<span class="math inline">\(0.196\to
+0.203\)</span>, <span class="math inline">\(+0.007\)</span> test MSE,
+<span class="math inline">\(-2\)</span> predictors).</em></p>
+<h2 class="unnumbered"
+id="d-gradient-boosting-interpretation-and-pseudocode-6">d) Gradient
+boosting interpretation and pseudocode <em>(6 %)</em></h2>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(i)</strong>
+Squared-error gradient boosting (the “fit-residuals” view):</p>
+<blockquote>
+
+</blockquote>
+<p><em>Notes:</em> (a) initialization to <span
+class="math inline">\(\bar y\)</span> is the constant that minimises the
+squared loss; (b) each round fits the <em>residuals</em> (gradient of
+squared loss, up to sign), so each new tree attacks what the ensemble so
+far is getting wrong; (c) shrinkage <span
+class="math inline">\(\nu\)</span> takes a small step in the direction
+of the new tree, which slows learning and improves generalization.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong> With
+squared-error loss <span class="math inline">\(L(y, f) =
+\tfrac{1}{2}(y-f)^2\)</span>, <span
+class="math display">\[-\frac{\partial L}{\partial f}\bigg|_{f=\hat
+f^{(m-1)}(x_i)} = (y_i - f)\big|_{\hat f^{(m-1)}(x_i)} = y_i - \hat
+f^{(m-1)}(x_i) = r_i^{(m)}.\]</span> The current residual <em>is</em>
+the negative gradient; fitting a tree to the residuals is literally
+fitting to <span class="math inline">\(-\partial L/\partial f\)</span>.
+For other (non-squared) losses the trick generalises: at each round fit
+a tree to the negative gradient and step in that direction.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iii)</strong>
+Tuning <span class="math inline">\((B, d, \nu)\)</span>:</p>
+<ul>
+<li><p><span class="math inline">\(\bm B\)</span> (number of trees):
+tune by CV (or a validation set). Too small <span
+class="math inline">\(\Rightarrow\)</span> underfitting (high bias); too
+large <span class="math inline">\(\Rightarrow\)</span> overfits
+(variance grows because each late tree fits noise).</p></li>
+<li><p><span class="math inline">\(\bm d\)</span> (tree depth /
+interaction order): typically <span class="math inline">\(d \in \{1, 2,
+4, 6\}\)</span>. Small <span class="math inline">\(d\)</span> (stumps)
+is purely additive (low variance per tree, may bias if real interactions
+exist); large <span class="math inline">\(d\)</span> enables
+higher-order interactions but inflates variance.</p></li>
+<li><p><span class="math inline">\(\bm \nu\)</span> (learning rate):
+typically <span class="math inline">\(\nu \in [0.001, 0.1]\)</span>.
+Smaller <span class="math inline">\(\nu\)</span> takes shorter steps per
+round, reducing variance, but requires more trees to fit (so <span
+class="math inline">\(B\)</span> must grow roughly proportionally to
+<span class="math inline">\(1/\nu\)</span>). <span
+class="math inline">\((B, \nu)\)</span> are tuned jointly.</p></li>
+</ul>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iv)</strong>
+<strong>Not without early stopping.</strong> Unlike random forests
+(where test error is monotone in <span class="math inline">\(B\)</span>
+because trees are independent), boosting is sequential and can
+<em>overfit</em> for large <span class="math inline">\(B\)</span> — late
+trees fit residual noise rather than signal. With <span
+class="math inline">\(B=10{,}000\)</span> and <span
+class="math inline">\(\nu = 0.1\)</span>, the chance of overfitting is
+real. The right move is to pick <span class="math inline">\(B\)</span>
+by CV <em>or</em> use <span class="math inline">\(B=10{,}000\)</span>
+together with early stopping (monitor validation loss and stop when it
+stops decreasing). With a sufficiently small <span
+class="math inline">\(\nu\)</span> and early stopping, “B too large” is
+benign — but the colleague’s plan does not include either.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(v)</strong> The
+gradient-boosting test MSE (<span class="math inline">\(0.151\)</span>)
+substantially below OLS/lasso (<span class="math inline">\(\approx
+0.20\)</span>) and below the additive linear-plus-polynomial model in
+part (a) suggests that the true relationship contains
+<em>interactions</em> that the additive linear / lasso models cannot
+capture — e.g. depth-<span class="math inline">\(d\)</span> trees
+readily encode three-way interactions like <code>heatpump</code><span
+class="math inline">\(\times\widetilde{\texttt{area}}\times\)</span><code>insulation</code>,
+while OLS would need every such product term entered by hand. To recover
+interpretability from the black-box ensemble, compute either (i) a
+<strong>variable-importance plot</strong> (gain or permutation
+importance) to rank the predictors by total contribution, or (ii)
+<strong>partial-dependence plots</strong> to see the average direction
+and shape of each top predictor’s effect on <code>cost</code>.</p>
+<hr />
+<h1 class="unnumbered"
+id="problem-5-24-hospital-readmission-classification">Problem 5
+<strong>(24 %)</strong> — Hospital-readmission classification</h1>
+<h2 class="unnumbered"
+id="a-logistic-regression-with-an-interaction-7">a) Logistic regression
+with an interaction <em>(7 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(i)</strong>
+<strong>Encoding assumption:</strong> <code>diabetes</code><span
+class="math inline">\(=1\)</span> means the patient has diabetes (else
+<span class="math inline">\(0\)</span>); <code>insulin</code><span
+class="math inline">\(=1\)</span> means receiving insulin therapy (else
+<span class="math inline">\(0\)</span>); <code>sex</code><span
+class="math inline">\(=1\)</span> for male (female <span
+class="math inline">\(=0\)</span>, the stated reference).</p>
+<p><strong>Odds factor per additional prior admission.</strong> A unit
+increase in <code>prev_adm</code> multiplies the odds by <span
+class="math display">\[\exp(0.40) \approx \boxed{1.49}.\]</span> That
+is, each additional prior admission in the past year raises the odds of
+<span class="math inline">\(90\)</span>-day readmission by about <span
+class="math inline">\(49\%\)</span>, holding everything else fixed.</p>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(ii)</strong> Joint
+contribution of the three diabetes/insulin terms to the linear
+predictor, <span class="math inline">\(\eta_{\text{DM,Ins}}(d, s) =
+0.10\,d + 0.05\,s + 0.90\,d s\)</span>:</p>
+<div class="center">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><span
+class="math inline">\((\texttt{diabetes},
+\texttt{insulin})\)</span></th>
+<th style="text-align: center;">Contribution to <span
+class="math inline">\(\hat\eta\)</span></th>
+<th style="text-align: left;">Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\((0,0)\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0\)</span></td>
+<td style="text-align: left;">reference</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\((1,0)\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.10\)</span></td>
+<td style="text-align: left;">diabetes alone, modest</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\((0,1)\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.05\)</span></td>
+<td style="text-align: left;">insulin without diabetes, negligible</td>
+</tr>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\((1,1)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(0.10 + 0.05
++ 0.90 = 1.05\)</span></td>
+<td style="text-align: left;">dominated by the interaction</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Odds factor (diabetic + insulin vs reference):</strong> <span
+class="math display">\[e^{1.05} \approx \boxed{2.86}.\]</span> A
+diabetic patient receiving insulin has roughly <span
+class="math inline">\(2.86\times\)</span> the odds of <span
+class="math inline">\(90\)</span>-day readmission of a non-diabetic,
+non-insulin patient (holding other predictors fixed). Note that the main
+effects of <code>diabetes</code> and <code>insulin</code> are
+individually small, but together they “light up” through the interaction
+— the typical pattern for “diabetic-on-insulin = severe disease.”</p>
+<p><em>Grading: 1 P for the four correct contributions to <span
+class="math inline">\(\hat\eta\)</span>; 1 P for the odds factor <span
+class="math inline">\(e^{1.05}\approx 2.86\)</span>. Half credit if the
+interaction term is forgotten and only <span
+class="math inline">\(e^{0.10+0.05}=e^{0.15}\approx 1.16\)</span> is
+reported.</em></p>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(iii)</strong> For a
+<span class="math inline">\(70\)</span>-year-old male patient with
+<code>los</code><span class="math inline">\(=6\)</span>,
+<code>prev_adm</code><span class="math inline">\(=2\)</span>,
+<code>diabetes</code><span class="math inline">\(=1\)</span>,
+<code>insulin</code><span class="math inline">\(=1\)</span>,
+<code>sex</code><span class="math inline">\(=1\)</span>: <span
+class="math display">\[\begin{align*}
+\hat\eta &amp;= -4.20
+   + 0.030\cdot 70
+   + 0.080\cdot 6
+   + 0.40\cdot 2
+   + \underbrace{0.10 + 0.05 + 0.90}_{\text{diabetes/insulin block (from
+(ii))}}
+   + 0.15\cdot 1 \\[2pt]
+&amp;= -4.20 + 2.10 + 0.48 + 0.80 + 1.05 + 0.15 \\[2pt]
+&amp;= \boxed{0.38}.
+\end{align*}\]</span> Sigmoid step: <span class="math display">\[\hat p
+= \sigma(0.38) = \frac{1}{1+e^{-0.38}} = \frac{1}{1+0.684} =
+\frac{1}{1.684} \approx \boxed{0.594}.\]</span></p>
+<p><em>Grading: 1 P for the per-term assembly with the right
+diabetes/insulin block; 1 P for the sigmoid step. Accept any answer in
+<span class="math inline">\([0.59, 0.60]\)</span>. Deduct 0.5 if the
+interaction is forgotten (<span class="math inline">\(\hat\eta=-0.52,
+\hat p\approx 0.37\)</span>).</em></p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iv)</strong> The
+main-effect <span class="math inline">\(p\)</span>-values of
+<code>diabetes</code> (<span class="math inline">\(0.578\)</span>) and
+<code>insulin</code> (<span class="math inline">\(0.804\)</span>) are
+testing whether each variable has an effect <em>at the value <span
+class="math inline">\(0\)</span> of the other</em>. Because the
+interaction <span class="math inline">\(\hat\beta_{\text{diab:ins}} =
+0.90\)</span> is highly significant (<span
+class="math inline">\(p=0.003\)</span>), the variables clearly matter —
+but mostly through their joint effect, not individually. By the
+hierarchical principle, if the interaction is in the model both main
+effects must stay; dropping them would force the joint effect to a
+peculiar parametric shape and break the canonical interpretation of main
+effects as conditional contrasts at zero.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(v)</strong>
+<strong>Sensitivity</strong> in this setting is the proportion of
+patients who <em>actually were</em> readmitted within <span
+class="math inline">\(90\)</span> days that the classifier correctly
+flags as high-risk: “of all true readmissions, what fraction did we
+catch?” (Equivalently <span class="math inline">\(\Pr(\hat
+Y=1 \mid Y=1)\)</span>.)</p>
+<h2 class="unnumbered" id="b-confusion-matrix-and-threshold-tuning-3">b)
+Confusion matrix and threshold tuning <em>(3 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(i)</strong>
+Confusion-matrix totals: <span class="math inline">\(54+126 =
+180\)</span> true readmissions, <span class="math inline">\(72+648 =
+720\)</span> true non-readmissions, <span class="math inline">\(n =
+900\)</span>. <span class="math display">\[\begin{align*}
+\text{Sensitivity} &amp;= \frac{\text{TP}}{\text{TP}+\text{FN}} =
+\frac{54}{180} = \boxed{0.30}, \\
+\text{Specificity} &amp;= \frac{\text{TN}}{\text{TN}+\text{FP}} =
+\frac{648}{720} = \boxed{0.90}, \\
+\text{Error rate} &amp;= \frac{\text{FP}+\text{FN}}{n} =
+\frac{72+126}{900} = \frac{198}{900} = \boxed{0.22}.
+\end{align*}\]</span></p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong>
+Lowering the threshold from <span class="math inline">\(0.5\)</span> to
+<span class="math inline">\(0.3\)</span> classifies <em>more</em>
+patients as readmissions. Therefore <strong>sensitivity goes up</strong>
+(more true readmissions now cross the lower bar and are caught) and
+<strong>specificity goes down</strong> (more true non-readmissions are
+now incorrectly flagged).</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iii)</strong> I
+would prioritize <strong>sensitivity</strong>: a false negative (a
+high-risk patient discharged without targeted follow-up) can have severe
+downstream consequences (another acute event, possibly fatal), while a
+false positive (extra follow-up call / care coordination) is relatively
+cheap. The clinical asymmetry of costs argues for catching as many true
+readmissions as possible, even at the cost of more false alarms —
+i.e. lower the threshold.</p>
+<h2 class="unnumbered"
+id="c-adaboost-pseudocode-and-a-small-numerical-iteration-6">c)
+AdaBoost: pseudocode and a small numerical iteration <em>(6 %)</em></h2>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(i)</strong>
+AdaBoost with <span class="math inline">\(M\)</span> rounds (binary
+classification, labels <span
+class="math inline">\(y_i\in\{-1,+1\}\)</span>):</p>
+<blockquote>
+
+</blockquote>
+<p><em>Notes:</em> the weight update doubles down on the observations
+the current learner gets <em>wrong</em> (weighted by the learner’s
+accuracy via <span class="math inline">\(\alpha_m\)</span>); the next
+learner therefore focuses on the hard cases. Renormalization keeps the
+weights interpretable as a probability distribution.</p>
+<p><em>Grading: 0.5 P each for (a) initialization, (b) <span
+class="math inline">\(\mathrm{err}_m\)</span> formula, (c) <span
+class="math inline">\(\alpha_m\)</span> formula, (d) weight update with
+<span class="math inline">\(\mathbb{1}\{y_i\neq G_m(x_i)\}\)</span>
+exponent; bonus 0 P for the final sign-of-weighted-sum ensemble
+(expected).</em></p>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(ii)</strong>
+Initial weights <span class="math inline">\(w_i = 1/10 = 0.10\)</span>;
+two of ten are misclassified. <span
+class="math display">\[\begin{align*}
+\mathrm{err}_1 &amp;= \frac{2\cdot 0.10}{10\cdot 0.10} =
+\frac{0.20}{1.00} = \boxed{0.20}, \\
+\alpha_1 &amp;= \log\frac{1 - 0.20}{0.20} = \log\frac{0.80}{0.20} = \log
+4 \approx \boxed{1.39}.
+\end{align*}\]</span> Un-normalized weight updates:</p>
+<ul>
+<li><p>Correctly-classified observation (<span
+class="math inline">\(\mathbb{1}\{\cdot\} = 0\)</span>): <span
+class="math inline">\(\quad w_i \leftarrow 0.10 \cdot e^{0} =
+\boxed{0.10}\)</span> (unchanged).</p></li>
+<li><p>Misclassified observation (<span
+class="math inline">\(\mathbb{1}\{\cdot\} = 1\)</span>): <span
+class="math inline">\(\quad w_i \leftarrow 0.10 \cdot e^{1.39} = 0.10
+\cdot 4 = \boxed{0.40}\)</span> (quadrupled).</p></li>
+</ul>
+<p><em>Sanity:</em> total weight after update is <span
+class="math inline">\(8\cdot 0.10 + 2\cdot 0.40 = 0.80 + 0.80 =
+1.60\)</span>, so post-normalization each correctly-classified weight is
+<span class="math inline">\(0.10/1.60 = 0.0625\)</span> and each
+misclassified one is <span class="math inline">\(0.40/1.60 =
+0.25\)</span> — the misclassified observations now carry <span
+class="math inline">\(25\%\)</span> of the weight each (up from <span
+class="math inline">\(10\%\)</span>).</p>
+<p><em>Grading: 0.5 P each for <span
+class="math inline">\(\mathrm{err}_1\)</span>, <span
+class="math inline">\(\alpha_1\)</span>, correct-obs update, and
+misclassified-obs update. Accept <span class="math inline">\(\alpha_1 =
+\ln 4 \approx 1.386\)</span> to two decimals; the closed form <span
+class="math inline">\(\ln 4\)</span> is also full credit.</em></p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iii)</strong>
+Comparing the two test confusion-matrix summaries:</p>
+<div class="center">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Model</th>
+<th style="text-align: center;">Sensitivity</th>
+<th style="text-align: center;">Specificity</th>
+<th style="text-align: center;">Error rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Logistic regression (5b(i))</td>
+<td style="text-align: center;"><span
+class="math inline">\(0.30\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.90\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.22\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">AdaBoost (<span
+class="math inline">\(M=200\)</span>)</td>
+<td style="text-align: center;"><span
+class="math inline">\(0.55\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.86\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.16\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>AdaBoost dominates on every clinically relevant
+criterion</strong> — substantially higher sensitivity (<span
+class="math inline">\(0.55\)</span> vs <span
+class="math inline">\(0.30\)</span>, almost twice as many true
+readmissions caught), only a small drop in specificity (<span
+class="math inline">\(0.90 \to 0.86\)</span>, a <span
+class="math inline">\(4\)</span> pp increase in false alarms), and a
+lower overall error rate (<span class="math inline">\(0.16\)</span> vs
+<span class="math inline">\(0.22\)</span>). Given that missing a
+high-risk patient is far costlier than an unnecessary follow-up call
+(part (b)(iii)), I would recommend <strong>AdaBoost</strong>, primarily
+on the <em>sensitivity</em> criterion.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(iv)</strong>
+<strong>True</strong>. AdaBoost can be derived as forward stagewise
+additive modelling under the exponential loss <span
+class="math inline">\(L(y, f) = e^{-yf}\)</span> with <span
+class="math inline">\(y \in \{-1, +1\}\)</span> (Friedman, Hastie &amp;
+Tibshirani 2000). The resulting update rule for the additive ensemble
+matches AdaBoost’s classifier weights <span
+class="math inline">\(\alpha_m\)</span> and weight updates exactly. This
+is also the reason boosting was eventually re-cast in the more general
+<em>gradient-boosting</em> framework: AdaBoost is one specific loss;
+squared error, log loss (logitboost), etc., all fit the same
+template.</p>
+<h2 class="unnumbered"
+id="d-a-neural-network-classifier-and-a-backprop-mini-derivation-8">d) A
+neural network classifier and a backprop mini-derivation
+<em>(8 %)</em></h2>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(i)</strong> Each
+layer contributes <span class="math inline">\((\text{\#inputs} +
+1)\cdot(\text{\#outputs})\)</span> parameters; the <span
+class="math inline">\(+1\)</span> counts the bias. <span
+class="math display">\[\begin{align*}
+\text{input}\to\text{hidden}:&amp;\quad (7 + 1)\cdot 10 = 80, \\
+\text{hidden}\to\text{output}:&amp;\quad (10 + 1)\cdot 1 = 11, \\
+\text{Total:}&amp;\quad 80 + 11 = \boxed{91}\text{ parameters.}
+\end{align*}\]</span> Layer-by-layer: <span class="math inline">\(7\cdot
+10 = 70\)</span> input-to-hidden weights, <span
+class="math inline">\(10\)</span> hidden-layer biases, <span
+class="math inline">\(10\cdot 1 = 10\)</span> hidden-to-output weights,
+<span class="math inline">\(1\)</span> output-layer bias; <span
+class="math inline">\(70+10+10+1=91\)</span>. </p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(ii)</strong>
+Pre-activation: <span class="math display">\[\begin{align*}
+v &amp;= b + \sum_{j=1}^7 w_j x_j \\
+  &amp;= -0.20 + 0.20\cdot 0.5 + (-0.50)\cdot(-0.5) + 1.00\cdot 2 +
+0.40\cdot 1
+       + (-0.60)\cdot 0 + 0.30\cdot 1 + 0.10\cdot(-1) \\
+  &amp;= -0.20 + 0.10 + 0.25 + 2.00 + 0.40 + 0 + 0.30 - 0.10 \\
+  &amp;= 2.75.
+\end{align*}\]</span> ReLU activation: <span
+class="math inline">\(\mathrm{ReLU}(2.75) = \max(0, 2.75) =
+\boxed{2.75}\)</span>.</p>
+<p><em>Grading: 0.5 P for the correct pre-activation; 0.5 P for the ReLU
+step. Accept <span class="math inline">\(2.74\)</span>–<span
+class="math inline">\(2.76\)</span>.</em></p>
+<p><strong>Solution</strong> <em>(3 %)</em> <strong>(iii)</strong>
+Backprop mini-derivation for <span class="math inline">\(L_i =
+\tfrac{1}{2}(y_i - \hat f(x_i))^2\)</span>.</p>
+<p><strong>(a)</strong> <em>(1 %)</em> Differentiate <span
+class="math inline">\(L_i\)</span> with respect to <span
+class="math inline">\(\hat f(x_i)\)</span>, treating <span
+class="math inline">\(y_i\)</span> as a constant: <span
+class="math display">\[\boxed{\frac{\partial L_i}{\partial \hat f(x_i)}
+= -\bigl(y_i - \hat f(x_i)\bigr) = \hat f(x_i) - y_i.}\]</span></p>
+<p><strong>(b)</strong> <em>(1 %)</em> Apply the chain rule with <span
+class="math inline">\(\hat f(x_i) = \beta_0 + \sum_k \beta_k
+z_k\)</span>, so <span class="math inline">\(\partial\hat
+f(x_i)/\partial \beta_k = z_k\)</span> for <span
+class="math inline">\(k\ge 1\)</span>: <span
+class="math display">\[\boxed{\frac{\partial L_i}{\partial \beta_k}
+   = \frac{\partial L_i}{\partial \hat f(x_i)}\cdot\frac{\partial \hat
+f(x_i)}{\partial \beta_k}
+   = -\bigl(y_i - \hat f(x_i)\bigr)\cdot z_k.}\]</span> (For <span
+class="math inline">\(\beta_0\)</span> the second factor is <span
+class="math inline">\(1\)</span>, giving <span
+class="math inline">\(\partial L_i/\partial \beta_0 = -(y_i - \hat
+f(x_i))\)</span>.)</p>
+<p><strong>(c)</strong> <em>(1 %)</em> For the input-to-hidden weights,
+chain through <span class="math inline">\(\hat f \to z_k \to v_{ik} \to
+\alpha_{kj}\)</span>. With <span class="math inline">\(z_k =
+g(v_{ik})\)</span> and <span class="math inline">\(v_{ik} = \alpha_{k0}
++ \sum_j \alpha_{kj} x_{ij}\)</span>: <span
+class="math display">\[\begin{align*}
+\frac{\partial L_i}{\partial \alpha_{kj}}
+   &amp;= \frac{\partial L_i}{\partial \hat f(x_i)}\cdot\frac{\partial
+\hat f(x_i)}{\partial z_k}\cdot
+        \frac{\partial z_k}{\partial v_{ik}}\cdot\frac{\partial
+v_{ik}}{\partial \alpha_{kj}} \\
+   &amp;= \bigl(-\!(y_i - \hat f(x_i))\bigr) \cdot \beta_k \cdot
+g&#39;(v_{ik}) \cdot x_{ij}.
+\end{align*}\]</span> <span class="math display">\[\boxed{\frac{\partial
+L_i}{\partial \alpha_{kj}} = -\bigl(y_i - \hat
+f(x_i)\bigr)\,\beta_k\,g&#39;(v_{ik})\,x_{ij}.}\]</span>
+<em>Sanity:</em> the gradient signal at the output, <span
+class="math inline">\((\hat f - y)\)</span>, is propagated backward
+through <span class="math inline">\(\beta_k\)</span>, then through <span
+class="math inline">\(g&#39;(v_{ik})\)</span> (vanishes when ReLU
+saturates at <span class="math inline">\(v_{ik}\le 0\)</span>, hence the
+classic “dead-ReLU” problem), then scaled by <span
+class="math inline">\(x_{ij}\)</span> (the input that drives this
+weight). This is exactly the chain-rule structure that backprop exploits
+in O(forward-pass) time.</p>
+<p><em>Grading: 1 P each for (a) the loss-output gradient, (b) the <span
+class="math inline">\(\beta_k\)</span> gradient via chain rule, (c) the
+<span class="math inline">\(\alpha_{kj}\)</span> gradient via the full
+three-step chain. Deduct 0.5 in (c) for omitting the <span
+class="math inline">\(g&#39;(v_{ik})\)</span> factor (the most common
+slip).</em></p>
+<p><strong>Solution</strong> <em>(2 %)</em> <strong>(iv)</strong> Two
+regularization techniques (must include one besides L2):</p>
+<ul>
+<li><p><strong>Dropout</strong>, <span
+class="math inline">\(p_{\mathrm{drop}} = 0.2\)</span> on the hidden
+layer (each neuron has a <span class="math inline">\(20\%\)</span>
+chance of being zeroed at each training step). <em>Role:</em> prevents
+co-adaptation of hidden units — the network cannot rely on any one
+neuron being present, so it learns more robust, redundant features.
+Active only at training time; at test time the full network is
+used.</p></li>
+<li><p><strong>Early stopping</strong> (no associated <span
+class="math inline">\(\lambda\)</span>; the “hyperparameter” is the
+patience, e.g. <span class="math inline">\(10\)</span> epochs without
+validation-loss improvement). <em>Role:</em> train on the training set
+but monitor validation loss; halt as soon as it stops improving. This
+caps the effective complexity of the fit before the network has time to
+memorise training noise. (Equivalent to a data-driven L2 in some
+idealised regression settings.)</p></li>
+</ul>
+<p><em>Other defensible choices:</em> L2 weight decay with <span
+class="math inline">\(\lambda = 10^{-4}\)</span> (the one the question
+<em>excluded</em>); L1 weight decay; label smoothing <span
+class="math inline">\(\varepsilon = 0.05\)</span> (Problem 2d(ii)); data
+augmentation if applicable.</p>
+<p><strong>Solution</strong> <em>(1 %)</em> <strong>(v)</strong>
+<strong>Mini-batch SGD provides implicit regularization for
+free.</strong> The gradient noise from drawing different mini-batches at
+each step acts like injecting noise into the optimization trajectory,
+biasing SGD toward <em>flat minima</em> of the loss landscape (regions
+where the loss is insensitive to small parameter perturbations); flat
+minima have been observed empirically to generalize better than sharp
+ones. This implicit regularization is one of the prof’s hobbyhorses — it
+explains why an over-parameterized network trained with SGD can still
+generalize without explicit weight decay, and is closely related to the
+double-descent / benign-overfitting story.</p>
+<hr />
+<p><strong>End of solution proposal.</strong>Total awarded: <span
+class="math inline">\(10+28+16+22+24=100\)</span> points.</p>
+</body>
+</html>

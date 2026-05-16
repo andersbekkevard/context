@@ -22,6 +22,27 @@ Calibrated mock exams for the **May 18, 2026 TMA4268 final**. Each mock is const
 | 9 | <a href="/pdfs/mock-exam-9.pdf" target="_blank" rel="noopener">Mock Exam 9 (PDF)</a> | <a href="/pdfs/mock-exam-9-solution.pdf" target="_blank" rel="noopener">Solution (PDF)</a> | 10 / 28 / 16 / 22 / 24 |
 | 10 | <a href="/pdfs/mock-exam-10.pdf" target="_blank" rel="noopener">Mock Exam 10 (PDF)</a> | <a href="/pdfs/mock-exam-10-solution.pdf" target="_blank" rel="noopener">Solution (PDF)</a> | 10 / 28 / 16 / 20 / 26 |
 
+### If you prefer HTML
+
+LaTeX-rendered web versions of every mock (and its solution), built from the same `.tex` sources with [pandoc](https://pandoc.org/) + [MathJax](https://www.mathjax.org/). Math is live and selectable; the layout mimics the compiled PDF rather than the wiki. TikZ figures are replaced by a note pointing back to the PDF.
+
+| # | Exam (HTML) | Solution (HTML) |
+|---|---|---|
+| 1 | <a href="/exams/mock-exam-1.html" target="_blank" rel="noopener">Mock Exam 1</a> | <a href="/exams/mock-exam-1-solution.html" target="_blank" rel="noopener">Solution</a> |
+| 2 | <a href="/exams/mock-exam-2.html" target="_blank" rel="noopener">Mock Exam 2</a> | <a href="/exams/mock-exam-2-solution.html" target="_blank" rel="noopener">Solution</a> |
+| 3 | <a href="/exams/mock-exam-3.html" target="_blank" rel="noopener">Mock Exam 3</a> | <a href="/exams/mock-exam-3-solution.html" target="_blank" rel="noopener">Solution</a> |
+| 4 | <a href="/exams/mock-exam-4.html" target="_blank" rel="noopener">Mock Exam 4</a> | <a href="/exams/mock-exam-4-solution.html" target="_blank" rel="noopener">Solution</a> |
+| 5 | <a href="/exams/mock-exam-5.html" target="_blank" rel="noopener">Mock Exam 5</a> | <a href="/exams/mock-exam-5-solution.html" target="_blank" rel="noopener">Solution</a> |
+| 6 | <a href="/exams/mock-exam-6.html" target="_blank" rel="noopener">Mock Exam 6</a> | <a href="/exams/mock-exam-6-solution.html" target="_blank" rel="noopener">Solution</a> |
+| 7 | <a href="/exams/mock-exam-7.html" target="_blank" rel="noopener">Mock Exam 7</a> | <a href="/exams/mock-exam-7-solution.html" target="_blank" rel="noopener">Solution</a> |
+| 8 | <a href="/exams/mock-exam-8.html" target="_blank" rel="noopener">Mock Exam 8</a> | <a href="/exams/mock-exam-8-solution.html" target="_blank" rel="noopener">Solution</a> |
+| 9 | <a href="/exams/mock-exam-9.html" target="_blank" rel="noopener">Mock Exam 9</a> | <a href="/exams/mock-exam-9-solution.html" target="_blank" rel="noopener">Solution</a> |
+| 10 | <a href="/exams/mock-exam-10.html" target="_blank" rel="noopener">Mock Exam 10</a> | <a href="/exams/mock-exam-10-solution.html" target="_blank" rel="noopener">Solution</a> |
+
+Regenerate with `web/scripts/build_exam_html.sh` after any `.tex` edit.
+
+### Per-mock topic rotation
+
 LaTeX sources live at `mock-exams/mock-exam-N.tex` and `mock-exams/mock-exam-N-solution.tex` for mocks 1--7, and under `mock-exams/mock-N/` for mocks 8--10. Each mock deliberately rotates topics relative to the others so they cover complementary slices of the prof's scope:
 
 - **Mock 1** --- MLE\,=\,LS mathy derivation; complete-linkage hierarchical clustering on a 4$\times$4 matrix; lasso (with $\lambda$ via 10-fold CV) as the regularizer; the logistic-regression interaction trap (\texttt{balance}\,$\times$\,\texttt{sex}) sits in the classification problem.
