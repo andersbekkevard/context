@@ -6,6 +6,7 @@ Har boka. Burde ha liste over:
 - Which models allow for p>n
 - Utledning Corr^2 = R2 for enkel linreg
 - Utledning av (12.18)
+- Formlene for f i forskjellige typer nns.
 
 - **Viktig**, boosting boosting boosting. Ikke i ISLP. Og teknisk. Og funker som faen. Må være på formelark.
 - Regneregler for vektorderivasjon. d/db(bTXb) og d/db(aTb). Nødvendige for OLS-utledning.
