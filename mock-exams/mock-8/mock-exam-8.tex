@@ -1,0 +1,490 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumerate}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{tikz}
+
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+
+\newcommand{\points}[1]{\textbf{(#1\,\%)}}
+\newcommand{\subpoints}[1]{\textit{(#1\,\%)}}
+
+\title{TMA4268 Statistical Learning V2026\\[0.3em]
+\large Mock Exam 8 (estimated final exam)}
+\author{Compiled by Claude for Anders Bekkevard\\[0.2em]
+\small Based on the Apr 28 exam-review lecture, the 2023--2025 finals, and the prof's stated scope rule}
+\date{Mock for: May 18, 2026 (real exam date)}
+
+\begin{document}
+\maketitle
+
+\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+\textbf{Instructions.}
+\begin{itemize}
+  \item \textbf{Duration:} 4 hours. \textbf{Open book.} Permitted aids: ISLP (2nd ed.), one handwritten A5 sheet of notes, calculator.
+  \item \textbf{No code required.} Write answers as math, plain English, or pseudocode. Do \emph{not} memorize R/Python package names.
+  \item \textbf{Show your work} --- partial credit is generously available, including when a calculator slip spoils a numeric answer but the setup is correct.
+  \item \textbf{No negative scoring.} Always answer, even when unsure.
+  \item \textbf{If a question seems broken or ambiguous}, state the assumption you are making in one short sentence and proceed.
+  \item Total: \textbf{100 points = 100\,\%}. Per-problem weights given in parentheses.
+\end{itemize}}}
+
+\vspace{0.6em}
+\noindent\textbf{Grade boundaries (NTNU \emph{prosentvurderingsmetoden}, advisory):}
+A: 89--100\,\% \quad B: 77--88\,\% \quad C: 65--76\,\% \quad D: 53--64\,\% \quad E: 41--52\,\% \quad F: 0--40\,\%.
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+%=========================================================
+\section*{Problem 1 \points{10} --- Fill-in-the-blank concepts}
+%=========================================================
+
+\noindent Read the passage and pick the best word or short phrase for each blank from the choices in parentheses. Each correct fill is worth $1$\,\%.
+
+\bigskip
+
+In classification we can split methods into two paradigms. Methods that model the class-conditional density $f_k(x) = \Pr(X \mid Y = k)$ and the prior $\pi_k$, then flip with Bayes' rule to obtain the posterior, are called \underline{\hspace{2.5cm}}\,(1) (\emph{generative} / \emph{discriminative} / \emph{semi-supervised} / \emph{kernel}) methods. Linear discriminant analysis is the canonical example. The decision boundary between two classes under LDA is obtained by setting the two discriminant scores $\delta_k(x)$ equal, and is \underline{\hspace{2.5cm}}\,(2) (\emph{linear} / \emph{quadratic} / \emph{piecewise constant} / \emph{circular}) in $x$, because the term $x^\top \Sigma^{-1} x$ cancels (it does not depend on $k$ when the covariance is \underline{\hspace{2.5cm}}\,(3) (\emph{pooled} / \emph{class-specific} / \emph{diagonal} / \emph{block-diagonal})).
+
+When fitting a multiple linear regression with two predictors that are nearly proportional, the matrix $\mathbf X^\top \mathbf X$ becomes nearly singular and the variance of $\hat{\boldsymbol\beta}$ explodes. This phenomenon is called \underline{\hspace{2.5cm}}\,(4) (\emph{collinearity} / \emph{heteroscedasticity} / \emph{leverage} / \emph{influence}). The remedy proposed in the lectures that \emph{adds a penalty} $\lambda \sum_j \beta_j^2$ to the residual sum of squares without setting any coefficient exactly to zero is called \underline{\hspace{2.5cm}}\,(5) (\emph{ridge regression} / \emph{the lasso} / \emph{forward selection} / \emph{partial least squares}).
+
+For tree ensembles, sampling, at each candidate split, a random subset of $m$ predictors of size $m < p$ is the trick that distinguishes \underline{\hspace{2.5cm}}\,(6) (\emph{random forests} / \emph{AdaBoost} / \emph{gradient boosting} / \emph{cost-complexity pruning}) from plain bagging. For each tree built on a bootstrap sample, roughly $37\%$ of the original observations are not in the sample, and the predictions on those left-out observations are aggregated into the so-called \underline{\hspace{2.5cm}}\,(7) (\emph{out-of-bag error} / \emph{validation error} / \emph{training error} / \emph{Bayes error}) estimate of test error.
+
+In neural networks, the central optimization recipe is mini-batch stochastic gradient descent. The gradients with respect to all weights are computed efficiently by reusing intermediate values from the forward pass through repeated application of the chain rule; this algorithm is called \underline{\hspace{2.5cm}}\,(8) (\emph{backpropagation} / \emph{boosting} / \emph{the EM algorithm} / \emph{Newton-Raphson}). To prevent the network from becoming over-confident in its class predictions, especially when labels may themselves contain errors, one can replace the hard one-hot target by a slightly softened one; this technique is called \underline{\hspace{2.5cm}}\,(9) (\emph{label smoothing} / \emph{dropout} / \emph{early stopping} / \emph{batch normalization}).
+
+Finally, the workhorse for estimating the standard error of a complicated statistic when no closed-form sampling distribution is available is to resample $n$ observations with replacement from the original sample many times, recompute the statistic on each resample, and take the sample standard deviation of the resulting values. This procedure is called the \underline{\hspace{2.5cm}}\,(10) (\emph{bootstrap} / \emph{$F$-test} / \emph{Bonferroni correction} / \emph{Newton step}).
+
+\vfill\eject
+
+%=========================================================
+\section*{Problem 2 \points{28} --- Multiple choice, true/false, and short numeric}
+%=========================================================
+
+For each subproblem, write \emph{True} or \emph{False} for each statement (or the requested numeric answer). You may add a one-sentence justification but only if you think it helps; do not write essays.
+
+\subsection*{a) Bias--variance, applied to a shrinkage estimator \subpoints{3}}
+
+Let $X_1, \dots, X_n$ be i.i.d.\ with mean $\mu$ and variance $\sigma^2$, and let $\bar X$ be the sample mean. Consider the shrunken estimator $\hat\mu_c = c \, \bar X$ for $c \in [0, 1]$.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} Compute $\mathrm{Bias}^2(\hat\mu_c)$ and $\mathrm{Var}(\hat\mu_c)$, each as a function of $c$, $\mu$, $\sigma^2$, and $n$. (Two short formulas.)
+  \item \subpoints{1} Mark true or false: ``Compared to the unbiased choice $c = 1$, the shrunken estimator with $c < 1$ \emph{always} has a smaller mean squared error $\mathrm{Bias}^2 + \mathrm{Var}$, regardless of $\mu$ and $\sigma^2/n$.''
+  \item \subpoints{1} Mark true or false: ``In the over-parameterized regime where many fitted models interpolate the training data, the bias--variance decomposition $\mathbb{E}[(y_0 - \hat f(x_0))^2] = \mathrm{Bias}^2 + \mathrm{Var} + \sigma^2$ no longer holds as an algebraic identity --- which is why test error can exhibit a second descent past the interpolation peak.''
+\end{enumerate}
+
+\subsection*{b) Cross-validation: LOOCV vs $k$-fold and the OLS shortcut \subpoints{4}}
+\begin{enumerate}[(i)]
+  \item \subpoints{1} Mark true or false: ``Compared to $5$-fold or $10$-fold CV, leave-one-out CV has \emph{lower} bias as an estimator of test error, but typically \emph{higher} variance, because the $n$ leave-one-out training sets share nearly all of their observations and the per-fold errors are highly correlated.''
+  \item \subpoints{1} For ordinary least squares, the LOOCV mean squared error has a closed-form expression that needs only one fit. Write it explicitly in terms of the full-data fitted residuals $y_i - \hat y_i$ and the diagonal entries $h_{ii}$ of the hat matrix $\mathbf H = \mathbf X(\mathbf X^\top \mathbf X)^{-1}\mathbf X^\top$.
+  \item \subpoints{1} Mark true or false: ``For data with strong temporal autocorrelation (e.g.\ daily stock returns), randomly partitioning the observations into $k = 10$ folds gives an unbiased estimate of the test error of the procedure.''
+  \item \subpoints{1} The standard error of $\mathrm{CV}_{(k)}$, computed as the sample standard deviation of the $k$ per-fold MSEs, is described in the slides as ``\emph{strictly speaking, not quite valid}.'' Briefly explain in one sentence why.
+\end{enumerate}
+
+\subsection*{c) Bootstrap: percentile CI, basic CI, bias correction \subpoints{3}}
+You have an i.i.d.\ sample $X_1, \dots, X_n$ and a complicated statistic $\hat\theta = T(X_1, \dots, X_n)$. You draw $B$ bootstrap samples, recompute $\hat\theta^*_1, \dots, \hat\theta^*_B$, and let $q_\alpha^*$ denote the $\alpha$-quantile of those values.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} Write the \emph{percentile} $95\%$ bootstrap confidence interval for $\theta$ in terms of $q_{\,\cdot}^*$. (One short formula.)
+  \item \subpoints{1} Mark each statement true or false. (A) Bootstrap samples are drawn from the original data \emph{without} replacement, so that the same row of $\mathbf X$ never appears twice in a resample. (B) The bootstrap distribution of $\hat\theta^*$ is centred around $\hat\theta$ rather than the unknown $\theta$, so the bootstrap can \emph{not} by itself correct for the bias of $\hat\theta$. (C) Typical values of $B$ for a confidence interval are in the range $1{,}000$ to $10{,}000$.
+  \item \subpoints{1} You wish to compare the test MSE of \emph{two} models, $A$ and $B$, fit on the same training set and evaluated on the same test set of size $m$. You want a bootstrap estimate of the standard error of the difference $\widehat{\Delta} = \mathrm{MSE}_A^{\text{test}} - \mathrm{MSE}_B^{\text{test}}$. Briefly state, in one short sentence, why you should resample the test pairs $(x_t, y_t)$ \emph{jointly} (a so-called \emph{paired} bootstrap) rather than resample the per-model squared errors of $A$ and $B$ independently.
+\end{enumerate}
+
+\subsection*{d) Mini-batch SGD, activations, vanishing gradients \subpoints{3}}
+Mark each statement as true or false.
+\begin{enumerate}[(i)]
+  \item Mini-batch SGD with batch size $m$ gives, on each step, an \emph{unbiased} estimator of the full-batch gradient: the expectation over the batch equals the full-data gradient, but the variance grows when $m$ shrinks.
+  \item A typical practical learning rate for mini-batch SGD on a neural network is $\eta \approx 0.1$; a learning rate of $\eta = 2$ is generally too large and would cause the loss to bounce around without converging.
+  \item One advantage of the \emph{ReLU} activation $\mathrm{ReLU}(z) = \max(0, z)$ over the classical \emph{sigmoid} $\sigma(z) = 1/(1 + e^{-z})$ is that, for large positive $z$, ReLU's derivative is $1$ rather than $\sigma(z)(1 - \sigma(z)) \approx 0$ --- which helps prevent gradients from shrinking towards zero as they back-propagate through deep networks.
+\end{enumerate}
+
+\subsection*{e) Boosting: AdaBoost, gradient boosting, XGBoost \subpoints{4}}
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} In the AdaBoost classifier weight $\alpha_m = \log\!\bigl((1 - \mathrm{err}_m)/\mathrm{err}_m\bigr)$, suppose a particular weak learner $G_{m^*}$ has weighted error $\mathrm{err}_{m^*} = 0.70$ (worse than random guessing). Compute $\alpha_{m^*}$ (two decimals) and briefly state, in one short sentence, what the negative sign \emph{does} to that classifier's contribution in the final vote $G(x) = \mathrm{sign}\bigl(\sum_m \alpha_m G_m(x)\bigr)$.
+  \item \subpoints{1} Mark true or false: ``In gradient boosting with squared-error loss, fitting the next tree to the current residuals is equivalent to fitting a tree to the \emph{negative gradient} of the loss with respect to the current ensemble's predictions.''
+  \item \subpoints{1} Mark true or false: ``In gradient boosting, halving the shrinkage parameter $\nu$ from $0.10$ to $0.05$ roughly \emph{doubles} the number of trees $M$ needed for the ensemble to reach a comparable fit, which is why $M$ and $\nu$ are tuned jointly rather than independently.''
+  \item \subpoints{1} Mark true or false: ``XGBoost differs from vanilla gradient boosting in that it adds explicit $L_1$ \emph{and} $L_2$ regularization on the per-leaf prediction values, and uses a second-order (Newton-like) approximation of the loss when scoring candidate splits --- making each split decision a function of both the gradient and the Hessian of the loss.''
+\end{enumerate}
+
+\subsection*{f) Neural network regularization \subpoints{3}}
+\begin{enumerate}[(i)]
+  \item \subpoints{1} Mark each as true or false. (A) Dropout is applied only during training; at test time the units are kept on, and the network's outputs are rescaled to account for the missing units. (B) Early stopping returns the network parameters from the epoch at which the \emph{training} loss first stops decreasing. (C) Standard course recommendation for the dropout rate is around $20\%$, with $50\%$ generally considered too aggressive.
+  \item \subpoints{1} In a binary classification network with a sigmoid output, label smoothing with smoothing parameter $\varepsilon = 0.05$ replaces the hard target $(1, 0)$ for class~$1$ by what soft target $(t_1, t_0)$? (Two numerics.)
+  \item \subpoints{1} Mark true or false: ``Adding $L_2$ weight decay always decreases the network's training error.''
+\end{enumerate}
+
+\subsection*{g) Logistic regression: odds, log-odds, interaction \subpoints{3}}
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} A logistic regression of a binary outcome on a single continuous predictor has fitted log-odds intercept $\hat\beta_0 = -2.0$ and slope $\hat\beta_1 = 0.40$. At $x_0 = 5$, what is the predicted probability of the event? (Three decimals.)
+  \item \subpoints{1} A logistic model contains the predictors \texttt{age} (years) and \texttt{treatment} (binary $0/1$) and the interaction \texttt{age:treatment}, with $\hat\beta_{\texttt{age}} = 0.05$ and $\hat\beta_{\texttt{age:treatment}} = -0.02$. By what factor (three decimals) do the odds of the event multiply for an \emph{untreated} patient when \texttt{age} increases by $1$ year? Repeat for a \emph{treated} patient.
+  \item \subpoints{1} Mark true or false: ``If we relabel the binary predictor \texttt{treatment} so that the new reference level is what was previously called `treated' (instead of `untreated'), then the sign of the coefficient on \texttt{treatment} in the new fitted model flips, but the predicted probability of the event for any given observation is unchanged.''
+\end{enumerate}
+
+\subsection*{h) Discriminant analysis and naive Bayes \subpoints{2}}
+\begin{enumerate}[(i)]
+  \item \subpoints{1} Mark each as true or false. (A) Under the LDA assumption that the class-conditional densities are Gaussian and share a common covariance $\boldsymbol\Sigma$, the Bayes-optimal decision boundary between any two classes is linear in $\mathbf x$. (B) QDA differs from LDA only in that it allows the class-conditional covariances $\boldsymbol\Sigma_k$ to differ between classes; in particular, the term $\mathbf x^\top \boldsymbol\Sigma_k^{-1} \mathbf x$ in the discriminant survives in QDA but cancels in LDA. (C) Increasing the prior $\hat\pi_k$ of class $k$, while holding all $\hat\mu_k$ and $\hat\Sigma$ fixed, moves the LDA decision boundary \emph{toward} class $k$ (less area is classified as $k$).
+  \item \subpoints{1} Mark true or false: ``Naive Bayes is the special case of LDA in which the within-class covariance matrix $\boldsymbol\Sigma$ is taken to be diagonal --- equivalently, the predictors are assumed conditionally independent given the class.''
+\end{enumerate}
+
+\subsection*{i) Principal component analysis \subpoints{3}}
+
+You perform PCA on a dataset with $p = 5$ \textbf{standardized} variables and obtain eigenvalues
+$$\lambda_1 = 2.1, \quad \lambda_2 = 1.4, \quad \lambda_3 = 0.8, \quad \lambda_4 = 0.5, \quad \lambda_5 = 0.2.$$
+
+The loading vector for PC1 (entries rounded to two decimals) is
+$$\phi_1 = (\,0.55,\;\, 0.45,\;\, -0.35,\;\, 0.40,\;\, -0.45\,)^\top.$$
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} What is the total variance in the standardized data, and how many principal components are needed to capture at least $80\%$ of that total variance? Show the cumulative sum.
+  \item \subpoints{1} A new standardized observation has values $x^* = (\,2,\;\, 1,\;\, 0,\;\, -1,\;\, 1\,)^\top$. Compute its score $z^*_1$ on PC1. (Two decimals.)
+  \item \subpoints{1} Mark true or false: ``If we had \emph{not} standardized the variables before running PCA, the leading principal component would be invariant under the change of units, because PCA only operates on the variables' linear combinations.''
+\end{enumerate}
+
+\vfill\eject
+
+%=========================================================
+\section*{Problem 3 \points{16} --- Theory, derivations, and pseudocode}
+%=========================================================
+
+\subsection*{a) The mathy one --- LDA decision boundary derivation \subpoints{8}}
+
+Consider a binary classification setting with two classes $\{0, 1\}$, priors $\pi_0, \pi_1$, class-conditional densities $f_k(x) = \Pr(X \mid Y = k)$, $k \in \{0, 1\}$, and Bayes-optimal classifier $\hat y = \arg\max_k \pi_k f_k(x)$. Assume that within each class, $X \mid Y = k \sim \mathcal{N}(\boldsymbol\mu_k, \boldsymbol\Sigma)$, where the covariance matrix $\boldsymbol\Sigma$ is the same in both classes.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{3} Starting from $\log\!\bigl(\pi_k f_k(\mathbf x)\bigr)$, derive the LDA discriminant score
+  $$\boxed{\;\delta_k(\mathbf x) \;=\; \mathbf x^\top \boldsymbol\Sigma^{-1} \boldsymbol\mu_k \;-\; \tfrac{1}{2}\,\boldsymbol\mu_k^\top \boldsymbol\Sigma^{-1} \boldsymbol\mu_k \;+\; \log \pi_k.\;}$$
+  In your derivation, be explicit about \emph{which} terms in $\log\!\bigl(\pi_k f_k(\mathbf x)\bigr)$ you discard and \emph{why} you may discard them, and \emph{which} term is the one that cancels between $\delta_0$ and $\delta_1$ specifically because $\boldsymbol\Sigma$ does not depend on $k$. In one sentence, state what would change if the covariance were instead allowed to depend on $k$ (yielding QDA).
+
+  \item \subpoints{3} Suppose now that $p = 2$ (so $\mathbf x = (x_1, x_2)^\top$), with parameters
+  $$\boldsymbol\mu_0 = \begin{pmatrix} 2 \\ 1 \end{pmatrix}, \qquad \boldsymbol\mu_1 = \begin{pmatrix} 0 \\ 3 \end{pmatrix}, \qquad \boldsymbol\Sigma = \begin{pmatrix} 2 & 0 \\ 0 & 2 \end{pmatrix}, \qquad \pi_0 = \pi_1 = 0.5.$$
+  Derive the equation of the LDA decision boundary in the form $a\,x_1 + b\,x_2 + c = 0$ by setting $\delta_0(\mathbf x) = \delta_1(\mathbf x)$ and simplifying. Then solve for $x_2$ as a function of $x_1$. Show your algebra step-by-step (the prof himself flubbed this live and has explicitly warned against ``doing algebra in public''; we want every line).
+
+  \item \subpoints{1} A new observation has $\mathbf x^* = (1, 1)^\top$. Use your boundary equation to decide which class it is assigned to under LDA, and verify your answer by computing $\delta_0(\mathbf x^*)$ and $\delta_1(\mathbf x^*)$ directly and comparing them.
+
+  \item \subpoints{1} The data scientist now considers using priors $\pi_0 = 0.8$, $\pi_1 = 0.2$ instead of the equal priors above. In one sentence, state in which direction (toward class $0$ or toward class $1$) the decision boundary moves, and briefly justify by reference to the $\log \pi_k$ term in $\delta_k$.
+\end{enumerate}
+
+\subsection*{b) Mini-batch SGD pseudocode and implicit regularization \subpoints{4}}
+
+You are training a feed-forward neural network with parameter vector $\boldsymbol\theta$ on a training set of size $N$, using cross-entropy loss
+$$L(\boldsymbol\theta) \;=\; \frac{1}{N} \sum_{i=1}^N \ell_i(\boldsymbol\theta),$$
+mini-batch SGD with batch size $m$, learning rate $\eta$, and $E$ epochs.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{2} Write \emph{pseudocode} (math, plain English, or programming-language-agnostic notation) for \textbf{one epoch} of mini-batch SGD on $\boldsymbol\theta$. Be explicit about: (a) how mini-batches of size $m$ are formed at the start of the epoch (you may assume $m$ divides $N$); (b) how the gradient $\widehat{\nabla L}$ on a single mini-batch is computed; (c) the parameter update rule; (d) what happens when the epoch finishes. You do not need to spell out the backpropagation step internally; assume a gradient oracle is available.
+
+  \item \subpoints{1} Mark each statement true or false. \textbf{(A)} The mini-batch gradient is an \emph{unbiased} estimator of the full-batch gradient: $\mathbb{E}_{\text{batch}}[\widehat{\nabla L}] = \nabla L(\boldsymbol\theta)$. \textbf{(B)} Doubling the batch size $m$ from $32$ to $64$ approximately \emph{halves} the variance of $\widehat{\nabla L}$, all else equal. \textbf{(C)} Smaller mini-batches provide \emph{stronger} implicit regularization, because the noise in $\widehat{\nabla L}$ steers the optimizer away from sharp minima.
+
+  \item \subpoints{1} In one or two short sentences, tie the ``implicit regularization'' of mini-batch SGD to the bias--variance lens of Problem~2(a): in what sense does this implicit regularization mirror, in the optimization stage, the effect of explicit regularizers such as ridge, lasso, dropout, or early stopping?
+\end{enumerate}
+
+\subsection*{c) $k$-fold CV pseudocode and the one-standard-error rule \subpoints{4}}
+
+You have a training set $(\mathbf X, \mathbf y)$ of size $n$, a regression model class $\mathcal{M}$ indexed by a scalar hyperparameter $\theta$ (e.g.\ a ridge $\lambda$, a polynomial degree, a $k$ in KNN) on a finite grid $\Theta = \{\theta_1, \dots, \theta_T\}$, and you want to (a) report a CV-MSE for each $\theta \in \Theta$, (b) report a standard-error estimate $\widehat{\mathrm{SE}}(\mathrm{CV}_k(\theta))$ for each, and (c) pick a value of $\theta$ using the one-standard-error rule.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{2} Write \emph{pseudocode} (math, plain English, or programming-language-agnostic notation) for the procedure that produces, for each $\theta \in \Theta$, the pair $(\mathrm{CV}_k(\theta),\, \widehat{\mathrm{SE}}(\mathrm{CV}_k(\theta)))$, where $\widehat{\mathrm{SE}}$ is the sample standard deviation of the per-fold mean squared errors. Be explicit about: (a) how the data is partitioned, (b) what is held out and what is fit at each iteration, (c) how the per-fold MSEs are aggregated into $\mathrm{CV}_k(\theta)$, and (d) how $\widehat{\mathrm{SE}}(\mathrm{CV}_k(\theta))$ is defined.
+
+  \item \subpoints{1} State the one-standard-error rule for selecting a value $\hat\theta_{1\mathrm{SE}}$ from $\Theta$ in one or two short sentences. Make explicit \emph{which direction} of $\theta$ is the ``simpler'' direction for (a) ridge $\lambda$, (b) polynomial degree, and (c) $k$ in KNN. (Three short answers.)
+
+  \item \subpoints{1} A statistician fits ridge regression for $\theta = \lambda \in \{0.001, 0.01, 0.1, 1, 10\}$, getting the following $10$-fold CV-MSEs and $\widehat{\mathrm{SE}}$'s:
+
+  \begin{center}\small
+  \begin{tabular}{lccccc}
+  \toprule
+  $\lambda$                                & $0.001$ & $0.01$ & $0.1$  & $1$    & $10$   \\
+  \midrule
+  $\mathrm{CV}_{10}(\lambda)$              & $0.452$ & $0.430$ & $0.418$ & $0.435$ & $0.510$ \\
+  $\widehat{\mathrm{SE}}(\mathrm{CV}_{10})$ & $0.025$ & $0.024$ & $0.022$ & $0.023$ & $0.030$ \\
+  \bottomrule
+  \end{tabular}
+  \end{center}
+
+  Identify $\hat\lambda_{\min}$, state the corresponding ``one-SE band'' explicitly, and give the value of $\hat\lambda_{1\mathrm{SE}}$ that the one-standard-error rule recommends. Briefly justify in one sentence.
+\end{enumerate}
+
+\vfill\eject
+
+%=========================================================
+\section*{Problem 4 \points{22} --- Data analysis: regression on bike-sharing demand}
+%=========================================================
+
+An urban-mobility researcher records, for each of $n = 730$ days in a city's two-year bike-share programme, the daily \texttt{count} of bike rentals (in thousands; range $0.4$--$8.7$). The available predictors are:
+
+\begin{itemize}
+  \item \texttt{temp} --- daily mean air temperature, in $^\circ$C (continuous);
+  \item \texttt{feel\_temp} --- daily mean apparent temperature in $^\circ$C, i.e.\ ``what it feels like''; nearly equal to \texttt{temp}, with $\mathrm{cor}(\texttt{temp}, \texttt{feel\_temp}) \approx 0.99$ on the training data;
+  \item \texttt{humidity} --- daily mean relative humidity, in $\%$ ($0$--$100$);
+  \item \texttt{windspeed} --- daily mean wind speed in km/h (continuous);
+  \item \texttt{workingday} --- binary indicator: $1$ if a workday, $0$ for weekend or holiday (reference);
+  \item \texttt{season} --- categorical with $4$ levels: \emph{spring} (reference), \emph{summer}, \emph{autumn}, \emph{winter};
+  \item \texttt{weather} --- categorical with $3$ levels: \emph{clear} (reference), \emph{misty}, \emph{rain\_or\_snow}.
+\end{itemize}
+
+The data are split $530 / 200$ into training and test sets. The continuous predictors (\texttt{temp}, \texttt{feel\_temp}, \texttt{humidity}, \texttt{windspeed}) are standardized to mean $0$ and standard deviation $1$ \emph{before} fitting any of the models below. (So a unit change in one of these predictors corresponds to one standard deviation on the raw scale.)
+
+\subsection*{a) OLS with a polynomial, an interaction, and collinearity \subpoints{10}}
+
+The course staff fits, on the training set, the linear model
+\begin{align*}
+\texttt{count} \;\sim\; & \texttt{temp} + I(\texttt{temp}^2) + \texttt{feel\_temp} + \texttt{humidity} + \texttt{windspeed} \\
+ & + \texttt{workingday} + \texttt{season} + \texttt{weather} \\
+ & + \texttt{temp}\!:\!\texttt{workingday}.
+\end{align*}
+The fitted output is:
+
+\begin{center}\small
+\begin{tabular}{lcccc}
+\toprule
+ & \textbf{Estimate} & \textbf{Std.\ Error} & \textbf{t-value} & \textbf{Pr($>|t|$)} \\
+\midrule
+(Intercept)                        & $3.20$    & $0.18$  & $17.78$  & $<0.001$ \\
+\texttt{temp}                      & $2.10$    & $0.85$  & $2.47$   & $0.014$  \\
+$I(\texttt{temp}^2)$               & $-0.55$   & $0.10$  & $-5.50$  & $<0.001$ \\
+\texttt{feel\_temp}                & $-0.80$   & $0.87$  & $-0.92$  & $0.358$  \\
+\texttt{humidity}                  & $-0.35$   & $0.09$  & $-3.89$  & $<0.001$ \\
+\texttt{windspeed}                 & $-0.20$   & $0.08$  & $-2.50$  & $0.013$  \\
+\texttt{workingday}                & $0.25$    & $0.14$  & $1.79$   & $0.074$  \\
+\texttt{season\_summer}            & $0.95$    & $0.20$  & $4.75$   & $<0.001$ \\
+\texttt{season\_autumn}            & $1.30$    & $0.22$  & $5.91$   & $<0.001$ \\
+\texttt{season\_winter}            & $-0.40$   & $0.21$  & $-1.90$  & $0.058$  \\
+\texttt{weather\_misty}            & $-0.45$   & $0.13$  & $-3.46$  & $<0.001$ \\
+\texttt{weather\_rain\_or\_snow}   & $-1.80$   & $0.30$  & $-6.00$  & $<0.001$ \\
+\texttt{temp:workingday}           & $0.40$    & $0.12$  & $3.33$   & $<0.001$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Multiple $R^2 = 0.768$,\quad Adjusted $R^2 = 0.762$.\quad Residual standard error: $0.90$ on $517$ d.f.
+
+\medskip
+\noindent\textit{Diagnostic note from the analyst:} dropping \texttt{feel\_temp} from this model and refitting leaves the test MSE essentially unchanged ($0.94 \to 0.93$), and the coefficient on \texttt{temp} swings from $+2.10$ (with SE $0.85$) to $+1.32$ (with SE $0.09$).
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} How many parameters does this model estimate, including the intercept? Verify the count against the residual degrees of freedom printed above.
+
+  \item \subpoints{2} Identify two numerical symptoms in the regression output that, taken together, point to a problem with the pair $(\texttt{temp}, \texttt{feel\_temp})$. (a) Name in one word the statistical phenomenon at work. (b) Explain in one short sentence, by reference to $\mathrm{Var}(\hat{\boldsymbol\beta}) = \sigma^2 (\mathbf X^\top \mathbf X)^{-1}$, \emph{why} the individual standard errors of \texttt{temp} and \texttt{feel\_temp} blow up to roughly $5$--$10\times$ those of the other continuous predictors. (c) Using the analyst's diagnostic note above (test MSE essentially unchanged, $\hat\beta_{\texttt{temp}}$ swings from $+2.10$ to $+1.32$ when \texttt{feel\_temp} is dropped), comment in one short sentence on whether the problem in (a) is hurting \emph{prediction} (held-out MSE) or hurting \emph{interpretation} (which coefficient does what).
+
+  \item \subpoints{2} The model includes a quadratic $I(\texttt{temp}^2)$ in addition to the linear \texttt{temp} term. On a weekend (\texttt{workingday}$=0$), with all other predictors held fixed, the predicted \texttt{count} is a quadratic function of standardized \texttt{temp} of the form $\beta_{\texttt{temp}}\cdot \texttt{temp} + \beta_{\texttt{temp}^2}\cdot \texttt{temp}^2 + \text{const}$. Find the value of standardized \texttt{temp} at which this predicted \texttt{count} is \emph{maximized}, by solving $\partial/\partial\,\texttt{temp} = 0$. (Show your work; one decimal.) Briefly comment in one sentence on why a polynomial in temperature is a reasonable specification for the bike-share count.
+
+  \item \subpoints{2} For a workday (\texttt{workingday} $= 1$) with all other predictors at their reference levels, compute the change in predicted \texttt{count} (in thousands of rentals) when standardized \texttt{temp} increases by one unit \emph{from $0$ to $+1$}, taking the quadratic, the linear, and the interaction terms \emph{all} into account. Repeat the calculation for a weekend (\texttt{workingday} $= 0$). Compare the two numbers and comment in one short sentence on what the sign of the interaction tells you about how temperature drives demand differently on workdays versus weekends.
+
+  \item \subpoints{1} A colleague writes: ``Since the coefficient on \texttt{workingday} is $+0.25$ with a $p$-value of $0.074$, the workday effect on bike usage is not statistically significant, and we should drop \texttt{workingday} from the model.'' Briefly explain in one or two sentences why this conclusion is wrong, by reference to the principle of hierarchy and to the fact that the model also contains the interaction term \texttt{temp:workingday}.
+
+  \item \subpoints{1} A residual-versus-fitted plot from this fitted model shows clear ``fanning out'': the spread of residuals grows with the fitted value. Name the regression assumption that this violates, and state, in one short sentence, one common remedy.
+
+  \item \subpoints{1} A new day has predictor values that lie inside the convex hull of the training data, and you would like to attach an \emph{interval} to your prediction. State briefly which is wider, a $95\%$ confidence interval for $\mathbb{E}[\,\texttt{count} \mid x_0\,]$ or a $95\%$ prediction interval for an individual new \texttt{count} at $x_0$, and \emph{why}.
+\end{enumerate}
+
+\subsection*{b) Ridge vs.\ lasso under collinearity \subpoints{5}}
+
+The same standardized predictors as in part (a), including the polynomial and the interaction (so $p = 12$ predictors after dummy coding), are now fed into both ridge regression and the lasso. The penalty parameter $\lambda$ is chosen by $10$-fold CV in each case (the CV curve in each case is roughly $U$-shaped with a clear minimum). The resulting test-MSE numbers on the held-out $200$ days, and the number of non-zero estimated coefficients, are:
+
+\begin{center}\small
+\begin{tabular}{lcc}
+\toprule
+                                                & \textbf{Test MSE} & \textbf{Nonzero coefs} \\
+\midrule
+OLS (full model from (a))                       & $0.842$           & $13$ \\
+Ridge at $\hat\lambda_{\min}^{\text{ridge}}$    & $0.795$           & $13$ \\
+Ridge at $\hat\lambda_{1\mathrm{SE}}^{\text{ridge}}$ & $0.810$       & $13$ \\
+Lasso at $\hat\lambda_{\min}^{\text{lasso}}$    & $0.802$           & $9$  \\
+Lasso at $\hat\lambda_{1\mathrm{SE}}^{\text{lasso}}$ & $0.825$       & $6$  \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} Write down the ridge regression objective explicitly. Be careful about whether the intercept is penalized. Then state, in one short sentence, why all continuous predictors were standardized \emph{before} this fit.
+
+  \item \subpoints{2} On this dataset, the OLS-vs-ridge gap is about $0.047$ and the ridge-vs-lasso gap (at the minimum-CV $\lambda$) is small ($0.795$ vs.\ $0.802$). On the collinear pair $(\texttt{temp},\, \texttt{feel\_temp})$, however, the \emph{lasso} typically retains \emph{only one} of the two, while \emph{ridge} retains \emph{both}, with each coefficient roughly halved compared to the OLS magnitudes. Explain in two short sentences \emph{why} the two methods behave differently on this pair, by reference to the geometry of the constraint regions $\sum_j \beta_j^2 \le t$ versus $\sum_j |\beta_j| \le t$.
+
+  \item \subpoints{1} The lasso at $\hat\lambda_{1\mathrm{SE}}^{\text{lasso}}$ keeps only $6$ of $13$ predictors. A practitioner argues: ``This is the model I want for a public-facing dashboard, even though its test MSE is slightly worse.'' State the one-standard-error rule precisely and give the one short reason this practitioner's preference is reasonable.
+
+  \item \subpoints{1} A junior analyst proposes ``solving the collinearity problem'' by running PCA on the predictors first, retaining the first few components, and then regressing \texttt{count} on those component scores. Name the resulting procedure in one short term and state, in one sentence, the one structural cost (compared to lasso) that it pays.
+\end{enumerate}
+
+\subsection*{c) Gradient boosting and learning-rate / depth tradeoffs \subpoints{4}}
+
+A gradient-boosted regression-tree ensemble is fit on the training set. Its three principal hyperparameters are the number of trees $M$, the interaction depth $d$, and the shrinkage / learning rate $\nu$. To pick them, a colleague reports the following $10$-fold CV-MSE values, evaluated on the same grid for two different choices of $(d, \nu)$:
+
+\begin{center}\small
+\begin{tabular}{lcccc}
+\toprule
+                              & $M = 200$ & $M = 500$ & $M = 1500$ & $M = 5000$ \\
+\midrule
+Shallow, fast: $d = 2$, $\nu = 0.10$ & $0.66$    & $0.58$    & $0.56$     & $0.61$  \\
+Deeper, slow: $d = 5$, $\nu = 0.01$  & $0.92$    & $0.74$    & $0.55$     & $0.54$  \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[(i)]
+  \item \subpoints{2} For \emph{squared-error} loss, write \emph{pseudocode} for one round of gradient boosting (the move from the iteration-$(m-1)$ ensemble $\hat f^{(m-1)}$ to $\hat f^{(m)}$). Be explicit about (a) what quantity the new tree $T_m$ is fit to, (b) where the shrinkage parameter $\nu$ enters, and (c) what the final ensemble after $M$ rounds looks like. Two or three short lines is fine.
+
+  \item \subpoints{1} Read off the table: which $(d, \nu, M)$ triple has the smallest CV-MSE? Briefly comment, in one short sentence, on the trend along the first row ($d = 2$, $\nu = 0.10$) from $M = 1500$ to $M = 5000$: what does the slight \emph{increase} from $0.56$ to $0.61$ suggest, and why does this trend not appear for a random forest?
+
+  \item \subpoints{1} A junior data-scientist proposes: ``Let's just pick the deeper, slower regime ($d = 5$, $\nu = 0.01$) but use $M = 200$ trees because it's faster.'' Explain in one sentence, by reference to the qualitative coupling between $M$ and $\nu$, why this is a poor configuration on this dataset.
+\end{enumerate}
+
+\subsection*{d) GAM with $B$-splines \subpoints{3}}
+
+Finally, a generalized additive model is fit on the same training set:
+$$\texttt{count} = \beta_0 + s(\texttt{temp},\, \mathrm{df} = 5) + s(\texttt{humidity},\, \mathrm{df} = 4) + \mathrm{bs}(\texttt{windspeed},\, \mathrm{knots} = \{q_{0.25}, q_{0.5}, q_{0.75}\}) + \beta_{\text{wd}}\cdot \texttt{workingday} + g(\texttt{season}) + h(\texttt{weather}) + \varepsilon,$$
+where $s(\cdot, \mathrm{df} = k)$ is a smoothing spline with $k$ effective degrees of freedom (intercept removed), $\mathrm{bs}(\cdot, \mathrm{knots} = \ldots)$ is a cubic regression spline with the three quartile knots (intercept removed), and $g(\texttt{season})$ and $h(\texttt{weather})$ use dummy coding as in part (a).
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} How many degrees of freedom does $\mathrm{bs}(\texttt{windspeed},\, \mathrm{knots} = \{q_{0.25}, q_{0.5}, q_{0.75}\})$ alone consume? (Count basis functions; exclude the global intercept.)
+
+  \item \subpoints{1} How many \emph{total} degrees of freedom does this GAM consume, including the global intercept?
+
+  \item \subpoints{1} State, in one short sentence, one \emph{structural limitation} of this additive specification compared to the gradient-boosted ensemble of part (c). (Hint: think about which patterns of joint dependence on two predictors the GAM can and cannot represent.)
+\end{enumerate}
+
+\vfill\eject
+
+%=========================================================
+\section*{Problem 5 \points{24} --- Data analysis: classification of bank-loan default}
+%=========================================================
+
+A regional bank records, for $n = 4{,}000$ retail-loan applicants who were granted a loan, a binary response \texttt{default} ($1$ if the loan defaulted within $24$ months, $0$ otherwise). The available predictors are:
+
+\begin{itemize}
+  \item \texttt{annual\_income} --- annual income, in thousand EUR (continuous);
+  \item \texttt{debt\_to\_income} --- debt-to-income ratio at loan origination, in $\%$ (continuous, $0$--$60$);
+  \item \texttt{credit\_score} --- credit-bureau score (continuous, $300$--$850$);
+  \item \texttt{n\_inquiries} --- number of credit inquiries in the past $12$ months (count, $0$--$10$);
+  \item \texttt{employment} --- employment status, categorical with $3$ levels: \emph{permanent} (reference), \emph{self-employed}, \emph{temporary};
+  \item \texttt{home\_ownership} --- binary $0/1$: $1$ if the applicant owns a home, $0$ otherwise.
+\end{itemize}
+
+The data are split $70/30$ into training ($2{,}800$ applicants) and test ($1{,}200$ applicants). In the test set, $216$ loans truly defaulted and $984$ did not. In the full sample, the empirical default rate is approximately $18\%$.
+
+\subsection*{a) Logistic regression with a continuous--continuous interaction \subpoints{10}}
+
+A logistic regression model is fit on the training set:
+\begin{align*}
+\mathrm{logit}\bigl(\Pr(\texttt{default} = 1 \mid X)\bigr) \;=\; & \beta_0 + \beta_1 \texttt{annual\_income} + \beta_2 \texttt{debt\_to\_income} + \beta_3 \texttt{credit\_score} \\
+& + \beta_4 \texttt{n\_inquiries} + \boldsymbol\beta_5^\top \texttt{employment} + \beta_6 \texttt{home\_ownership} \\
+& + \beta_7 \bigl(\texttt{debt\_to\_income}\!:\!\texttt{credit\_score}\bigr).
+\end{align*}
+The fitted output is:
+
+\begin{center}\small
+\begin{tabular}{lcccc}
+\toprule
+ & \textbf{Estimate} & \textbf{Std.\ Error} & \textbf{z-value} & \textbf{Pr($>|z|$)} \\
+\midrule
+(Intercept)                                            & $4.50$     & $1.20$     & $3.75$  & $<0.001$ \\
+\texttt{annual\_income}                                & $-0.012$   & $0.003$    & $-4.00$ & $<0.001$ \\
+\texttt{debt\_to\_income}                              & $0.250$    & $0.080$    & $3.13$  & $0.002$  \\
+\texttt{credit\_score}                                 & $-0.012$   & $0.002$    & $-6.00$ & $<0.001$ \\
+\texttt{n\_inquiries}                                  & $0.150$    & $0.040$    & $3.75$  & $<0.001$ \\
+\texttt{employment\_self}                              & $0.450$    & $0.150$    & $3.00$  & $0.003$  \\
+\texttt{employment\_temporary}                         & $0.700$    & $0.140$    & $5.00$  & $<0.001$ \\
+\texttt{home\_ownership}                               & $-0.400$   & $0.110$    & $-3.64$ & $<0.001$ \\
+\texttt{debt\_to\_income:credit\_score}                & $-0.00030$ & $0.00010$  & $-3.00$ & $0.003$  \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent (\texttt{annual\_income} is in thousand EUR; \texttt{debt\_to\_income} in $\%$; \texttt{credit\_score} on the $300$--$850$ scale; \texttt{n\_inquiries} a count. Reference levels: \texttt{employment} = \emph{permanent}, \texttt{home\_ownership} = $0$.)
+
+\begin{enumerate}[(i)]
+  \item \subpoints{2} For an applicant whose \texttt{credit\_score} is $600$, by what factor (three decimals) do the odds of default change for each one-unit increase in \texttt{debt\_to\_income} (i.e.\ one extra percentage point of debt-to-income), holding all other predictors fixed? Repeat for an applicant whose \texttt{credit\_score} is $800$. State your encoding assumption explicitly.
+
+  \item \subpoints{1} The main-effect coefficient $\hat\beta_2 = 0.250$ on \texttt{debt\_to\_income} is sometimes (incorrectly) quoted as ``the average effect of a one-percentage-point increase in debt-to-income on the log-odds of default.'' Briefly explain, in one short sentence, why this reading is misleading \emph{given that the model also contains the interaction} \texttt{debt\_to\_income:credit\_score}, and state at what specific value of \texttt{credit\_score} the coefficient $\hat\beta_2$ would actually equal that ``average effect.''
+
+  \item \subpoints{3} Consider a specific applicant: \texttt{annual\_income} $= 50$, \texttt{debt\_to\_income} $= 25$, \texttt{credit\_score} $= 650$, \texttt{n\_inquiries} $= 3$, \texttt{employment} = \emph{self-employed}, \texttt{home\_ownership} $= 0$. Compute the linear predictor $\hat\eta$ (showing one short line per term) and the predicted probability $\hat p$ of default for this applicant. Round $\hat p$ to three decimals.
+
+  \item \subpoints{1} At the default classification threshold $\hat p = 0.5$, is this applicant predicted to default? Briefly comment in one short sentence on whether $0.5$ is a sensible threshold for this loan-screening task, given that the base default rate in the population is $\approx 18\%$.
+
+  \item \subpoints{1} A classmate writes: ``$\hat\beta_{\texttt{credit\_score}} = -0.012$ with $p < 0.001$, so we can confidently say that \emph{raising} a customer's credit score \emph{causes} the probability of default to fall.'' Briefly explain, in one short sentence, why that causal reading is unwarranted from this fitted model, citing the prof's mantra that regression coefficients are ``fancy correlations, not causal.''
+
+  \item \subpoints{2} On the test set, the logistic model at threshold $\hat p = 0.5$ produces the confusion matrix
+
+  \begin{center}\small
+  \begin{tabular}{c|cc}
+   & \textbf{Predicted: default} & \textbf{Predicted: no default} \\ \hline
+  \textbf{Actual: default}    & $108$  & $108$ \\
+  \textbf{Actual: no default} & $79$  & $905$ \\
+  \end{tabular}
+  \end{center}
+
+  Compute, to two decimals, the test \emph{sensitivity}, \emph{specificity}, and overall \emph{error rate} of this classifier. Then briefly state, in one short sentence, the direction (up / down) of \emph{sensitivity} and \emph{specificity} if the bank lowered the threshold from $0.5$ to $0.3$ in order to flag more potential defaulters.
+\end{enumerate}
+
+\subsection*{b) AdaBoost from exponential loss \subpoints{6}}
+
+AdaBoost can be viewed as the forward-stagewise greedy minimizer of the exponential loss
+$$L(y, f) = \exp(-y\, f(x)), \qquad y \in \{-1, +1\},$$
+where the running prediction is an additive expansion $f(x) = \sum_{m=1}^{M} \alpha_m G_m(x)$ with $G_m(x) \in \{-1, +1\}$. At stage $m$, with the previous fit $f^{(m-1)}$ held fixed, one minimizes the loss \emph{jointly} over the new classifier $G_m$ and its weight $\alpha_m$:
+$$(\alpha_m,\, G_m) \;=\; \arg\min_{\alpha,\,G} \;\sum_{i=1}^{N} \underbrace{\exp\!\bigl(-y_i\, f^{(m-1)}(x_i)\bigr)}_{=:\,w_i^{(m)}} \cdot \exp\!\bigl(-y_i\, \alpha\, G(x_i)\bigr).$$
+The factor $w_i^{(m)} = \exp(-y_i f^{(m-1)}(x_i))$ depends only on the previous fit, so it acts as a per-observation \emph{weight} at stage $m$.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{2} Show that, for fixed $\alpha > 0$, the inner minimization over $G$ reduces to choosing the classifier that minimizes the \emph{weighted} misclassification error
+  $$G_m \;=\; \arg\min_{G} \; \sum_{i=1}^{N} w_i^{(m)} \cdot \mathbb{1}[y_i \neq G(x_i)].$$
+  (Hint: split the sum into correctly classified and misclassified observations using $y_i G(x_i) \in \{-1, +1\}$, and observe that $\sum_i w_i^{(m)}$ does not depend on $G$.)
+
+  \item \subpoints{2} Given the optimal $G_m$, derive the closed-form expression for the optimal $\alpha_m$ in terms of the weighted error rate
+  $$\mathrm{err}_m = \frac{\sum_{i} w_i^{(m)} \mathbb{1}[y_i \neq G_m(x_i)]}{\sum_{i} w_i^{(m)}}.$$
+  (Differentiate the inner objective in (i) with respect to $\alpha$, set the derivative to zero, and solve.) Show that the result is
+  $$\boxed{\;\alpha_m \;=\; \tfrac{1}{2} \log\!\frac{1 - \mathrm{err}_m}{\mathrm{err}_m}.\;}$$
+  \emph{(Note: this is the textbook AdaBoost.M1 formula up to a factor of $2$ in the convention; the prof's slide deck states the unscaled form $\alpha_m = \log\!\bigl((1-\mathrm{err}_m)/\mathrm{err}_m\bigr)$, which differs by absorbing the $1/2$ into the final $\mathrm{sign}(\cdot)$. Either factor is accepted.)}
+
+  \item \subpoints{1} From the update $f^{(m)}(x) = f^{(m-1)}(x) + \alpha_m G_m(x)$, show that the new weights satisfy
+  $$w_i^{(m+1)} \;=\; w_i^{(m)} \cdot \exp\!\bigl(-y_i\, \alpha_m\, G_m(x_i)\bigr),$$
+  and explain in one short sentence \emph{why} this gives bigger weight to currently-misclassified observations.
+
+  \item \subpoints{1} On a separate run on the loan-default training set, the AdaBoost ensemble with $M = 300$ stumps reaches test sensitivity $0.56$, test specificity $0.92$, and test error rate $0.16$ on the same $1{,}200$ test loans. Compare these to the logistic regression numbers from part (a)(vi). Briefly state, in one or two sentences, which classifier you would recommend to the bank \emph{if} the cost of approving a loan that will default is substantially larger than the cost of denying a loan that would not have defaulted, and which classifier you would recommend if it is the other way round.
+\end{enumerate}
+
+\subsection*{c) A neural-network classifier and a backprop derivation \subpoints{8}}
+
+The bank also fits a feed-forward neural network classifier with the following architecture (using the six predictors as input, after standardizing the four continuous ones and one-hot encoding the two-level \texttt{employment} dummies for a total of $p = 7$ inputs):
+
+\begin{itemize}
+  \item input layer of $7$ predictors;
+  \item one hidden layer of $M = 12$ neurons, biases included, ReLU activations;
+  \item output layer of $1$ neuron, with a bias and a sigmoid activation, returning $\hat p$.
+\end{itemize}
+
+The network is trained by mini-batch SGD on binary cross-entropy loss $L_i = -\bigl[y_i \log \hat p_i + (1 - y_i) \log(1 - \hat p_i)\bigr]$ with mini-batches of size $64$, dropout at rate $0.2$ on the hidden layer, early stopping on a held-out $20\%$ of the training set, and label smoothing with $\varepsilon = 0.05$.
+
+\begin{enumerate}[(i)]
+  \item \subpoints{1} How many parameters does this network have in total, \emph{including all bias terms}? Show your layer-by-layer breakdown.
+
+  \item \subpoints{1} A particular hidden neuron has weights $w = (0.30,\, -0.20,\, 0.10,\, 0.50,\, -0.40,\, 0.20,\, 0.60)^\top$ and bias $b = -0.10$. For a standardized input $x = (1.0,\, -0.5,\, 0.0,\, -1.0,\, 1.0,\, 0.0,\, 0.5)^\top$, compute the pre-activation $z$ and the post-activation $h = \mathrm{ReLU}(z)$, both to two decimals.
+
+  \item \subpoints{3} Consider, for one training observation $(x, y)$, the simplified $1$-hidden-layer network with output $\hat p \in (0, 1)$:
+  $$z_k = \alpha_{k0} + \sum_{j=1}^{p} \alpha_{kj}\, x_j, \qquad h_k = g(z_k), \qquad \eta = \beta_0 + \sum_{k=1}^{M} \beta_k\, h_k, \qquad \hat p = \sigma(\eta) = \frac{1}{1 + e^{-\eta}},$$
+  trained with the binary cross-entropy loss $L = -\bigl[y \log \hat p + (1 - y) \log(1 - \hat p)\bigr]$ for $y \in \{0, 1\}$ and a generic differentiable activation $g(\cdot)$.
+
+  \begin{enumerate}[(a)]
+    \item \subpoints{1} Show that $\dfrac{\partial L}{\partial \eta} = \hat p - y$. (Use $\sigma'(\eta) = \sigma(\eta)(1 - \sigma(\eta)) = \hat p(1 - \hat p)$.)
+    \item \subpoints{1} Using (a) and the chain rule, compute $\dfrac{\partial L}{\partial \beta_k}$ (for $k \ge 1$) in terms of $\hat p$, $y$, and $h_k$.
+    \item \subpoints{1} Using (a) and (b), compute $\dfrac{\partial L}{\partial \alpha_{kj}}$ in terms of $\hat p$, $y$, $\beta_k$, $g'(z_k)$, and $x_j$.
+  \end{enumerate}
+
+  \item \subpoints{2} For the dropout, early stopping, and label smoothing regularizers used above, briefly state in one short sentence each: \emph{when} the regularizer is active (training, inference, both), and \emph{what} concrete change it makes to the loss or to the network's forward pass at training time.
+
+  \item \subpoints{1} A colleague suggests increasing the dropout rate from $0.2$ to $0.5$ ``to regularize even more aggressively.'' Briefly comment, in one short sentence, on whether this is standard practice in this course, and on the bias--variance reason a dropout rate this high is rarely used.
+\end{enumerate}
+
+\vspace{1em}
+\hrule
+\vspace{0.5em}
+
+\noindent\textbf{End of exam.} \quad Total: $10 + 28 + 16 + 22 + 24 = 100$ points.
+
+\end{document}
