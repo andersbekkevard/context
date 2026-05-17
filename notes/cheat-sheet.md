@@ -9,6 +9,7 @@ Har boka. Burde ha liste over:
 - Formlene for f i forskjellige typer nns.
 - Ulike former for optimeringsproblemer: (argmin, minimize subject to, etc)
 - OLS = MLE på vektorform?
+- Adaboost slide 13 m09-boosting-slides
 
 - **Viktig**, boosting boosting boosting. Ikke i ISLP. Og teknisk. Og funker som faen. Må være på formelark.
 - Regneregler for vektorderivasjon. d/db(bTXb) og d/db(aTb). Nødvendige for OLS-utledning.

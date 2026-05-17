@@ -29,7 +29,7 @@ The supervised cousin of [[principal-component-regression|PCR]]: same compress-t
 - Same skeleton as PCR: build orthogonal directions $Z_1, \dots, Z_M$ as linear combinations of standardized $X$, then regress $Y$ on the first $M$.
 - **Difference from PCR**: each $\phi_{jm}$ is chosen to maximize $\text{Cov}(Z_m, Y)$ (subject to $\sum_j \phi_{jm}^2 = 1$), not $\text{Var}(Z_m)$.
 - $M$ chosen by [[cross-validation]].
-- Standardize $X$ (and typically center $Y$).
+- **Standardize both $X$ and $Y$** before fitting (ISLP §6.3.2, verbatim: *"We generally standardize the predictors and response before performing PLS."*). This is the asymmetry vs PCR, where only $X$ needs standardizing because $Y$ isn't used to construct components. In PLS, $Y$ enters every loading via $\phi_{j1} \propto \text{Corr}(X_j, Y)$, so $Y$'s scale propagates into the directions; standardizing keeps the covariance objective scale-equivariant in $Y$. `sklearn`'s `PLSRegression` does this by default (`scale=True`).
 
 ## The algorithm
 
