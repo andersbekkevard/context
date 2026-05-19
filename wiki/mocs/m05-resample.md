@@ -18,7 +18,7 @@ tags:
 The prof's "fewer-assumptions" alternative to AIC/BIC for model selection and assessment. Two lectures (Feb 9, Feb 10) that establish [[cross-validation]] as the workhorse hyperparameter tuner, the [[bootstrap]] as the empirical sampling-distribution machine, and the right-vs-wrong-way CV trap as a flagged "lying with statistics" exam target. Foundation for everything in modules 6–11.
 
 ## Slides
-- [[../../modules/5Resample/5Resample|5Resample]]
+- <a href="/pdfs/m05-resample-slides.pdf" target="_blank" rel="noopener">m05-resample-slides.pdf</a>
 
 ## Lectures
 - [[L10-resample-1]]: module 4 recap (sens/spec/ROC), train/val/test split, validation-set / LOOCV / k-fold CV, one-SE rule, independence trap

@@ -17,7 +17,7 @@ tags:
 The prof's first algorithmic (vs data-modelling) module: CART recursive binary splitting, then variance-reduction via bagging and random forests. Spans Mar 10 (L17 BeyondLinear wrap-up + trees intro), Mar 16 (L18 classification trees + ensembles), and Mar 17 (L19 wraps trees with bagging / RF / OOB / variable importance before pivoting to boosting). Load-bearing for the exam: tree-fitting algorithm, Gini vs cross-entropy vs misclassification, grow-then-prune logic, and *why random forests beat plain bagging* (decorrelation of the ρσ² floor).
 
 ## Slides
-- [[../../modules/8Trees/8Trees|8Trees]]
+- <a href="/pdfs/m08-trees-slides.pdf" target="_blank" rel="noopener">m08-trees-slides.pdf</a>
 
 ## Lectures
 - [[L17-trees-1]]: wraps GAMs / splines, then introduces regression trees, recursive binary splitting (CART), and cost-complexity pruning

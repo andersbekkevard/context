@@ -18,7 +18,7 @@ tags:
 The prof's three-lecture run on categorical $Y$ (Jan 27, Feb 2, Feb 3): set up the Bayes classifier, do logistic regression, then the LDA/QDA/Naive Bayes generative trio plus the binary-classifier metric stack (confusion matrix, sensitivity/specificity, ROC/AUC). Load-bearing for the exam: **odds ↔ probability**, the **decision-boundary derivation** ($\delta_k(x)$ flagged twice), the **diagnostic vs sampling** divider, and "where does the quadratic come from?" in QDA.
 
 ## Slides
-- [[../../modules/4Classif/4Classif|4Classif]]
+- <a href="/pdfs/m04-classif-slides.pdf" target="_blank" rel="noopener">m04-classif-slides.pdf</a>
 
 ## Lectures
 - [[L07-classif-1]]: classification setup, Bayes classifier and Bayes error rate, logistic regression (logit link, MLE via Newton, odds), KNN revisit, curse of dimensionality, diagnostic-vs-sampling framing

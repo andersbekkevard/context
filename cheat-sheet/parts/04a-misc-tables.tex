@@ -1,0 +1,211 @@
+% ============================================================
+% 04a-misc-tables.tex
+% Three comparison tables for TMA4268 final exam cheat sheet.
+% Rows sourced from wiki/concepts/ and wiki/book/ (ISLP markdown).
+% Out-of-scope models excluded per docs/scope.md (no SVM, no
+% multi-class logistic, etc.).
+% ============================================================
+
+\section{Misc --- Comparison tables}
+
+% ----------------------------------------------------------------
+% TABLE 1: Hyperparameters x Bias-Variance direction
+% Source paths cited per model block as LaTeX comments.
+% Scope confirmed via docs/scope.md (Apr 28 prof rule).
+% ----------------------------------------------------------------
+
+\subsection{Table 1 --- Hyperparameters \& bias--variance direction}
+
+Convention: ``$\uparrow$ hp'' = increasing the hyperparameter.
+``B'' = bias, ``V'' = variance. Arrow direction is the effect of \emph{increasing}
+the listed hyperparameter, holding others fixed.
+
+{\onecolumn
+\begin{center}
+\scriptsize
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} l l l l l @{}}
+\toprule
+\textbf{Model} & \textbf{Hyperparameter} & \textbf{Meaning} & \textbf{$\uparrow$ hp effect} & \textbf{Notes / source} \\
+\midrule
+
+% --- OLS / linear regression (wiki/concepts/linear-regression.md) ---
+OLS                & ---                 & no tuning knob               & ---                                  & special case $\lambda{=}0$ of ridge \\
+\midrule
+
+% --- Ridge (wiki/concepts/ridge-regression.md L98-100) ---
+Ridge              & $\lambda \geq 0$    & L2 penalty strength          & B$\uparrow$, V$\downarrow$           & $\lambda{=}0$ OLS; $\lambda{\to}\infty$ all $\hat\beta{\to}0$ \\
+\midrule
+
+% --- Lasso (wiki/concepts/lasso.md L44-46, L124-125) ---
+Lasso              & $\lambda \geq 0$    & L1 penalty strength          & B$\uparrow$, V$\downarrow$           & at finite $\lambda$ all $\hat\beta{=}0$; sparsifies \\
+\midrule
+
+% --- Elastic net (wiki/concepts/elastic-net.md L26-30) ---
+\multirow{2}{*}{Elastic net}
+                   & $\lambda$ (overall) & combined L1{+}L2 strength    & B$\uparrow$, V$\downarrow$           & two knobs; CV over 2D grid \\
+                   & $\alpha\in[0,1]$    & L1 mix ($\alpha{=}1$ lasso)  & sparsity$\uparrow$, averaging$\downarrow$ & lib parametrisation \\
+\midrule
+
+% --- Subset selection (wiki/concepts/subset-selection.md L41-50) ---
+Subset selection   & $k$ (model size)    & number of predictors kept   & B$\downarrow$, V$\uparrow$           & best/forward/backward; CV picks $k$ \\
+\midrule
+
+% --- Logistic regression (wiki/concepts/logistic-regression.md) ---
+Logistic regr.     & (threshold $\tau$)  & decision threshold on $\hat p$ & not a B--V knob                    & threshold tunes sens/spec, not flex \\
+\midrule
+
+% --- LDA / QDA / NB (wiki/concepts/linear-discriminant-analysis.md, qda, naive-bayes) ---
+LDA                & ---                 & no tuning knob               & ---                                  & shared $\Sigma$; $\tau$ on posterior is sens/spec \\
+QDA                & ---                 & no tuning knob               & ---                                  & per-class $\Sigma_k$; more flex than LDA \\
+Naive Bayes        & ---                 & no tuning knob (in course)   & ---                                  & independence assumption is the ``knob'' \\
+\midrule
+
+% --- KNN classification + regression (wiki/concepts/knn-classification.md, knn-regression.md) ---
+KNN (clf / regr.)  & $K$                 & \# neighbours averaged/voted & B$\uparrow$, V$\downarrow$           & $K{=}1$ wiggly; $K{=}n$ const \\
+\midrule
+
+% --- Polynomial regression (wiki/concepts/polynomial-regression.md "Notation & setup": d -> d+1 params) ---
+Polynomial regr.   & degree $d$          & order of polynomial fit      & B$\downarrow$, V$\uparrow$           & $d{+}1$ params (incl.\ intercept) \\
+\midrule
+
+% --- Regression splines (wiki/concepts/regression-splines.md L_cubic-spline / dof) ---
+\multirow{2}{*}{Regression splines}
+                   & \# knots $K$        & breakpoints in piecewise poly & B$\downarrow$, V$\uparrow$          & cubic spline $K{+}4$ dof; nat.\ $K$ dof \\
+                   & df (= $K{+}{\cdot}$)& effective complexity         & B$\downarrow$, V$\uparrow$           & nat.\ cubic $K{=}3$ knots $\to$ $4$ dof (2024) \\
+\midrule
+
+% --- Smoothing splines (wiki/concepts/smoothing-splines.md L_lambda direction trap) ---
+\multirow{2}{*}{Smoothing splines}
+                   & $\lambda \geq 0$    & curvature penalty $\int g''^2$ & B$\uparrow$, V$\downarrow$         & \textbf{direction TRAP}: opp.\ of $d$/$K$ \\
+                   & df$_\lambda$        & trace of smoother $\mathbf S_\lambda$ & B$\downarrow$, V$\uparrow$    & df$_\lambda \to n$ as $\lambda{\to}0$ \\
+\midrule
+
+% --- Local regression / LOESS (wiki/concepts/local-regression.md "span = k/n") ---
+Local regr.\ (LOESS) & span $s = k/n$    & fraction of pts in local fit & B$\uparrow$, V$\downarrow$           & wide $s$ smooth; narrow $s$ choppy \\
+\midrule
+
+% --- GAM (wiki/concepts/generalized-additive-models.md per-component df) ---
+GAM                & df per term         & flex of each $f_j$           & B$\downarrow$, V$\uparrow$ (per term) & sum dof = total; no interactions \\
+\midrule
+
+% --- Regression tree (wiki/concepts/cost-complexity-pruning.md cost-complexity alpha; regression-tree.md mincut/minsize/mindev) ---
+\multirow{3}{*}{Decision tree}
+                   & $\alpha \geq 0$     & cost-complexity penalty on $|T|$ & B$\uparrow$, V$\downarrow$       & $\alpha{=}0$ keep full $T_0$; CV picks $\alpha$ \\
+                   & tree size $|T|$     & \# terminal leaves           & B$\downarrow$, V$\uparrow$           & moves opposite to $\alpha$ \\
+                   & $n_{\min}$          & min.\ obs.\ per leaf         & B$\uparrow$, V$\downarrow$           & ``lax''; not the selection knob \\
+\midrule
+
+% --- Bagging (wiki/concepts/bagging.md; random-forest.md "B is not a tuning param") ---
+Bagging            & $B$ (\# trees)      & ensemble size                & V$\downarrow$ then plateau           & ``use enough'', \textbf{not tuned} (OOB) \\
+\midrule
+
+% --- Random forest (wiki/concepts/random-forest.md L57-61, hyperparam cheat sheet) ---
+\multirow{2}{*}{Random forest}
+                   & $B$                 & \# trees                     & V$\downarrow$ then plateau           & not a tuning param (use OOB) \\
+                   & $m$                 & preds per split              & V$\downarrow$ (decorrelate); B$\uparrow$ & def.\ $\sqrt p$ clf, $p/3$ regr \\
+\midrule
+
+% --- AdaBoost (wiki/concepts/adaboost.md "M = number of boosting rounds"; stumps) ---
+\multirow{2}{*}{AdaBoost}
+                   & $M$                 & \# boosting rounds           & B$\downarrow$, V$\uparrow$ (overfit) & sequential; can overfit \\
+                   & base depth          & weak-learner size            & B$\downarrow$, V$\uparrow$           & stumps typical \\
+\midrule
+
+% --- Gradient boosting / GBM (wiki/concepts/boosting.md + weak-learner-and-learning-rate.md) ---
+\multirow{4}{*}{Gradient boost (GBM)}
+                   & $M$ (\# trees)      & boosting iterations          & B$\downarrow$, V$\uparrow$ past min  & \textbf{tune by CV / early stop} \\
+                   & $\nu$               & learning rate / shrinkage    & V$\uparrow$ (each step bigger)       & $\nu \leq 0.1$; couples with $M$ \\
+                   & $d$ (or $J$)        & tree size, interaction order & B$\downarrow$, V$\uparrow$           & $J{\in}[4,8]$ typical; $J{=}2$ stump \\
+                   & $n_{\min}$          & node-size floor              & B$\uparrow$, V$\downarrow$           & secondary \\
+\midrule
+
+% --- Stochastic GBM (wiki/concepts/stochastic-gradient-boosting.md L_bag.fraction + subsample variants) ---
+\multirow{2}{*}{Stochastic GBM}
+                   & $\eta_{\text{row}}$ & row subsample fraction       & V$\downarrow$ (decorrelate)          & def.\ $0.5$; without replacement \\
+                   & $\eta_{\text{col}}$ & column subsample fraction    & V$\downarrow$                        & analogue of RF $m$ \\
+\midrule
+
+% --- XGBoost (wiki/concepts/xgboost.md "What XGBoost adds" + Ames listing) ---
+\multirow{7}{*}{XGBoost}
+                   & $M$                 & \# boosting rounds           & B$\downarrow$, V$\uparrow$ past min  & use early stopping \\
+                   & $\nu$               & learning rate                & V$\uparrow$                          & e.g.\ $0.05$--$0.1$ \\
+                   & $d$                 & tree depth                   & B$\downarrow$, V$\uparrow$           & $3$ typical \\
+                   & $\lambda$           & L2 on leaf weights           & B$\uparrow$, V$\downarrow$           & ridge on leaves \\
+                   & $\alpha$            & L1 on leaf weights           & B$\uparrow$, V$\downarrow$ (sparser) & lasso on leaves \\
+                   & $\gamma$            & per-leaf penalty (prune)     & B$\uparrow$, V$\downarrow$           & shrinks $|T|$ \\
+                   & $\eta_{\text{row}}, \eta_{\text{col}}$ & row / col subsample & V$\downarrow$               & SGD-style regulariser \\
+\midrule
+
+% --- PCR (wiki/concepts/principal-component-regression.md L_M tuning param) ---
+PCR                & $M$ (\# PCs kept)   & dim of reduced regression    & B$\downarrow$, V$\uparrow$           & $M{<}p$; CV picks $M$; \emph{unsupervised} \\
+\midrule
+
+% --- PLS (wiki/concepts/partial-least-squares.md L_M chosen by CV) ---
+PLS                & $M$ (\# components) & dim of supervised reduction  & B$\downarrow$, V$\uparrow$           & uses $Y$; behaves like ridge/PCR \\
+\midrule
+
+% --- Feedforward NN (wiki/concepts/feedforward-network.md M = width; nn-regularization.md menu) ---
+\multirow{6}{*}{Neural net (FNN)}
+                   & width $M$           & hidden units / layer         & B$\downarrow$, V$\uparrow$           & engineered, no theory for $M$ \\
+                   & depth               & \# hidden layers             & B$\downarrow$, V$\uparrow$           & stacks same recipe \\
+                   & learning rate       & SGD step size                & opt.\ instability if $\uparrow$      & implicit regulariser \\
+                   & weight decay $\lambda$ & L2 (or L1) on weights     & B$\uparrow$, V$\downarrow$           & = ridge / lasso on $\mathbf w$ \\
+                   & dropout $p_{\text{drop}}$ & frac.\ nodes zeroed    & B$\uparrow$, V$\downarrow$           & Hinton; ``never train w/o reg.'' \\
+                   & epochs (early stop) & training-time cap            & B$\downarrow$, V$\uparrow$ past min  & ridge-like effect \\
+\midrule
+
+% --- K-means (wiki/concepts/k-means-clustering.md "K is hyperparameter; pick by hand") ---
+K-means            & $K$ (\# clusters)   & partition cardinality        & within-SS$\downarrow$, interp$\downarrow$ & no CV; pick by elbow / use \\
+\midrule
+
+% --- Hierarchical (wiki/concepts/hierarchical-clustering.md L_linkage rules) ---
+\multirow{2}{*}{Hierarchical}
+                   & linkage             & set-to-set dissim.\ rule     & shapes dendrogram                    & complete/avg balanced; single chains \\
+                   & cut height          & induces \# clusters          & ---                                  & no $K$ required at fit time \\
+
+\bottomrule
+\end{tabular*}
+\end{center}
+\twocolumn
+}
+
+% ----------------------------------------------------------------
+% TABLE 2: PCR vs PCA vs PLS
+% Sources: wiki/concepts/{principal-component-regression,
+%                         principal-component-analysis,
+%                         partial-least-squares}.md
+% ISLP refs: 6.3.1, 6.3.2, 12.2.  See wiki/book/06-modelsel.md, 12-unsupervised.md.
+% ----------------------------------------------------------------
+
+\subsection{Table 2 --- PCA vs PCR vs PLS}
+
+% Sources: wiki/concepts/principal-component-analysis.md  (isl-ref: 12.2)
+%          wiki/concepts/principal-component-regression.md (isl-ref: 6.3.1)
+%          wiki/concepts/partial-least-squares.md          (isl-ref: 6.3.2)
+
+\scriptsize
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{@{} l c X c @{}}
+\toprule
+\textbf{Method} & \textbf{Sup.?} & \textbf{Direction maximises / use case} & \textbf{ISLP} \\
+\midrule
+PCA & No &
+$\Var(X\phi)$, $\|\phi\|{=}1$. Eigvecs of $\hat\Sigma_X$. Unsupervised dim.\ reduction; viz; decorrelation. Use when compressing $X$ alone (no $Y$).
+& \S 12.2 \\
+\addlinespace
+PCR & No (uses PCA) &
+$\Var(X\phi)$, \emph{then} OLS of $Y$ on first $M$ PCs. ``Compress, then regress.'' Tune $M$ by CV. Best when high-variance $X$-dirs also drive $Y$.
+& \S 6.3.1 \\
+\addlinespace
+PLS & \textbf{Yes} &
+$\Cov(X\phi, Y)$, $\|\phi\|{=}1$; deflate \& iterate. $\phi_{j1}\propto \Corr(X_j,Y)$. Best when $Y$ depends on \emph{low-variance} $X$-dirs (where PCR fails); usually $\approx$ ridge/PCR.
+& \S 6.3.2 \\
+\bottomrule
+\end{tabularx}
+
+\footnotesize
+
+% ----------------------------------------------------------------
+% End of 04a-misc-tables.tex
+% ----------------------------------------------------------------

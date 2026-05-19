@@ -1,0 +1,163 @@
+\section{Misc --- Notes}
+
+% =====================================================================
+% Item 1: Models that allow p > n
+% Sources:
+%   wiki/concepts/high-dimensional-regression.md (definitive list at bottom)
+%   wiki/concepts/lasso.md, ridge-regression.md, elastic-net.md
+%   wiki/concepts/subset-selection.md (fwd ok, backward not)
+%   wiki/concepts/principal-component-regression.md, partial-least-squares.md
+%   wiki/book/06-modelsel.md (ISLP 6.4)
+% =====================================================================
+
+\subsection*{1. Which models tolerate $p>n$?}
+
+\scriptsize
+\begin{tabularx}{\linewidth}{@{}l c X@{}}
+\toprule
+\textbf{Model} & \textbf{$p>n$?} & \textbf{Why} \\
+\midrule
+OLS                 & no   & $X\T X$ singular; infinitely many zero-RSS fits. \\
+Forward stepwise    & yes  & Builds incrementally; cap at $\mathcal{M}_0,\dots,\mathcal{M}_{n-1}$. \\
+Backward stepwise   & no   & Needs full-$p$ OLS as starting point. \\
+Best-subset         & no$^\ast$ & Same OLS pathology per subset; $\ast$~ok for subsets of size $<n$. \\
+Ridge               & yes  & $X\T X+\lambda I$ is PD $\Rightarrow$ unique $\hat\bbeta$ even at $p>n$. \\
+Lasso               & yes  & Penalty selects $\le n$ active features. \\
+Elastic net         & yes  & Inherits lasso's $\le n$ active set; ridge piece keeps it unique. \\
+PCR / PLS           & yes  & Compress to $M<\min(n,p)$ components, then OLS. \\
+Logistic regression & no   & Same Hessian-singularity story as OLS; needs penalised variant. \\
+LDA                 & no   & Pooled $\hat\Sigma$ ($p\times p$) singular when $p\ge n-K$. \\
+QDA                 & no   & Worse: per-class $\hat\Sigma_k$ singular when $p\ge n_k-1$. \\
+Naive Bayes         & yes  & Diagonal $\Sigma$ $\Rightarrow$ $p$ univariate fits; the $p\gg n$ method. \\
+KNN                 & yes$^\dagger$ & Algorithmically fine; $\dagger$~distances degrade (curse of dim). \\
+Decision tree       & yes  & Splits one variable at a time; no joint inversion. \\
+Random forest       & yes  & Each tree picks $m\!\approx\!\sqrt{p}$ features; same as tree. \\
+Boosting (trees)    & yes  & Shallow trees, one split at a time on residuals. \\
+Neural net          & yes  & Over-parametrised regime is the default (double descent). \\
+GAM (basis)         & no$^\ddagger$ & Stacked OLS on $\mathbf X=(\mathbf 1,\mathbf X_1,\dots)$; $\ddagger$~$p>n$ kills it unless components are penalised. \\
+Smoothing spline    & yes  & Curvature penalty $\lambda\!\int g''^2$ regularises the $n$-knot fit. \\
+\bottomrule
+\end{tabularx}
+
+\footnotesize
+
+% =====================================================================
+% Item 2: Degrees of freedom for all relevant models
+% Sources:
+%   wiki/book-deltas/m06-modelsel.md §2 (ridge df)
+%   wiki/concepts/smoothing-splines.md (df = tr(S_lambda))
+%   wiki/concepts/regression-splines.md (cubic K+4, natural K+2)
+%   wiki/concepts/local-regression.md (LOESS df = tr(S))
+%   wiki/concepts/polynomial-regression.md (degree d -> d+1)
+%   wiki/concepts/generalized-additive-models.md
+%   wiki/book/07-beyondlinear.md (incl. 4+K cubic, df_lambda for smoothing)
+% =====================================================================
+
+\subsection*{2. Degrees of freedom (effective)}
+
+Recipe: \textbf{linear smoother} $\hat{\mathbf y}=S\mathbf y \Rightarrow \mathrm{df}=\mathrm{tr}(S)$. Wiggly $\uparrow$ $\Leftrightarrow$ df $\uparrow$.
+
+\scriptsize
+\begin{tabularx}{\linewidth}{@{}l l X@{}}
+\toprule
+\textbf{Model} & \textbf{df} & \textbf{Notes} \\
+\midrule
+OLS ($p$ predictors)    & $p+1$               & Intercept counted; $\mathrm{tr}(H)=p+1$. \\
+Ridge                   & $\sum_{j=1}^p \dfrac{d_j^2}{d_j^2+\lambda}$ & $d_j$=SV of $X$; $\lambda{=}0\!\Rightarrow\!p$; $\lambda{\to}\infty\!\Rightarrow\!0$. \\
+Lasso                   & $|\{j:\hat\beta_j\ne 0\}|$ & Size of active set. \\
+KNN regression          & $n/K$               & ISLP \S3.5 framing; large $K$ $\Rightarrow$ low df. \\
+Polynomial deg $d$      & $d+1$               & Intercept $+$ $x,x^2,\dots,x^d$. \\
+Step function ($K$ cuts) & $K+1$              & $K{+}1$ bin-indicators; one absorbed by intercept. \\
+Cubic spline, $K$ knots & $K+4$               & Truncated-power: $\{1,x,x^2,x^3,(x{-}c_j)^3_+\}$. \\
+Natural cubic, $K$ knots & $K+2$              & Two boundary-linearity constraints; ISLP counts as $K$ excl.\ intercept. \\
+Smoothing spline        & $\mathrm{df}_\lambda{=}\mathrm{tr}(S_\lambda)$ & $\lambda{=}0\!\Rightarrow\!n$; $\lambda{\to}\infty\!\Rightarrow\!2$ (line). \\
+Local regression (LOESS) & $\mathrm{tr}(S)$         & Span $s{=}k/n$ is the knob; linear smoother. \\
+GAM                     & $\sum_j \mathrm{df}_j$ & Sum of per-term df (intercept once). \\
+Plain logistic ($p$ pred.) & $p+1$            & Same count as OLS; ``free parameters''. \\
+\bottomrule
+\end{tabularx}
+
+\footnotesize
+
+% =====================================================================
+% Item 3: Standardization vs centering -- exhaustive
+% Sources (the canonical authority):
+%   wiki/concepts/standardization.md (tables of which methods need it + which don't)
+%   wiki/concepts/principal-component-analysis.md (center + standardize)
+%   wiki/concepts/logistic-regression.md L112 (scale-equivariant; not required)
+%   wiki/concepts/naive-bayes.md L74 (helps with SD estimation; not required)
+%   wiki/concepts/ridge-regression.md, lasso.md, elastic-net.md
+%   wiki/concepts/k-means-clustering.md, hierarchical-clustering.md
+%   wiki/concepts/feedforward-network.md / activation-functions.md
+%   wiki/concepts/regression-tree.md, random-forest.md, boosting.md
+%   exam_analysis.md \S4b (PCA without std \& KNN without std as canonical T/F)
+% =====================================================================
+
+\subsection*{3. Standardize? Center? Exhaustive list.}
+
+\scriptsize
+\begin{tabularx}{\linewidth}{@{}l c c c X@{}}
+\toprule
+\textbf{Method} & \textbf{Std.} & \textbf{Center} & \textbf{Req'd?} & \textbf{Why} \\
+\midrule
+OLS                   & no  & no  & either & Scale/shift-equivariant; std.\ only for interpreting $|\hat\beta_j|$. \\
+Ridge                 & yes & yes & \textbf{required} & $\sum\beta_j^2$ penalty not scale-invariant; $\beta_0$ unpenalised $\Rightarrow$ center $y$. \\
+Lasso                 & yes & yes & \textbf{required} & $\sum|\beta_j|$ penalty same; $\beta_0$ unpenalised. \\
+Elastic net           & yes & yes & \textbf{required} & Both penalties scale-asymmetric. \\
+Logistic regression   & no  & no  & either & Scale-equivariant in $\bbeta$; std.\ only for numerics/interpretation. \\
+LDA                   & no  & no  & either & Discriminant invariant under affine reparametrisation of $X$. \\
+QDA                   & no  & no  & either & Same: per-class Gaussian fit absorbs rescaling. \\
+Naive Bayes           & no  & no  & either & Per-coord 1-D densities; std.\ only helps SD estimation when scales clash. \\
+KNN (reg/class)       & yes & no  & \textbf{required} & Euclidean distance dominated by largest-unit coord. \\
+PCA                   & yes & \textbf{yes} & \textbf{required} & Chases total variance; centering needed so $X\T X/(n-1){=}\hat\Sigma$. \\
+PCR                   & yes & yes & \textbf{required} & Pipeline = standardise $\to$ PCA $\to$ OLS. \\
+PLS                   & yes & yes & \textbf{required} & Same; uses $\Cov(X,Y)$, scale-sensitive. \\
+Decision tree         & no  & no  & no & Splits compare values within one variable; monotone-invariant. \\
+Random forest         & no  & no  & no & Trees are monotone-invariant; same reason. \\
+Boosting (trees)      & no  & no  & no & Same; XGBoost/LightGBM don't need it. \\
+Neural net (MLP)      & yes & yes & \textbf{required} & Imbalanced input scales $\Rightarrow$ imbalanced gradients; bad training. \\
+$K$-means             & yes & no  & \textbf{required} & Euclidean distance; nanogram-vs-cm trap. \\
+Hierarchical clust.   & yes & no  & \textbf{required} & Same Euclidean/linkage distance issue. \\
+Polynomial / step     & no  & no  & either & OLS underneath; scale just rescales $\hat\beta$. \\
+Regression splines    & no  & no  & either & OLS on basis-expanded $X$; scale-equivariant. \\
+Smoothing splines     & no  & no  & either & Penalty is on $\int g''^2$ in $x$-units; rescaling rescales $\lambda$. \\
+GAM                   & no  & no  & either & Each $f_j$ fit separately; rescaling $X_j$ rescales $f_j$. \\
+\bottomrule
+\end{tabularx}
+
+\footnotesize
+
+\textbf{Rules of thumb.}\quad
+\emph{Yes-required} $=$ method uses a cross-coordinate penalty or distance ($L_2$/$L_1$, variance, Euclidean).
+\emph{Trees are immune}: monotone-invariant splits.
+\emph{Compute $\bar x_j, s_j$ on the train set only}; apply to test.
+\emph{Don't z-score} the response $y$ (except for NN training stability), nor 0/1 dummies.
+Categorical dummies stay 0/1.
+
+% =====================================================================
+% Item 4: Sigmoid / logit
+% Sources:
+%   wiki/concepts/logistic-regression.md (sigmoid + logit formulas, lines 55-61)
+%   wiki/concepts/odds-and-log-odds.md (logit = log p/(1-p))
+%   wiki/concepts/activation-functions.md L56 (sigmoid in NN context)
+%   wiki/book/04-classif.md (ISLP 4.3)
+% Derivative is a standard calculus identity from the sigmoid def;
+%   load-bearing for backprop / logistic-regression IRLS score.
+% =====================================================================
+
+\subsection*{4. Sigmoid and logit}
+
+\textbf{Sigmoid (inverse logit):}
+$$\sigma(z) \;=\; \frac{1}{1+e^{-z}} \;=\; \frac{e^{z}}{1+e^{z}}, \qquad \sigma:\R\to(0,1).$$
+
+\textbf{Logit (inverse sigmoid, ``log-odds''):} for $p\in(0,1)$,
+$$\mathrm{logit}(p) \;=\; \log\!\frac{p}{1-p} \;=\; \sigma^{-1}(p).$$
+
+\textbf{Derivative} (load-bearing for logreg score \& NN backprop):
+$$\sigma'(z) \;=\; \sigma(z)\bigl(1-\sigma(z)\bigr).$$
+
+\textbf{Shape.} Monotone S-curve. $\sigma(0)=\tfrac12$; $\sigma(-z)=1-\sigma(z)$;
+$\sigma(z)\to 0$ as $z\to-\infty$, $\sigma(z)\to 1$ as $z\to+\infty$;
+inflection at $z{=}0$ where $\sigma'(0)=\tfrac14$ (max slope).
+
+\textbf{Logistic regression link.} $\log\dfrac{p_i}{1-p_i}=\bbeta\T x_i \;\Leftrightarrow\; p_i=\sigma(\bbeta\T x_i)$. Coefficient $\beta_j$ = log odds-ratio; $e^{\beta_j}$ = multiplicative effect on odds for a unit increase in $x_j$.

@@ -1,0 +1,136 @@
+% Handwritten / ballpoint-pen variant — sandbox copy.
+% Compile with: lualatex master-handwritten.tex   (from this directory)
+% Inputs ./parts/*.tex (a snapshot — edits here don't touch the originals).
+
+\documentclass[10pt,a4paper,twocolumn]{extarticle}
+
+% ===== Geometry =====
+\usepackage[a4paper,margin=10mm,columnsep=6mm]{geometry}
+
+% ===== Math + tables =====
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{makecell}
+
+% ===== Handwriting font (Patrick Hand, local) =====
+\usepackage{fontspec}
+\setmainfont{PatrickHand-Regular.ttf}[
+  Path=./fonts/,
+  Scale=1.10,
+  Ligatures=TeX,
+  BoldFont=PatrickHand-Regular.ttf,
+  ItalicFont=PatrickHand-Regular.ttf,
+]
+\setsansfont{PatrickHand-Regular.ttf}[Path=./fonts/]
+
+% ===== Make math letters inherit the handwriting font =====
+\usepackage[italic,defaultmathsizes]{mathastext}
+
+% ===== Ballpoint-blue ink =====
+\usepackage{xcolor}
+\definecolor{ballpoint}{HTML}{1B2C7A}
+\AtBeginDocument{\color{ballpoint}}
+\usepackage{etoolbox}
+\AtBeginEnvironment{algorithm}{\color{ballpoint}}
+\AtBeginEnvironment{algorithmic}{\color{ballpoint}}
+
+% ===== Algorithms / lists =====
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{listings}
+\usepackage{caption}
+% Strip "Algorithm N:" label — just show the title. Use ballpoint color
+% (the caption package overrides the document \color by default).
+\DeclareCaptionFont{ballpointfont}{\color{ballpoint}}
+\captionsetup[algorithm]{labelformat=empty,labelsep=none,font={normalsize,ballpointfont}}
+% Drop the horizontal rules above and below algorithm floats.
+\floatstyle{plain}
+\restylefloat{algorithm}
+\usepackage[parfill]{parskip}
+\usepackage{enumitem}
+\setlist{nosep,leftmargin=1.1em}
+\usepackage{microtype}
+
+% ===== TIGHT spacing — Anders wants compact, handwritten-density =====
+\setlength{\parskip}{0pt plus 0.3pt}
+\setlength{\parindent}{0pt}
+\setlength{\abovedisplayskip}{2pt plus 1pt}
+\setlength{\belowdisplayskip}{2pt plus 1pt}
+\setlength{\abovedisplayshortskip}{1pt}
+\setlength{\belowdisplayshortskip}{1pt}
+\setlength{\textfloatsep}{4pt plus 2pt minus 1pt}
+\setlength{\floatsep}{4pt plus 2pt minus 1pt}
+\setlength{\intextsep}{4pt plus 2pt minus 1pt}
+\renewcommand{\arraystretch}{0.92}
+
+% ===== Section styling: minimal =====
+\usepackage{titlesec}
+\titleformat{\section}{\normalsize}{\thesection.}{0.4em}{}
+\titlespacing*{\section}{0pt}{0.3ex}{0.1ex}
+\titleformat{\subsection}{\small}{\thesubsection}{0.4em}{}
+\titlespacing*{\subsection}{0pt}{0.2ex}{0.05ex}
+
+% ===== Anders draws table rules by hand =====
+% Zero out booktabs rule widths — lines become invisible but the vertical
+% spacing slots remain (booktabs machinery untouched, tabularx-safe).
+\setlength{\heavyrulewidth}{0pt}
+\setlength{\lightrulewidth}{0pt}
+\setlength{\cmidrulewidth}{0pt}
+\setlength{\aboverulesep}{1pt}
+\setlength{\belowrulesep}{1pt}
+
+% ===== Math-symbol overrides for a handwritten feel =====
+% \mathbb fall-through: E, R, I, etc. become Patrick Hand italic instead of
+% Computer Modern double-struck (which looks alien next to the font).
+\let\origmathbb\mathbb
+\renewcommand{\mathbb}[1]{\mathit{#1}}
+
+% Big operators: Computer Modern \sum/\prod are ornate engraver Σ/Π.
+% Swap to slanted Greek capitals — closer to what one writes by hand.
+\let\origsum\sum
+\let\origprod\prod
+\renewcommand{\sum}{\mathop{\mathit{\Sigma}}}
+\renewcommand{\prod}{\mathop{\mathit{\Pi}}}
+
+% ===== Convenience macros =====
+\newcommand{\R}{\mathit{R}}
+\let\E\relax
+\newcommand{\E}{\mathop{\mathit{E}}}
+\let\Var\relax
+\let\Cov\relax
+\let\Corr\relax
+\let\Bias\relax
+\newcommand{\Var}{\mathop{\mathit{Var}}}
+\newcommand{\Cov}{\mathop{\mathit{Cov}}}
+\newcommand{\Corr}{\mathop{\mathit{Corr}}}
+\newcommand{\Bias}{\mathop{\mathit{Bias}}}
+\newcommand{\T}{^{\!\top}}
+\newcommand{\xb}{\bm{x}}
+\newcommand{\yb}{\bm{y}}
+\newcommand{\bbeta}{\bm{\beta}}
+\newcommand{\Xb}{\bm{X}}
+
+\pagestyle{empty}
+\setlength{\columnseprule}{0pt}
+\raggedbottom
+
+% Load the per-glyph + per-line jitter callbacks.
+\directlua{dofile("jitter.lua")}
+
+\begin{document}
+\footnotesize
+
+\input{parts/01-boosting.tex}
+\input{parts/02-derivations.tex}
+\input{parts/03-vector-math.tex}
+\input{parts/04a-misc-tables.tex}
+\input{parts/04b-misc-notes.tex}
+\input{parts/05-prewritten.tex}
+\input{parts/06-book-lookups.tex}
+\input{parts/07-statsbook.tex}
+
+\end{document}

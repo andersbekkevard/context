@@ -1,0 +1,179 @@
+\section{Derivations}
+
+% =====================================================================
+\subsection{$\Corr^2(X,Y)=R^2$ in simple LR}
+% source: wiki/book/03-linreg.md:228-246 — R^2 def (3.17), Cor(X,Y) (3.18),
+%         and the assertion "in simple LR, R^2 = r^2" (ISLP states; does not derive)
+% source: wiki/book-deltas/m03-linreg.md:120-128 — simple-LR closed form
+%         beta1 = S_xy / S_xx, beta0 = ybar - beta1 xbar
+% source: wiki/book/03-linreg.md:81-123 — RSS / TSS / beta0,beta1 simple-LR setup
+
+\textbf{Setup.} Simple LR $y_i=\beta_0+\beta_1 x_i+\varepsilon_i$. Shorthand
+\begin{align*}
+S_{xx} &= \textstyle\sum_i (x_i-\bar x)^2, &
+S_{yy} &= \textstyle\sum_i (y_i-\bar y)^2 = \mathrm{TSS},\\
+S_{xy} &= \textstyle\sum_i (x_i-\bar x)(y_i-\bar y).
+\end{align*}
+ISLP eq.\ 3.4: $\hat\beta_1=S_{xy}/S_{xx}$, $\hat\beta_0=\bar y-\hat\beta_1\bar x$. So $\hat y_i-\bar y = \hat\beta_1(x_i-\bar x)$.
+
+\textbf{(a) RSS in closed form.} Use $y_i-\hat y_i = (y_i-\bar y)-\hat\beta_1(x_i-\bar x)$:
+\begin{align*}
+\mathrm{RSS}
+&= \textstyle\sum_i\big[(y_i-\bar y)-\hat\beta_1(x_i-\bar x)\big]^2\\
+&= S_{yy} - 2\hat\beta_1 S_{xy} + \hat\beta_1^2 S_{xx}\\
+&= S_{yy} - 2\,\tfrac{S_{xy}}{S_{xx}}\,S_{xy} + \tfrac{S_{xy}^2}{S_{xx}^2}\,S_{xx}\\
+&= S_{yy} - \tfrac{S_{xy}^2}{S_{xx}}.
+\end{align*}
+
+\textbf{(b) Plug into $R^2$.} From ISLP eq.\ 3.17, $R^2=1-\mathrm{RSS}/\mathrm{TSS}$:
+\begin{align*}
+R^2
+&= 1 - \frac{S_{yy} - S_{xy}^2/S_{xx}}{S_{yy}}
+ = \frac{S_{xy}^2}{S_{xx}\,S_{yy}}.
+\end{align*}
+
+\textbf{(c) Compare to $r^2$.} From ISLP eq.\ 3.18,
+\begin{align*}
+r=\Corr(X,Y)=\frac{S_{xy}}{\sqrt{S_{xx}\,S_{yy}}}\ \Rightarrow\ r^2=\frac{S_{xy}^2}{S_{xx}\,S_{yy}}=R^2.\ \square
+\end{align*}
+
+% =====================================================================
+\subsection{ISLP eq.\ (12.18) and K-means monotonicity}
+% source: wiki/book/12-unsupervised.md:329-369 — eqs (12.15)-(12.18),
+%         Algorithm 12.2, "guaranteed to decrease the objective at each step"
+% source: wiki/concepts/k-means-clustering.md:42-78 — prof's framing,
+%         identity (12.18) as the trick behind Exercise 10.2
+
+\textbf{Objective (12.17).} Partition $\{1,\dots,n\}$ into $C_1,\dots,C_K$, minimise
+\[
+\sum_{k=1}^{K} W(C_k),\quad W(C_k)=\tfrac{1}{|C_k|}\sum_{i,i'\in C_k}\sum_{j=1}^{p}(x_{ij}-x_{i'j})^2.
+\]
+
+\textbf{Identity (12.18).} For one cluster $C_k$ with mean $\bar x_{kj}=\tfrac{1}{|C_k|}\sum_{i\in C_k}x_{ij}$:
+\[
+\frac{1}{|C_k|}\sum_{i,i'\in C_k}\sum_{j=1}^{p}(x_{ij}-x_{i'j})^2 \;=\; 2\sum_{i\in C_k}\sum_{j=1}^{p}(x_{ij}-\bar x_{kj})^2.
+\]
+
+\emph{Proof (per-feature $j$; sum then).} Fix $j$; drop the $j$ index. Add/subtract $\bar x_k$:
+\begin{align*}
+\sum_{i,i'\in C_k}(x_i-x_{i'})^2
+&= \sum_{i,i'\in C_k}\big[(x_i-\bar x_k)-(x_{i'}-\bar x_k)\big]^2\\
+&= \sum_{i,i'\in C_k}\Big[(x_i-\bar x_k)^2-2(x_i-\bar x_k)(x_{i'}-\bar x_k)\\
+&\hphantom{= \sum_{i,i'\in C_k}\Big[}+(x_{i'}-\bar x_k)^2\Big].
+\end{align*}
+The two squared terms each sum to $|C_k|\sum_{i\in C_k}(x_i-\bar x_k)^2$. The cross term factors:
+\[
+\sum_{i,i'\in C_k}(x_i-\bar x_k)(x_{i'}-\bar x_k)
+=\Big(\!\sum_{i\in C_k}(x_i-\bar x_k)\!\Big)^{\!2}=0
+\]
+because $\sum_{i\in C_k}(x_i-\bar x_k)=0$ by definition of $\bar x_k$. So
+\[
+\sum_{i,i'\in C_k}(x_i-x_{i'})^2 = 2\,|C_k|\sum_{i\in C_k}(x_i-\bar x_k)^2,
+\]
+divide by $|C_k|$ and sum over $j$ to get (12.18). $\square$
+
+\textbf{Algorithm decreases objective (per ISLP).} Let $Q=2\sum_k\sum_{i\in C_k}\|x_i-\bar x_k\|^2$ (the (12.18) form of the objective). One Lloyd iteration:
+\begin{itemize}
+\item[\textbf{2(a)}] Recompute centroid $\bar x_k$ at fixed assignments. The function $c\mapsto\sum_{i\in C_k}\|x_i-c\|^2$ is minimised at $c=\bar x_k$ (set derivative to $0$: $\sum_{i\in C_k}(x_i-c)=0\Rightarrow c=\bar x_k$). So $Q$ weakly decreases.
+\item[\textbf{2(b)}] At fixed centroids, reassign each $i$ to $\arg\min_k\|x_i-\bar x_k\|^2$. Each point's contribution weakly decreases, hence $Q$ weakly decreases.
+\end{itemize}
+$Q\ge 0$ and only finitely many partitions exist (at most $K^n$), so the sequence of $Q$-values must stabilise $\Rightarrow$ convergence to a \emph{local} optimum. $\square$
+
+% =====================================================================
+\subsection{OLS $=$ MLE: univariate and vector}
+% source: wiki/concepts/least-squares-and-mle.md:25-51 — prof framing, derivation
+% source: wiki/book-deltas/m03-linreg.md:68-114 — full matrix-form OLS derivation
+%         (Steps 1-5: RSS, expand, differentiate, normal eqs, invert)
+% source: wiki/book-deltas/m03-linreg.md:132-164 — MLE = LS argument under Gaussian errors
+% source: wiki/book/03-linreg.md:81-126 — simple-LR closed form (eq. 3.4)
+
+\textbf{Model.} $y=\Xb\bbeta+\bm\varepsilon$, $\bm\varepsilon\sim N_n(\bm 0,\sigma^2 \bm I_n)$. Univariate: $y_i=\beta_0+\beta_1 x_i+\varepsilon_i$, $\varepsilon_i\overset{\text{iid}}\sim N(0,\sigma^2)$.
+
+\textbf{Log-likelihood (both forms).}
+\begin{align*}
+\log L(\bbeta,\sigma^2)
+&= -\tfrac{n}{2}\log(2\pi\sigma^2) - \tfrac{1}{2\sigma^2}\textstyle\sum_i (y_i-\xb_i\T\bbeta)^2\\
+&= -\tfrac{n}{2}\log(2\pi\sigma^2) - \tfrac{1}{2\sigma^2}\|\yb-\Xb\bbeta\|_2^2.
+\end{align*}
+The first term and the $1/(2\sigma^2)$ factor are constant in $\bbeta$, so $\arg\max_{\bbeta}\log L = \arg\min_{\bbeta}\mathrm{RSS}(\bbeta)$. Thus $\hat\bbeta_{\text{MLE}}=\hat\bbeta_{\text{LS}}$. $\square$
+
+\smallskip
+\textbf{Solve the LS problem — side-by-side.}
+
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{@{}p{0.46\linewidth} p{0.5\linewidth}@{}}
+\toprule
+\textbf{Univariate} & \textbf{Vector} \\
+\midrule
+$\mathrm{RSS}=\sum_i(y_i-\beta_0-\beta_1 x_i)^2$
+&
+$\mathrm{RSS}=(\yb-\Xb\bbeta)\T(\yb-\Xb\bbeta)$\\[2pt]
+Expand:
+&
+Expand (scalar $\yb\T\Xb\bbeta=\bbeta\T\Xb\T\yb$):\\
+\multicolumn{2}{@{}l@{}}{}\\[-9pt]
+$\sum y_i^2 -2\beta_0\sum y_i -2\beta_1\sum x_i y_i$
+&
+$\yb\T\yb - 2\bbeta\T\Xb\T\yb + \bbeta\T\Xb\T\Xb\bbeta$\\
+$\quad{}+ n\beta_0^2 + 2\beta_0\beta_1\sum x_i + \beta_1^2\sum x_i^2$ & \\[2pt]
+$\partial/\partial\beta_0=0$: $\sum y_i = n\beta_0+\beta_1\sum x_i$
+&
+$\partial/\partial\bbeta = -2\Xb\T\yb + 2\Xb\T\Xb\bbeta = \bm 0$\\
+$\Rightarrow\ \hat\beta_0 = \bar y - \hat\beta_1\bar x$ & (uses $\partial\bm a\T\bbeta/\partial\bbeta=\bm a$;\\
+& $\partial\bbeta\T\bm A\bbeta/\partial\bbeta=2\bm A\bbeta$, $\bm A$ sym.) \\[2pt]
+$\partial/\partial\beta_1=0$ and substitute $\hat\beta_0$: & Normal equations:\\
+$\sum x_i y_i - \bar y\sum x_i - \hat\beta_1(\sum x_i^2-\bar x\sum x_i)=0$ & $\Xb\T\Xb\,\hat\bbeta = \Xb\T\yb$\\[2pt]
+$\Rightarrow\ \hat\beta_1 = \dfrac{\sum_i(x_i-\bar x)(y_i-\bar y)}{\sum_i(x_i-\bar x)^2}$
+&
+If $\Xb$ full column rank: $\boxed{\hat\bbeta=(\Xb\T\Xb)^{-1}\Xb\T\yb}$\\
+$\Rightarrow\ \hat\beta_0 = \bar y-\hat\beta_1\bar x$ &
+2nd deriv.\ $2\Xb\T\Xb\succ 0$ $\Rightarrow$ unique min.\\
+\bottomrule
+\end{tabular}
+
+\smallskip
+\emph{Consistency check.} For $\Xb=[\bm 1\ \xb]$, $(\Xb\T\Xb)^{-1}\Xb\T\yb$ reproduces the simple-LR pair above (ISLP eq.\ 3.4).
+
+% =====================================================================
+\subsection{Bias--variance decomposition}
+% source: wiki/concepts/bias-variance-tradeoff.md:38-92 — full board derivation,
+%         the two cross-term cancellations, expectation over training samples
+% source: wiki/book/02-statlearn.md (ISLP §2.2.2) — origin reference
+
+\textbf{Setup.} Truth $y_0=f(x_0)+\varepsilon$ with $\E[\varepsilon]=0$, $\Var(\varepsilon)=\sigma^2$, $\varepsilon\perp\hat f$. $\hat f$ trained on a random sample; $\E[\cdot]$ is jointly over training set and noise $\varepsilon$.
+
+\textbf{Step 1 — peel off irreducible noise.} Substitute $y_0=f+\varepsilon$ (suppress $x_0$):
+\begin{align*}
+\E[(y_0-\hat f)^2]
+&= \E\!\big[(f-\hat f+\varepsilon)^2\big]\\
+&= \E[(f-\hat f)^2] + \E[\varepsilon^2] + 2\,\E[(f-\hat f)\varepsilon].
+\end{align*}
+$\E[\varepsilon^2]=\Var(\varepsilon)+\E[\varepsilon]^2=\sigma^2$. Cross term vanishes: $\varepsilon\perp(f-\hat f)$ and $\E[\varepsilon]=0$, so
+$\E[(f-\hat f)\varepsilon]=\E[f-\hat f]\,\E[\varepsilon]=0$. Hence
+\begin{align*}
+\E[(y_0-\hat f)^2] = \E[(f-\hat f)^2] + \sigma^2.
+\end{align*}
+
+\textbf{Step 2 — add--subtract $\E[\hat f]$.}
+\begin{align*}
+f-\hat f = \underbrace{(f-\E[\hat f])}_{\text{constant in expectation}} + \underbrace{(\E[\hat f]-\hat f)}_{\text{mean-zero}}.
+\end{align*}
+Square:
+\begin{align*}
+(f-\hat f)^2
+&= (f-\E[\hat f])^2 + (\E[\hat f]-\hat f)^2\\
+&\quad{}+ 2(f-\E[\hat f])(\E[\hat f]-\hat f).
+\end{align*}
+Take $\E[\cdot]$. First term constant: $(f-\E[\hat f])^2 = \Bias(\hat f)^2$. Second term: $\E[(\hat f-\E[\hat f])^2]=\Var(\hat f)$. Cross term:
+\begin{align*}
+2(f-\E[\hat f])\cdot\E\!\big[\E[\hat f]-\hat f\big] = 2(f-\E[\hat f])\cdot 0 = 0,
+\end{align*}
+since $\E[\E[\hat f]]=\E[\hat f]$.
+
+\textbf{Combine.}
+\begin{align*}
+\boxed{\;\E[(y_0-\hat f(x_0))^2] = \Var(\hat f(x_0)) + \Bias(\hat f(x_0))^2 + \sigma^2.\;}
+\end{align*}
+
+\smallskip
+\emph{Reading the terms.} $\sigma^2$ = irreducible noise floor. $\Bias^2=(f(x_0)-\E[\hat f(x_0)])^2$: systematic error from wrong model class. $\Var(\hat f(x_0))$: jitter of the fit at $x_0$ across resampled training sets. Two cross-term cancellations: (i) $\E[\varepsilon]=0$; (ii) $\E[\E[\hat f]-\hat f]=0$.

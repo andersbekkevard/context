@@ -17,7 +17,7 @@ tags:
 One-and-a-half lectures (Mar 9 plus the first half of Mar 10) on a single trick: replace `x` with a basis expansion `b_j(x)` and keep doing linear regression. The atoms walk a difficulty ladder, polynomial → step → regression spline → smoothing spline → LOESS → GAM, culminating in [[generalized-additive-models]] and the same stack lifted to the binary case (logistic GAM). Load-bearing for the exam: the smoothing-spline λ direction T/F trap, building a spline design matrix by hand (Exercise 7.3 / 7.4), and reading a GAM plot.
 
 ## Slides
-- [[../../modules/7BeyondLinear/7BeyondLinear|7BeyondLinear]]
+- <a href="/pdfs/m07-beyondlinear-slides.pdf" target="_blank" rel="noopener">m07-beyondlinear-slides.pdf</a>
 
 ## Lectures
 - [[L16-beyondlinear-1]]: basis-functions framing; polynomial / step / regression splines (cubic + natural); smoothing splines + effective df; LOESS; GAM intro

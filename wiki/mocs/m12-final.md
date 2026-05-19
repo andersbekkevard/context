@@ -17,7 +17,7 @@ tags:
 Meta-router. Module 12 has **no atoms of its own**, it is the exam-review session, and all exam-relevant content lives in atoms owned by earlier modules. This MOC routes to the canonical exam-review lecture, the scope authority, and the cross-cutting Specials any module-12 query will pass through.
 
 ## Slides
-- [[../../modules/12Final/12Final|12Final]]
+- <a href="/pdfs/m12-final-slides.pdf" target="_blank" rel="noopener">m12-final-slides.pdf</a>
 
 ## Lectures
 - [[L27-summary]]: Apr 28 dedicated exam Q&A: logistics, the scope rule (verbatim), problem-by-problem walkthrough of the 2025 paper showing how each question is reformatted for the 2026 open-book exam, plus the "mathy question" template (MLE = LS under Gaussian errors)

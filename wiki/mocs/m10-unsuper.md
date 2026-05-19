@@ -18,8 +18,7 @@ tags:
 Two lectures (Apr 13, Apr 14) on the "no $Y$" half of the course: PCA as the canonical dimensionality-reduction tool, then K-means and hierarchical clustering as the discrete-summary cousins. Load-bearing for the exam: the PCA explained-variance / score arithmetic (Q3e-style) and the **hierarchical-clustering hand-dendrogram** with the `−1 point per mistake` rubric (Q5-style); k-means hand computations also fair game. Standardization is mandatory for everything in this module.
 
 ## Slides
-- [[../../modules/10Unsuper/10Unsuper|10Unsuper]]
-- [[../../modules/10Unsuper/unsupervised_learning_presentation_lecture2|unsupervised_learning_presentation_lecture2]]
+- <a href="/pdfs/m10-unsuper-slides.pdf" target="_blank" rel="noopener">m10-unsuper-slides.pdf</a>
 
 ## Lectures
 - [[L21-unsupervised-1]]: wraps module 9 ([[xgboost]], [[partial-dependence-plots]]); opens module 10 with the "unsupervised is dangerous statistics" framing; full PCA from scratch (max-variance optimization, SVD/eigendecomposition, loadings, scree plot, USArrests + eigenfaces); standardization mandate; PCA fails on curved data → motivates clustering

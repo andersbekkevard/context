@@ -19,8 +19,7 @@ tags:
 The prof's framing: "regularization is constraint" and the most important variant of model selection in modern ML, trading a little bias for a lot of variance reduction. Four lectures (Feb 23, Feb 24, Mar 2, Mar 3) covering subset selection → shrinkage (ridge / lasso / elastic net) → dimensionality reduction (PCR / PLS) → high-dim motivation. The prof distrusts AIC / BIC / Cp and prefers cross-validation throughout.
 
 ## Slides
-- [[../../modules/6ModelSel/selection_regularization_presentation_lecture1|selection_regularization_presentation_lecture1]]
-- [[../../modules/6ModelSel/selection_regularization_presentation_lecture2|selection_regularization_presentation_lecture2]]
+- <a href="/pdfs/m06-modelsel-slides.pdf" target="_blank" rel="noopener">m06-modelsel-slides.pdf</a>
 
 ## Lectures
 - [[L12-modelsel-1]]: opens with "regularization as constraint", subset selection (best / forward / backward / hybrid), starts ridge

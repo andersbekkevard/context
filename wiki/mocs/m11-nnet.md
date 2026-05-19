@@ -17,7 +17,7 @@ tags:
 The prof's "deep learning is just nested GLMs" module. Three lectures (Apr 20, 21, 27) move from feedforward + backprop, through CNNs for images, to RNNs and double descent. Load-bearing: parameter counting, the regularization menu, and the conceptual link between SGD's implicit regularization and double descent. Architecture details are explicitly out.
 
 ## Slides
-- [[../../modules/11NNet/11Nnet|11Nnet]]
+- <a href="/pdfs/m11-nnet-slides.pdf" target="_blank" rel="noopener">m11-nnet-slides.pdf</a>
 
 ## Lectures
 - [[L23-nnet-1]]: feedforward architecture, activation functions, parameter counting, gradient descent / SGD, backpropagation, universal approximation
