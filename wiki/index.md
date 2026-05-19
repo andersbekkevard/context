@@ -18,7 +18,6 @@ Pick where to start:
 - **[[mock-exams|Mock Exams]]** — calibrated mock papers + solution proposals for the 2026 final
 - **[[islp|ISLP Chapters]]** — chapter-by-chapter links to the ISLP notes included in this site
 - **[[book-deltas|Book Deltas]]** — per-module reproductions of curriculum material absent from ISLP, designed as an exam-time "book extension"
-- **[[missing-data|Missing Data]]** — what the prof said (and didn't) about missing predictor values, with model-by-model implications for the exam
 - **[[the-long-tuesday|The Long Tuesday]]** — a humorous short story in which a single sample point ($i = 42$) is bootstrapped, cross-validated, and embedded through every dataset in ISLP
 
 Every named idea has its own concept page; every lecture is a compressed transcript. Use the **search bar (left)** or the **graph view (right)** to jump straight in.
